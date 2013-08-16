@@ -43,7 +43,7 @@ namespace Venom {
       _local_name = _name;
     }
 
-    public string getPublicKeyString() {
+    public string get_public_key_string() {
       return "%08X%08X%08X%08X%08X%08X%08X%08X".printf(
               _public_key[0],
               _public_key[1],
