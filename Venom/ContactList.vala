@@ -1,16 +1,31 @@
 using Gtk;
+using Gee;
 namespace Venom {
   public class ContactList : Object {
-    private Contact[] contacts;
-    private Window _contact_list_window;
+    private ArrayList<Contact> contacts;
+    private ToxSession session;
 
-    public Window contact_list_window {
-      get { return _contact_list_window; }
-    }
+    public Window contact_list_window { get; private set; }
 
     public ContactList( Window contact_list_window ) {
-      contacts = new Contact[10];
-      _contact_list_window = contact_list_window;
+      this.contacts = new ArrayList<Contact>();
+      this.contact_list_window = contact_list_window;
+      session = new ToxSession();
+
+      try {
+        session.load_from_file("data");
+        stdout.printf("Successfully loaded messenger data.\n");
+      } catch (Error e) {
+        session.save_to_file("data");
+      }
+      session.start();
+    }
+
+    ~ContactList() {
+      session.stop();
+      session.join();
+      session.save_to_file("data");
+      stdout.printf("Session ended gracefully.\n");
     }
 
     public static ContactList create_contact_list( string filename, string window_name ) throws Error {
