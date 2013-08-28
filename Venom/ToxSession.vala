@@ -3,21 +3,32 @@ using Gee;
 using Tox;
 
 namespace Venom {
+  // Wrapper class for accessing tox functions threadsafe
   public class ToxSession {
     private Tox.Tox handle;
     private ArrayList<DhtServer> dht_servers = new ArrayList<DhtServer>();
     private bool running = false;
-    private unowned Thread<void*> session_thread = null;
-    private bool bootstraped = false;
+    private unowned Thread<int> session_thread = null;
+    private bool bootstrapped = false;
     private bool connected = false;
 
+    // convert a hexstring to uint8[]
     public static uint8[] hexstringToBin(string s) {
       uint8[] buf = new uint8[s.length / 2];
       for(int i = 0; i < buf.length; ++i) {
-        //s[2*i:2*i+1]
-        s.substring(2*i, 2).scanf("%02X", out buf[i]); //FIXME some weirdness (see valgrind)
+        int b = 0;
+        s.substring(2*i, 2).scanf("%02x", ref b);
+        buf[i] = (uint8)b;
       }
       return buf;
+    }
+    public static uint8[] string_to_nullterm_uint (string input){
+      if(input == null || input.length == 0)
+        return {'\0'};
+      uint8[] clone = new uint8[input.data.length + 1];
+      Memory.copy(clone, input.data, input.data.length * sizeof(uint8));
+      clone[clone.length - 1] = '\0';
+      return clone;
     }
 
     public ToxSession() {
@@ -30,6 +41,7 @@ namespace Venom {
       uint8[] pub_key = hexstringToBin("AC4112C975240CAD260BB2FCD134266521FAAF0A5D159C5FD3201196191E4F5D");
       dht_servers.add(new DhtServer.withArgs(ip_port, pub_key));
 
+      // setup callbacks, currently disabled
       /*
       handle.setFriendrequestCallback(onFriendrequest, null);
       handle.setFriendmessageCallback(onFriendmessage, null);
@@ -37,47 +49,84 @@ namespace Venom {
       handle.setStatusmessageCallback(onStatusmessage, null);*/
     }
 
+    // destructor
     ~ToxSession() {
       running = false;
     }
 
-    private void* run() {
-      stdout.printf("Starting tox background thread.\n");
+    // Add a friend
+    public Tox.FriendAddError add_friend(uint8[] id, string message) {
+      Tox.FriendAddError ret = Tox.FriendAddError.UNKNOWN;
+
+      if(id.length != Tox.FRIEND_ADDRESS_SIZE)
+        return ret;
+
+      uint8[] data = string_to_nullterm_uint(message);
+      
+      lock(handle) {
+        ret = handle.addfriend(id, data);
+      }
+      return ret;
+    }
+
+    public bool set_status(Tox.UserStatus user_status) {
+      int ret = -1;
+      lock(handle) {
+        ret = handle.set_userstatus(user_status);
+      }
+      return ret == 0;
+    }
+
+    // Background thread main function
+    private int run() {
+      stdout.printf("Background thread started.\n");
+      lock(handle) {
+        if(!bootstrapped) {
+          stdout.printf("Connecting to DHT server:\n%s\n", dht_servers[0].toString());
+          handle.bootstrap(dht_servers[0].ip_port, dht_servers[0].pub_key);
+          bootstrapped = true;
+        }
+      }
 
       while(running) {
         if(!connected) {
-          if(connected = (handle.isConnected() != 0)) {
-            stdout.printf("Connection to DHT server established.\n");
+          lock(handle) {
+            if(connected = (handle.isconnected() != 0)) {
+              stdout.printf("Connection to DHT server established.\n");
+            }
           }
         }
-        handle.do_loop();
+        lock(handle) {
+          handle.do();
+        }
         Thread.usleep(10000);
       }
-      stdout.printf("Stopping tox background thread.\n");
-      return null;
+      stdout.printf("Background thread stopped.\n");
+      return 0;
     }
 
+    // Start the background thread (if not already running)
     public void start() {
       if(running)
         return;
       running = true;
-      if(!bootstraped) {
-        stdout.printf("Connecting to DHT server:\n%s\n", dht_servers[0].toString());
-        handle.bootstrap(dht_servers[0].ip_port, dht_servers[0].pub_key);
-        bootstraped = true;
-      }
-      session_thread = Thread.create<void*>(this.run, true);
+      session_thread = Thread.create<int>(this.run, true);
     }
 
+    // Stop background thread
     public void stop() {
       running = false;
+      bootstrapped = false;
+      connected = false;
     }
 
+    // Wait for background thread to finish
     public void join() {
       if(session_thread != null)
         session_thread.join();
     }
 
+    // Load messenger data from file (not locked, don't use while bgthread is running)
     public void load_from_file(string filename) throws IOError, Error {
       File f = File.new_for_path(filename);
       if(!f.query_exists())
@@ -95,11 +144,12 @@ namespace Venom {
         throw new IOError.FAILED("Error while loading messenger data.");
     }
 
+    // Save messenger data from file (not locked, don't use while bgthread is running)
     public void save_to_file(string filename) throws IOError, Error {
       File f = File.new_for_path(filename);
       DataOutputStream os = new DataOutputStream (f.create (FileCreateFlags.REPLACE_DESTINATION));
 
-      uint32 size = handle.getSize();
+      uint32 size = handle.size();
       uint8[] buf = new uint8 [size];
       handle.save(buf);
 

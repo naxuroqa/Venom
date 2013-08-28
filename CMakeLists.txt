@@ -32,16 +32,20 @@ GENERATE_HEADER
 )
 
 vala_precompile( VALA_C
-  Venom/Main.vala
+  Venom/AddFriendDialog.vala
   Venom/Contact.vala
   Venom/ContactList.vala
   Venom/DhtServer.vala
+  Venom/Main.vala
   Venom/ToxSession.vala
 PACKAGES
   gee-1.0
   gtk+-3.0
+  glib-2.0
   gio-2.0
 OPTIONS
+#  --debug
+#  --save-temps
 CUSTOM_VAPIS
   vapi/tox.vapi
 GENERATE_VAPI

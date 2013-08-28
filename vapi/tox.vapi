@@ -60,7 +60,7 @@ namespace Tox {
     [CCode (cname = "TOX_FAERR_ALREADYSENT")]
     ALREADYSENT,
     [CCode (cname = "TOX_FAERR_UNKNOWN")]
-    UNKOWKN,
+    UNKNOWN,
     [CCode (cname = "TOX_FAERR_BADCHECKSUM")]
     BADCHECKSUM,
     [CCode (cname = "TOX_FAERR_SETNEWNOSPAM")]
@@ -105,7 +105,7 @@ namespace Tox {
      *
      */
     [CCode (cname="tox_getaddress")]
-    public void getAddress([CCode(array_length=false)] uint8[] address);
+    public void getaddress([CCode(array_length=false)] uint8[] address);
     /*
      * add a friend
      * set the data that will be sent along with friend request
@@ -123,29 +123,29 @@ namespace Tox {
      * return TOX_FAERR_NOMEM if increasing the friend list size fails
      */
     [CCode (cname="tox_addfriend")]
-    public int addFriend([CCode(array_length=false)] uint8[] address, uint8[] data);
+    public FriendAddError addfriend([CCode(array_length=false)] uint8[] address, owned uint8[] data);
 
     /* add a friend without sending a friendrequest.
         returns the friend number if success
         return -1 if failure. */
     [CCode (cname="tox_addfriend_norequest")]
-    public int addFriendNoRequest([CCode(array_length=false)] uint8[] client_id);
+    public int addfriend_norequest([CCode(array_length=false)] uint8[] client_id);
 
     /* return the friend id associated to that client id.
         return -1 if no such friend */
     [CCode (cname="tox_getfriend_id")]
-    public int getFriendId([CCode(array_length=false)] uint8[] client_id);
+    public int getfriend_id([CCode(array_length=false)] uint8[] client_id);
 
     /* copies the public key associated to that friend id into client_id buffer.
         make sure that client_id is of size CLIENT_ID_SIZE.
         return 0 if success
         return -1 if failure */
     [CCode (cname="tox_getclient_id")]
-    public int getClientId(int friend_id, [CCode(array_length=false)] uint8[] client_id);
+    public int getclient_id(int friend_id, [CCode(array_length=false)] uint8[] client_id);
 
     /* remove a friend */
     [CCode (cname="tox_delfriend")]
-    public int delFriend(int friend_number);
+    public int delfriend(int friend_number);
 
     /*  return TOX_FRIEND_ONLINE if friend is online
         return TOX_FRIEND_CONFIRMED if friend is confirmed
@@ -153,7 +153,7 @@ namespace Tox {
         return TOX_FRIEND_ADDED if the friend was added
         return TOX_NOFRIEND if there is no friend with that number */
     [CCode (cname="tox_friendstatus")]
-    public int friendStatus(int friend_number);
+    public int friendstatus(int friend_number);
 
     /* send a text chat message to an online friend
         returns the message id if packet was successfully put into the send queue
@@ -163,16 +163,16 @@ namespace Tox {
         m_sendmessage_withid will send a message with the id of your choosing,
         however we can generate an id for you by calling plain m_sendmessage. */
     [CCode (cname="tox_sendmessage")]
-    public uint32 sendMessage(int friend_number, uint8[] message);
+    public uint32 sendmessage(int friend_number, uint8[] message);
 
     [CCode (cname="tox_sendmessage_withid")]
-    public uint32 sendMessageWithId(int friend_number, uint32 id, uint8[] message);
+    public uint32 sendmessage_withid(int friend_number, uint32 id, uint8[] message);
 
     /* send an action to an online friend
         returns 1 if packet was successfully put into the send queue
         return 0 if it was not */
     [CCode (cname="tox_sendaction")]
-    public int sendAction(int friendNumber, uint8[] action);
+    public int sendaction(int friendNumber, uint8[] action);
 
     /* Set our nickname
        name must be a string of maximum MAX_NAME_LENGTH length.
@@ -181,7 +181,7 @@ namespace Tox {
        return 0 if success
        return -1 if failure */
     [CCode (cname="tox_setname")]
-    public int setName(uint8[] name);
+    public int setname(uint8[] name);
 
     /*
        Get your nickname.
@@ -191,7 +191,7 @@ namespace Tox {
        returns Return the length of the name, 0 on error.
     */
     [CCode (cname="tox_getselfname")]
-    public uint16 getSelfName(uint8 name);
+    public uint16 getselfname(uint8 name);
 
     /* get name of friendnumber
         put it in name
@@ -199,73 +199,73 @@ namespace Tox {
         return 0 if success
         return -1 if failure */
     [CCode (cname="tox_getname")]
-    public int getName(int friendNumber, [CCode(array_length=false)] uint8 name);
+    public int getname(int friendNumber, [CCode(array_length=false)] uint8 name);
 
     /* set our user status
         you are responsible for freeing status after
         returns 0 on success, -1 on failure */
     [CCode (cname="tox_set_statusmessage")]
-    public int setStatusMessage(uint8[] status);
+    public int set_statusmessage(uint8[] status);
 
     [CCode (cname="tox_set_userstatus")]
-    public int setUserStatus(UserStatus status);
+    public int set_userstatus(UserStatus status);
 
     /* return the length of friendnumber's status message,
         including null
         pass it into malloc */
     [CCode (cname="tox_get_statusmessage_size")]
-    public int getStatusMessageSize(int friendNumber);
+    public int get_statusmessage_size(int friendNumber);
 
     /* copy friendnumber's status message into buf, truncating if size is over maxlen
         get the size you need to allocate from m_get_statusmessage_size
         The self variant will copy our own status message. */
     [CCode (cname="tox_copy_statusmessage")]
-    public int copyStatusMessage(int friendNumber, uint8[] buf);
+    public int copy_statusmessage(int friendNumber, uint8[] buf);
 
     [CCode (cname="tox_copy_self_statusmessage")]
-    public int copySelfStatusMessage(uint8[] buf);
+    public int copy_self_statusmessage(uint8[] buf);
 
     /* Return one of USERSTATUS values.
      * Values unknown to your application should be represented as USERSTATUS_NONE.
      * As above, the self variant will return our own USERSTATUS.
      * If friendnumber is invalid, this shall return USERSTATUS_INVALID. */
     [CCode (cname="tox_get_userstatus")]
-    public UserStatus getUserStatus(int friendNumber);
+    public UserStatus get_userstatus(int friendNumber);
 
     [CCode (cname="tox_get_selfuserstatus")]
-    public UserStatus getSelfUserStatus();
+    public UserStatus get_selfuserstatus();
 
     /* Sets whether we send read receipts for friendnumber.
      * This function is not lazy, and it will fail if yesno is not (0 or 1).*/
     [CCode (cname="tox_set_sends_receipts")]
-    public void setSendReceipts(int friendNumber, int yesno);
+    public void set_send_receipts(int friendNumber, int yesno);
 
     /* set the function that will be executed when a friend request is received.
         function format is function(uint8_t * public_key, uint8_t * data, uint16_t length) */
     [CCode (cname="tox_callback_friendrequest")]
-    public void setFriendrequestCallback(FriendrequestCallback callback, void* userdata);
+    public void callback_friendrequest(FriendrequestCallback callback, void* userdata);
 
     /* set the function that will be executed when a message from a friend is received.
         function format is: function(int friendnumber, uint8_t * message, uint32_t length) */
     [CCode (cname="tox_callback_friendmessage")]
-    public void setFriendmessageCallback(FriendmessageCallback callback, void* userdata);
+    public void callback_friendmessage(FriendmessageCallback callback, void* userdata);
 
     /* set the function that will be executed when an action from a friend is received.
         function format is: function(int friendnumber, uint8_t * action, uint32_t length) */
     [CCode (cname="tox_callback_action")]
-    public void setActionCallback(ActionCallback callback, void* userdata);
+    public void callback_action(ActionCallback callback, void* userdata);
 
     /* set the callback for name changes
         function(int friendnumber, uint8_t *newname, uint16_t length)
         you are not responsible for freeing newname */
     [CCode (cname="tox_callback_namechange")]
-    public void setNamechangeCallback(NamechangeCallback callback, void* userdata);
+    public void callback_namechange(NamechangeCallback callback, void* userdata);
 
     /* set the callback for status message changes
         function(int friendnumber, uint8_t *newstatus, uint16_t length)
         you are not responsible for freeing newstatus */
     [CCode (cname="tox_callback_statusmessage")]
-    public void setStatusmessageCallback(StatusmessageCallback callback, void* userdata);
+    public void callback_statusmessage(StatusmessageCallback callback, void* userdata);
 
 /* set the callback for status type changes
     function(int friendnumber, USERSTATUS kind) */
@@ -298,17 +298,17 @@ namespace Tox {
     /* returns 0 if we are not connected to the DHT
         returns 1 if we are */
     [CCode(cname="tox_isconnected")]
-    public int isConnected();
+    public int isconnected();
 
     /* the main loop that needs to be run at least 20 times per second */
     [CCode(cname="tox_do")]
-    public void do_loop();
+    public void do();
 
     /* SAVING AND LOADING FUNCTIONS: */
 
     /* returns the size of the messenger data (for saving) */
     [CCode(cname="tox_size")]
-    public uint32 getSize();
+    public uint32 size();
 
     /* save the messenger in data (must be allocated memory of size Messenger_size()) */
     [CCode(cname="tox_save")]

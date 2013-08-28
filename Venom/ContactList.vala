@@ -5,18 +5,104 @@ namespace Venom {
     private ArrayList<Contact> contacts;
     private ToxSession session;
 
-    public Window contact_list_window { get; private set; }
+    private Window contact_list_window;
+    private ComboBoxText status_combo_box;
 
-    public ContactList( Window contact_list_window ) {
+    [CCode (instance_pos = -1)]
+    public void clicked(Object source) {
+      AddFriendDialog dialog = AddFriendDialog.create();
+
+      if(dialog.gtk_add_friend_dialog.run() != Gtk.ResponseType.OK)
+        return;
+
+      uint8[] friend_id = ToxSession.hexstringToBin(dialog.friend_id);
+
+      // print some info
+      stdout.printf("Friend ID:");
+      for(int i = 0; i < friend_id.length; ++i)
+        stdout.printf("%02X", friend_id[i]);
+      stdout.printf("\n");
+
+      // add friend
+      Tox.FriendAddError ret = session.add_friend(friend_id, dialog.friend_msg);
+      switch(ret) {
+        case Tox.FriendAddError.TOOLONG:
+        break;
+        case Tox.FriendAddError.NOMESSAGE:
+        break;
+        case Tox.FriendAddError.OWNKEY:
+        break;
+        case Tox.FriendAddError.ALREADYSENT:
+        break;
+        case Tox.FriendAddError.UNKNOWN:
+        break;
+        case Tox.FriendAddError.BADCHECKSUM:
+        break;
+        case Tox.FriendAddError.SETNEWNOSPAM:
+        break;
+        case Tox.FriendAddError.NOMEM:
+        break;
+        default:
+          stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
+        break;
+      }
+    }
+
+    public static uint8[] copy_uint8_array(uint8[] orig) {
+      uint8[] clone = new uint8[orig.length];
+      for(int i = 0; i < orig.length; ++i)
+        clone[i] = orig[i];
+      return clone;
+    }
+
+    [CCode (instance_pos = -1)]
+    public void combobox_status_changed(ComboBoxText source) {
+      stdout.printf("New status: %s (%i)\n", source.get_active_text(), source.get_active());
+      bool result = false;
+      switch(source.get_active()) {
+        case 0: // online
+          session.start();
+          result = session.set_status(Tox.UserStatus.NONE);
+        break;
+        case 1: // away
+          result = session.set_status(Tox.UserStatus.AWAY);
+        break;
+        case 2: // busy
+          result = session.set_status(Tox.UserStatus.BUSY);
+        break;
+        case 3: //offline
+          session.stop();
+          result = true;
+        break;
+        default:
+        break;
+      }
+      if(!result) {
+        stderr.printf("Could not change status!\n");
+      }
+    }
+
+    public void show() {
+      contact_list_window.show_all ();
+    }
+
+    public ContactList( Window contact_list_window, ComboBoxText status_combo_box ) {
       this.contacts = new ArrayList<Contact>();
       this.contact_list_window = contact_list_window;
-      session = new ToxSession();
+      this.status_combo_box = status_combo_box;
 
+      this.contact_list_window.destroy.connect (Gtk.main_quit);
+      
+      session = new ToxSession();
       try {
         session.load_from_file("data");
         stdout.printf("Successfully loaded messenger data.\n");
       } catch (Error e) {
-        session.save_to_file("data");
+        try {
+          session.save_to_file("data");
+        } catch (Error e) {
+          stderr.printf("Could not load messenger data and failed to create new one\n");
+        }
       }
       session.start();
     }
@@ -24,16 +110,20 @@ namespace Venom {
     ~ContactList() {
       session.stop();
       session.join();
-      session.save_to_file("data");
+      //session.save_to_file("data");
       stdout.printf("Session ended gracefully.\n");
     }
 
-    public static ContactList create_contact_list( string filename, string window_name ) throws Error {
+    public static ContactList create() throws Error {
       Builder builder = new Builder();
-      builder.add_from_file("sample.ui");
-      builder.connect_signals(null);
+      builder.add_from_file("ui/contact_list.glade");
       Window window = builder.get_object("window") as Window;
-      return new ContactList(window);
+      ComboBoxText status_combo_box = builder.get_object("combobox_status") as ComboBoxText;
+      status_combo_box.set_active(0);
+
+      ContactList contact_list = new ContactList(window, status_combo_box);
+      builder.connect_signals(contact_list);
+      return contact_list;
     }
   }
 }

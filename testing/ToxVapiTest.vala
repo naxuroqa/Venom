@@ -10,7 +10,7 @@ namespace Testing {
     }
     stdout.printf("\n");
     stdout.printf("Data: %s\n", (string)data);
-    int friend_number = t.addFriendNoRequest(data);
+    int friend_number = t.addfriend_norequest(data);
     if(friend_number != -1) {
       stdout.printf("Successfully added friend #%i.\n", friend_number);
     } else {
@@ -18,7 +18,7 @@ namespace Testing {
       return;
     }
     string message = "Hello there!";
-    uint32 ret = t.sendMessage(friend_number, message.data);
+    uint32 ret = t.sendmessage(friend_number, message.data);
     if(ret == message.length) {
       stdout.printf("Hello message sent.\n");
     } else {
@@ -41,12 +41,14 @@ namespace Testing {
   public static uint8[] hexstringToBin(string s) {
     uint8[] buf = new uint8[s.length / 2];
     for(int i = 0; i < buf.length; ++i) {
-      s.substring(2*i, 2).scanf("%02X", out buf[i]); //FIXME some weirdness (see valgrind)
+      int b = 0;
+      s.substring(2*i, 2).scanf("%02X", ref b);
+      buf[i] = (uint8)b;
     }
     return buf;
   }
 
-  public static void load_messenger(ref Tox.Tox t, string filename) throws IOError {
+  public static void load_messenger(ref Tox.Tox t, string filename) throws IOError, Error {
     File f = File.new_for_path(filename);
     if(!f.query_exists())
       throw new IOError.NOT_FOUND("File \"" + filename + "\" does not exist.");
@@ -63,11 +65,7 @@ namespace Testing {
       throw new IOError.FAILED("Error while loading messenger data from file \"" + filename + "\"");
   }
 
-  public static void main(string[] args) {/*
-    TestBed b = new TestBed();
-    ToxVapiTest t = new ToxVapiTest();
-    t.registerTestcases(b);
-    b.run();*/
+  public static void main(string[] args) {
     stdout.printf("Creating new tox instance...\n");
     string data_filename = "data";
     t = new Tox.Tox();
@@ -77,9 +75,7 @@ namespace Testing {
     IpPort ip_port = { ip, 0xA582 }; //33445
 
     string pub_key_str = "AC4112C975240CAD260BB2FCD134266521FAAF0A5D159C5FD3201196191E4F5D";
-
     uint8[] pub_key = hexstringToBin(pub_key_str);
-
     uint8[] id = new uint8[FRIEND_ADDRESS_SIZE];
 
     try {
@@ -91,10 +87,10 @@ namespace Testing {
       return;
     }
 
-    t.setFriendrequestCallback(onFriendrequest, null);
-    t.setFriendmessageCallback(onFriendmessage, null);
-    t.setNamechangeCallback(onNamechange, null);
-    t.setStatusmessageCallback(onStatusmessage, null);
+    t.callback_friendrequest(onFriendrequest, null);
+    t.callback_friendmessage(onFriendmessage, null);
+    t.callback_namechange(onNamechange, null);
+    t.callback_statusmessage(onStatusmessage, null);
 
     stdout.printf("Connecting to %i.%i.%i.%i:%i\n", ip_port.ip.c[0], ip_port.ip.c[1], ip_port.ip.c[2], ip_port.ip.c[3], ip_port.port);
     stdout.printf("Public server key: ");
@@ -103,7 +99,7 @@ namespace Testing {
     }
     stdout.printf("\n");
 
-    t.getAddress(id);
+    t.getaddress(id);
     stdout.printf("ID: ");
     foreach(uint8 b in id) {
       stdout.printf("%02X", b);
@@ -116,11 +112,11 @@ namespace Testing {
     while(true)
     {
       if(!connected) {
-        if((connected = t.isConnected() != 0)) {
+        if((connected = t.isconnected() != 0)) {
           stdout.printf("Connection established.\n");
         }
       }
-      t.do_loop();
+      t.do();
       Thread.usleep(10000);
     }
   }
