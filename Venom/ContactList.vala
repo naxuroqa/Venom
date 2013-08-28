@@ -10,7 +10,12 @@ namespace Venom {
 
     [CCode (instance_pos = -1)]
     public void clicked(Object source) {
-      AddFriendDialog dialog = AddFriendDialog.create();
+      AddFriendDialog dialog = null;
+      try {
+        dialog = AddFriendDialog.create();
+      } catch (Error e) {
+        stderr.printf("Error creating AddFriendDialog: %s\n", e.message);
+      }
 
       if(dialog.gtk_add_friend_dialog.run() != Gtk.ResponseType.OK)
         return;
@@ -46,13 +51,6 @@ namespace Venom {
           stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
         break;
       }
-    }
-
-    public static uint8[] copy_uint8_array(uint8[] orig) {
-      uint8[] clone = new uint8[orig.length];
-      for(int i = 0; i < orig.length; ++i)
-        clone[i] = orig[i];
-      return clone;
     }
 
     [CCode (instance_pos = -1)]

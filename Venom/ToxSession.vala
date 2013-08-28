@@ -8,7 +8,7 @@ namespace Venom {
     private Tox.Tox handle;
     private ArrayList<DhtServer> dht_servers = new ArrayList<DhtServer>();
     private bool running = false;
-    private unowned Thread<int> session_thread = null;
+    private Thread<int> session_thread = null;
     private bool bootstrapped = false;
     private bool connected = false;
 
@@ -110,7 +110,7 @@ namespace Venom {
       if(running)
         return;
       running = true;
-      session_thread = Thread.create<int>(this.run, true);
+      session_thread = new GLib.Thread<int>("name", this.run);
     }
 
     // Stop background thread
@@ -121,9 +121,10 @@ namespace Venom {
     }
 
     // Wait for background thread to finish
-    public void join() {
+    public int join() {
       if(session_thread != null)
-        session_thread.join();
+        return session_thread.join();
+      return -1;
     }
 
     // Load messenger data from file (not locked, don't use while bgthread is running)

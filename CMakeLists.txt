@@ -46,6 +46,7 @@ PACKAGES
 OPTIONS
 #  --debug
 #  --save-temps
+  --target-glib=2.32
 CUSTOM_VAPIS
   vapi/tox.vapi
 GENERATE_VAPI

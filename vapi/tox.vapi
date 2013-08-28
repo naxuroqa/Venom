@@ -112,7 +112,7 @@ namespace Tox {
      * address is the address of the friend (returned by getaddress of the friend you wish to add) it must be FRIEND_ADDRESS_SIZE bytes. TODO: add checksum.
      * data is the data and length is the length
      * returns the friend number if success
-     * return TOX_FA_TOOLONG if message length is too long
+     * return TOX_FAERR_TOOLONG if message length is too long
      * return TOX_FAERR_NOMESSAGE if no message (message length must be >= 1 byte)
      * return TOX_FAERR_OWNKEY if user's own key
      * return TOX_FAERR_ALREADYSENT if friend request already sent or already a friend
