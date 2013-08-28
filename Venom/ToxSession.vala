@@ -76,6 +76,10 @@ namespace Venom {
       }
       return ret == 0;
     }
+    
+    public bool is_running() {
+      return running;
+    }
 
     // Background thread main function
     private int run() {

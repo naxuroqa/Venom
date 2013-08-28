@@ -59,13 +59,18 @@ namespace Venom {
       bool result = false;
       switch(source.get_active()) {
         case 0: // online
-          session.start();
+          if(!session.is_running())
+            session.start();
           result = session.set_status(Tox.UserStatus.NONE);
         break;
         case 1: // away
+          if(!session.is_running())
+            session.start();
           result = session.set_status(Tox.UserStatus.AWAY);
         break;
         case 2: // busy
+          if(!session.is_running())
+            session.start();
           result = session.set_status(Tox.UserStatus.BUSY);
         break;
         case 3: //offline
