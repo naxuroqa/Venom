@@ -20,7 +20,7 @@ namespace Venom {
       if(dialog.gtk_add_friend_dialog.run() != Gtk.ResponseType.OK)
         return;
 
-      uint8[] friend_id = ToxSession.hexstringToBin(dialog.friend_id);
+      uint8[] friend_id = ToxSession.hexstring_to_bin(dialog.friend_id);
 
       // print some info
       stdout.printf("Friend ID:");
@@ -107,13 +107,19 @@ namespace Venom {
           stderr.printf("Could not load messenger data and failed to create new one\n");
         }
       }
+
+      uint8[] my_id = session.get_address();
+      stdout.printf("My ID: %s\n", ToxSession.bin_to_hexstring(my_id));
       session.start();
     }
 
     ~ContactList() {
       session.stop();
+      // wait for background thread to finish
       session.join();
-      //session.save_to_file("data");
+
+      // Save session before shutdown
+      // session.save_to_file("data");
       stdout.printf("Session ended gracefully.\n");
     }
 
