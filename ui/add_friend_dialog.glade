@@ -37,10 +37,12 @@
             </child>
             <child>
               <object class="GtkButton" id="button_ok">
-                <property name="label" translatable="yes">OK</property>
+                <property name="label">gtk-ok</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
                 <signal name="clicked" handler="venom_add_friend_dialog_on_button_ok_clicked" swapped="no"/>
               </object>
               <packing>
@@ -83,7 +85,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">end</property>
-                <property name="label" translatable="yes">To:</property>
+                <property name="label" translatable="yes">Contact ID:</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -107,7 +109,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label4">
+              <object class="GtkLabel" id="label_username">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
@@ -127,6 +129,7 @@
                 <property name="hexpand">True</property>
                 <property name="invisible_char">●</property>
                 <property name="invisible_char_set">True</property>
+                <signal name="changed" handler="venom_add_friend_dialog_on_text_changed" swapped="no"/>
                 <signal name="activate" handler="venom_add_friend_dialog_on_button_ok_clicked" swapped="no"/>
               </object>
               <packing>
@@ -142,6 +145,7 @@
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
                 <property name="invisible_char">●</property>
+                <signal name="changed" handler="venom_add_friend_dialog_on_text_changed" swapped="no"/>
                 <signal name="activate" handler="venom_add_friend_dialog_on_button_ok_clicked" swapped="no"/>
               </object>
               <packing>
@@ -150,6 +154,35 @@
                 <property name="width">1</property>
                 <property name="height">1</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="image_id">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-close</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="width">1</property>
+                <property name="height">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="image_msg">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-close</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">2</property>
+                <property name="width">1</property>
+                <property name="height">1</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>
