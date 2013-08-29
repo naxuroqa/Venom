@@ -43,7 +43,7 @@ namespace Venom {
 
       // Add one default dht server
       Ip ip = {0x58DFAF42}; //66.175.223.88
-      IpPort ip_port = { ip, 0xA582 }; //33445, Big endian
+      IpPort ip_port = { ip, ((uint16)33445).to_big_endian() };
       uint8[] pub_key = hexstring_to_bin("AC4112C975240CAD260BB2FCD134266521FAAF0A5D159C5FD3201196191E4F5D");
       dht_servers.add(new DhtServer.withArgs(ip_port, pub_key));
 

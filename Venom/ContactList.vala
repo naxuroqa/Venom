@@ -46,6 +46,13 @@ namespace Venom {
         }
       }
       session.on_friendrequest.connect(this.on_friendrequest);
+      session.on_friendmessage.connect(this.on_friendmessage);
+      session.on_action.connect(this.on_action);
+      session.on_namechange.connect(this.on_namechange);
+      session.on_statusmessage.connect(this.on_statusmessage);
+      session.on_userstatus.connect(this.on_userstatus);
+      session.on_read_receipt.connect(this.on_read_receipt);
+      session.on_connectionstatus.connect(this.on_connectionstatus);
 
       uint8[] my_id = session.get_address();
       stdout.printf("My ID: %s\n", ToxSession.bin_to_hexstring(my_id));
@@ -75,9 +82,32 @@ namespace Venom {
 
 		  int response = messagedialog.run();
       if(response == ResponseType.YES) {
-        session.addfriend_norequest(public_key);
+        Tox.FriendAddError far = session.addfriend_norequest(public_key);
+        if((int)far >= 0)
+          stdout.printf("Added new Friend #%i\n", (int)far);
       }
       messagedialog.destroy();
+    }
+    private void on_friendmessage(int friend_number, string message) {
+      stdout.printf("[fm] %i:%s\n", friend_number, message);
+    }
+    private void on_action(int friend_number, string action) {
+      stdout.printf("[ac] %i:%s\n", friend_number, action);
+    }
+    private void on_namechange(int friend_number, string new_name) {
+      stdout.printf("[nc] %i:%s\n", friend_number, new_name);
+    }
+    private void on_statusmessage(int friend_number, string status) {
+      stdout.printf("[sm] %i:%s\n", friend_number, status);
+    }
+    private void on_userstatus(int friend_number, int user_status) {
+      stdout.printf("[us] %i:%i\n", friend_number, user_status);
+    }
+    private void on_read_receipt(int friend_number, uint32 receipt) {
+      stdout.printf("[rr] %i:%u\n", friend_number, receipt);
+    }
+    private void on_connectionstatus(int friend_number, bool status) {
+      stdout.printf("[cs] %i:%i\n", friend_number, (int)status);
     }
 
     // GUI Events
