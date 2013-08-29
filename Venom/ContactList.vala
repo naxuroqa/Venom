@@ -28,12 +28,18 @@ namespace Venom {
     private Label label_id;
     private Entry entry_username;
     private Entry entry_status;
+    private TreeView treeview_contacts;
+    private TreeView treeview_conversations;
+    private ListStore list_store_contacts;
+    private FileChooserDialog file_chooser_dialog;
 
     private string data_filename = "data";
     private string data_pathname = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox");
     private uint8[] my_id;
 
-    public ContactList( Window contact_list_window, Image image_status, Image image_userimage, Label label_id, Entry entry_username, Entry entry_status) {
+    public ContactList( Window contact_list_window, Image image_status, Image image_userimage, Label label_id, 
+        Entry entry_username, Entry entry_status, TreeView treeview_contacts, TreeView treeview_conversations,
+        FileChooserDialog file_chooser_dialog ) {
       this.contacts = new HashMap<int, Contact>();
       this.contact_list_window = contact_list_window;
       this.image_status = image_status;
@@ -41,8 +47,14 @@ namespace Venom {
       this.label_id = label_id;
       this.entry_username = entry_username;
       this.entry_status = entry_status;
+      this.treeview_contacts = treeview_contacts;
+      this.treeview_conversations = treeview_conversations;
+      this.file_chooser_dialog = file_chooser_dialog;
 
       this.contact_list_window.destroy.connect (Gtk.main_quit);
+
+
+      setup_treeview_contacts(treeview_contacts);
       
       session = new ToxSession();
       try {
@@ -76,7 +88,7 @@ namespace Venom {
         session.setname(entry_username.get_text());
       }
 
-      string selfstatus = ""; //FIXME
+      string selfstatus = ""; //FIXME add when tox-api supports this
       if(selfstatus != null && selfstatus.length > 0) {
         entry_status.set_text(selfstatus);
       } else {
@@ -96,6 +108,17 @@ namespace Venom {
       stdout.printf("Session ended gracefully.\n");
     }
 
+    public void setup_treeview_contacts(TreeView view) {
+        list_store_contacts = new ListStore (4, typeof (string), typeof (string),
+                                          typeof (string), typeof (string));
+        view.set_model (list_store_contacts);
+
+        view.insert_column_with_attributes (-1, "#", new CellRendererText (), "text", 0);
+        view.insert_column_with_attributes (-1, "Name", new CellRendererText (), "text", 1);
+        view.insert_column_with_attributes (-1, "Status", new CellRendererText (), "text", 2);
+        view.insert_column_with_attributes (-1, "Key", new CellRendererText (), "text", 3);
+    }
+
     // Session Signal callbacks
     private void on_friendrequest(uint8[] public_key, string message) {
       string public_key_string = Tools.bin_to_hexstring(public_key);
@@ -113,6 +136,11 @@ namespace Venom {
         if((int)far >= 0) {
           stdout.printf("Added new Friend #%i\n", (int)far);
           contacts[(int)far] = new Contact(public_key);
+
+          // add to treeview (this should be done somewhere else)
+          TreeIter iter;
+          list_store_contacts.append (out iter);
+          list_store_contacts.set (iter, 0, "%i".printf((int)far), 3, public_key_string );
         }
       }
       messagedialog.destroy();
@@ -157,6 +185,7 @@ namespace Venom {
     // GUI Events
     [CCode (instance_pos = -1)]
     public void button_userimage_clicked(Object source) {
+      
       //TODO
     }
 
@@ -178,7 +207,7 @@ namespace Venom {
 
     [CCode (instance_pos = -1)]
     public void button_copy_id_clicked(Object source) {
-      string message = "Tox me: %s".printf(Tools.bin_to_hexstring(my_id));
+      string message = Tools.bin_to_hexstring(my_id);
       Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).set_text(message, -1);
       Gtk.Clipboard.get(Gdk.SELECTION_PRIMARY).set_text(message, -1);
     }
@@ -251,8 +280,12 @@ namespace Venom {
       Label label_id = builder.get_object("label_id") as Label;
       Entry entry_username = builder.get_object("entry_username") as Entry;
       Entry entry_status = builder.get_object("entry_status") as Entry;
+      TreeView treeview_contacts = builder.get_object("treeview_contacts") as TreeView;
+      TreeView treeview_conversations = builder.get_object("treeview_conversations") as TreeView;
+      FileChooserDialog file_chooser_dialog = builder.get_object("filechooserdialog") as FileChooserDialog;
 
-      ContactList contact_list = new ContactList(window, image_status, image_userimage, label_id, entry_username, entry_status);
+      ContactList contact_list = new ContactList(window, image_status, image_userimage, label_id, 
+        entry_username, entry_status, treeview_contacts, treeview_conversations, file_chooser_dialog);
       builder.connect_signals(contact_list);
       return contact_list;
     }
