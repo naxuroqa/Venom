@@ -1,6 +1,4 @@
 * create Treeview model for contacts and conversations
 * make basic chat functionality work
-* don't use static functions as callbacks (if possible), so we won't need any static tox instance
-* call gtk-thread events from within background thread (Gdk.threads_add_idle)
 * test all vapi functions
 * ...

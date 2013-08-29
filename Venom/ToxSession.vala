@@ -21,13 +21,48 @@ using Tox;
 
 namespace Venom {
   // Wrapper class for accessing tox functions threadsafe
-  public class ToxSession {
+  public class ToxSession : Object {
     private Tox.Tox handle;
     private ArrayList<DhtServer> dht_servers = new ArrayList<DhtServer>();
     private bool running = false;
     private Thread<int> session_thread = null;
     private bool bootstrapped = false;
     private bool connected = false;
+    
+    public signal void on_friendrequest(uint8[] public_key, string message);
+    public signal void on_friendmessage(int friend_number, string message);
+    public signal void on_action(int friend_number, uint8[] action);
+    public signal void on_namechange(int friend_number, string new_name);
+    public signal void on_statusmessage(int friend_number, string status);
+    public signal void on_userstatus(int friend_number, int user_status);
+    public signal void on_read_receipt(int friend_number, uint32 receipt);
+    public signal void on_connectionstatus(int friend_number, bool status);
+
+    public ToxSession() {
+      // create handle
+      handle = new Tox.Tox();
+
+      // Add one default dht server
+      Ip ip = {0x58DFAF42}; //66.175.223.88
+      IpPort ip_port = { ip, 0xA582 }; //33445, Big endian
+      uint8[] pub_key = hexstring_to_bin("AC4112C975240CAD260BB2FCD134266521FAAF0A5D159C5FD3201196191E4F5D");
+      dht_servers.add(new DhtServer.withArgs(ip_port, pub_key));
+
+      // setup callbacks
+      handle.callback_friendrequest(this.on_friendrequest_callback);
+      handle.callback_friendmessage(this.on_friendmessage_callback);
+      handle.callback_action(this.on_action_callback);
+      handle.callback_namechange(this.on_namechange_callback);
+      handle.callback_statusmessage(this.on_statusmessage_callback);
+      handle.callback_userstatus(this.on_userstatus_callback);
+      handle.callback_read_receipt(this.on_read_receipt_callback);
+      handle.callback_connectionstatus(this.on_connectionstatus_callback);
+    }
+
+    // destructor
+    ~ToxSession() {
+      running = false;
+    }
 
     // convert a hexstring to uint8[]
     public static uint8[] hexstring_to_bin(string s) {
@@ -40,6 +75,7 @@ namespace Venom {
       return buf;
     }
 
+    // convert a uint8[] to string
     public static string bin_to_hexstring(uint8[] bin) {
       if(bin == null || bin.length == 0)
         return "";
@@ -50,8 +86,9 @@ namespace Venom {
       return b.str;
     }
 
+    // convert a string to a nullterminated uint8[]
     public static uint8[] string_to_nullterm_uint (string input){
-      if(input == null || input.length == 0)
+      if(input == null || input.length <= 0)
         return {'\0'};
       uint8[] clone = new uint8[input.data.length + 1];
       Memory.copy(clone, input.data, input.data.length * sizeof(uint8));
@@ -59,59 +96,63 @@ namespace Venom {
       return clone;
     }
 
-    private static void on_friendrequest(uint8[] public_key, uint8[] data) {
-      stdout.printf("Incoming friend request from ");
-      for(int i = 0; i < FRIEND_ADDRESS_SIZE; ++i) {
-        stdout.printf("%02X", public_key[i]);
-      }
-      stdout.printf("\n");
-      stdout.printf("Data: %s\n", (string)data);
-      /*
-      int friend_number = t.addfriend_norequest(data);
-      if(friend_number != -1) {
-        stdout.printf("Successfully added friend #%i.\n", friend_number);
-      } else {
-        stdout.printf("Adding friend failed.\n");
+    public static uint8[] clone(uint8[] input, int length) {
+      uint8[] clone = new uint8[length];
+      Memory.copy(clone, input, length * sizeof(uint8));
+      return clone;
+    }
+
+    ////////////////////////////// Callbacks /////////////////////////////////////////
+    [CCode (instance_pos = -1)]
+    private void on_friendrequest_callback(uint8[] public_key, uint8[] data) {
+      if(public_key == null) {
+        stdout.printf("Public key was null!\n");
         return;
-      }*/
+      }
+      string message = ((string)data).dup(); //FIXME string may be copied two times here, check
+      uint8[] public_key_clone = clone(public_key, Tox.FRIEND_ADDRESS_SIZE);
+      Idle.add(() => { on_friendrequest(public_key_clone, message); return false; });
     }
 
-    private static void on_friendmessage(Tox.Tox tox, int friend_number, uint8[] message) {
-      stdout.printf("[m] %i:%s\n", friend_number, (string)message);
+    [CCode (instance_pos = -1)]
+    private void on_friendmessage_callback(Tox.Tox tox, int friend_number, uint8[] message) {
+      stdout.printf("[fm] %i:%s\n", friend_number, (string)message);
     }
 
-    private static void on_namechange(Tox.Tox tox, int friend_number, uint8[] new_name) {
-      stdout.printf("[n] %i:%s\n", friend_number, (string)new_name);
+    [CCode (instance_pos = -1)]
+    private void on_action_callback(Tox.Tox tox, int friend_number, uint8[] action) {
+      stdout.printf("[ac] %i:%s\n", friend_number, (string)action);
     }
 
-    private static void on_statusmessage(Tox.Tox tox, int friend_number, uint8[] status) {
-      stdout.printf("[s] %i:%s\n", friend_number, (string)status);
+    [CCode (instance_pos = -1)]
+    private void on_namechange_callback(Tox.Tox tox, int friend_number, uint8[] new_name) {
+      stdout.printf("[nc] %i:%s\n", friend_number, (string)new_name);
     }
 
-    public ToxSession() {
-      // create handle
-      handle = new Tox.Tox();
-
-      // Add one default dht server
-      Ip ip = {0x58DFAF42}; //66.175.223.88
-      IpPort ip_port = { ip, 0xA582 }; //33445, Big endian
-      uint8[] pub_key = hexstring_to_bin("AC4112C975240CAD260BB2FCD134266521FAAF0A5D159C5FD3201196191E4F5D");
-      dht_servers.add(new DhtServer.withArgs(ip_port, pub_key));
-
-      // setup callbacks, currently disabled
-      handle.callback_friendrequest(on_friendrequest, null);
-      handle.callback_friendmessage(on_friendmessage, null);
-      handle.callback_namechange(on_namechange, null);
-      handle.callback_statusmessage(on_statusmessage, this);
+    [CCode (instance_pos = -1)]
+    private void on_statusmessage_callback(Tox.Tox tox, int friend_number, uint8[] status) {
+      stdout.printf("[sm] %i:%s\n", friend_number, (string)status);
     }
 
-    // destructor
-    ~ToxSession() {
-      running = false;
+    [CCode (instance_pos = -1)]
+    private void on_userstatus_callback(Tox.Tox tox, int friend_number, UserStatus user_status) {
+      stdout.printf("[us] %i:%i\n", friend_number, (int)user_status);
     }
 
-    // Add a friend
-    public Tox.FriendAddError add_friend(uint8[] id, string message) {
+    [CCode (instance_pos = -1)]
+    private void on_read_receipt_callback(Tox.Tox tox, int friend_number, uint32 receipt) {
+      stdout.printf("[rr] %i:%u\n", friend_number, receipt);
+    }
+
+    [CCode (instance_pos = -1)]
+    private void on_connectionstatus_callback(Tox.Tox tox, int friend_number, uint8 status) {
+      stdout.printf("[cs] %i:%u\n", friend_number, status);
+    }
+
+    ////////////////////////////// Wrapper functions ////////////////////////////////
+
+    // Add a friend, returns Tox.FriendAddError on error and friend_number on success
+    public Tox.FriendAddError addfriend(uint8[] id, string message) {
       Tox.FriendAddError ret = Tox.FriendAddError.UNKNOWN;
 
       if(id.length != Tox.FRIEND_ADDRESS_SIZE)
@@ -125,6 +166,19 @@ namespace Venom {
       return ret;
     }
 
+    public Tox.FriendAddError addfriend_norequest(uint8[] id) {
+      Tox.FriendAddError ret = Tox.FriendAddError.UNKNOWN;
+
+      if(id.length != Tox.FRIEND_ADDRESS_SIZE)
+        return ret;
+      
+      lock(handle) {
+        ret = handle.addfriend_norequest(id);
+      }
+      return ret;
+    }
+
+    // Set user status, returns true on success
     public bool set_status(Tox.UserStatus user_status) {
       int ret = -1;
       lock(handle) {
@@ -133,16 +187,18 @@ namespace Venom {
       return ret == 0;
     }
     
-    public bool is_running() {
-      return running;
-    }
-
+    // get personal id
     public uint8[] get_address() {
       uint8[] buf = new uint8[Tox.FRIEND_ADDRESS_SIZE];
       lock(handle) {
         handle.getaddress(buf);
       }
       return buf;
+    }
+
+    ////////////////////////////// Thread related operations /////////////////////////
+    public bool is_running() {
+      return running;
     }
 
     // Background thread main function
@@ -164,6 +220,8 @@ namespace Venom {
             }
           }
         }
+        // Keep in mind, that the handle is locked in callbacks.
+        // Double locking has undefined behaviour!
         lock(handle) {
           handle.do();
         }
@@ -173,12 +231,12 @@ namespace Venom {
       return 0;
     }
 
-    // Start the background thread (if not already running)
+    // Start the background thread
     public void start() {
       if(running)
         return;
       running = true;
-      session_thread = new GLib.Thread<int>("name", this.run);
+      session_thread = new GLib.Thread<int>("Tox background thread", this.run);
     }
 
     // Stop background thread
@@ -195,6 +253,7 @@ namespace Venom {
       return -1;
     }
 
+    ////////////////////////////// Load/Save of messenger data /////////////////////////
     // Load messenger data from file (not locked, don't use while bgthread is running)
     public void load_from_file(string filename) throws IOError, Error {
       File f = File.new_for_path(filename);

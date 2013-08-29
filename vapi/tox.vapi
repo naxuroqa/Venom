@@ -101,16 +101,14 @@ namespace Tox {
     INVALID
   }
 
-  [CCode (has_target = false)]
-  public delegate void FriendrequestCallback([CCode(array_length=false)] uint8[] public_key, [CCode(array_length_type="guint16")] uint8[] data, void* whatevs);
-  [CCode (has_target = false)]
-  public delegate void FriendmessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] message, void* whatevs);
-  [CCode (has_target = false)]
-  public delegate void ActionCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] action, void* whatevs);
-  [CCode (has_target = false)]
-  public delegate void NamechangeCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] new_name, void* whatevs);
-  [CCode (has_target = false)]
-  public delegate void StatusmessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] new_status, void* whatevs);
+  public delegate void FriendrequestCallback([CCode(array_length=false)] uint8[] public_key, [CCode(array_length_type="guint16")] uint8[] data);
+  public delegate void FriendmessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] message);
+  public delegate void ActionCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] action);
+  public delegate void NamechangeCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] new_name);
+  public delegate void StatusmessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] new_status);
+  public delegate void UserstatusCallback(Tox tox, int friend_number, UserStatus user_status);
+  public delegate void ReadReceiptCallback(Tox tox, int friend_number, uint32 receipt);
+  public delegate void ConnectionstatusCallback(Tox tox, int friend_number, uint8 status);
 
   [Compact]
   [CCode (cname="Tox", free_function="tox_kill")]
@@ -147,7 +145,7 @@ namespace Tox {
         returns the friend number if success
         return -1 if failure. */
     [CCode (cname="tox_addfriend_norequest")]
-    public int addfriend_norequest([CCode(array_length=false)] uint8[] client_id);
+    public FriendAddError addfriend_norequest([CCode(array_length=false)] uint8[] client_id);
 
     /* return the friend id associated to that client id.
         return -1 if no such friend */
@@ -261,52 +259,55 @@ namespace Tox {
     /* set the function that will be executed when a friend request is received.
         function format is function(uint8_t * public_key, uint8_t * data, uint16_t length) */
     [CCode (cname="tox_callback_friendrequest")]
-    public void callback_friendrequest(FriendrequestCallback callback, void* userdata);
+    public void callback_friendrequest(FriendrequestCallback callback);
 
     /* set the function that will be executed when a message from a friend is received.
         function format is: function(int friendnumber, uint8_t * message, uint32_t length) */
     [CCode (cname="tox_callback_friendmessage")]
-    public void callback_friendmessage(FriendmessageCallback callback, void* userdata);
+    public void callback_friendmessage(FriendmessageCallback callback);
 
     /* set the function that will be executed when an action from a friend is received.
         function format is: function(int friendnumber, uint8_t * action, uint32_t length) */
     [CCode (cname="tox_callback_action")]
-    public void callback_action(ActionCallback callback, void* userdata);
+    public void callback_action(ActionCallback callback);
 
     /* set the callback for name changes
         function(int friendnumber, uint8_t *newname, uint16_t length)
         you are not responsible for freeing newname */
     [CCode (cname="tox_callback_namechange")]
-    public void callback_namechange(NamechangeCallback callback, void* userdata);
+    public void callback_namechange(NamechangeCallback callback);
 
     /* set the callback for status message changes
         function(int friendnumber, uint8_t *newstatus, uint16_t length)
         you are not responsible for freeing newstatus */
     [CCode (cname="tox_callback_statusmessage")]
-    public void callback_statusmessage(StatusmessageCallback callback, void* userdata);
+    public void callback_statusmessage(StatusmessageCallback callback);
 
-/* set the callback for status type changes
-    function(int friendnumber, USERSTATUS kind) */
-//void tox_callback_userstatus(Tox *tox, void (*function)(Tox *tox, int, TOX_USERSTATUS, void *), void *userdata);
+    /* set the callback for status type changes
+        function(int friendnumber, USERSTATUS kind) */
+    [CCode (cname="tox_callback_userstatus")]
+    public void callback_userstatus(UserstatusCallback callback);
 
-/* set the callback for read receipts
-    function(int friendnumber, uint32_t receipt)
-    if you are keeping a record of returns from m_sendmessage,
-    receipt might be one of those values, and that means the message
-    has been received on the other side. since core doesn't
-    track ids for you, receipt may not correspond to any message
-    in that case, you should discard it. */
-//void tox_callback_read_receipt(Tox *tox, void (*function)(Tox *tox, int, uint32_t, void *), void *userdata);
+    /* set the callback for read receipts
+        function(int friendnumber, uint32_t receipt)
+        if you are keeping a record of returns from m_sendmessage,
+        receipt might be one of those values, and that means the message
+        has been received on the other side. since core doesn't
+        track ids for you, receipt may not correspond to any message
+        in that case, you should discard it. */
+    [CCode (cname="tox_callback_read_receipt")]
+    public void callback_read_receipt(ReadReceiptCallback callback);
 
-/* set the callback for connection status changes
-    function(int friendnumber, uint8_t status)
-    status:
-      0 -- friend went offline after being previously online
-      1 -- friend went online
-    note that this callback is not called when adding friends, thus the "after
-    being previously online" part. it's assumed that when adding friends,
-    their connection status is offline. */
-//void tox_callback_connectionstatus(Tox *tox, void (*function)(Tox *tox, int, uint8_t, void *), void *userdata);
+    /* set the callback for connection status changes
+        function(int friendnumber, uint8_t status)
+        status:
+          0 -- friend went offline after being previously online
+          1 -- friend went online
+        note that this callback is not called when adding friends, thus the "after
+        being previously online" part. it's assumed that when adding friends,
+        their connection status is offline. */
+    [CCode (cname="tox_callback_connectionstatus")]
+    public void callback_connectionstatus(ConnectionstatusCallback callback);
 
     /* Use this function to bootstrap the client
         Sends a get nodes request to the given node with ip port and public_key */

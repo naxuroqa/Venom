@@ -43,14 +43,17 @@ namespace Testing {
     }
   }
 
+  [CCode (instance_pos = -1)]
   public static void onFriendmessage(Tox.Tox tox, int friend_number, uint8[] message) {
     stdout.printf("[m] %i:%s", friend_number, (string)message);
   }
 
+  [CCode (instance_pos = -1)]
   public static void onNamechange(Tox.Tox tox, int friend_number, uint8[] new_name) {
     stdout.printf("[n] %i:%s", friend_number, (string)new_name);
   }
 
+  [CCode (instance_pos = -1)]
   public static void onStatusmessage(Tox.Tox tox, int friend_number, uint8[] status) {
     stdout.printf("[s] %i:%s", friend_number, (string)status);
   }
@@ -65,6 +68,7 @@ namespace Testing {
     return buf;
   }
 
+  [CCode (instance_pos = -1)]
   public static void load_messenger(ref Tox.Tox t, string filename) throws IOError, Error {
     File f = File.new_for_path(filename);
     if(!f.query_exists())
@@ -104,10 +108,10 @@ namespace Testing {
       return;
     }
 
-    t.callback_friendrequest(onFriendrequest, null);
-    t.callback_friendmessage(onFriendmessage, null);
-    t.callback_namechange(onNamechange, null);
-    t.callback_statusmessage(onStatusmessage, null);
+    t.callback_friendrequest(onFriendrequest);
+    t.callback_friendmessage(onFriendmessage);
+    t.callback_namechange(onNamechange);
+    t.callback_statusmessage(onStatusmessage);
 
     stdout.printf("Connecting to %i.%i.%i.%i:%i\n", ip_port.ip.c[0], ip_port.ip.c[1], ip_port.ip.c[2], ip_port.ip.c[3], ip_port.port);
     stdout.printf("Public server key: ");

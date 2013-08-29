@@ -25,6 +25,61 @@ namespace Venom {
     private Window contact_list_window;
     private ComboBoxText status_combo_box;
 
+    public ContactList( Window contact_list_window, ComboBoxText status_combo_box ) {
+      this.contacts = new ArrayList<Contact>();
+      this.contact_list_window = contact_list_window;
+      this.status_combo_box = status_combo_box;
+
+      this.contact_list_window.destroy.connect (Gtk.main_quit);
+      
+      session = new ToxSession();
+      try {
+        session.load_from_file("data");
+        stdout.printf("Successfully loaded messenger data.\n");
+      } catch (Error e) {
+        try {
+          session.save_to_file("data");
+        } catch (Error e) {
+          stderr.printf("Could not load messenger data and failed to create new one\n");
+        }
+      }
+
+      session.on_friendrequest.connect(this.on_friendrequest);
+
+      uint8[] my_id = session.get_address();
+      stdout.printf("My ID: %s\n", ToxSession.bin_to_hexstring(my_id));
+      session.start();
+    }
+
+    ~ContactList() {
+      session.stop();
+      // wait for background thread to finish
+      session.join();
+
+      // Save session before shutdown
+      // session.save_to_file("data");
+      stdout.printf("Session ended gracefully.\n");
+    }
+
+    // Session Signal callbacks
+    private void on_friendrequest(uint8[] public_key, string message) {
+      string public_key_string = ToxSession.bin_to_hexstring(public_key);
+      stdout.printf("[fr] %s:%s\n", public_key_string, message);
+
+      Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (contact_list_window,
+                                  Gtk.DialogFlags.MODAL,
+                                  Gtk.MessageType.QUESTION,
+                                  Gtk.ButtonsType.YES_NO,
+                                  "New friend request from %s.\n\nMessage: %s\nDo you want to accept?".printf(public_key_string, message));
+
+		  int response = messagedialog.run();
+      if(response == ResponseType.YES) {
+        session.addfriend_norequest(public_key);
+      }
+      messagedialog.destroy();
+    }
+
+    // GUI Events
     [CCode (instance_pos = -1)]
     public void clicked(Object source) {
       AddFriendDialog dialog = null;
@@ -46,7 +101,7 @@ namespace Venom {
       stdout.printf("\n");
 
       // add friend
-      Tox.FriendAddError ret = session.add_friend(friend_id, dialog.friend_msg);
+      Tox.FriendAddError ret = session.addfriend(friend_id, dialog.friend_msg);
       switch(ret) {
         case Tox.FriendAddError.TOOLONG:
         break;
@@ -104,40 +159,6 @@ namespace Venom {
 
     public void show() {
       contact_list_window.show_all ();
-    }
-
-    public ContactList( Window contact_list_window, ComboBoxText status_combo_box ) {
-      this.contacts = new ArrayList<Contact>();
-      this.contact_list_window = contact_list_window;
-      this.status_combo_box = status_combo_box;
-
-      this.contact_list_window.destroy.connect (Gtk.main_quit);
-      
-      session = new ToxSession();
-      try {
-        session.load_from_file("data");
-        stdout.printf("Successfully loaded messenger data.\n");
-      } catch (Error e) {
-        try {
-          session.save_to_file("data");
-        } catch (Error e) {
-          stderr.printf("Could not load messenger data and failed to create new one\n");
-        }
-      }
-
-      uint8[] my_id = session.get_address();
-      stdout.printf("My ID: %s\n", ToxSession.bin_to_hexstring(my_id));
-      session.start();
-    }
-
-    ~ContactList() {
-      session.stop();
-      // wait for background thread to finish
-      session.join();
-
-      // Save session before shutdown
-      // session.save_to_file("data");
-      stdout.printf("Session ended gracefully.\n");
     }
 
     public static ContactList create() throws Error {
