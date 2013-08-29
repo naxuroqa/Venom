@@ -203,6 +203,11 @@ namespace Venom {
       //TODO
     }
 
+    [CCode (instance_pos = -1)]
+    public void button_preferences_clicked(Object source) {
+      //TODO
+    }
+
     public void show() {
       contact_list_window.show_all ();
     }
