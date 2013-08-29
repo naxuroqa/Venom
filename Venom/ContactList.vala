@@ -178,8 +178,9 @@ namespace Venom {
 
     [CCode (instance_pos = -1)]
     public void button_copy_id_clicked(Object source) {
-      //FIXME some glitches
-      Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).set_text("Tox me: %s".printf(Tools.bin_to_hexstring(my_id)), -1);
+      string message = "Tox me: %s".printf(Tools.bin_to_hexstring(my_id));
+      Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).set_text(message, -1);
+      Gtk.Clipboard.get(Gdk.SELECTION_PRIMARY).set_text(message, -1);
     }
 
     [CCode (instance_pos = -1)]
