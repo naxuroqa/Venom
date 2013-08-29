@@ -67,7 +67,7 @@ namespace Venom {
       friend_id = gtk_friend_id_entry.get_text();
       friend_msg = gtk_friend_message_entry.get_text();
 
-      uint8[] binary_id = ToxSession.hexstring_to_bin(friend_id);
+      uint8[] binary_id = Tools.hexstring_to_bin(friend_id);
       if(binary_id != null && binary_id.length == Tox.FRIEND_ADDRESS_SIZE) {
         if(!id_ok)
           gtk_image_id.set_from_stock(Gtk.Stock.YES, IconSize.BUTTON);
@@ -93,7 +93,7 @@ namespace Venom {
 
     public static AddFriendDialog create() throws Error {
       Builder builder = new Builder();
-      builder.add_from_file(Path.build_filename(find_data_dir(), "ui", "add_friend_dialog.glade"));
+      builder.add_from_file(Path.build_filename(Tools.find_data_dir(), "ui", "add_friend_dialog.glade"));
       Gtk.Dialog dialog = builder.get_object("dialog") as Dialog;
       Gtk.Entry id_entry = builder.get_object("text_entry_friend_id") as Entry;
       Gtk.Entry msg_entry = builder.get_object("text_entry_friend_message") as Entry;

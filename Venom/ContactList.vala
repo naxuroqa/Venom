@@ -55,7 +55,7 @@ namespace Venom {
       session.on_connectionstatus.connect(this.on_connectionstatus);
 
       uint8[] my_id = session.get_address();
-      stdout.printf("My ID: %s\n", ToxSession.bin_to_hexstring(my_id));
+      stdout.printf("My ID: %s\n", Tools.bin_to_hexstring(my_id));
       session.start();
     }
 
@@ -71,7 +71,7 @@ namespace Venom {
 
     // Session Signal callbacks
     private void on_friendrequest(uint8[] public_key, string message) {
-      string public_key_string = ToxSession.bin_to_hexstring(public_key);
+      string public_key_string = Tools.bin_to_hexstring(public_key);
       stdout.printf("[fr] %s:%s\n", public_key_string, message);
 
       Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (contact_list_window,
@@ -123,7 +123,7 @@ namespace Venom {
       if(dialog.gtk_add_friend_dialog.run() != Gtk.ResponseType.OK)
         return;
 
-      uint8[] friend_id = ToxSession.hexstring_to_bin(dialog.friend_id);
+      uint8[] friend_id = Tools.hexstring_to_bin(dialog.friend_id);
 
       // print some info
       stdout.printf("Friend ID:");
@@ -194,7 +194,7 @@ namespace Venom {
 
     public static ContactList create() throws Error {
       Builder builder = new Builder();
-      builder.add_from_file(Path.build_filename(find_data_dir(), "ui", "contact_list.glade"));
+      builder.add_from_file(Path.build_filename(Tools.find_data_dir(), "ui", "contact_list.glade"));
       Window window = builder.get_object("window") as Window;
       ComboBoxText status_combo_box = builder.get_object("combobox_status") as ComboBoxText;
       status_combo_box.set_active(0);

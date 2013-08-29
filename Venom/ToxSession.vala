@@ -44,7 +44,7 @@ namespace Venom {
       // Add one default dht server
       Ip ip = {0x58DFAF42}; //66.175.223.88
       IpPort ip_port = { ip, ((uint16)33445).to_big_endian() };
-      uint8[] pub_key = hexstring_to_bin("AC4112C975240CAD260BB2FCD134266521FAAF0A5D159C5FD3201196191E4F5D");
+      uint8[] pub_key = Tools.hexstring_to_bin("AC4112C975240CAD260BB2FCD134266521FAAF0A5D159C5FD3201196191E4F5D");
       dht_servers.add(new DhtServer.withArgs(ip_port, pub_key));
 
       // setup callbacks
@@ -63,44 +63,6 @@ namespace Venom {
       running = false;
     }
 
-    // convert a hexstring to uint8[]
-    public static uint8[] hexstring_to_bin(string s) {
-      uint8[] buf = new uint8[s.length / 2];
-      for(int i = 0; i < buf.length; ++i) {
-        int b = 0;
-        s.substring(2*i, 2).scanf("%02x", ref b);
-        buf[i] = (uint8)b;
-      }
-      return buf;
-    }
-
-    // convert a uint8[] to string
-    public static string bin_to_hexstring(uint8[] bin) {
-      if(bin == null || bin.length == 0)
-        return "";
-      StringBuilder b = new StringBuilder();
-      for(int i = 0; i < bin.length; ++i) {
-        b.append("%02X".printf(bin[i]));
-      }
-      return b.str;
-    }
-
-    // convert a string to a nullterminated uint8[]
-    public static uint8[] string_to_nullterm_uint (string input){
-      if(input == null || input.length <= 0)
-        return {'\0'};
-      uint8[] clone = new uint8[input.data.length + 1];
-      Memory.copy(clone, input.data, input.data.length * sizeof(uint8));
-      clone[clone.length - 1] = '\0';
-      return clone;
-    }
-
-    public static uint8[] clone(uint8[] input, int length) {
-      uint8[] clone = new uint8[length];
-      Memory.copy(clone, input, length * sizeof(uint8));
-      return clone;
-    }
-
     ////////////////////////////// Callbacks /////////////////////////////////////////
     [CCode (instance_pos = -1)]
     private void on_friendrequest_callback(uint8[] public_key, uint8[] data) {
@@ -109,7 +71,7 @@ namespace Venom {
         return;
       }
       string message = ((string)data).dup(); //FIXME string may be copied two times here, check
-      uint8[] public_key_clone = clone(public_key, Tox.FRIEND_ADDRESS_SIZE);
+      uint8[] public_key_clone = Tools.clone(public_key, Tox.FRIEND_ADDRESS_SIZE);
       Idle.add(() => { on_friendrequest(public_key_clone, message); return false; });
     }
 
@@ -161,7 +123,7 @@ namespace Venom {
       if(id.length != Tox.FRIEND_ADDRESS_SIZE)
         return ret;
 
-      uint8[] data = string_to_nullterm_uint(message);
+      uint8[] data = Tools.string_to_nullterm_uint(message);
       
       lock(handle) {
         ret = handle.addfriend(id, data);
