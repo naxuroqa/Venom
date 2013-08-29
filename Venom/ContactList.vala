@@ -78,6 +78,13 @@ namespace Venom {
 
       session.on_ownconnectionstatus.connect(this.on_ownconnectionstatus);
 
+      int client_id = 0;
+      uint8[] client_key;
+      while( (client_key = session.getclient_id(client_id++)) != null ) {
+        stdout.printf("Adding friend from data file: %s\n", Tools.bin_to_hexstring(client_key));
+        contacts[client_id] = new Contact(client_key);
+      }
+
       // initialize session specific gui stuff
       my_id = session.get_address();
       label_id.set_text(Tools.bin_to_hexstring(my_id));
@@ -104,7 +111,7 @@ namespace Venom {
       session.join();
 
       // Save session before shutdown
-      // session.save_to_file("data");
+      session.save_to_file(data_pathname, data_filename);
       stdout.printf("Session ended gracefully.\n");
     }
 
@@ -140,36 +147,60 @@ namespace Venom {
           // add to treeview (this should be done somewhere else)
           TreeIter iter;
           list_store_contacts.append (out iter);
-          list_store_contacts.set (iter, 0, "%i".printf((int)far), 3, public_key_string );
+          list_store_contacts.set (iter, 0, "%i".printf((int)far)/*, 3, public_key_string*/ ); // disabled for now
         }
       }
       messagedialog.destroy();
     }
     private void on_friendmessage(int friend_number, string message) {
-      stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), contacts[friend_number].name, message);
+      if(contacts[friend_number] != null) {
+        stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), contacts[friend_number].name, message);
+      } else {
+        stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
+      }
     }
     private void on_action(int friend_number, string action) {
       stdout.printf("[ac] %i:%s\n", friend_number, action);
     }
     private void on_namechange(int friend_number, string new_name) {
-      stdout.printf("%s changed his name to %s\n", contacts[friend_number].name, new_name);
-      contacts[friend_number].name = new_name;
+      if(contacts[friend_number] != null) {
+        stdout.printf("%s changed his name to %s\n", contacts[friend_number].name, new_name);
+        contacts[friend_number].name = new_name;
+      } else {
+        stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
+      }
     }
     private void on_statusmessage(int friend_number, string status_message) {
-      stdout.printf("%s changed his status to %s\n", contacts[friend_number].name, status_message);
-      contacts[friend_number].status_message = status_message;
+      if(contacts[friend_number] != null) {
+        stdout.printf("%s changed his status to %s\n", contacts[friend_number].name, status_message);
+        contacts[friend_number].status_message = status_message;
+      } else {
+        stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
+      }
     }
     private void on_userstatus(int friend_number, int user_status) {
-      stdout.printf("[us] %s:%i\n", contacts[friend_number].name, user_status);
-      contacts[friend_number].user_status = (Tox.UserStatus)user_status;
+      if(contacts[friend_number] != null) {
+        stdout.printf("[us] %s:%i\n", contacts[friend_number].name, user_status);
+        contacts[friend_number].user_status = (Tox.UserStatus)user_status;
+      } else {
+        stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
+      }
     }
     private void on_read_receipt(int friend_number, uint32 receipt) {
-      stdout.printf("[rr] %s:%u\n", contacts[friend_number].name, receipt);
+      if(contacts[friend_number] != null) {
+        stdout.printf("[rr] %s:%u\n", contacts[friend_number].name, receipt);
+      } else {
+        stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
+      }
     }
     private void on_connectionstatus(int friend_number, bool status) {
-      stdout.printf("%s is now %s.\n", contacts[friend_number].name, status ? "online" : "offline");
-      if(!status)
-        contacts[friend_number].last_seen = new DateTime.now_local();
+      if(contacts[friend_number] != null) {
+        stdout.printf("%s is now %s.\n", contacts[friend_number].name, status ? "online" : "offline");
+        if(!status)
+          contacts[friend_number].last_seen = new DateTime.now_local();
+      } else {
+        stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
+      }
     }
 
     private void on_ownconnectionstatus(bool status) {
@@ -226,12 +257,6 @@ namespace Venom {
 
       uint8[] friend_id = Tools.hexstring_to_bin(dialog.friend_id);
 
-      // print some info
-      stdout.printf("Friend ID:");
-      for(int i = 0; i < friend_id.length; ++i)
-        stdout.printf("%02X", friend_id[i]);
-      stdout.printf("\n");
-
       // add friend
       Tox.FriendAddError ret = session.addfriend(friend_id, dialog.friend_msg);
       switch(ret) {
@@ -253,6 +278,11 @@ namespace Venom {
         break;
         default:
           stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
+
+          // add to treeview (this should be done somewhere else)
+          TreeIter iter;
+          list_store_contacts.append (out iter);
+          list_store_contacts.set (iter, 0, "%i".printf((int)ret)/*, 3, dialog.friend_id*/ ); // disabling this for now, it looks so shitty
         break;
       }
     }

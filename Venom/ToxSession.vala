@@ -46,9 +46,9 @@ namespace Venom {
       handle = new Tox.Tox();
 
       // Add one default dht server
-      Ip ip = {0x58DFAF42}; //66.175.223.88
+      Ip ip = {(uint32)0x7651B8C0}; //192.184.81.118
       IpPort ip_port = { ip, ((uint16)33445).to_big_endian() };
-      uint8[] pub_key = Tools.hexstring_to_bin("AC4112C975240CAD260BB2FCD134266521FAAF0A5D159C5FD3201196191E4F5D");
+      uint8[] pub_key = Tools.hexstring_to_bin("5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143");
       dht_servers.add(new DhtServer.withArgs(ip_port, pub_key));
 
       // setup callbacks
@@ -202,6 +202,15 @@ namespace Venom {
       return (string)buf;
     }
 
+    public uint8[] getclient_id( int friend_id ) {
+      uint8[] buf = new uint8[Tox.FRIEND_ADDRESS_SIZE];
+      int ret = -1;
+      lock(handle) {
+        ret = handle.getclient_id(friend_id, buf);
+      }
+      return (ret != 0) ? null : buf;
+    }
+
     ////////////////////////////// Thread related operations /////////////////////////
 
     // Background thread main function
@@ -287,7 +296,7 @@ namespace Venom {
         stdout.printf("creating Directory %s\n", pathname);
       }
       File f = File.new_for_path(Path.build_filename(pathname, filename));
-      DataOutputStream os = new DataOutputStream (f.create (FileCreateFlags.REPLACE_DESTINATION));
+      DataOutputStream os = new DataOutputStream(f.replace(null, false, FileCreateFlags.NONE));
 
       uint32 size = handle.size();
       uint8[] buf = new uint8 [size];
