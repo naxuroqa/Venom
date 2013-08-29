@@ -30,7 +30,7 @@ namespace Venom {
     
     public signal void on_friendrequest(uint8[] public_key, string message);
     public signal void on_friendmessage(int friend_number, string message);
-    public signal void on_action(int friend_number, uint8[] action);
+    public signal void on_action(int friend_number, string action);
     public signal void on_namechange(int friend_number, string new_name);
     public signal void on_statusmessage(int friend_number, string status);
     public signal void on_userstatus(int friend_number, int user_status);
@@ -105,7 +105,7 @@ namespace Venom {
     [CCode (instance_pos = -1)]
     private void on_friendrequest_callback(uint8[] public_key, uint8[] data) {
       if(public_key == null) {
-        stdout.printf("Public key was null!\n");
+        stderr.printf("Public key was null in friendrequest!\n");
         return;
       }
       string message = ((string)data).dup(); //FIXME string may be copied two times here, check
@@ -115,37 +115,41 @@ namespace Venom {
 
     [CCode (instance_pos = -1)]
     private void on_friendmessage_callback(Tox.Tox tox, int friend_number, uint8[] message) {
-      stdout.printf("[fm] %i:%s\n", friend_number, (string)message);
+      string message_string = ((string)message).dup();
+      Idle.add(() => { on_friendmessage(friend_number, message_string); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_action_callback(Tox.Tox tox, int friend_number, uint8[] action) {
-      stdout.printf("[ac] %i:%s\n", friend_number, (string)action);
+      string action_string = ((string)action).dup();
+      Idle.add(() => { on_action(friend_number, action_string); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_namechange_callback(Tox.Tox tox, int friend_number, uint8[] new_name) {
-      stdout.printf("[nc] %i:%s\n", friend_number, (string)new_name);
+      string name_string = ((string)new_name).dup();
+      Idle.add(() => { on_namechange(friend_number, name_string); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_statusmessage_callback(Tox.Tox tox, int friend_number, uint8[] status) {
-      stdout.printf("[sm] %i:%s\n", friend_number, (string)status);
+      string status_string = ((string)status).dup();
+      Idle.add(() => { on_statusmessage(friend_number, status_string); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_userstatus_callback(Tox.Tox tox, int friend_number, UserStatus user_status) {
-      stdout.printf("[us] %i:%i\n", friend_number, (int)user_status);
+      Idle.add(() => { on_userstatus(friend_number, user_status); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_read_receipt_callback(Tox.Tox tox, int friend_number, uint32 receipt) {
-      stdout.printf("[rr] %i:%u\n", friend_number, receipt);
+      Idle.add(() => { on_read_receipt(friend_number, receipt); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_connectionstatus_callback(Tox.Tox tox, int friend_number, uint8 status) {
-      stdout.printf("[cs] %i:%u\n", friend_number, status);
+      Idle.add(() => { on_connectionstatus(friend_number, (status != 0)); return false; });
     }
 
     ////////////////////////////// Wrapper functions ////////////////////////////////
@@ -219,8 +223,6 @@ namespace Venom {
             }
           }
         }
-        // Keep in mind, that the handle is locked in callbacks.
-        // Double locking has undefined behaviour!
         lock(handle) {
           handle.do();
         }
