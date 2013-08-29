@@ -23,10 +23,11 @@ namespace Venom {
   public class ToxSession : Object {
     private Tox.Tox handle;
     private ArrayList<DhtServer> dht_servers = new ArrayList<DhtServer>();
-    private bool running = false;
     private Thread<int> session_thread = null;
     private bool bootstrapped = false;
-    private bool connected = false;
+    public bool running {get; private set; default=false; }
+    public bool connected { get; private set; default=false; }
+    public DhtServer connected_dht_server { get; private set; default=null; }
     
     public signal void on_friendrequest(uint8[] public_key, string message);
     public signal void on_friendmessage(int friend_number, string message);
@@ -154,6 +155,24 @@ namespace Venom {
       }
       return ret == 0;
     }
+
+    // Set user statusmessage, returns true on success
+    public bool set_statusmessage(string message) {
+      int ret = -1;
+      uint8[] buf = Tools.string_to_nullterm_uint(message);
+      lock(handle) {
+        ret = handle.set_statusmessage(buf);
+      }
+      return ret == 0;
+    }
+
+    /* FIXME this wont work for now, there is no such thing in the api
+    public string get_self_statusmessage() {
+      uint8[] buf;
+      lock(handle) {
+        buf = new uint8[handle.get_statusmessage_size()];
+      }
+    }*/
     
     // get personal id
     public uint8[] get_address() {
@@ -165,19 +184,25 @@ namespace Venom {
     }
 
     // set username
-    public int setname(string name) {
+    public bool setname(string name) {
       uint8[] buf = Tools.string_to_nullterm_uint(name);
       int ret = -1;
       lock(handle) {
         ret = handle.setname(buf);
       }
-      return ret;      
+      return ret == 0;      
+    }
+
+    public string getselfname() {
+      uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH];
+      int ret = -1;
+      lock(handle) {
+        ret = handle.getselfname(buf);
+      }
+      return (string)buf;
     }
 
     ////////////////////////////// Thread related operations /////////////////////////
-    public bool is_running() {
-      return running;
-    }
 
     // Background thread main function
     private int run() {
@@ -195,6 +220,7 @@ namespace Venom {
           lock(handle) {
             if(connected = (handle.isconnected() != 0)) {
               Idle.add(() => { on_ownconnectionstatus(true); return false; });
+              connected_dht_server = dht_servers[0];
             }
           }
         } else {

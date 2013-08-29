@@ -24,15 +24,23 @@ namespace Venom {
 
     private Window contact_list_window;
     private Image image_status;
+    private Image image_userimage;
+    private Label label_id;
+    private Entry entry_username;
+    private Entry entry_status;
 
     private string data_filename = "data";
     private string data_pathname = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox");
     private uint8[] my_id;
 
-    public ContactList( Window contact_list_window, Image image_status ) {
+    public ContactList( Window contact_list_window, Image image_status, Image image_userimage, Label label_id, Entry entry_username, Entry entry_status) {
       this.contacts = new HashMap<int, Contact>();
       this.contact_list_window = contact_list_window;
       this.image_status = image_status;
+      this.image_userimage = image_userimage;
+      this.label_id = label_id;
+      this.entry_username = entry_username;
+      this.entry_status = entry_status;
 
       this.contact_list_window.destroy.connect (Gtk.main_quit);
       
@@ -58,7 +66,23 @@ namespace Venom {
 
       session.on_ownconnectionstatus.connect(this.on_ownconnectionstatus);
 
-      my_id = session.get_address(); //TODO set label to this information
+      // initialize session specific gui stuff
+      my_id = session.get_address();
+      label_id.set_text(Tools.bin_to_hexstring(my_id));
+      string selfname = session.getselfname();
+      if(selfname != null && selfname.length > 0) {
+        entry_username.set_text(selfname);
+      } else {
+        session.setname(entry_username.get_text());
+      }
+
+      string selfstatus = ""; //FIXME
+      if(selfstatus != null && selfstatus.length > 0) {
+        entry_status.set_text(selfstatus);
+      } else {
+        session.set_statusmessage(entry_status.get_text());
+      }
+
       session.start();
     }
 
@@ -123,8 +147,10 @@ namespace Venom {
     private void on_ownconnectionstatus(bool status) {
       if(status) {
         image_status.set_from_stock(Stock.YES, IconSize.BUTTON);
+        image_status.set_tooltip_text("Connected to: %s".printf(session.connected_dht_server.toString()));
       } else {
         image_status.set_from_stock(Stock.NO, IconSize.BUTTON);
+        image_status.set_tooltip_text("");
       }
     }
 
@@ -137,19 +163,22 @@ namespace Venom {
     [CCode (instance_pos = -1)]
     public void entry_username_activated(Gtk.Entry source) {
       string username = source.get_text();
-      if( session.setname(username) == 0)
+      if( session.setname(username) )
         stdout.printf("Name changed to %s\n", username);
       // TODO remove focus
       // TODO set entry max to maxnamelength
     }
 
     [CCode (instance_pos = -1)]
-    public void entry_status_activated(Object source) {
-      //TODO
+    public void entry_status_activated(Gtk.Entry source) {
+      string message = source.get_text();
+      if( session.set_statusmessage(message) )
+        stdout.printf("Status changed to %s\n", message);
     }
 
     [CCode (instance_pos = -1)]
     public void button_copy_id_clicked(Object source) {
+      //FIXME some glitches
       Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).set_text("Tox me: %s".printf(Tools.bin_to_hexstring(my_id)), -1);
     }
 
@@ -217,8 +246,12 @@ namespace Venom {
       builder.add_from_file(Path.build_filename(Tools.find_data_dir(), "ui", "contact_list.glade"));
       Window window = builder.get_object("window") as Window;
       Image image_status = builder.get_object("image_status") as Image;
+      Image image_userimage = builder.get_object("image_userimage") as Image;
+      Label label_id = builder.get_object("label_id") as Label;
+      Entry entry_username = builder.get_object("entry_username") as Entry;
+      Entry entry_status = builder.get_object("entry_status") as Entry;
 
-      ContactList contact_list = new ContactList(window, image_status);
+      ContactList contact_list = new ContactList(window, image_status, image_userimage, label_id, entry_username, entry_status);
       builder.connect_signals(contact_list);
       return contact_list;
     }

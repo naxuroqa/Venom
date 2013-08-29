@@ -204,10 +204,9 @@ namespace Tox {
        m        The messanger context to use.
        name    Pointer to a string for the name.
        nlen     The length of the string buffer.
-       returns Return the length of the name, 0 on error.
-    */
+       returns Return the length of the name, 0 on error. */
     [CCode (cname="tox_getselfname")]
-    public uint16 getselfname(uint8 name);
+    public uint16 getselfname(uint8[] name);
 
     /* get name of friendnumber
         put it in name
@@ -215,7 +214,7 @@ namespace Tox {
         return 0 if success
         return -1 if failure */
     [CCode (cname="tox_getname")]
-    public int getname(int friendNumber, [CCode(array_length=false)] uint8 name);
+    public int getname(int friendNumber, [CCode(array_length=false)] uint8[] name);
 
     /* set our user status
         you are responsible for freeing status after
