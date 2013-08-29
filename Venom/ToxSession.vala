@@ -37,6 +37,9 @@ namespace Venom {
     public signal void on_read_receipt(int friend_number, uint32 receipt);
     public signal void on_connectionstatus(int friend_number, bool status);
 
+    // private signals
+    public signal void on_ownconnectionstatus(bool status);
+
     public ToxSession() {
       // create handle
       handle = new Tox.Tox();
@@ -161,6 +164,16 @@ namespace Venom {
       return buf;
     }
 
+    // set username
+    public int setname(string name) {
+      uint8[] buf = Tools.string_to_nullterm_uint(name);
+      int ret = -1;
+      lock(handle) {
+        ret = handle.setname(buf);
+      }
+      return ret;      
+    }
+
     ////////////////////////////// Thread related operations /////////////////////////
     public bool is_running() {
       return running;
@@ -181,7 +194,13 @@ namespace Venom {
         if(!connected) {
           lock(handle) {
             if(connected = (handle.isconnected() != 0)) {
-              stdout.printf("Connection to DHT server established.\n");
+              Idle.add(() => { on_ownconnectionstatus(true); return false; });
+            }
+          }
+        } else {
+          lock(handle) {
+            if(!(connected = (handle.isconnected() != 0))) {
+              Idle.add(() => { on_ownconnectionstatus(false); return false; });
             }
           }
         }

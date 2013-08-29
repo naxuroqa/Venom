@@ -15,12 +15,14 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Tox;
+
 namespace Venom {
   public class Contact {
 
-    public Contact(uint8[] public_key, string name) {
+    public Contact(uint8[] public_key) {
       this.public_key = public_key;
-      this.name = name;
+      this.name = "";
       this.local_name = name;
       this.status_message = "";
       this.last_seen = new DateTime.now_local();
@@ -31,5 +33,7 @@ namespace Venom {
     public string local_name { get; set; }
     public string status_message { get; set; }
     public DateTime last_seen { get; set; }
+    public uint32 friend_number { get; set; }
+    public Tox.UserStatus user_status { get; set; }
   }
 }

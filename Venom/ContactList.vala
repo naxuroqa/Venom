@@ -19,18 +19,20 @@ using Gtk;
 using Gee;
 namespace Venom {
   public class ContactList : Object {
-    private ArrayList<Contact> contacts;
+    private HashMap<int, Contact> contacts;
     private ToxSession session;
 
     private Window contact_list_window;
-    private ComboBoxText status_combo_box;
+    private Image image_status;
+
     private string data_filename = "data";
     private string data_pathname = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox");
+    private uint8[] my_id;
 
-    public ContactList( Window contact_list_window, ComboBoxText status_combo_box ) {
-      this.contacts = new ArrayList<Contact>();
+    public ContactList( Window contact_list_window, Image image_status ) {
+      this.contacts = new HashMap<int, Contact>();
       this.contact_list_window = contact_list_window;
-      this.status_combo_box = status_combo_box;
+      this.image_status = image_status;
 
       this.contact_list_window.destroy.connect (Gtk.main_quit);
       
@@ -54,8 +56,9 @@ namespace Venom {
       session.on_read_receipt.connect(this.on_read_receipt);
       session.on_connectionstatus.connect(this.on_connectionstatus);
 
-      uint8[] my_id = session.get_address();
-      stdout.printf("My ID: %s\n", Tools.bin_to_hexstring(my_id));
+      session.on_ownconnectionstatus.connect(this.on_ownconnectionstatus);
+
+      my_id = session.get_address(); //TODO set label to this information
       session.start();
     }
 
@@ -83,36 +86,75 @@ namespace Venom {
 		  int response = messagedialog.run();
       if(response == ResponseType.YES) {
         Tox.FriendAddError far = session.addfriend_norequest(public_key);
-        if((int)far >= 0)
+        if((int)far >= 0) {
           stdout.printf("Added new Friend #%i\n", (int)far);
+          contacts[(int)far] = new Contact(public_key);
+        }
       }
       messagedialog.destroy();
     }
     private void on_friendmessage(int friend_number, string message) {
-      stdout.printf("[fm] %i:%s\n", friend_number, message);
+      stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), contacts[friend_number].name, message);
     }
     private void on_action(int friend_number, string action) {
       stdout.printf("[ac] %i:%s\n", friend_number, action);
     }
     private void on_namechange(int friend_number, string new_name) {
-      stdout.printf("[nc] %i:%s\n", friend_number, new_name);
+      stdout.printf("%s changed his name to %s\n", contacts[friend_number].name, new_name);
+      contacts[friend_number].name = new_name;
     }
-    private void on_statusmessage(int friend_number, string status) {
-      stdout.printf("[sm] %i:%s\n", friend_number, status);
+    private void on_statusmessage(int friend_number, string status_message) {
+      stdout.printf("%s changed his status to %s\n", contacts[friend_number].name, status_message);
+      contacts[friend_number].status_message = status_message;
     }
     private void on_userstatus(int friend_number, int user_status) {
-      stdout.printf("[us] %i:%i\n", friend_number, user_status);
+      stdout.printf("[us] %s:%i\n", contacts[friend_number].name, user_status);
+      contacts[friend_number].user_status = (Tox.UserStatus)user_status;
     }
     private void on_read_receipt(int friend_number, uint32 receipt) {
-      stdout.printf("[rr] %i:%u\n", friend_number, receipt);
+      stdout.printf("[rr] %s:%u\n", contacts[friend_number].name, receipt);
     }
     private void on_connectionstatus(int friend_number, bool status) {
-      stdout.printf("[cs] %i:%i\n", friend_number, (int)status);
+      stdout.printf("%s is now %s.\n", contacts[friend_number].name, status ? "online" : "offline");
+      if(!status)
+        contacts[friend_number].last_seen = new DateTime.now_local();
+    }
+
+    private void on_ownconnectionstatus(bool status) {
+      if(status) {
+        image_status.set_from_stock(Stock.YES, IconSize.BUTTON);
+      } else {
+        image_status.set_from_stock(Stock.NO, IconSize.BUTTON);
+      }
     }
 
     // GUI Events
     [CCode (instance_pos = -1)]
-    public void clicked(Object source) {
+    public void button_userimage_clicked(Object source) {
+      //TODO
+    }
+
+    [CCode (instance_pos = -1)]
+    public void entry_username_activated(Gtk.Entry source) {
+      string username = source.get_text();
+      if( session.setname(username) == 0)
+        stdout.printf("Name changed to %s\n", username);
+      // TODO remove focus
+      // TODO set entry max to maxnamelength
+    }
+
+    [CCode (instance_pos = -1)]
+    public void entry_status_activated(Object source) {
+      //TODO
+    }
+
+    [CCode (instance_pos = -1)]
+    public void button_copy_id_clicked(Object source) {
+      Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).set_text("Tox me: %s".printf(Tools.bin_to_hexstring(my_id)), -1);
+    }
+
+    [CCode (instance_pos = -1)]
+    public void button_add_contact_clicked(Object source) {
       AddFriendDialog dialog = null;
       try {
         dialog = AddFriendDialog.create();
@@ -157,35 +199,8 @@ namespace Venom {
     }
 
     [CCode (instance_pos = -1)]
-    public void combobox_status_changed(ComboBoxText source) {
-      stdout.printf("New status: %s (%i)\n", source.get_active_text(), source.get_active());
-      bool result = false;
-      switch(source.get_active()) {
-        case 0: // online
-          if(!session.is_running())
-            session.start();
-          result = session.set_status(Tox.UserStatus.NONE);
-        break;
-        case 1: // away
-          if(!session.is_running())
-            session.start();
-          result = session.set_status(Tox.UserStatus.AWAY);
-        break;
-        case 2: // busy
-          if(!session.is_running())
-            session.start();
-          result = session.set_status(Tox.UserStatus.BUSY);
-        break;
-        case 3: //offline
-          session.stop();
-          result = true;
-        break;
-        default:
-        break;
-      }
-      if(!result) {
-        stderr.printf("Could not change status!\n");
-      }
+    public void button_remove_contact_clicked(Object source) {
+      //TODO
     }
 
     public void show() {
@@ -196,10 +211,9 @@ namespace Venom {
       Builder builder = new Builder();
       builder.add_from_file(Path.build_filename(Tools.find_data_dir(), "ui", "contact_list.glade"));
       Window window = builder.get_object("window") as Window;
-      ComboBoxText status_combo_box = builder.get_object("combobox_status") as ComboBoxText;
-      status_combo_box.set_active(0);
+      Image image_status = builder.get_object("image_status") as Image;
 
-      ContactList contact_list = new ContactList(window, status_combo_box);
+      ContactList contact_list = new ContactList(window, image_status);
       builder.connect_signals(contact_list);
       return contact_list;
     }
