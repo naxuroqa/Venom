@@ -24,6 +24,8 @@ namespace Venom {
 
     private Window contact_list_window;
     private ComboBoxText status_combo_box;
+    private string data_filename = "data";
+    private string data_pathname = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox");
 
     public ContactList( Window contact_list_window, ComboBoxText status_combo_box ) {
       this.contacts = new ArrayList<Contact>();
@@ -34,16 +36,15 @@ namespace Venom {
       
       session = new ToxSession();
       try {
-        session.load_from_file("data");
+        session.load_from_file(data_pathname, data_filename);
         stdout.printf("Successfully loaded messenger data.\n");
       } catch (Error e) {
         try {
-          session.save_to_file("data");
+          session.save_to_file(data_pathname, data_filename);
         } catch (Error e) {
           stderr.printf("Could not load messenger data and failed to create new one\n");
         }
       }
-
       session.on_friendrequest.connect(this.on_friendrequest);
 
       uint8[] my_id = session.get_address();
@@ -163,7 +164,7 @@ namespace Venom {
 
     public static ContactList create() throws Error {
       Builder builder = new Builder();
-      builder.add_from_file("ui/contact_list.glade");
+      builder.add_from_file(Path.build_filename(find_data_dir(), "ui", "contact_list.glade"));
       Window window = builder.get_object("window") as Window;
       ComboBoxText status_combo_box = builder.get_object("combobox_status") as ComboBoxText;
       status_combo_box.set_active(0);

@@ -93,7 +93,7 @@ namespace Venom {
 
     public static AddFriendDialog create() throws Error {
       Builder builder = new Builder();
-      builder.add_from_file("ui/add_friend_dialog.glade");
+      builder.add_from_file(Path.build_filename(find_data_dir(), "ui", "add_friend_dialog.glade"));
       Gtk.Dialog dialog = builder.get_object("dialog") as Dialog;
       Gtk.Entry id_entry = builder.get_object("text_entry_friend_id") as Entry;
       Gtk.Entry msg_entry = builder.get_object("text_entry_friend_message") as Entry;

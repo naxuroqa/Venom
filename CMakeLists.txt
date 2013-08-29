@@ -57,6 +57,7 @@ vala_precompile( VALA_C
   Venom/DhtServer.vala
   Venom/Main.vala
   Venom/ToxSession.vala
+  Venom/Tools.vala
 PACKAGES
   gee-1.0
   gtk+-3.0
@@ -79,5 +80,12 @@ ADD_EXECUTABLE( venom
 ADD_EXECUTABLE( vapi_test
   ${VALA_C_TEST}
 )
+
+INSTALL( TARGETS venom 
+  RUNTIME DESTINATION bin
+)
+
+INSTALL(FILES ui/contact_list.glade DESTINATION share/venom/ui)
+INSTALL(FILES ui/add_friend_dialog.glade DESTINATION share/venom/ui)
 
 # vim:set ts=2 sw=2 et:

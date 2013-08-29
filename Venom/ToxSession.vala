@@ -15,7 +15,6 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using GLib;
 using Gee;
 using Tox;
 
@@ -255,12 +254,11 @@ namespace Venom {
 
     ////////////////////////////// Load/Save of messenger data /////////////////////////
     // Load messenger data from file (not locked, don't use while bgthread is running)
-    public void load_from_file(string filename) throws IOError, Error {
-      File f = File.new_for_path(filename);
+    public void load_from_file(string pathname, string filename) throws IOError, Error {
+      File f = File.new_for_path(Path.build_filename(pathname, filename));
       if(!f.query_exists())
         throw new IOError.NOT_FOUND("File \"" + filename + "\" does not exist.");
       FileInfo file_info = f.query_info("*", FileQueryInfoFlags.NONE);
-
       int64 size = file_info.get_size();
       var data_stream = new DataInputStream(f.read());
       uint8[] buf = new uint8 [size];
@@ -273,8 +271,13 @@ namespace Venom {
     }
 
     // Save messenger data from file (not locked, don't use while bgthread is running)
-    public void save_to_file(string filename) throws IOError, Error {
-      File f = File.new_for_path(filename);
+    public void save_to_file(string pathname, string filename) throws IOError, Error {
+      File path = File.new_for_path(pathname);
+      if(!path.query_exists()) {
+        DirUtils.create_with_parents(pathname, 0755);
+        stdout.printf("creating Directory %s\n", pathname);
+      }
+      File f = File.new_for_path(Path.build_filename(pathname, filename));
       DataOutputStream os = new DataOutputStream (f.create (FileCreateFlags.REPLACE_DESTINATION));
 
       uint32 size = handle.size();
