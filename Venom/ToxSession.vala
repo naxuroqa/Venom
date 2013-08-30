@@ -75,7 +75,7 @@ namespace Venom {
         return;
       }
       string message = ((string)data).dup(); //FIXME string may be copied two times here, check
-      uint8[] public_key_clone = Tools.clone(public_key, Tox.FRIEND_ADDRESS_SIZE);
+      uint8[] public_key_clone = Tools.clone(public_key, Tox.CLIENT_ID_SIZE);
       Idle.add(() => { on_friendrequest(public_key_clone, message); return false; });
     }
 
@@ -203,7 +203,7 @@ namespace Venom {
     }
 
     public uint8[] getclient_id( int friend_id ) {
-      uint8[] buf = new uint8[Tox.FRIEND_ADDRESS_SIZE];
+      uint8[] buf = new uint8[Tox.CLIENT_ID_SIZE];
       int ret = -1;
       lock(handle) {
         ret = handle.getclient_id(friend_id, buf);
