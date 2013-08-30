@@ -216,8 +216,24 @@ namespace Venom {
     // GUI Events
     [CCode (instance_pos = -1)]
     public void button_userimage_clicked(Object source) {
-      
-      //TODO
+      int ret = file_chooser_dialog.run();
+      file_chooser_dialog.hide();
+
+      if(ret != Gtk.ResponseType.OK) {
+        return;
+      }
+
+      File f = file_chooser_dialog.get_file();
+      if( !f.query_exists() )
+        return;
+      Gdk.Pixbuf pixbuf = null;
+      try {
+        pixbuf = new Gdk.Pixbuf.from_file_at_size (f.get_path(), 85, 85);
+        image_userimage.set_from_pixbuf(pixbuf);
+      } catch (Error e) {
+        //Ignore for now
+        // TODO maybe error management
+      }
     }
 
     [CCode (instance_pos = -1)]

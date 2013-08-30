@@ -4,6 +4,8 @@
   <object class="GtkFileChooserDialog" id="filechooserdialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
+    <property name="type">popup</property>
+    <property name="title" translatable="yes">Choose an image</property>
     <property name="role">filechooserdialog_image</property>
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
@@ -23,7 +25,6 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="gtk_widget_hide" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -36,6 +37,7 @@
                 <property name="label">gtk-open</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="can_default">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
               </object>
@@ -59,8 +61,8 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="0">button2</action-widget>
-      <action-widget response="0">button1</action-widget>
+      <action-widget response="-1">button2</action-widget>
+      <action-widget response="-5">button1</action-widget>
     </action-widgets>
   </object>
   <object class="GtkWindow" id="window">
@@ -81,15 +83,16 @@
             <property name="spacing">6</property>
             <child>
               <object class="GtkButton" id="button_userimage">
-                <property name="width_request">85</property>
-                <property name="height_request">85</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Change user image</property>
                 <property name="relief">half</property>
                 <signal name="clicked" handler="venom_contact_list_button_userimage_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="image_userimage">
+                    <property name="width_request">80</property>
+                    <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="stock">gtk-missing-image</property>
@@ -176,6 +179,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
+                            <property name="tooltip_text" translatable="yes">Copy public key</property>
                             <property name="relief">half</property>
                             <signal name="clicked" handler="venom_contact_list_button_copy_id_clicked" swapped="no"/>
                             <child>
@@ -298,6 +302,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Add contact</property>
                     <signal name="clicked" handler="venom_contact_list_button_add_contact_clicked" swapped="no"/>
                     <child>
                       <object class="GtkImage" id="image3">
@@ -319,6 +324,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Remove contact</property>
                     <signal name="clicked" handler="venom_contact_list_button_remove_contact_clicked" swapped="no"/>
                     <child>
                       <object class="GtkImage" id="image1">
