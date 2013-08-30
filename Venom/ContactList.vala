@@ -37,6 +37,16 @@ namespace Venom {
     private string data_pathname = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox");
     private uint8[] my_id;
 
+    public void add_contact(int friend_id, uint8[] public_key) {
+      Contact c = new Contact(public_key);
+      contacts[friend_id] = c;
+
+      // add to treeview (this should be done somewhere else)
+      TreeIter iter;
+      list_store_contacts.append (out iter);
+      list_store_contacts.set (iter, 0, "%i".printf(friend_id)/*, 3, public_key_string*/ ); // disabled for now
+    }
+
     public ContactList( Window contact_list_window, Image image_status, Image image_userimage, Label label_id, 
         Entry entry_username, Entry entry_status, TreeView treeview_contacts, TreeView treeview_conversations,
         FileChooserDialog file_chooser_dialog ) {
@@ -78,11 +88,14 @@ namespace Venom {
 
       session.on_ownconnectionstatus.connect(this.on_ownconnectionstatus);
 
+      // restore friends from datafile
       int client_id = 0;
       uint8[] client_key;
-      while( (client_key = session.getclient_id(client_id++)) != null ) {
-        stdout.printf("Adding friend from data file: %s\n", Tools.bin_to_hexstring(client_key));
-        contacts[client_id] = new Contact(client_key);
+      while( (client_key = session.getclient_id(client_id)) != null ) {
+        string name = session.getname(client_id);
+        stdout.printf("Adding friend (%s) from data file: %s\n", (name != null ? name : ""), Tools.bin_to_hexstring(client_key));
+        add_contact(client_id, client_key);
+        client_id++;
       }
 
       // initialize session specific gui stuff
@@ -142,12 +155,7 @@ namespace Venom {
         Tox.FriendAddError far = session.addfriend_norequest(public_key);
         if((int)far >= 0) {
           stdout.printf("Added new Friend #%i\n", (int)far);
-          contacts[(int)far] = new Contact(public_key);
-
-          // add to treeview (this should be done somewhere else)
-          TreeIter iter;
-          list_store_contacts.append (out iter);
-          list_store_contacts.set (iter, 0, "%i".printf((int)far)/*, 3, public_key_string*/ ); // disabled for now
+          add_contact((int)far, public_key);
         }
       }
       messagedialog.destroy();
@@ -294,11 +302,7 @@ namespace Venom {
         break;
         default:
           stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
-
-          // add to treeview (this should be done somewhere else)
-          TreeIter iter;
-          list_store_contacts.append (out iter);
-          list_store_contacts.set (iter, 0, "%i".printf((int)ret)/*, 3, dialog.friend_id*/ ); // disabling this for now, it looks so shitty
+          add_contact((int)ret, friend_id);
         break;
       }
     }

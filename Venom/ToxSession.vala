@@ -211,6 +211,15 @@ namespace Venom {
       return (ret != 0) ? null : buf;
     }
 
+    public string getname(int friend_number) {
+      uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH];
+      int ret = -1;
+      lock(handle) {
+        ret = handle.getname(friend_number, buf);
+      }
+      return ret == 0 ? (string)buf : null;
+    } 
+
     ////////////////////////////// Thread related operations /////////////////////////
 
     // Background thread main function
