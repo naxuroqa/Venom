@@ -15,8 +15,6 @@
 #    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
-
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
 PROJECT(venom C)
 
@@ -52,12 +50,15 @@ GENERATE_HEADER
 
 vala_precompile( VALA_C
   src/ui/AddFriendDialog.vala
+  src/ui/ConversationTreeView.vala
+  src/ui/ConversationWindow.vala
   src/ui/ContactListWindow.vala
   src/ui/ContactListTreeView.vala
   src/core/Contact.vala
   src/core/DhtServer.vala
-  src/core/ToxSession.vala
+  src/core/Message.vala
   src/core/Tools.vala
+  src/core/ToxSession.vala
   src/Main.vala
 PACKAGES
   gee-1.0
@@ -65,6 +66,7 @@ PACKAGES
   glib-2.0
   gio-2.0
 OPTIONS
+# Depend on glib 2.32 or get tons of warnings
   --target-glib=2.32
 CUSTOM_VAPIS
   src/vapi/tox.vapi

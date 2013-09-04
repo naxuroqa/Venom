@@ -18,6 +18,9 @@
 namespace Venom {
   public class ContactListTreeView : Gtk.TreeView {
     Gtk.ListStore list_store_contacts;
+    
+    public signal void contact_activated(Contact contact);
+    
     public ContactListTreeView() {
         list_store_contacts = new Gtk.ListStore (1, typeof (Contact));
         
@@ -31,6 +34,8 @@ namespace Venom {
         set_model (list_store_contacts);
         
         append_column(name_column);
+        
+        row_activated.connect(on_row_activated);
     }
     
     private Contact get_contact_from_iter(Gtk.TreeIter iter) {
@@ -61,12 +66,36 @@ namespace Venom {
     }
 
     public void remove_contact(Contact contact) {
-      Gtk.TreeIter iter = find_contact(contact);
+      Gtk.TreeIter iter = find_iter(contact);
       list_store_contacts.remove(iter);
       columns_changed();
     }
-
-    private Gtk.TreeIter? find_contact(Contact contact) {
+    
+    public Contact? get_selected_contact() {
+      Gtk.TreeSelection selection =  get_selection();
+      if(selection == null)
+        return null;
+      Gtk.TreeModel model;
+      Gtk.TreeIter iter;
+      if (!selection.get_selected(out model, out iter))
+        return null;
+      GLib.Value val;
+      model.get_value(iter, 0, out val);
+      Contact c = val as Contact;
+      return c;
+    }
+    
+    private void on_row_activated(Gtk.TreePath path, Gtk.TreeViewColumn column) {
+      Gtk.TreeIter iter;
+      model.get_iter(out iter, path);
+      GLib.Value val;
+      model.get_value(iter, 0, out val);
+      Contact c = val as Contact;
+      
+      contact_activated(c);
+    }
+    
+    private Gtk.TreeIter? find_iter(Contact contact) {
       Gtk.TreeIter iter;
       list_store_contacts.get_iter_first(out iter);
       do {

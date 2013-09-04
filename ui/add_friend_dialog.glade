@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 3.6 -->
+  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkDialog" id="dialog">
+    <property name="width_request">250</property>
+    <property name="height_request">150</property>
     <property name="can_focus">False</property>
     <property name="border_width">6</property>
     <property name="title" translatable="yes">Add contact</property>
@@ -9,7 +11,6 @@
     <property name="default_width">250</property>
     <property name="default_height">100</property>
     <property name="type_hint">dialog</property>
-    <property name="urgency_hint">True</property>
     <signal name="close" handler="venom_add_friend_dialog_on_close" swapped="no"/>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox1">

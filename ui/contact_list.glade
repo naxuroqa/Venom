@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 3.6 -->
+  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkFileChooserDialog" id="filechooserdialog">
     <property name="can_focus">False</property>
-    <property name="border_width">5</property>
+    <property name="border_width">6</property>
+    <property name="title" translatable="yes">Choose a new userimage</property>
     <property name="role">GtkFileChooserDialog</property>
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
@@ -11,7 +12,6 @@
       <object class="GtkBox" id="filechooserdialog-vbox1">
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox" id="filechooserdialog-action_area1">
             <property name="can_focus">False</property>
@@ -32,7 +32,7 @@
             </child>
             <child>
               <object class="GtkButton" id="button1">
-                <property name="label">gtk-ok</property>
+                <property name="label">gtk-open</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>

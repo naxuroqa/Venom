@@ -18,6 +18,7 @@
 namespace Venom {
   public class ContactListWindow : Object {
     private Gee.HashMap<int, Contact> contacts;
+    private Gee.HashMap<int, ConversationWindow> conversation_windows;
     private ToxSession session;
 
     private Gtk.Window contact_list_window;
@@ -55,6 +56,7 @@ namespace Venom {
         Gtk.FileChooserDialog file_chooser_dialog 
       ) throws Error {
       this.contacts = new Gee.HashMap<int, Contact>();
+      this.conversation_windows = new Gee.HashMap<int, ConversationWindow>();
       this.contact_list_window = contact_list_window;
       this.image_status = image_status;
       this.image_userimage = image_userimage;
@@ -125,6 +127,7 @@ namespace Venom {
       // Contact list treeview signals
       on_contact_added.connect(contact_list_tree_view.add_contact);
       on_contact_removed.connect(contact_list_tree_view.remove_contact);
+      contact_list_tree_view.contact_activated.connect(on_contact_activated);
       
       // End program when window is closed
       contact_list_window.destroy.connect (Gtk.main_quit);
@@ -231,6 +234,20 @@ namespace Venom {
       }
     }
 
+    // Contact doubleclicked in treeview
+    private void on_contact_activated(Contact c) {
+      try {
+        if(conversation_windows[c.friend_id] == null) {
+          ConversationWindow conversation_window = ConversationWindow.create(c);
+          conversation_windows[c.friend_id] = conversation_window;
+
+          conversation_window.show_all();
+        }
+      } catch (Error e) {
+        stderr.printf("Could not create conversation window: %s\n", e.message);
+      }
+    }
+
     // GUI Events
     [CCode (instance_pos = -1)]
     public void button_userimage_clicked(Object source) {
@@ -319,17 +336,9 @@ namespace Venom {
 
     [CCode (instance_pos = -1)]
     public void button_remove_contact_clicked(Object source) {
-      Gtk.TreeSelection selection =  contact_list_tree_view.get_selection();
-      if(selection == null)
+      Contact c = contact_list_tree_view.get_selected_contact();
+      if(c == null)
         return;
-      Gtk.TreeModel model;
-      Gtk.TreeIter iter;
-      if (!selection.get_selected(out model, out iter))
-        return;
-      GLib.Value val;
-      model.get_value(iter, 0, out val);
-      Contact c = val as Contact;
-
       Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (contact_list_window,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
