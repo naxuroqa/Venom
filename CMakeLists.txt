@@ -50,27 +50,10 @@ GENERATE_VAPI
 GENERATE_HEADER
 )
 
-vala_precompile( VALA_C_CELL_TEST
-  testing/ContactCellRendererTest.vala
-  src/ui/ContactListCellRenderer.vala
-  src/core/Contact.vala
-PACKAGES
-  gtk+-3.0
-  glib-2.0
-  gio-2.0
-OPTIONS
-  --debug
-  --save-temps
-CUSTOM_VAPIS
-  src/vapi/tox.vapi
-GENERATE_VAPI
-GENERATE_HEADER
-)
-
-
 vala_precompile( VALA_C
   src/ui/AddFriendDialog.vala
-  src/ui/ContactList.vala
+  src/ui/ContactListWindow.vala
+  src/ui/ContactListTreeView.vala
   src/core/Contact.vala
   src/core/DhtServer.vala
   src/core/ToxSession.vala
@@ -95,10 +78,6 @@ ADD_EXECUTABLE( venom
 
 ADD_EXECUTABLE( vapi_test
   ${VALA_C_TEST}
-)
-
-ADD_EXECUTABLE( cellrender_test
-  ${VALA_C_CELL_TEST}
 )
 
 INSTALL( TARGETS venom 

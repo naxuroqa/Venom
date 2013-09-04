@@ -15,48 +15,45 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Gtk;
-using Gee;
 namespace Venom {
-  public class ContactList : Object {
-  
-    private enum ContactListCols {
-      NAME,
-      OBJECT
-    }
-  
+  public class ContactListWindow : Object {
     private Gee.HashMap<int, Contact> contacts;
     private ToxSession session;
 
-    private Window contact_list_window;
-    private Image image_status;
-    private Image image_userimage;
-    private Label label_id;
-    private Entry entry_username;
-    private Entry entry_status;
-    private TreeView treeview_contacts;
-    private TreeView treeview_conversations;
-    private ListStore list_store_contacts;
-    private FileChooserDialog file_chooser_dialog;
+    private Gtk.Window contact_list_window;
+    private Gtk.Image image_status;
+    private Gtk.Image image_userimage;
+    private Gtk.Label label_id;
+    private Gtk.Entry entry_username;
+    private Gtk.Entry entry_status;
+    private ContactListTreeView contact_list_tree_view;
+    private Gtk.TreeView treeview_conversations;
+    private Gtk.FileChooserDialog file_chooser_dialog;
 
     private string data_filename = "data";
     private string data_pathname = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox");
     private uint8[] my_id;
     
+    public signal void on_contact_added(Contact c);
+    public signal void on_contact_changed(Contact c);
+    public signal void on_contact_removed(Contact c);
+    
     public void add_contact(Contact contact) {
       contacts[contact.friend_id] = contact;
-      add_contact_to_liststore(contact);      
-    }
-    
-    public void add_contact_to_liststore(Contact contact) {
-      TreeIter iter;
-      list_store_contacts.append (out iter);
-      list_store_contacts.set (iter, 0, contact);
+      on_contact_added(contact);    
     }
 
-    public ContactList( Window contact_list_window, Image image_status, Image image_userimage, Label label_id, 
-        Entry entry_username, Entry entry_status, TreeView treeview_contacts, TreeView treeview_conversations,
-        FileChooserDialog file_chooser_dialog ) {
+    public ContactListWindow ( 
+        Gtk.Window contact_list_window,
+        Gtk.Image image_status,
+        Gtk.Image image_userimage,
+        Gtk.Label label_id,
+        Gtk.Entry entry_username,
+        Gtk.Entry entry_status,
+        Gtk.Notebook notebook,
+        Gtk.TreeView treeview_conversations,
+        Gtk.FileChooserDialog file_chooser_dialog 
+      ) throws Error {
       this.contacts = new Gee.HashMap<int, Contact>();
       this.contact_list_window = contact_list_window;
       this.image_status = image_status;
@@ -64,14 +61,13 @@ namespace Venom {
       this.label_id = label_id;
       this.entry_username = entry_username;
       this.entry_status = entry_status;
-      this.treeview_contacts = treeview_contacts;
       this.treeview_conversations = treeview_conversations;
       this.file_chooser_dialog = file_chooser_dialog;
 
-      this.contact_list_window.destroy.connect (Gtk.main_quit);
-
-
-      setup_treeview_contacts(treeview_contacts);
+      contact_list_tree_view = new ContactListTreeView();
+      contact_list_tree_view.show_all();
+      int pagenumber = notebook.prepend_page(contact_list_tree_view, new Gtk.Label("Contacts"));
+      notebook.set_current_page(pagenumber);
       
       session = new ToxSession();
       try {
@@ -82,8 +78,40 @@ namespace Venom {
           session.save_to_file(data_pathname, data_filename);
         } catch (Error e) {
           stderr.printf("Could not load messenger data and failed to create new one\n");
+          throw e;
         }
       }
+
+      init_signals();
+
+      init_contacts();
+
+      // initialize session specific gui stuff
+      my_id = session.get_address();
+      label_id.set_text(Tools.bin_to_hexstring(my_id));
+      string selfname = session.getselfname();
+      if(selfname != null && selfname.length > 0) {
+        entry_username.set_text(selfname);
+      } else {
+        session.setname(entry_username.get_text());
+      }
+
+      session.start();
+    }
+
+    ~ContactListWindow() {
+      // Stop background thread
+      session.stop();
+      // wait for background thread to finish
+      session.join();
+
+      // Save session before shutdown
+      session.save_to_file(data_pathname, data_filename);
+      stdout.printf("Session ended gracefully.\n");
+    }
+    
+    private void init_signals() {
+      // Session signals
       session.on_friendrequest.connect(this.on_friendrequest);
       session.on_friendmessage.connect(this.on_friendmessage);
       session.on_action.connect(this.on_action);
@@ -92,9 +120,17 @@ namespace Venom {
       session.on_userstatus.connect(this.on_userstatus);
       session.on_read_receipt.connect(this.on_read_receipt);
       session.on_connectionstatus.connect(this.on_connectionstatus);
-
       session.on_ownconnectionstatus.connect(this.on_ownconnectionstatus);
-
+      
+      // Contact list treeview signals
+      on_contact_added.connect(contact_list_tree_view.add_contact);
+      on_contact_removed.connect(contact_list_tree_view.remove_contact);
+      
+      // End program when window is closed
+      contact_list_window.destroy.connect (Gtk.main_quit);
+    }
+    
+    private void init_contacts() {
       // restore friends from datafile
       int client_id = 0;
       uint8[] client_key;
@@ -107,61 +143,6 @@ namespace Venom {
         client_id++;
       }
 
-      // initialize session specific gui stuff
-      my_id = session.get_address();
-      label_id.set_text(Tools.bin_to_hexstring(my_id));
-      string selfname = session.getselfname();
-      if(selfname != null && selfname.length > 0) {
-        entry_username.set_text(selfname);
-      } else {
-        session.setname(entry_username.get_text());
-      }
-
-      string selfstatus = ""; //FIXME add when tox-api supports this
-      if(selfstatus != null && selfstatus.length > 0) {
-        entry_status.set_text(selfstatus);
-      } else {
-        session.set_statusmessage(entry_status.get_text());
-      }
-
-      session.start();
-    }
-
-    ~ContactList() {
-      session.stop();
-      // wait for background thread to finish
-      session.join();
-
-      // Save session before shutdown
-      session.save_to_file(data_pathname, data_filename);
-      stdout.printf("Session ended gracefully.\n");
-    }
-    
-    private void render_contact_name (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
-    {
-      GLib.Value v;
-      tree_model.get_value(iter, 0, out v);
-      Contact c = v as Contact;
-      (cell as Gtk.CellRendererText).text = "%s (%s)".printf(c.name, c.status_message);
-    }
-
-    public void setup_treeview_contacts(TreeView tree) {
-        list_store_contacts = new Gtk.ListStore (1, typeof (Contact));
-        
-        Gtk.TreeViewColumn name_column = new Gtk.TreeViewColumn();
-        name_column.set_title("Name");
-        Gtk.CellRendererText name_column_cell = new Gtk.CellRendererText();
-        name_column.pack_start(name_column_cell, true);
-
-        name_column.set_cell_data_func(name_column_cell, render_contact_name);
-        
-        tree.set_model (list_store_contacts);
-        
-        tree.append_column(name_column);
-
-        //view.insert_column_with_attributes (-1, "Name", new Gtk.CellRendererText (), "text", ContactListCols.NAME);
-        //view.insert_column_with_attributes (-1, "Status", new Gtk.CellRendererText (), "text", ContactListCols.STATUS);
-        //view.insert_column_with_attributes (-1, "Key", new Gtk.CellRendererText (), "text", ContactListCols.KEY);
     }
 
     // Session Signal callbacks
@@ -176,14 +157,17 @@ namespace Venom {
                                   "New friend request from %s.\n\nMessage: %s\nDo you want to accept?".printf(public_key_string, message));
 
 		  int response = messagedialog.run();
-      if(response == ResponseType.YES) {
-        Tox.FriendAddError far = session.addfriend_norequest(public_key);
-        if((int)far >= 0) {
-          stdout.printf("Added new Friend #%i\n", (int)far);
-          add_contact(new Contact(public_key, (int)far));
-        }
+		  messagedialog.destroy();
+      if(response != Gtk.ResponseType.YES)
+        return;
+
+      Tox.FriendAddError far = session.addfriend_norequest(public_key);
+      if((int)far >= 0) {
+        stdout.printf("Added new friend #%i\n", (int)far);
+        add_contact(new Contact(public_key, (int)far));
+      } else {
+        stderr.printf("Could not add friend: %i\n", (int)far);
       }
-      messagedialog.destroy();
     }
     private void on_friendmessage(int friend_number, string message) {
       if(contacts[friend_number] != null) {
@@ -239,10 +223,10 @@ namespace Venom {
 
     private void on_ownconnectionstatus(bool status) {
       if(status) {
-        image_status.set_from_stock(Stock.YES, IconSize.BUTTON);
+        image_status.set_from_stock(Gtk.Stock.YES, Gtk.IconSize.BUTTON);
         image_status.set_tooltip_text("Connected to: %s".printf(session.connected_dht_server.toString()));
       } else {
-        image_status.set_from_stock(Stock.NO, IconSize.BUTTON);
+        image_status.set_from_stock(Gtk.Stock.NO, Gtk.IconSize.BUTTON);
         image_status.set_tooltip_text("");
       }
     }
@@ -335,7 +319,7 @@ namespace Venom {
 
     [CCode (instance_pos = -1)]
     public void button_remove_contact_clicked(Object source) {
-      Gtk.TreeSelection selection =  treeview_contacts.get_selection();
+      Gtk.TreeSelection selection =  contact_list_tree_view.get_selection();
       if(selection == null)
         return;
       Gtk.TreeModel model;
@@ -354,12 +338,12 @@ namespace Venom {
 
 		  int response = messagedialog.run();
 		  messagedialog.destroy();
-      if(response != ResponseType.YES)
+      if(response != Gtk.ResponseType.YES)
         return;
 
       session.delfriend(c.friend_id);
       contacts.unset(c.friend_id);
-      list_store_contacts.remove(iter);
+      on_contact_removed(c);
     }
 
     [CCode (instance_pos = -1)]
@@ -371,21 +355,22 @@ namespace Venom {
       contact_list_window.show_all ();
     }
 
-    public static ContactList create() throws Error {
-      Builder builder = new Builder();
+    public static ContactListWindow create() throws Error {
+      Gtk.Builder builder = new Gtk.Builder();
       builder.add_from_file(Path.build_filename(Tools.find_data_dir(), "ui", "contact_list.glade"));
-      Window window = builder.get_object("window") as Window;
-      Image image_status = builder.get_object("image_status") as Image;
-      Image image_userimage = builder.get_object("image_userimage") as Image;
-      Label label_id = builder.get_object("label_id") as Label;
-      Entry entry_username = builder.get_object("entry_username") as Entry;
-      Entry entry_status = builder.get_object("entry_status") as Entry;
-      TreeView treeview_contacts = builder.get_object("treeview_contacts") as TreeView;
-      TreeView treeview_conversations = builder.get_object("treeview_conversations") as TreeView;
-      FileChooserDialog file_chooser_dialog = builder.get_object("filechooserdialog") as FileChooserDialog;
+      Gtk.Window window = builder.get_object("window") as Gtk.Window;
+      Gtk.Image image_status = builder.get_object("image_status") as Gtk.Image;
+      Gtk.Image image_userimage = builder.get_object("image_userimage") as Gtk.Image;
+      Gtk.Label label_id = builder.get_object("label_id") as Gtk.Label;
+      Gtk.Entry entry_username = builder.get_object("entry_username") as Gtk.Entry;
+      Gtk.Entry entry_status = builder.get_object("entry_status") as Gtk.Entry;
+      Gtk.Notebook notebook = builder.get_object("notebook") as Gtk.Notebook;
+      //Gtk.TreeView treeview_contacts = builder.get_object("treeview_contacts") as Gtk.TreeView;
+      Gtk.TreeView treeview_conversations = builder.get_object("treeview_conversations") as Gtk.TreeView;
+      Gtk.FileChooserDialog file_chooser_dialog = builder.get_object("filechooserdialog") as Gtk.FileChooserDialog;
 
-      ContactList contact_list = new ContactList(window, image_status, image_userimage, label_id, 
-        entry_username, entry_status, treeview_contacts, treeview_conversations, file_chooser_dialog);
+      ContactListWindow contact_list = new ContactListWindow(window, image_status, image_userimage, label_id, 
+        entry_username, entry_status, notebook, treeview_conversations, file_chooser_dialog);
       builder.connect_signals(contact_list);
       return contact_list;
     }

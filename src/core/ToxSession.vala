@@ -15,14 +15,11 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Gee;
-using Tox;
-
 namespace Venom {
   // Wrapper class for accessing tox functions threadsafe
   public class ToxSession : Object {
     private Tox.Tox handle;
-    private ArrayList<DhtServer> dht_servers = new ArrayList<DhtServer>();
+    private Gee.ArrayList<DhtServer> dht_servers = new Gee.ArrayList<DhtServer>();
     private Thread<int> session_thread = null;
     private bool bootstrapped = false;
     public bool running {get; private set; default=false; }
@@ -46,8 +43,8 @@ namespace Venom {
       handle = new Tox.Tox();
 
       // Add one default dht server
-      Ip ip = {(uint32)0x7651B8C0}; //192.184.81.118
-      IpPort ip_port = { ip, ((uint16)33445).to_big_endian() };
+      Tox.Ip ip = {(uint32)0x7651B8C0}; //192.184.81.118
+      Tox.IpPort ip_port = { ip, ((uint16)33445).to_big_endian() };
       uint8[] pub_key = Tools.hexstring_to_bin("5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143");
       dht_servers.add(new DhtServer.withArgs(ip_port, pub_key));
 
@@ -104,7 +101,7 @@ namespace Venom {
     }
 
     [CCode (instance_pos = -1)]
-    private void on_userstatus_callback(Tox.Tox tox, int friend_number, UserStatus user_status) {
+    private void on_userstatus_callback(Tox.Tox tox, int friend_number, Tox.UserStatus user_status) {
       Idle.add(() => { on_userstatus(friend_number, user_status); return false; });
     }
 

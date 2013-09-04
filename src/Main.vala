@@ -15,9 +15,6 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Gtk;
-using GLib;
-using Tox;
 namespace Venom {
 
 public class Main {
@@ -25,10 +22,10 @@ public class Main {
 
       Gtk.init (ref args);
 
-      ContactList contact_list;
+      ContactListWindow contact_list;
 
       try {
-        contact_list = ContactList.create();
+        contact_list = ContactListWindow.create();
         contact_list.show();
       } catch ( Error e ) {
         stderr.printf("Could not load UI: %s\n", e.message);
