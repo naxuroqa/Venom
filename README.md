@@ -2,6 +2,9 @@
 
 Venom, a graphical user interface for [ProjectTox Core](https://github.com/irungentoo/ProjectTox-Core) written in [Vala](https://wiki.gnome.org/Vala).
 
+## Installing
+
+* Read [INSTALL.md](INSTALL.md)
 
 ## Contributing
 
