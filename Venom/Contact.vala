@@ -15,25 +15,26 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Tox;
-
 namespace Venom {
-  public class Contact {
-
-    public Contact(uint8[] public_key) {
-      this.public_key = public_key;
-      this.name = "";
-      this.local_name = name;
-      this.status_message = "";
-      this.last_seen = new DateTime.now_local();
-    }
-
+  public class Contact : GLib.Object{
+  
     public uint8[] public_key { get; set; }
+    public int friend_id { get; set; }
     public string name { get; set; }
     public string local_name { get; set; }
     public string status_message { get; set; }
     public DateTime last_seen { get; set; }
-    public uint32 friend_number { get; set; }
-    public Tox.UserStatus user_status { get; set; }
+    public int user_status { get; set; }
+    public bool online { get; set; }
+
+    public Contact(uint8[] public_key, int friend_id) {
+      this.public_key = public_key;
+      this.friend_id = friend_id;
+      this.name = "";
+      this.local_name = name;
+      this.status_message = "";
+      this.last_seen = new DateTime.now_local();
+      this.user_status = (int)Tox.UserStatus.INVALID;
+    }
   }
 }

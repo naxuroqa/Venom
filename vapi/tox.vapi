@@ -21,16 +21,16 @@ using GLib;
 
 [CCode(cheader_filename="tox/tox.h")]
 namespace Tox {
-  [CCode (cname = "TOX_MAX_NAME_LENGTH")]
+  [CCode (cprefix="TOX_")]
   public const int MAX_NAME_LENGTH;
 
-  [CCode (cname = "TOX_MAX_STATUSMESSAGE_LENGTH")]
+  [CCode (cprefix="TOX_")]
   public const int MAX_STATUSMESSAGE_LENGTH;
 
-  [CCode (cname = "TOX_CLIENT_ID_SIZE")]
+  [CCode (cprefix="TOX_")]
   public const int CLIENT_ID_SIZE;
 
-  [CCode (cname = "TOX_FRIEND_ADDRESS_SIZE")]
+  [CCode (cprefix="TOX_")]
   public const int FRIEND_ADDRESS_SIZE;
 
   [SimpleType]
@@ -51,53 +51,36 @@ namespace Tox {
   }
 
   /* status definitions */
-  [CCode (cname = "int")]
+  [CCode (cprefix = "TOX_FRIEND_", cname = "int")]
   public enum FriendStatus {
-    [CCode (cname = "TOX_FRIEND_ONLINE")]
     ONLINE,
-    [CCode (cname = "TOX_FRIEND_CONFIRMED")]
     CONFIRMED,
-    [CCode (cname = "TOX_FRIEND_REQUESTED")]
     REQUESTED,
-    [CCode (cname = "TOX_FRIEND_ADDED")]
     ADDED,
-    [CCode (cname = "TOX_NOFRIEND")]
     NO
   }
 
   /* errors for m_addfriend
    *  FAERR - Friend Add Error */
-  [CCode (cname = "int")]
+  [CCode (cprefix = "TOX_FAERR_", cname = "int")]
   public enum FriendAddError {
-    [CCode (cname = "TOX_FAERR_TOOLONG")]
     TOOLONG,
-    [CCode (cname = "TOX_FAERR_NOMESSAGE")]
     NOMESSAGE,
-    [CCode (cname = "TOX_FAERR_OWNKEY")]
     OWNKEY,
-    [CCode (cname = "TOX_FAERR_ALREADYSENT")]
     ALREADYSENT,
-    [CCode (cname = "TOX_FAERR_UNKNOWN")]
     UNKNOWN,
-    [CCode (cname = "TOX_FAERR_BADCHECKSUM")]
     BADCHECKSUM,
-    [CCode (cname = "TOX_FAERR_SETNEWNOSPAM")]
     SETNEWNOSPAM,
-    [CCode (cname = "TOX_FAERR_NOMEM")]
     NOMEM
   }
 
   /* USERSTATUS
    * Represents userstatuses someone can have. */
-  [CCode (cname="TOX_USERSTATUS")]
+  [CCode (cprefix="TOX_USERSTATUS_", cname="TOX_USERSTATUS")]
   public enum UserStatus {
-    [CCode (cname = "TOX_USERSTATUS_NONE")]
     NONE,
-    [CCode (cname = "TOX_USERSTATUS_AWAY")]
     AWAY,
-    [CCode (cname = "TOX_USERSTATUS_BUSY")]
     BUSY,
-    [CCode (cname = "TOX_USERSTATUS_INVALID")]
     INVALID
   }
 

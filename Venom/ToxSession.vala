@@ -146,6 +146,14 @@ namespace Venom {
       }
       return ret;
     }
+    
+    public bool delfriend(int friendnumber) {
+      int ret = -1;
+      lock(handle) {
+        ret = handle.delfriend(friendnumber);
+      }
+      return ret == 0;
+    }
 
     // Set user status, returns true on success
     public bool set_status(Tox.UserStatus user_status) {
@@ -292,8 +300,11 @@ namespace Venom {
 
       if(data_stream.read(buf) != size)
         throw new IOError.FAILED("Error while reading from stream.");
-
-      if(handle.load(buf) != 0)
+      int ret = -1;
+      lock(handle) {
+        ret = handle.load(buf);
+      }
+      if(ret != 0)
         throw new IOError.FAILED("Error while loading messenger data.");
     }
 
@@ -309,7 +320,10 @@ namespace Venom {
 
       uint32 size = handle.size();
       uint8[] buf = new uint8 [size];
-      handle.save(buf);
+
+      lock(handle) {
+        handle.save(buf);
+      }
 
       if(os.write(buf) != size)
         throw new IOError.FAILED("Error while writing to stream.");

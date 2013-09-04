@@ -19,7 +19,13 @@ using Gtk;
 using Gee;
 namespace Venom {
   public class ContactList : Object {
-    private HashMap<int, Contact> contacts;
+  
+    private enum ContactListCols {
+      NAME,
+      OBJECT
+    }
+  
+    private Gee.HashMap<int, Contact> contacts;
     private ToxSession session;
 
     private Window contact_list_window;
@@ -36,21 +42,22 @@ namespace Venom {
     private string data_filename = "data";
     private string data_pathname = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox");
     private uint8[] my_id;
-
-    public void add_contact(int friend_id, uint8[] public_key) {
-      Contact c = new Contact(public_key);
-      contacts[friend_id] = c;
-
-      // add to treeview (this should be done somewhere else)
+    
+    public void add_contact(Contact contact) {
+      contacts[contact.friend_id] = contact;
+      add_contact_to_liststore(contact);      
+    }
+    
+    public void add_contact_to_liststore(Contact contact) {
       TreeIter iter;
       list_store_contacts.append (out iter);
-      list_store_contacts.set (iter, 0, "%i".printf(friend_id)/*, 3, public_key_string*/ ); // disabled for now
+      list_store_contacts.set (iter, 0, contact);
     }
 
     public ContactList( Window contact_list_window, Image image_status, Image image_userimage, Label label_id, 
         Entry entry_username, Entry entry_status, TreeView treeview_contacts, TreeView treeview_conversations,
         FileChooserDialog file_chooser_dialog ) {
-      this.contacts = new HashMap<int, Contact>();
+      this.contacts = new Gee.HashMap<int, Contact>();
       this.contact_list_window = contact_list_window;
       this.image_status = image_status;
       this.image_userimage = image_userimage;
@@ -94,7 +101,9 @@ namespace Venom {
       while( (client_key = session.getclient_id(client_id)) != null ) {
         string name = session.getname(client_id);
         stdout.printf("Adding friend (%s) from data file: %s\n", (name != null ? name : ""), Tools.bin_to_hexstring(client_key));
-        add_contact(client_id, client_key);
+        Contact c = new Contact(client_key, client_id);
+        c.name = name;
+        add_contact(c);
         client_id++;
       }
 
@@ -127,16 +136,32 @@ namespace Venom {
       session.save_to_file(data_pathname, data_filename);
       stdout.printf("Session ended gracefully.\n");
     }
+    
+    private void render_contact_name (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
+    {
+      GLib.Value v;
+      tree_model.get_value(iter, 0, out v);
+      Contact c = v as Contact;
+      (cell as Gtk.CellRendererText).text = "%s (%s)".printf(c.name, c.status_message);
+    }
 
-    public void setup_treeview_contacts(TreeView view) {
-        list_store_contacts = new ListStore (4, typeof (string), typeof (string),
-                                          typeof (string), typeof (string));
-        view.set_model (list_store_contacts);
+    public void setup_treeview_contacts(TreeView tree) {
+        list_store_contacts = new Gtk.ListStore (1, typeof (Contact));
+        
+        Gtk.TreeViewColumn name_column = new Gtk.TreeViewColumn();
+        name_column.set_title("Name");
+        Gtk.CellRendererText name_column_cell = new Gtk.CellRendererText();
+        name_column.pack_start(name_column_cell, true);
 
-        view.insert_column_with_attributes (-1, "#", new CellRendererText (), "text", 0);
-        view.insert_column_with_attributes (-1, "Name", new CellRendererText (), "text", 1);
-        view.insert_column_with_attributes (-1, "Status", new CellRendererText (), "text", 2);
-        view.insert_column_with_attributes (-1, "Key", new CellRendererText (), "text", 3);
+        name_column.set_cell_data_func(name_column_cell, render_contact_name);
+        
+        tree.set_model (list_store_contacts);
+        
+        tree.append_column(name_column);
+
+        //view.insert_column_with_attributes (-1, "Name", new Gtk.CellRendererText (), "text", ContactListCols.NAME);
+        //view.insert_column_with_attributes (-1, "Status", new Gtk.CellRendererText (), "text", ContactListCols.STATUS);
+        //view.insert_column_with_attributes (-1, "Key", new Gtk.CellRendererText (), "text", ContactListCols.KEY);
     }
 
     // Session Signal callbacks
@@ -155,7 +180,7 @@ namespace Venom {
         Tox.FriendAddError far = session.addfriend_norequest(public_key);
         if((int)far >= 0) {
           stdout.printf("Added new Friend #%i\n", (int)far);
-          add_contact((int)far, public_key);
+          add_contact(new Contact(public_key, (int)far));
         }
       }
       messagedialog.destroy();
@@ -189,7 +214,7 @@ namespace Venom {
     private void on_userstatus(int friend_number, int user_status) {
       if(contacts[friend_number] != null) {
         stdout.printf("[us] %s:%i\n", contacts[friend_number].name, user_status);
-        contacts[friend_number].user_status = (Tox.UserStatus)user_status;
+        contacts[friend_number].user_status = user_status;
       } else {
         stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
       }
@@ -204,8 +229,9 @@ namespace Venom {
     private void on_connectionstatus(int friend_number, bool status) {
       if(contacts[friend_number] != null) {
         stdout.printf("%s is now %s.\n", contacts[friend_number].name, status ? "online" : "offline");
-        if(!status)
+        if(!status && contacts[friend_number].online)
           contacts[friend_number].last_seen = new DateTime.now_local();
+        contacts[friend_number].online = status;
       } else {
         stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
       }
@@ -302,14 +328,38 @@ namespace Venom {
         break;
         default:
           stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
-          add_contact((int)ret, friend_id);
+          add_contact(new Contact(friend_id, (int)ret));
         break;
       }
     }
 
     [CCode (instance_pos = -1)]
     public void button_remove_contact_clicked(Object source) {
-      //TODO
+      Gtk.TreeSelection selection =  treeview_contacts.get_selection();
+      if(selection == null)
+        return;
+      Gtk.TreeModel model;
+      Gtk.TreeIter iter;
+      if (!selection.get_selected(out model, out iter))
+        return;
+      GLib.Value val;
+      model.get_value(iter, 0, out val);
+      Contact c = val as Contact;
+
+      Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (contact_list_window,
+                                  Gtk.DialogFlags.MODAL,
+                                  Gtk.MessageType.QUESTION,
+                                  Gtk.ButtonsType.YES_NO,
+                                  "Do you really want to delete %s from your contact list?".printf(c.name));
+
+		  int response = messagedialog.run();
+		  messagedialog.destroy();
+      if(response != ResponseType.YES)
+        return;
+
+      session.delfriend(c.friend_id);
+      contacts.unset(c.friend_id);
+      list_store_contacts.remove(iter);
     }
 
     [CCode (instance_pos = -1)]
