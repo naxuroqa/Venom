@@ -32,7 +32,7 @@ apt-get install valac cmake libgtk-3-dev libgee-dev
 On Fedora:
 
 ```bash
-yum install vala cmake libgtk gtk3-devel libgee06-devel
+yum install vala cmake gtk3-devel libgee06-devel
 ```
 
 On Arch Linux: (There is an [aur-package](https://aur.archlinux.org/packages/venom-git))
