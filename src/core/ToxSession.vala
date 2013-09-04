@@ -20,7 +20,11 @@ namespace Venom {
   public class ToxSession : Object {
     private Tox.Tox handle;
     private Gee.ArrayList<DhtServer> dht_servers = new Gee.ArrayList<DhtServer>();
+#if GLIB_2_32
+    private Thread<int> session_thread = null;
+#else
     private unowned Thread<int> session_thread = null;
+#endif
     private bool bootstrapped = false;
     public bool running {get; private set; default=false; }
     public bool connected { get; private set; default=false; }
@@ -34,8 +38,6 @@ namespace Venom {
     public signal void on_userstatus(int friend_number, int user_status);
     public signal void on_read_receipt(int friend_number, uint32 receipt);
     public signal void on_connectionstatus(int friend_number, bool status);
-
-    // private signals
     public signal void on_ownconnectionstatus(bool status);
 
     public ToxSession() {
@@ -267,11 +269,15 @@ namespace Venom {
       if(running)
         return;
       running = true;
+#if GLIB_2_32
+      session_thread = new GLib.Thread<int>("toxbgthread", this.run);
+#else
       try {
         session_thread = GLib.Thread.create<int>(this.run, true);
       } catch (Error e) {
         stderr.printf("Could not create thread: %s\n", e.message);
       }
+#endif
     }
 
     // Stop background thread
