@@ -38,7 +38,7 @@ yum install vala cmake libgtk gtk3-devel libgee06-devel
 On Arch Linux: (There is an [aur-package](https://aur.archlinux.org/packages/venom-git))
 
 ```bash
-pacman -S cmake gtk3 libgee06
+pacman -S vala cmake gtk3 libgee06
 ```
 
 After you installed the dependencies, clone, build and install venom:
@@ -61,4 +61,6 @@ To be done
 <a name="windows" />
 ###Windows:
 
-To be done
+This is currently difficult, since there are no official gtk3 packages for windows (yet).
+There is a [branch](https://github.com/naxuroqa/Venom/tree/gtk2) which is using gtk2 and builds on windows, 
+but it is not up to date.
