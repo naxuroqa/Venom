@@ -42,51 +42,49 @@ vala_precompile( VALA_C_TEST
 PACKAGES
   gio-2.0
 OPTIONS
-#--debug
-#--save-temps
+  --debug
+  --save-temps
 CUSTOM_VAPIS
-  vapi/tox.vapi
+  src/vapi/tox.vapi
 GENERATE_VAPI
 GENERATE_HEADER
 )
 
 vala_precompile( VALA_C_CELL_TEST
   testing/ContactCellRendererTest.vala
-  Venom/ContactListCellRenderer.vala
-  Venom/Contact.vala
+  src/ui/ContactListCellRenderer.vala
+  src/core/Contact.vala
 PACKAGES
   gtk+-3.0
   glib-2.0
   gio-2.0
 OPTIONS
-#--debug
-#--save-temps
+  --debug
+  --save-temps
 CUSTOM_VAPIS
-  vapi/tox.vapi
+  src/vapi/tox.vapi
 GENERATE_VAPI
 GENERATE_HEADER
 )
 
 
 vala_precompile( VALA_C
-  Venom/AddFriendDialog.vala
-  Venom/Contact.vala
-  Venom/ContactList.vala
-  Venom/DhtServer.vala
-  Venom/Main.vala
-  Venom/ToxSession.vala
-  Venom/Tools.vala
+  src/ui/AddFriendDialog.vala
+  src/ui/ContactList.vala
+  src/core/Contact.vala
+  src/core/DhtServer.vala
+  src/core/ToxSession.vala
+  src/core/Tools.vala
+  src/Main.vala
 PACKAGES
   gee-1.0
   gtk+-3.0
   glib-2.0
   gio-2.0
 OPTIONS
-#  --debug
-#  --save-temps
   --target-glib=2.32
 CUSTOM_VAPIS
-  vapi/tox.vapi
+  src/vapi/tox.vapi
 GENERATE_VAPI
 GENERATE_HEADER
 )
