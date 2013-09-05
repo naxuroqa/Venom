@@ -1,8 +1,41 @@
 language: c
-compiler: gcc
+compiler:
+  - gcc
+  - clang
+
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq valac cmake libgtk-3-dev libgee-dev
+  - sudo apt-get install -qq valac cmake libgtk-3-dev libgee-dev check
+
+before_script:
+# installing libsodium, needed for Core
+  - git clone git://github.com/jedisct1/libsodium.git
+  - cd libsodium
+  - git checkout tags/0.4.2
+  - ./autogen.sh
+  - ./configure && make check -j3
+  - sudo make install
+  - cd ..
+# installing libconfig, needed for DHT_bootstrap_daemon
+  - wget http://www.hyperrealm.com/libconfig/libconfig-1.4.9.tar.gz
+  - tar -xvzf libconfig-1.4.9.tar.gz
+  - cd libconfig-1.4.9
+  - ./configure && make -j3
+  - sudo make install
+  - cd ..
+# creating librarys' links and updating cache
+  - sudo ldconfig
+
+  - git clone git://github.com/irungentoo/ProjectTox-Core.git
+  - cd ProjectTox-Core
+  - autoreconf -i
+  - ./configure
+  - make -j3
+  - make check
+  - make dist
+  - sudo make install
+  - cd ..
+  - sudo ldconfig
 script:
   - mkdir build
   - cd build
