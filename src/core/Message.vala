@@ -20,7 +20,7 @@ namespace Venom {
     public unowned Contact sender {get; set;}
     public string message {get; set;}
     public Message(Contact? sender, string message) {
-      this.sender = sender != null ? sender : null;
+      this.sender = sender;
       this.message = message;
     }
   }

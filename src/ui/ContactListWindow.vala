@@ -38,6 +38,7 @@ namespace Venom {
     public signal void on_contact_added(Contact c);
     public signal void on_contact_changed(Contact c);
     public signal void on_contact_removed(Contact c);
+    public signal void incoming_message(Message m);
     
     public void add_contact(Contact contact) {
       contacts[contact.friend_id] = contact;
@@ -145,7 +146,10 @@ namespace Venom {
         add_contact(c);
         client_id++;
       }
-
+    }
+    
+    private void on_outgoing_message(string message, Contact receiver) {
+      session.sendmessage(receiver.friend_id, message);
     }
 
     // Session Signal callbacks
@@ -175,6 +179,7 @@ namespace Venom {
     private void on_friendmessage(int friend_number, string message) {
       if(contacts[friend_number] != null) {
         stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), contacts[friend_number].name, message);
+        incoming_message(new Message(contacts[friend_number], message));
       } else {
         stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
       }
@@ -240,6 +245,8 @@ namespace Venom {
         if(conversation_windows[c.friend_id] == null) {
           ConversationWindow conversation_window = ConversationWindow.create(c);
           conversation_windows[c.friend_id] = conversation_window;
+          incoming_message.connect(conversation_window.on_incoming_message);
+          conversation_window.new_outgoing_message.connect(on_outgoing_message);
 
           conversation_window.show_all();
         }

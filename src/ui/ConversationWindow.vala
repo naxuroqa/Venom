@@ -25,7 +25,7 @@ namespace Venom {
     private unowned Contact conversation_contact;
 
     private signal void new_conversation_message(Message message);
-    public signal void new_message(string message, Contact receiver);
+    public signal void new_outgoing_message(string message, Contact receiver);
 
     public ConversationWindow(
         Contact c,
@@ -75,7 +75,7 @@ namespace Venom {
       string s = source.text;
       Message m = new Message(null, s);
       new_conversation_message(m);
-      new_message(s, conversation_contact);
+      new_outgoing_message(s, conversation_contact);
       source.text = "";
     }
   }

@@ -225,7 +225,16 @@ namespace Venom {
         ret = handle.getname(friend_number, buf);
       }
       return ret == 0 ? (string)buf : null;
-    } 
+    }
+
+    public uint32 sendmessage(int friend_number, string message) {
+      uint32 ret = 0;
+      uint8[] buf = Tools.string_to_nullterm_uint(message);
+      lock(handle) {
+        ret = handle.sendmessage(friend_number, buf);
+      }
+      return ret;
+    }
 
     ////////////////////////////// Thread related operations /////////////////////////
 
