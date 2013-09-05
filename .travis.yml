@@ -13,7 +13,8 @@ before_script:
   - cd libsodium
   - git checkout tags/0.4.2
   - ./autogen.sh
-  - ./configure && make check -j3
+#  - ./configure && make check -j3
+  - ./configure && make -j3
   - sudo make install
   - cd ..
 # installing libconfig, needed for DHT_bootstrap_daemon
