@@ -17,7 +17,7 @@ Don't forget to install it after building it.
 Additionally to the tox build dependencies, you will need:
 
 ```bash
-valac (>=0.14)
+valac (>=0.17)
 cmake (>=2.6.0)
 libgtk-3-dev (>=3.2)
 libgee-dev (1.0)
@@ -26,6 +26,13 @@ libgee-dev (1.0)
 On Ubuntu:
 
 ```bash
+apt-get install valac cmake libgtk-3-dev libgee-dev
+```
+
+Ubuntu <= 12.04 (Precise Pangolin) needs a ppa to get a newer version of valac
+```bash
+apt-add-repository ppa:vala-team/ppa
+apt-get update
 apt-get install valac cmake libgtk-3-dev libgee-dev
 ```
 

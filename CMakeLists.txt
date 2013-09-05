@@ -23,17 +23,28 @@ LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/vala)
 INCLUDE(FindVala)
 INCLUDE(${VALA_USE_FILE})
 
-FIND_PACKAGE(Vala "0.14.0" REQUIRED)
+FIND_PACKAGE(Vala "0.17.0" REQUIRED)
 
 FIND_PACKAGE(PkgConfig)
 PKG_CHECK_MODULES(GTK REQUIRED gtk+-3.0)
 PKG_CHECK_MODULES(GEE REQUIRED gee-1.0)
 PKG_CHECK_MODULES(GIO REQUIRED gio-2.0)
+PKG_CHECK_MODULES(GLIB REQUIRED glib-2.0)
 ADD_DEFINITIONS(${GTK_CFLAGS} ${GTK_CFLAGS_OTHER})
 ADD_DEFINITIONS(${GEE_CFLAGS} ${GEE_CFLAGS_OTHER})
 ADD_DEFINITIONS(${GIO_CFLAGS} ${GIO_CFLAGS_OTHER})
-LINK_LIBRARIES(toxcore ${GTK_LIBRARIES} ${GEE_LIBRARIES} ${GIO_LIBRARIES})
-LINK_DIRECTORIES(${GTK_LIBRARY_DIRS} ${GEE_LIBRARY_DIRS} ${GIO_LIBRARY_DIRS})
+ADD_DEFINITIONS(${GLIB_CFLAGS} ${GLIB_CFLAGS_OTHER})
+LINK_LIBRARIES( toxcore
+                ${GTK_LIBRARIES}
+                ${GEE_LIBRARIES}
+                ${GIO_LIBRARIES}
+                ${GLIB_LIBRARIES}
+)
+LINK_DIRECTORIES( ${GTK_LIBRARY_DIRS}
+                  ${GEE_LIBRARY_DIRS}
+                  ${GIO_LIBRARY_DIRS}
+                  ${GLIB_LIBRARY_DIRS}
+)
 
 vala_precompile( VALA_C_TEST
   testing/ToxVapiTest.vala
@@ -67,7 +78,7 @@ PACKAGES
   gio-2.0
 OPTIONS
 # Depend on glib 2.32 or get tons of warnings
-#  --target-glib=2.32
+  --target-glib=2.32
 CUSTOM_VAPIS
   src/vapi/tox.vapi
 GENERATE_VAPI
@@ -86,7 +97,8 @@ INSTALL( TARGETS venom
   RUNTIME DESTINATION bin
 )
 
-INSTALL(FILES ui/contact_list.glade DESTINATION share/venom/ui)
 INSTALL(FILES ui/add_friend_dialog.glade DESTINATION share/venom/ui)
+INSTALL(FILES ui/contact_list.glade DESTINATION share/venom/ui)
+INSTALL(FILES ui/conversation_window.glade DESTINATION share/venom/ui)
 
 # vim:set ts=2 sw=2 et:
