@@ -1,0 +1,10 @@
+language: c
+compiler: gcc
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq valac cmake libgtk-3-dev libgee-dev
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
