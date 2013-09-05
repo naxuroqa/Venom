@@ -18,25 +18,28 @@
 namespace Venom {
   public class ConversationTreeView : Gtk.TreeView {
     Gtk.ListStore list_store_messages;
-    
+
     public ConversationTreeView() {
         list_store_messages = new Gtk.ListStore (1, typeof (Message));
-        
+
         Gtk.TreeViewColumn name_column = new Gtk.TreeViewColumn();
         Gtk.CellRendererText name_column_cell = new Gtk.CellRendererText();
         name_column.pack_start(name_column_cell, true);
-        
+
         Gtk.TreeViewColumn message_column = new Gtk.TreeViewColumn();
         Gtk.CellRendererText message_column_cell = new Gtk.CellRendererText();
         message_column.pack_start(message_column_cell, true);
 
         name_column.set_cell_data_func(name_column_cell, render_sender_name);
         message_column.set_cell_data_func(message_column_cell, render_message);
-        
+
         set_model (list_store_messages);
-        
+
         append_column(name_column);
         append_column(message_column);
+
+        //hide headers
+        set_headers_visible(false);
     }
     
     private Message get_message_from_iter(Gtk.TreeIter iter) {
@@ -44,7 +47,7 @@ namespace Venom {
       model.get_value(iter, 0, out v);
       return v as Message;
     }
-    
+
     private void render_sender_name (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
     {
       Message m = get_message_from_iter(iter);
@@ -53,7 +56,7 @@ namespace Venom {
       else
         (cell as Gtk.CellRendererText).text = "%s:".printf(m.sender.name);
     }
-    
+
     private void render_message (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
     {
       Message m = get_message_from_iter(iter);
