@@ -67,7 +67,7 @@ PACKAGES
   gio-2.0
 OPTIONS
 # Depend on glib 2.32 or get tons of warnings
-  --target-glib=2.32
+#  --target-glib=2.32
 CUSTOM_VAPIS
   src/vapi/tox.vapi
 GENERATE_VAPI
