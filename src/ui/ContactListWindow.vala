@@ -178,8 +178,14 @@ namespace Venom {
     }
     private void on_friendmessage(int friend_number, string message) {
       if(contacts[friend_number] != null) {
-        stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), contacts[friend_number].name, message);
-        incoming_message(new Message(contacts[friend_number], message));
+        Contact c = contacts[friend_number];
+        stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name, message);
+
+        ConversationWindow w = open_conversation_with(c);
+        if(w == null)
+          return;
+        w.show_all();        
+        incoming_message(new Message(c, message));
       } else {
         stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
       }
@@ -238,21 +244,30 @@ namespace Venom {
         image_status.set_tooltip_text("");
       }
     }
+    
+    private ConversationWindow? open_conversation_with(Contact c) {
+      ConversationWindow w = conversation_windows[c.friend_id];
+      if(w == null) {
+        try {
+          w = ConversationWindow.create(c);
+        } catch (Error e) {
+          stderr.printf("Could not create conversation window: %s\n", e.message);
+          return null;
+        }
+        incoming_message.connect(w.on_incoming_message);
+        w.new_outgoing_message.connect(on_outgoing_message);
+        
+        conversation_windows[c.friend_id] = w;
+      }
+      return w;
+    }
 
     // Contact doubleclicked in treeview
     private void on_contact_activated(Contact c) {
-      try {
-        if(conversation_windows[c.friend_id] == null) {
-          ConversationWindow conversation_window = ConversationWindow.create(c);
-          conversation_windows[c.friend_id] = conversation_window;
-          incoming_message.connect(conversation_window.on_incoming_message);
-          conversation_window.new_outgoing_message.connect(on_outgoing_message);
-
-          conversation_window.show_all();
-        }
-      } catch (Error e) {
-        stderr.printf("Could not create conversation window: %s\n", e.message);
-      }
+      ConversationWindow w = open_conversation_with(c);
+      if(w == null)
+        return;
+      w.show_all();
     }
 
     // GUI Events

@@ -38,6 +38,8 @@ namespace Venom {
       this.label_conversation_partner = label_conversation_partner;
       this.image_conversation_partner = image_conversation_partner;
       
+      conversation_window.delete_event.connect(() => {conversation_window.hide(); return true;});
+      
       label_conversation_partner.set_text("Conversation with %s".printf(c.name));
       
       conversation_tree_view = new ConversationTreeView();
