@@ -58,30 +58,23 @@ namespace Tox {
   
   [SimpleType]
   public struct IPAny {
-    [CCode(cname="uint32")]
-    public uint32 i[4];
-    [CCode(cname="uint16")]
-    public uint16 s[8];
-    [CCode(cname="uint8")]
-    public uint8 c[16];
+    // FIXME add sa_family_t family
+    IP4 ip4;
+    IP6 ip6;
   }
 
   [SimpleType]
-  public struct IpPort {
-    public Ip ip;
+  public struct IP4Port {
+    public IP4 ip;
     public uint16 port;
     /* not used for anything right now */
     public uint16 padding;
   }
-
-  /* status definitions */
-  [CCode (cprefix = "TOX_FRIEND_", cname = "int")]
-  public enum FriendStatus {
-    ONLINE,
-    CONFIRMED,
-    REQUESTED,
-    ADDED,
-    NO
+  
+  [SimpleType]
+  public struct IPAnyPort {
+    IPAny ip;
+    uint16 port;
   }
 
   /* errors for m_addfriend
@@ -111,8 +104,21 @@ namespace Tox {
   [Compact]
   [CCode (cname="Tox", free_function="tox_kill", cprefix="tox_")]
   public class Tox {
+    /*
+     *  Run this function at startup.
+     *
+     * Initializes a tox structure
+     *  The type of communication socket depends on ipv6enabled:
+     *  If set to 0 (zero), creates an IPv4 socket which subsequently only allows
+     *    IPv4 communication
+     *  If set to anything else, creates an IPv6 socket which allows both IPv4 AND
+     *    IPv6 communication
+     *
+     *  return allocated instance of tox on success.
+     *  return 0 if there are problems.
+     */
     [CCode (cname = "tox_new")]
-    public Tox();
+    public Tox(uint8 ipv6enabled);
 
     public delegate void FriendrequestCallback([CCode(array_length=false)] uint8[] public_key, [CCode(array_length_type="guint16")] uint8[] data);
     public delegate void FriendmessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] message);
@@ -165,15 +171,22 @@ namespace Tox {
     public int getclient_id(int friend_id, [CCode(array_length=false)] uint8[] client_id);
 
     /* Remove a friend. */
-    public int delfriend(int friend_number);
-
-    /*  return TOX_FRIEND_ONLINE if friend is online.
-     *  return TOX_FRIEND_CONFIRMED if friend is confirmed.
-     *  return TOX_FRIEND_REQUESTED if the friend request was sent.
-     *  return TOX_FRIEND_ADDED if the friend was added.
-     *  return TOX_NOFRIEND if there is no friend with that number.
+    public int delfriend(int friendnumber);
+    
+    /* Checks friend's connecting status.
+     *
+     *  return 1 if friend is connected to us (Online).
+     *  return 0 if friend is not connected to us (Offline).
+     *  return -1 on failure.
      */
-    public int friendstatus(int friend_number);
+    public int get_friend_connectionstatus(int friendnumber);
+
+    /* Checks if there exists a friend with given friendnumber.
+     *
+     *  return 1 if friend exists.
+     *  return 0 if friend doesn't exist.
+     */
+     public int friend_exists(int friendnumber);
 
     /* Send a text chat message to an online friend.
      *
@@ -185,15 +198,15 @@ namespace Tox {
      * m_sendmessage_withid will send a message with the id of your choosing,
      * however we can generate an id for you by calling plain m_sendmessage.
      */
-    public uint32 sendmessage(int friend_number, uint8[] message);
-    public uint32 sendmessage_withid(int friend_number, uint32 id, uint8[] message);
+    public uint32 sendmessage(int friendnumber, uint8[] message);
+    public uint32 sendmessage_withid(int friendnumber, uint32 id, uint8[] message);
 
     /* Send an action to an online friend.
      *
      *  return 1 if packet was successfully put into the send queue.
      *  return 0 if it was not.
      */
-    public int sendaction(int friendNumber, uint8[] action);
+    public int sendaction(int friendnumber, uint8[] action);
 
     /* Set our nickname.
      * name must be a string of maximum MAX_NAME_LENGTH length.
@@ -222,7 +235,7 @@ namespace Tox {
      *  return 0 if success.
      *  return -1 if failure.
      */
-    public int getname(int friendNumber, [CCode(array_length=false)] uint8[] name);
+    public int getname(int friendnumber, [CCode(array_length=false)] uint8[] name);
 
     /* Set our user status.
      * You are responsible for freeing status after.
@@ -236,13 +249,13 @@ namespace Tox {
     /*  return the length of friendnumber's status message, including null.
      *  Pass it into malloc
      */
-    public int get_statusmessage_size(int friendNumber);
+    public int get_statusmessage_size(int friendnumber);
 
     /* Copy friendnumber's status message into buf, truncating if size is over maxlen.
      * Get the size you need to allocate from m_get_statusmessage_size.
      * The self variant will copy our own status message.
      */
-    public int copy_statusmessage(int friendNumber, uint8[] buf);
+    public int copy_statusmessage(int friendnumber, uint8[] buf);
     public int copy_self_statusmessage(uint8[] buf);
 
     /*  return one of USERSTATUS values.
@@ -250,13 +263,20 @@ namespace Tox {
      *  As above, the self variant will return our own USERSTATUS.
      *  If friendnumber is invalid, this shall return USERSTATUS_INVALID.
      */
-    public UserStatus get_userstatus(int friendNumber);
+    public UserStatus get_userstatus(int friendnumber);
     public UserStatus get_selfuserstatus();
 
     /* Sets whether we send read receipts for friendnumber.
      * This function is not lazy, and it will fail if yesno is not (0 or 1).
      */
-    public void set_send_receipts(int friendNumber, int yesno);
+    public void set_send_receipts(int friendnumber, int yesno);
+    /* Allocate and return a list of valid friend id's. List must be freed by the
+     * caller.
+     *
+     * return 0 if success.
+     * return -1 if failure.
+     */
+     public int get_friendlist(out int[] out_list, out int out_list_length);
 
     /* set the function that will be executed when a friend request is received.
         function format is function(uint8_t * public_key, uint8_t * data, uint16_t length) */
@@ -303,10 +323,25 @@ namespace Tox {
         their connection status is offline. */
     public void callback_connectionstatus(ConnectionstatusCallback callback);
 
-    /* Use this function to bootstrap the client
-        Sends a get nodes request to the given node with ip port and public_key */
-    public void bootstrap( IpPort ip_port, [CCode(array_length=false)]uint8[] public_key );
-
+    /*
+     * Use these two functions to bootstrap the client.
+     */
+    /* Sends a "get nodes" request to the given node with ip, port and public_key
+     *   to setup connections
+     */
+    public void bootstrap_from_ip( IpPort ip_port, [CCode(array_length=false)]uint8[] public_key );
+    /* Resolves address into an IP address. If successful, sends a "get nodes"
+     *   request to the given node with ip, port and public_key to setup connections
+     *
+     * address can be a hostname or an IP address (IPv4 or IPv6).
+     * if ipv6enabled is 0 (zero), the resolving sticks STRICTLY to IPv4 addresses
+     * if ipv6enabled is not 0 (zero), the resolving looks for IPv6 addresses first,
+     *   then IPv4 addresses.
+     *
+     *  returns 1 if the address could be converted into an IP address
+     *  returns 0 otherwise
+     */
+    public int bootstrap_from_address(string address, uint8 ipv6enabled, uint16 port, [CCode(array_length=false)] uint8[] public_key);
     /* returns 0 if we are not connected to the DHT
         returns 1 if we are */
     public int isconnected();
