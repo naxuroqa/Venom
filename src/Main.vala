@@ -21,18 +21,28 @@ public class Main {
     public static int main (string[] args) {
 
       Gtk.init (ref args);
+      
+      string cssdata = "
+      GtkWindow {
+        background-color: #231f20;
+      }";
+      
+      Gtk.CssProvider provider = new Gtk.CssProvider();
+      provider.load_from_data(cssdata, cssdata.length);
+      
+      
+      Gdk.Screen screen = Gdk.Screen.get_default();
+      
+      
+      Gtk.StyleContext context = new Gtk.StyleContext();
+      context.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
 
-      ContactListWindow contact_list;
-
-      try {
-        contact_list = ContactListWindow.create();
-        contact_list.show();
-      } catch ( Error e ) {
-        stderr.printf("Could not load UI: %s\n", e.message);
-        return 1;
-      }
+      ContactListWindow contact_list = new ContactListWindow();
+      contact_list.show_all();
 
       Gtk.main();
+      
+      stdout.printf("Shutting down...\n");
 
       return 0;
     }

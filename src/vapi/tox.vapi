@@ -19,30 +19,54 @@ using GLib;
 
 // Tested with Tox version e0779ed0a615002684594cd48f1e3f5f9c7639f9
 
-[CCode(cheader_filename="tox/tox.h")]
+[CCode(cheader_filename="tox/tox.h", cprefix = "TOX_")]
 namespace Tox {
   [CCode (cprefix="TOX_")]
   public const int MAX_NAME_LENGTH;
-
   [CCode (cprefix="TOX_")]
   public const int MAX_STATUSMESSAGE_LENGTH;
-
   [CCode (cprefix="TOX_")]
   public const int CLIENT_ID_SIZE;
-
   [CCode (cprefix="TOX_")]
   public const int FRIEND_ADDRESS_SIZE;
+  [CCode (cprefix="TOX_")]
+  public const int PORTRANGE_FROM;
+  [CCode (cprefix="TOX_")]
+  public const int PORTRANGE_TO;
+  [CCode (cprefix="TOX_")]
+  public const int PORT_DEFAULT;
+}
 
+[CCode(cheader_filename="tox/tox.h", cprefix = "tox_")]
+namespace Tox {
   [SimpleType]
-  [CCode(cname="tox_IP")]
-  public struct Ip {
+  public struct IP4 {
     public uint32 i;
     public uint16 s[2];
     public uint8 c[4];
   }
+  
+  [SimpleType]
+  public struct IP6 {
+    [CCode(cname="uint32")]
+    public uint32 i[4];
+    [CCode(cname="uint16")]
+    public uint16 s[8];
+    [CCode(cname="uint8")]
+    public uint8 c[16];
+  }
+  
+  [SimpleType]
+  public struct IPAny {
+    [CCode(cname="uint32")]
+    public uint32 i[4];
+    [CCode(cname="uint16")]
+    public uint16 s[8];
+    [CCode(cname="uint8")]
+    public uint8 c[16];
+  }
 
   [SimpleType]
-  [CCode(cname="tox_IP_Port")]
   public struct IpPort {
     public Ip ip;
     public uint16 port;

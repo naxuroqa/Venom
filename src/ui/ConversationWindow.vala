@@ -15,7 +15,6 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 namespace Venom {
   public class ConversationWindow : Object {
     private Gtk.Window conversation_window;
@@ -37,11 +36,11 @@ namespace Venom {
       this.conversation_window = conversation_window;
       this.label_conversation_partner = label_conversation_partner;
       this.image_conversation_partner = image_conversation_partner;
-      
+
       conversation_window.delete_event.connect(() => {conversation_window.hide(); return true;});
-      
+
       label_conversation_partner.set_text("Conversation with %s".printf(c.name));
-      
+
       conversation_tree_view = new ConversationTreeView();
       conversation_tree_view.show_all();
       scrolled_window.add(conversation_tree_view);
@@ -67,7 +66,7 @@ namespace Venom {
         return;
       new_conversation_message(message);
     }
-    
+
     public void show_all() {
       conversation_window.show_all();
     }

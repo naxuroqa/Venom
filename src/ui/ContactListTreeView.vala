@@ -22,23 +22,27 @@ namespace Venom {
     public signal void contact_activated(Contact contact);
 
     public ContactListTreeView() {
-        list_store_contacts = new Gtk.ListStore (1, typeof (Contact));
+      list_store_contacts = new Gtk.ListStore (1, typeof (Contact));
 
-        Gtk.TreeViewColumn name_column = new Gtk.TreeViewColumn();
-        name_column.set_title("Name");
-        Gtk.CellRendererText name_column_cell = new Gtk.CellRendererText();
-        name_column.pack_start(name_column_cell, true);
+      Gtk.TreeViewColumn name_column = new Gtk.TreeViewColumn();
+      name_column.set_title("Name");
+      Gtk.CellRendererText name_column_cell = new Gtk.CellRendererText();
+      name_column.pack_start(name_column_cell, true);
 
-        name_column.set_cell_data_func(name_column_cell, render_contact_name);
+      name_column.set_cell_data_func(name_column_cell, render_contact_name);
 
-        set_model (list_store_contacts);
+      set_model (list_store_contacts);
 
-        append_column(name_column);
+      append_column(name_column);
 
-        row_activated.connect(on_row_activated);
+      row_activated.connect(on_row_activated);
 
-        //hide headers
-        set_headers_visible(false);
+      //hide headers
+      set_headers_visible(false);
+    }
+    
+    ~ContactListTreeView() {
+      stderr.printf("Destructor ContactListTreeView");
     }
     
     private Contact get_contact_from_iter(Gtk.TreeIter iter) {
