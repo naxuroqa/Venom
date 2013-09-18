@@ -7,7 +7,7 @@
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <child>
-      <object class="GtkBox" id="self_info">
+      <object class="GtkBox" id="self-info">
         <property name="height_request">59</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -33,7 +33,7 @@
             <property name="valign">center</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkLabel" id="label_username">
+              <object class="GtkLabel" id="label-username">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
@@ -109,7 +109,6 @@
         <property name="can_focus">True</property>
         <property name="hscrollbar_policy">never</property>
         <property name="vscrollbar_policy">always</property>
-        <property name="shadow_type">in</property>
         <child>
           <placeholder/>
         </child>

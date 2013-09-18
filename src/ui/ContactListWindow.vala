@@ -104,7 +104,7 @@ namespace Venom {
       button_preferences = builder.get_object("button_preferences") as Gtk.Button;
       image_status = builder.get_object("image_status") as Gtk.Image;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
-      label_name = builder.get_object("label_username") as Gtk.Label;
+      label_name = builder.get_object("label-username") as Gtk.Label;
       label_status = builder.get_object("label_userstatus") as Gtk.Label;
 
       builder.connect_signals(this);

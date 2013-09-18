@@ -42,13 +42,13 @@ namespace Venom {
 
     public ToxSession() {
       // create handle
-      handle = new Tox.Tox();
+      handle = new Tox.Tox(1);
 
       // Add one default dht server
-      Tox.Ip ip = {(uint32)0x7651B8C0}; //192.184.81.118
-      Tox.IpPort ip_port = { ip, ((uint16)33445).to_big_endian() };
+      string ip = "192.184.81.118";
+      uint16 port = ((uint16)33445).to_big_endian();
       uint8[] pub_key = Tools.hexstring_to_bin("5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143");
-      dht_servers.add(new DhtServer.withArgs(ip_port, pub_key));
+      dht_servers.add(new DhtServer.withArgs(ip, port, pub_key));
 
       // setup callbacks
       handle.callback_friendrequest(this.on_friendrequest_callback);
@@ -244,7 +244,7 @@ namespace Venom {
       lock(handle) {
         if(!bootstrapped) {
           stdout.printf("Connecting to DHT server:\n%s\n", dht_servers[0].toString());
-          handle.bootstrap(dht_servers[0].ip_port, dht_servers[0].pub_key);
+          handle.bootstrap_from_address(dht_servers[0].ip, dht_servers[0].ipv6 ? 1 : 0, dht_servers[0].port, dht_servers[0].pub_key);
           bootstrapped = true;
         }
       }

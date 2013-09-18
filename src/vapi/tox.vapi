@@ -18,64 +18,22 @@
 using GLib;
 
 // Tested with Tox version e0779ed0a615002684594cd48f1e3f5f9c7639f9
-
-[CCode(cheader_filename="tox/tox.h", cprefix = "TOX_")]
-namespace Tox {
-  [CCode (cprefix="TOX_")]
-  public const int MAX_NAME_LENGTH;
-  [CCode (cprefix="TOX_")]
-  public const int MAX_STATUSMESSAGE_LENGTH;
-  [CCode (cprefix="TOX_")]
-  public const int CLIENT_ID_SIZE;
-  [CCode (cprefix="TOX_")]
-  public const int FRIEND_ADDRESS_SIZE;
-  [CCode (cprefix="TOX_")]
-  public const int PORTRANGE_FROM;
-  [CCode (cprefix="TOX_")]
-  public const int PORTRANGE_TO;
-  [CCode (cprefix="TOX_")]
-  public const int PORT_DEFAULT;
-}
-
 [CCode(cheader_filename="tox/tox.h", cprefix = "tox_")]
 namespace Tox {
-  [SimpleType]
-  public struct IP4 {
-    public uint32 i;
-    public uint16 s[2];
-    public uint8 c[4];
-  }
-  
-  [SimpleType]
-  public struct IP6 {
-    [CCode(cname="uint32")]
-    public uint32 i[4];
-    [CCode(cname="uint16")]
-    public uint16 s[8];
-    [CCode(cname="uint8")]
-    public uint8 c[16];
-  }
-  
-  [SimpleType]
-  public struct IPAny {
-    // FIXME add sa_family_t family
-    IP4 ip4;
-    IP6 ip6;
-  }
-
-  [SimpleType]
-  public struct IP4Port {
-    public IP4 ip;
-    public uint16 port;
-    /* not used for anything right now */
-    public uint16 padding;
-  }
-  
-  [SimpleType]
-  public struct IPAnyPort {
-    IPAny ip;
-    uint16 port;
-  }
+  [CCode(cprefix = "TOX_")]
+  public const int MAX_NAME_LENGTH;
+  [CCode(cprefix = "TOX_")]
+  public const int MAX_STATUSMESSAGE_LENGTH;
+  [CCode(cprefix = "TOX_")]
+  public const int CLIENT_ID_SIZE;
+  [CCode(cprefix = "TOX_")]
+  public const int FRIEND_ADDRESS_SIZE;
+  [CCode(cprefix = "TOX_")]
+  public const int PORTRANGE_FROM;
+  [CCode(cprefix = "TOX_")]
+  public const int PORTRANGE_TO;
+  [CCode(cprefix = "TOX_")]
+  public const int PORT_DEFAULT;
 
   /* errors for m_addfriend
    *  FAERR - Friend Add Error */
@@ -329,7 +287,9 @@ namespace Tox {
     /* Sends a "get nodes" request to the given node with ip, port and public_key
      *   to setup connections
      */
-    public void bootstrap_from_ip( IpPort ip_port, [CCode(array_length=false)]uint8[] public_key );
+    // FIXME
+    //public void bootstrap_from_ip( IPAnyPort ip_port, [CCode(array_length=false)]uint8[] public_key );
+
     /* Resolves address into an IP address. If successful, sends a "get nodes"
      *   request to the given node with ip, port and public_key to setup connections
      *

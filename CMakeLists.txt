@@ -48,6 +48,7 @@ LINK_DIRECTORIES( ${GTK_LIBRARY_DIRS}
 
 vala_precompile( VALA_C_TEST
   testing/ToxVapiTest.vala
+  src/core/Tools.vala
 PACKAGES
   gio-2.0
 OPTIONS

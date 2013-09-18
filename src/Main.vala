@@ -21,11 +21,27 @@ public class Main {
     public static int main (string[] args) {
 
       Gtk.init (ref args);
-      
-      string cssdata = "
-      GtkWindow {
-        background-color: #231f20;
-      }";
+      /*
+      string cssdata = "* {
+    -GtkRange-slider-width: 15;
+    -GtkRange-stepper-spacing: 0;
+    -GtkRange-trough-border: -1;
+    -GtkRange-trough-under-steppers: 1;
+    -GtkScrollbar-has-backward-stepper: false;
+    -GtkScrollbar-has-forward-stepper: false;
+    -GtkScrollbar-min-slider-length: 50;
+}
+
+* {
+        background-color: #1c1c1c;
+      }
+GtkScrollbar {
+  background-color: #1c1c1c;
+}
+.slider {
+  background-color: #414042;
+}
+";
       
       Gtk.CssProvider provider = new Gtk.CssProvider();
       provider.load_from_data(cssdata, cssdata.length);
@@ -35,7 +51,7 @@ public class Main {
       
       
       Gtk.StyleContext context = new Gtk.StyleContext();
-      context.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+      context.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);*/
 
       ContactListWindow contact_list = new ContactListWindow();
       contact_list.show_all();
