@@ -102,4 +102,8 @@ INSTALL(FILES ui/add_friend_dialog.glade DESTINATION share/venom/ui)
 INSTALL(FILES ui/contact_list.glade DESTINATION share/venom/ui)
 INSTALL(FILES ui/conversation_window.glade DESTINATION share/venom/ui)
 
+INSTALL(FILES pixmaps/add.png DESTINATION share/venom/pixmaps)
+INSTALL(FILES pixmaps/groupchat.png DESTINATION share/venom/pixmaps)
+INSTALL(FILES pixmaps/settings.png DESTINATION share/venom/pixmaps)
+
 # vim:set ts=2 sw=2 et:
