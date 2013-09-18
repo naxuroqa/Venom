@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkImage" id="image_add_contact">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image_group_chat">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image_preferences">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
   <object class="GtkBox" id="box">
     <property name="height_request">300</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <child>
-      <object class="GtkBox" id="self-info">
+      <object class="GtkBox" id="self_info">
         <property name="height_request">59</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -33,7 +48,7 @@
             <property name="valign">center</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkLabel" id="label-username">
+              <object class="GtkLabel" id="label_username">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
@@ -133,15 +148,10 @@
             <property name="has_tooltip">True</property>
             <property name="tooltip_markup" translatable="yes">Add contact</property>
             <property name="tooltip_text" translatable="yes">Add contact</property>
+            <property name="image">image_add_contact</property>
             <property name="relief">none</property>
+            <property name="always_show_image">True</property>
             <signal name="clicked" handler="venom_contact_list_window_button_add_contact_clicked" swapped="no"/>
-            <child>
-              <object class="GtkImage" id="image3">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="pixbuf">../pixmaps/add.png</property>
-              </object>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -157,15 +167,10 @@
             <property name="has_tooltip">True</property>
             <property name="tooltip_markup" translatable="yes">Remove contact</property>
             <property name="tooltip_text" translatable="yes">Remove contact</property>
+            <property name="image">image_group_chat</property>
             <property name="relief">none</property>
+            <property name="always_show_image">True</property>
             <signal name="clicked" handler="venom_contact_list_window_button_groupchat_clicked" swapped="no"/>
-            <child>
-              <object class="GtkImage" id="image1">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="pixbuf">../pixmaps/groupchat.png</property>
-              </object>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -178,15 +183,9 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="image">image_preferences</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="venom_contact_list_window_button_preferences_clicked" swapped="no"/>
-            <child>
-              <object class="GtkImage" id="image2">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="pixbuf">../pixmaps/settings.png</property>
-              </object>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
