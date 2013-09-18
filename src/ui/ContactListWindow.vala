@@ -111,6 +111,8 @@ namespace Venom {
       
       contact_list_tree_view = new ContactListTreeView();
       contact_list_tree_view.show_all();
+      Gtk.ScrolledWindow w = builder.get_object("contacts_window") as Gtk.ScrolledWindow;
+      w.add(contact_list_tree_view);
     }
 
     // Connect
@@ -137,13 +139,14 @@ namespace Venom {
     
     // Restore friends from datafile
     private void init_contacts() {
-      uint8[] client_key;
-      for(int client_id = 0; (client_key = session.getclient_id(client_id)) != null ; client_id++) {
-        string name = session.getname(client_id);
-        stdout.printf("Adding friend (%s) from data file: %s\n", (name != null ? name : ""), Tools.bin_to_hexstring(client_key));
-        Contact c = new Contact(client_key, client_id);
-        contacts[client_id] = c;
-        add_contact(c);
+      Contact[] contacts = session.get_friendlist();
+      if (contacts != null) {
+        foreach(Contact c in contacts) {
+          stdout.printf("Retrieved contact %s from savefile.\n", Tools.bin_to_hexstring(c.public_key));
+          add_contact(c);
+        }
+      } else {
+        stderr.printf("Could not retrieve contacts!\n");
       }
     }
 
@@ -315,6 +318,7 @@ namespace Venom {
       }
     }
 
+    // currently deactivated
     [CCode (instance_pos = -1)]
     public void button_remove_contact_clicked(Object source) {
       Contact c = contact_list_tree_view.get_selected_contact();
@@ -334,6 +338,11 @@ namespace Venom {
       session.delfriend(c.friend_id);
       contacts.unset(c.friend_id);
       on_contact_removed(c);
+    }
+    
+    [CCode (instance_pos = -1)]
+    public void button_groupchat_clicked(Object source) {
+      stdout.printf("Groupchat button clicked\n");
     }
 
     [CCode (instance_pos = -1)]

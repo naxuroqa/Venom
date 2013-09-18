@@ -226,6 +226,19 @@ namespace Venom {
       }
       return ret == 0 ? (string)buf : null;
     }
+    
+    public string get_statusmessage(int friend_number) {
+      int size = 0;
+      lock(handle) {
+        size = handle.get_statusmessage_size(friend_number);
+      }
+      uint8 [] buf = new uint8[size];
+      int ret = 0;
+      lock(handle) {
+        ret = handle.copy_statusmessage(friend_number, buf);
+      }
+      return (string)buf;
+    }
 
     public uint32 sendmessage(int friend_number, string message) {
       uint32 ret = 0;
@@ -234,6 +247,23 @@ namespace Venom {
         ret = handle.sendmessage(friend_number, buf);
       }
       return ret;
+    }
+    
+    public Contact[]? get_friendlist() {
+      int[] friend_numbers;
+      int ret = 0;
+      lock(handle) {
+        ret = handle.get_friendlist(out friend_numbers);
+      }
+      if(ret != 0)
+        return null;
+      Contact[] contacts = new Contact[friend_numbers.length];
+      for(int i = 0; i < friend_numbers.length; ++i) {
+        int friend_id = friend_numbers[i];
+        uint8[] friend_key = getclient_id(friend_id);
+        contacts[i] = new Contact(friend_key, friend_id);
+      }
+      return contacts;
     }
 
     ////////////////////////////// Thread related operations /////////////////////////
@@ -249,20 +279,16 @@ namespace Venom {
         }
       }
 
+      bool new_status = false;
       while(running) {
-        if(!connected) {
-          lock(handle) {
-            if(connected = (handle.isconnected() != 0)) {
-              Idle.add(() => { on_ownconnectionstatus(true); return false; });
-              connected_dht_server = dht_servers[0];
-            }
-          }
-        } else {
-          lock(handle) {
-            if(!(connected = (handle.isconnected() != 0))) {
-              Idle.add(() => { on_ownconnectionstatus(false); return false; });
-            }
-          }
+        lock(handle) {
+          new_status = (handle.isconnected() != 0);
+        }
+        if(new_status && !connected) {
+          Idle.add(() => { on_ownconnectionstatus(true); return false; });
+          connected_dht_server = dht_servers[0];
+        } else if(!new_status && connected) {
+          Idle.add(() => { on_ownconnectionstatus(false); return false; });
         }
         lock(handle) {
           handle.do();

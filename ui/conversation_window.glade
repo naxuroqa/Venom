@@ -27,7 +27,7 @@
                     <property name="height_request">59</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="pixbuf">/usr/share/pixmaps/faces/butterfly.png</property>
+                    <property name="stock">gtk-missing-image</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -92,11 +92,9 @@
                 <child>
                   <object class="GtkButton" id="button1">
                     <property name="label" translatable="yes">call</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -107,11 +105,9 @@
                 <child>
                   <object class="GtkButton" id="button2">
                     <property name="label" translatable="yes">video</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -154,7 +150,7 @@
             <property name="can_focus">True</property>
             <property name="invisible_char">●</property>
             <property name="invisible_char_set">True</property>
-            <property name="placeholder_text">Type my message here...</property>
+            <property name="placeholder_text">Type your message here...</property>
             <signal name="activate" handler="venom_conversation_window_entry_activate" swapped="no"/>
           </object>
           <packing>

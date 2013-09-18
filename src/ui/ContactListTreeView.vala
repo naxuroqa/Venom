@@ -41,10 +41,6 @@ namespace Venom {
       set_headers_visible(false);
     }
     
-    ~ContactListTreeView() {
-      stderr.printf("Destructor ContactListTreeView");
-    }
-    
     private Contact get_contact_from_iter(Gtk.TreeIter iter) {
       GLib.Value v;
       model.get_value(iter, 0, out v);

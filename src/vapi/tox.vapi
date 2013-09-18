@@ -234,7 +234,7 @@ namespace Tox {
      * return 0 if success.
      * return -1 if failure.
      */
-     public int get_friendlist(out int[] out_list, out int out_list_length);
+    public int get_friendlist(out int[] out_list);
 
     /* set the function that will be executed when a friend request is received.
         function format is function(uint8_t * public_key, uint8_t * data, uint16_t length) */

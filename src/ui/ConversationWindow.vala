@@ -44,7 +44,6 @@ namespace Venom {
       conversation_tree_view = new ConversationTreeView();
       conversation_tree_view.show_all();
       scrolled_window.add(conversation_tree_view);
-      //box.pack_start(conversation_tree_view);
 
       new_conversation_message.connect(conversation_tree_view.add_message);
     }
