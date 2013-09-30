@@ -251,9 +251,10 @@ namespace Venom {
     
     public Contact[]? get_friendlist() {
       int[] friend_numbers;
-      int ret = 0;
+      uint ret = 0;
       lock(handle) {
-        ret = handle.get_friendlist(out friend_numbers);
+        friend_numbers = new int[handle.count_friendlist()];
+        ret = handle.copy_friendlist(friend_numbers);
       }
       if(ret != 0)
         return null;
@@ -293,7 +294,7 @@ namespace Venom {
         lock(handle) {
           handle.do();
         }
-        Thread.usleep(10000);
+        Thread.usleep(50000);
       }
       stdout.printf("Background thread stopped.\n");
       return 0;

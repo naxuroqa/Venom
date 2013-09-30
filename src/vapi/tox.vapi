@@ -78,21 +78,13 @@ namespace Tox {
     [CCode (cname = "tox_new")]
     public Tox(uint8 ipv6enabled);
 
-    public delegate void FriendrequestCallback([CCode(array_length=false)] uint8[] public_key, [CCode(array_length_type="guint16")] uint8[] data);
-    public delegate void FriendmessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] message);
-    public delegate void ActionCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] action);
-    public delegate void NamechangeCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] new_name);
-    public delegate void StatusmessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] new_status);
-    public delegate void UserstatusCallback(Tox tox, int friend_number, UserStatus user_status);
-    public delegate void ReadReceiptCallback(Tox tox, int friend_number, uint32 receipt);
-    public delegate void ConnectionstatusCallback(Tox tox, int friend_number, uint8 status);
-
     /*
      * returns a FRIEND_ADDRESS_SIZE byte address to give to others.
      * format: [client_id (32 bytes)][nospam number (4 bytes)][checksum (2 bytes)]
      *
      */
     public void getaddress([CCode(array_length=false)] uint8[] address);
+
     /*
      * add a friend
      * set the data that will be sent along with friend request
@@ -130,7 +122,7 @@ namespace Tox {
 
     /* Remove a friend. */
     public int delfriend(int friendnumber);
-    
+
     /* Checks friend's connecting status.
      *
      *  return 1 if friend is connected to us (Online).
@@ -166,6 +158,16 @@ namespace Tox {
      */
     public int sendaction(int friendnumber, uint8[] action);
 
+    /* Set friendnumber's nickname.
+     * name must be a string of maximum MAX_NAME_LENGTH length.
+     * length must be at least 1 byte.
+     * length is the length of name with the NULL terminator.
+     *
+     *  return 0 if success.
+     *  return -1 if failure.
+     */
+    public int setfriendname(int friendnumber, [CCode(array_length_type="guint16")] uint8[] name);
+
     /* Set our nickname.
      * name must be a string of maximum MAX_NAME_LENGTH length.
      * length must be at least 1 byte.
@@ -174,7 +176,7 @@ namespace Tox {
      *  return 0 if success.
      *  return -1 if failure.
      */
-    public int setname(uint8[] name);
+    public int setname([CCode(array_length_type="guint16")] uint8[] name);
 
     /*
      * Get your nickname.
@@ -187,10 +189,10 @@ namespace Tox {
      */
     public uint16 getselfname([CCode(array_length_type="guint16")] uint8[] name);
 
-    /* Get name of friendnumber and put it in name.
+     /* Get name of friendnumber and put it in name.
      * name needs to be a valid memory location with a size of at least MAX_NAME_LENGTH (128) bytes.
      *
-     *  return 0 if success.
+     *  return length of name (with the NULL terminator) if success.
      *  return -1 if failure.
      */
     public int getname(int friendnumber, [CCode(array_length=false)] uint8[] name);
@@ -201,7 +203,7 @@ namespace Tox {
      *  returns 0 on success.
      *  returns -1 on failure.
      */
-    public int set_statusmessage(uint8[] status);
+    public int set_statusmessage([CCode(array_length_type="guint16")] uint8[] status);
     public int set_userstatus(UserStatus status);
 
     /*  return the length of friendnumber's status message, including null.
@@ -228,58 +230,142 @@ namespace Tox {
      * This function is not lazy, and it will fail if yesno is not (0 or 1).
      */
     public void set_send_receipts(int friendnumber, int yesno);
-    /* Allocate and return a list of valid friend id's. List must be freed by the
-     * caller.
-     *
-     * return 0 if success.
-     * return -1 if failure.
-     */
-    public int get_friendlist(out int[] out_list);
 
-    /* set the function that will be executed when a friend request is received.
-        function format is function(uint8_t * public_key, uint8_t * data, uint16_t length) */
+    /* Return the number of friends in the instance m.
+     * You should use this to determine how much memory to allocate
+     * for copy_friendlist. */
+    public uint32 count_friendlist();
+
+    /* Copy a list of valid friend IDs into the array out_list.
+     * If out_list is NULL, returns 0.
+     * Otherwise, returns the number of elements copied.
+     * If the array was too small, the contents
+     * of out_list will be truncated to list_size. */
+    public uint32 copy_friendlist(int[] out_list);
+
+    /* Set the function that will be executed when a friend request is received.
+     *  Function format is function(uint8_t * public_key, uint8_t * data, uint16_t length)
+     */
+    public delegate void FriendrequestCallback([CCode(array_length=false)] uint8[] public_key, [CCode(array_length_type="guint16")] uint8[] data);
     public void callback_friendrequest(FriendrequestCallback callback);
 
-    /* set the function that will be executed when a message from a friend is received.
-        function format is: function(int friendnumber, uint8_t * message, uint32_t length) */
+    /* Set the function that will be executed when a message from a friend is received.
+     *  Function format is: function(int friendnumber, uint8_t * message, uint32_t length)
+     */
+    public delegate void FriendmessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] message);
     public void callback_friendmessage(FriendmessageCallback callback);
 
-    /* set the function that will be executed when an action from a friend is received.
-        function format is: function(int friendnumber, uint8_t * action, uint32_t length) */
+    /* Set the function that will be executed when an action from a friend is received.
+     *  Function format is: function(int friendnumber, uint8_t * action, uint32_t length)
+     */
+    public delegate void ActionCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] action);
     public void callback_action(ActionCallback callback);
 
-    /* set the callback for name changes
-        function(int friendnumber, uint8_t *newname, uint16_t length)
-        you are not responsible for freeing newname */
+    /* Set the callback for name changes.
+     *  function(int friendnumber, uint8_t *newname, uint16_t length)
+     *  You are not responsible for freeing newname
+     */
+    public delegate void NamechangeCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] new_name);
     public void callback_namechange(NamechangeCallback callback);
 
-    /* set the callback for status message changes
-        function(int friendnumber, uint8_t *newstatus, uint16_t length)
-        you are not responsible for freeing newstatus */
+    /* Set the callback for status message changes.
+     *  function(int friendnumber, uint8_t *newstatus, uint16_t length)
+     *  You are not responsible for freeing newstatus.
+     */
+    public delegate void StatusmessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] new_status);
     public void callback_statusmessage(StatusmessageCallback callback);
 
-    /* set the callback for status type changes
-        function(int friendnumber, USERSTATUS kind) */
+    /* Set the callback for status type changes.
+     *  function(int friendnumber, USERSTATUS kind)
+     */
+    public delegate void UserstatusCallback(Tox tox, int friend_number, UserStatus user_status);
     public void callback_userstatus(UserstatusCallback callback);
 
-    /* set the callback for read receipts
-        function(int friendnumber, uint32_t receipt)
-        if you are keeping a record of returns from m_sendmessage,
-        receipt might be one of those values, and that means the message
-        has been received on the other side. since core doesn't
-        track ids for you, receipt may not correspond to any message
-        in that case, you should discard it. */
+    /* Set the callback for read receipts.
+     *  function(int friendnumber, uint32_t receipt)
+     *
+     *  If you are keeping a record of returns from m_sendmessage;
+     *  receipt might be one of those values, meaning the message
+     *  has been received on the other side.
+     *  Since core doesn't track ids for you, receipt may not correspond to any message.
+     *  In that case, you should discard it.
+     */
+    public delegate void ReadReceiptCallback(Tox tox, int friend_number, uint32 receipt);
     public void callback_read_receipt(ReadReceiptCallback callback);
 
-    /* set the callback for connection status changes
-        function(int friendnumber, uint8_t status)
-        status:
-          0 -- friend went offline after being previously online
-          1 -- friend went online
-        note that this callback is not called when adding friends, thus the "after
-        being previously online" part. it's assumed that when adding friends,
-        their connection status is offline. */
+    /* Set the callback for connection status changes.
+     *  function(int friendnumber, uint8_t status)
+     *
+     *  Status:
+     *    0 -- friend went offline after being previously online
+     *    1 -- friend went online
+     *
+     *  NOTE: This callback is not called when adding friends, thus the "after
+     *  being previously online" part. it's assumed that when adding friends,
+     *  their connection status is offline.
+     */
+    public delegate void ConnectionstatusCallback(Tox tox, int friend_number, uint8 status);
     public void callback_connectionstatus(ConnectionstatusCallback callback);
+
+
+    /**********GROUP CHAT FUNCTIONS: WARNING WILL BREAK A LOT************/
+
+    /* Set the callback for group invites.
+     *
+     *  Function(Tox *tox, int friendnumber, uint8_t *group_public_key, void *userdata)
+     */
+    public delegate void GroupInviteCallback(Tox tox, int friendnumber, [CCode(array_length=false)] uint8[] group_public_key);
+    public void callback_group_invite(GroupInviteCallback callback);
+
+    /* Set the callback for group messages.
+     *
+     *  Function(Tox *tox, int groupnumber, int friendgroupnumber, uint8_t * message, uint16_t length, void *userdata)
+     */
+    public delegate void GroupMessageCallback(Tox tox, int groupnumber, int friendgroupnumber, [CCode(array_length_type="guint16")] uint8[] message);
+    public void callback_group_message(GroupMessageCallback callback);
+
+    /* Creates a new groupchat and puts it in the chats array.
+     *
+     * return group number on success.
+     * return -1 on failure.
+     */
+    int add_groupchat();
+
+    /* Delete a groupchat from the chats array.
+     *
+     * return 0 on success.
+     * return -1 if failure.
+     */
+    int del_groupchat(int groupnumber);
+
+    /* Copy the name of peernumber who is in groupnumber to name.
+     * name must be at least TOX_MAX_NAME_LENGTH long.
+     *
+     * return length of name if success
+     * return -1 if failure
+     */
+    int group_peername(int groupnumber, int peernumber, [CCode(array_length=false)] uint8[] name);
+
+    /* invite friendnumber to groupnumber
+     * return 0 on success
+     * return -1 on failure
+     */
+    int invite_friend(int friendnumber, int groupnumber);
+
+    /* Join a group (you need to have been invited first.)
+     *
+     * returns group number on success
+     * returns -1 on failure.
+     */
+    int join_groupchat(int friendnumber, [CCode(array_length=false)] uint8[] friend_group_public_key);
+
+    /* send a group message
+     * return 0 on success
+     * return -1 on failure
+     */
+    int group_message_send(int groupnumber, uint8[] message);
+
+    /******************END OF GROUP CHAT FUNCTIONS************************/
 
     /*
      * Use these two functions to bootstrap the client.
