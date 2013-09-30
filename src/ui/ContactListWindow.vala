@@ -53,6 +53,7 @@ namespace Venom {
       init_contacts();
 
       // initialize session specific gui stuff
+      image_userimage.set_from_pixbuf(ResourceFactory.instance.default_image);
       label_name.set_text(session.getselfname());
       label_status.set_text(session.get_self_statusmessage());
 
@@ -107,21 +108,15 @@ namespace Venom {
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
       label_name = builder.get_object("label_username") as Gtk.Label;
       label_status = builder.get_object("label_userstatus") as Gtk.Label;
-      
-      string pixmaps_folder = Path.build_filename(Tools.find_data_dir(), "pixmaps");
+
       Gtk.Image image_add_contact = builder.get_object("image_add_contact") as Gtk.Image;
       Gtk.Image image_group_chat  = builder.get_object("image_group_chat") as Gtk.Image;
       Gtk.Image image_preferences = builder.get_object("image_preferences") as Gtk.Image;
 
-      string image_add_contact_filename   = Path.build_filename(pixmaps_folder, "add.png");
-      string image_group_chat_filename    = Path.build_filename(pixmaps_folder, "groupchat.png");
-      string image_preferences_filename   = Path.build_filename(pixmaps_folder, "settings.png");
-      string image_default_image_filename = Path.build_filename(pixmaps_folder, "default_image.png");
-
-      image_add_contact.set_from_file(image_add_contact_filename);
-      image_group_chat.set_from_file( image_group_chat_filename);
-      image_preferences.set_from_file(image_preferences_filename);
-      image_userimage.set_from_file(image_default_image_filename);
+      image_add_contact.set_from_pixbuf(ResourceFactory.instance.add);
+      image_group_chat.set_from_pixbuf(ResourceFactory.instance.groupchat);
+      image_preferences.set_from_pixbuf(ResourceFactory.instance.settings);
+      image_status.set_from_pixbuf(ResourceFactory.instance.offline);
 
       builder.connect_signals(this);
       
@@ -262,10 +257,10 @@ namespace Venom {
 
     private void on_ownconnectionstatus(bool status) {
       if(status) {
-        image_status.set_from_stock(Gtk.Stock.YES, Gtk.IconSize.BUTTON);
+        image_status.set_from_pixbuf(ResourceFactory.instance.online);
         image_status.set_tooltip_text("Connected to: %s".printf(session.connected_dht_server.toString()));
       } else {
-        image_status.set_from_stock(Gtk.Stock.NO, Gtk.IconSize.BUTTON);
+        image_status.set_from_pixbuf(ResourceFactory.instance.offline);
         image_status.set_tooltip_text("");
       }
     }

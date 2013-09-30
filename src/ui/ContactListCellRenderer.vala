@@ -18,19 +18,6 @@
 namespace Venom {
   public class ContactListCellRenderer : Gtk.CellRenderer {
     public Contact contact { get; set; }
-    
-    private static string pixmaps_folder = Path.build_filename(Tools.find_data_dir(), "pixmaps");
-    private static Gdk.Pixbuf? default_image = load_default_image();
-    
-    private static Gdk.Pixbuf? load_default_image() {
-      Gdk.Pixbuf? buf = null;
-      try {
-        buf = new Gdk.Pixbuf.from_file( Path.build_filename(pixmaps_folder, "default_image.png") );
-      } catch (Error e) {
-        stderr.printf("Could not open pixbuf: %s\n", e.message);
-      }
-      return buf;
-    }
 
     public ContactListCellRenderer() {
       GLib.Object();
@@ -52,8 +39,7 @@ namespace Venom {
     }
     
     public void render_image(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
-      //static Gdk.Pixbuf icon = new Gdk.Pixbuf.
-      Gdk.Pixbuf? icon = contact.image != null ? contact.image : default_image;
+      Gdk.Pixbuf? icon = contact.image != null ? contact.image : ResourceFactory.instance.default_image;
       Gdk.Rectangle image_rect = {8, 9 + background_area.y, 44, 41};
       if(icon != null) {
         Gdk.cairo_rectangle(ctx, image_rect);

@@ -61,17 +61,18 @@ GENERATE_HEADER
 )
 
 vala_precompile( VALA_C
+  src/core/Contact.vala
+  src/core/DhtServer.vala
+  src/core/Message.vala
+  src/core/ResourceFactory.vala
+  src/core/Tools.vala
+  src/core/ToxSession.vala
   src/ui/AddFriendDialog.vala
   src/ui/ConversationTreeView.vala
   src/ui/ConversationWindow.vala
   src/ui/ContactListWindow.vala
   src/ui/ContactListTreeView.vala
   src/ui/ContactListCellRenderer.vala
-  src/core/Contact.vala
-  src/core/DhtServer.vala
-  src/core/Message.vala
-  src/core/Tools.vala
-  src/core/ToxSession.vala
   src/Main.vala
 PACKAGES
   gee-1.0
@@ -104,8 +105,19 @@ INSTALL(FILES ui/contact_list.glade DESTINATION share/venom/ui)
 INSTALL(FILES ui/conversation_window.glade DESTINATION share/venom/ui)
 
 INSTALL(FILES pixmaps/add.png DESTINATION share/venom/pixmaps)
-INSTALL(FILES pixmaps/default_image.png DESTINATION share/venom/pixmaps)
 INSTALL(FILES pixmaps/groupchat.png DESTINATION share/venom/pixmaps)
 INSTALL(FILES pixmaps/settings.png DESTINATION share/venom/pixmaps)
+
+INSTALL(FILES pixmaps/default_image.png DESTINATION share/venom/pixmaps)
+
+INSTALL(FILES pixmaps/away.png DESTINATION share/venom/pixmaps)
+INSTALL(FILES pixmaps/away_glow.png DESTINATION share/venom/pixmaps)
+INSTALL(FILES pixmaps/offline.png DESTINATION share/venom/pixmaps)
+INSTALL(FILES pixmaps/offline_glow.png DESTINATION share/venom/pixmaps)
+INSTALL(FILES pixmaps/online.png DESTINATION share/venom/pixmaps)
+INSTALL(FILES pixmaps/online_glow.png DESTINATION share/venom/pixmaps)
+
+INSTALL(FILES pixmaps/call.png DESTINATION share/venom/pixmaps)
+INSTALL(FILES pixmaps/call_video.png DESTINATION share/venom/pixmaps)
 
 # vim:set ts=2 sw=2 et:
