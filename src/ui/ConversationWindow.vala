@@ -16,58 +16,79 @@
  */
 
 namespace Venom {
-  public class ConversationWindow : Object {
-    private Gtk.Window conversation_window;
-    private Gtk.Label label_conversation_partner;
-    private Gtk.Image image_conversation_partner;
+  public class ConversationWindow : Gtk.Window {
+    private Gtk.Label label_contact_name;
+    private Gtk.Label label_contact_statusmessage;
+    private Gtk.Image image_contact_image;
+    
+    private Gtk.Image image_call;
+    private Gtk.Image image_call_video;
+    
+    private Gtk.Button button_call;
+    private Gtk.Button button_call_video;
+    
+    private Gtk.Entry entry_message;
+    
     private ConversationTreeView conversation_tree_view;
-    private unowned Contact conversation_contact;
+    private unowned Contact contact;
 
     private signal void new_conversation_message(Message message);
     public signal void new_outgoing_message(string message, Contact receiver);
 
-    public ConversationWindow(
-        Contact c,
-        Gtk.Window conversation_window,
-        Gtk.ScrolledWindow scrolled_window,
-        Gtk.Label label_conversation_partner,
-        Gtk.Image image_conversation_partner) {
-      this.conversation_contact = c;
-      this.conversation_window = conversation_window;
-      this.label_conversation_partner = label_conversation_partner;
-      this.image_conversation_partner = image_conversation_partner;
+    public ConversationWindow( Contact contact ) {
+      this.contact = contact;
+      init_widgets();
 
-      conversation_window.delete_event.connect(() => {conversation_window.hide(); return true;});
+      delete_event.connect(() => {hide(); return true;});
 
-      label_conversation_partner.set_text("Conversation with %s".printf(c.name));
+      label_contact_name.set_text(contact.name);
+      label_contact_statusmessage.set_text(contact.status_message);
+      
+      image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_image);
+      image_call.set_from_pixbuf(ResourceFactory.instance.call);
+      image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
 
+      new_conversation_message.connect(conversation_tree_view.add_message);
+      
+      set_default_size(600, 500);
+    }
+    
+    private void init_widgets() {
+      Gtk.Builder builder = new Gtk.Builder();
+      try {
+        builder.add_from_file(Path.build_filename(Tools.find_data_dir(), "ui", "conversation_window.glade"));
+      } catch (GLib.Error e) {
+        stderr.printf("Loading conversation window failed!\n");
+      }
+      Gtk.Box box = builder.get_object("box") as Gtk.Box;
+      this.add(box);
+
+      label_contact_name = builder.get_object("label_contact_name") as Gtk.Label;
+      label_contact_statusmessage = builder.get_object("label_contact_statusmessage") as Gtk.Label;
+      image_contact_image = builder.get_object("image_contact_image") as Gtk.Image;
+      
+      image_call = builder.get_object("image_call") as Gtk.Image;
+      image_call_video = builder.get_object("image_call_video") as Gtk.Image;
+      
+      button_call = builder.get_object("button_call") as Gtk.Button;
+      button_call_video = builder.get_object("button_call_video") as Gtk.Button;
+      
+      entry_message = builder.get_object("entry_message") as Gtk.Entry;
+      
+      
+      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
+
+      builder.connect_signals(this);
+      
       conversation_tree_view = new ConversationTreeView();
       conversation_tree_view.show_all();
       scrolled_window.add(conversation_tree_view);
-
-      new_conversation_message.connect(conversation_tree_view.add_message);
-    }
-
-    public static ConversationWindow create( Contact c ) throws Error {
-      Gtk.Builder builder = new Gtk.Builder();
-      builder.add_from_file(Path.build_filename(Tools.find_data_dir(), "ui", "conversation_window.glade"));
-      Gtk.Window window = builder.get_object("window") as Gtk.Window;
-      Gtk.ScrolledWindow scrolledwindow = builder.get_object("scrolledwindow") as Gtk.ScrolledWindow;
-      Gtk.Label label_conversation_partner = builder.get_object("label_conversation_partner") as Gtk.Label;
-      Gtk.Image image_conversation_partner = builder.get_object("image_conversation_partner") as Gtk.Image;
-      ConversationWindow conversation_window = new ConversationWindow(c, window, scrolledwindow, label_conversation_partner, image_conversation_partner);
-      builder.connect_signals(conversation_window);
-      return conversation_window;
     }
 
     public void on_incoming_message(Message message) {
-      if(message.sender != conversation_contact)
+      if(message.sender != contact)
         return;
       new_conversation_message(message);
-    }
-
-    public void show_all() {
-      conversation_window.show_all();
     }
 
     [CCode (instance_pos = -1)]
@@ -75,7 +96,7 @@ namespace Venom {
       string s = source.text;
       Message m = new Message(null, s);
       new_conversation_message(m);
-      new_outgoing_message(s, conversation_contact);
+      new_outgoing_message(s, contact);
       source.text = "";
     }
   }

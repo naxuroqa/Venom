@@ -269,7 +269,7 @@ namespace Venom {
       ConversationWindow w = conversation_windows[c.friend_id];
       if(w == null) {
         try {
-          w = ConversationWindow.create(c);
+          w = new ConversationWindow(c);
         } catch (Error e) {
           stderr.printf("Could not create conversation window: %s\n", e.message);
           return null;
@@ -288,6 +288,7 @@ namespace Venom {
       if(w == null)
         return;
       w.show_all();
+      w.present();
     }
 
     // GUI Events
