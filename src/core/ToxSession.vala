@@ -252,11 +252,13 @@ namespace Venom {
     public Contact[]? get_friendlist() {
       int[] friend_numbers;
       uint ret = 0;
+      uint count_friendlist = 0;
       lock(handle) {
-        friend_numbers = new int[handle.count_friendlist()];
+        count_friendlist = handle.count_friendlist();
+        friend_numbers = new int[count_friendlist];
         ret = handle.copy_friendlist(friend_numbers);
       }
-      if(ret != 0)
+      if(ret != count_friendlist)
         return null;
       Contact[] contacts = new Contact[friend_numbers.length];
       for(int i = 0; i < friend_numbers.length; ++i) {
