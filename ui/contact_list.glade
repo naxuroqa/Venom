@@ -18,6 +18,7 @@
             <property name="height_request">41</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">8</property>
             <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
@@ -127,14 +128,12 @@
         <property name="homogeneous">True</property>
         <child>
           <object class="GtkButton" id="button_add_contact">
-            <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="has_tooltip">True</property>
             <property name="tooltip_markup" translatable="yes">Add contact</property>
             <property name="tooltip_text" translatable="yes">Add contact</property>
-            <property name="use_action_appearance">False</property>
             <property name="image">image_add_contact</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="venom_contact_list_window_button_add_contact_clicked" swapped="no"/>
@@ -147,14 +146,12 @@
         </child>
         <child>
           <object class="GtkButton" id="button_group_chat">
-            <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="has_tooltip">True</property>
             <property name="tooltip_markup" translatable="yes">Remove contact</property>
             <property name="tooltip_text" translatable="yes">Remove contact</property>
-            <property name="use_action_appearance">False</property>
             <property name="image">image_group_chat</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="venom_contact_list_window_button_groupchat_clicked" swapped="no"/>
@@ -167,11 +164,9 @@
         </child>
         <child>
           <object class="GtkButton" id="button_preferences">
-            <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="use_action_appearance">False</property>
             <property name="image">image_preferences</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="venom_contact_list_window_button_preferences_clicked" swapped="no"/>

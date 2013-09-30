@@ -113,13 +113,15 @@ namespace Venom {
       Gtk.Image image_group_chat  = builder.get_object("image_group_chat") as Gtk.Image;
       Gtk.Image image_preferences = builder.get_object("image_preferences") as Gtk.Image;
 
-      string image_add_contact_filename = Path.build_filename(pixmaps_folder, "add.png");
-      string image_group_chat_filename  = Path.build_filename(pixmaps_folder, "groupchat.png");
-      string image_preferences_filename = Path.build_filename(pixmaps_folder, "settings.png");
+      string image_add_contact_filename   = Path.build_filename(pixmaps_folder, "add.png");
+      string image_group_chat_filename    = Path.build_filename(pixmaps_folder, "groupchat.png");
+      string image_preferences_filename   = Path.build_filename(pixmaps_folder, "settings.png");
+      string image_default_image_filename = Path.build_filename(pixmaps_folder, "default_image.png");
 
       image_add_contact.set_from_file(image_add_contact_filename);
       image_group_chat.set_from_file( image_group_chat_filename);
       image_preferences.set_from_file(image_preferences_filename);
+      image_userimage.set_from_file(image_default_image_filename);
 
       builder.connect_signals(this);
       

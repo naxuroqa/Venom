@@ -44,7 +44,6 @@ namespace Venom {
     }
     
     public override void render(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags) {
-      int x = 8;
       int y = 6 + cell_area.y;
       Pango.Rectangle ink_rect = render_name(ctx, widget, background_area, cell_area, y);
       y += ink_rect.height;
@@ -76,7 +75,7 @@ namespace Venom {
       layout.get_pixel_extents(out ink_rect, out logical_rect);
       
       if (ctx != null) {
-        ctx.move_to(cell_area.x + 60, cell_area.y);
+        ctx.move_to(cell_area.x + 60, cell_area.y + cell_area.height / 2 - ink_rect.height - 8);
         Pango.cairo_show_layout(ctx, layout);
       }
       return ink_rect;
@@ -91,7 +90,7 @@ namespace Venom {
       layout.get_pixel_extents(out ink_rect, out logical_rect);
       
       if (ctx != null) {
-        ctx.move_to(cell_area.x + 60, y_offset);
+        ctx.move_to(cell_area.x + 60, cell_area.y + cell_area.height / 2 - 2);
         Pango.cairo_show_layout(ctx, layout);
       }
       return ink_rect;

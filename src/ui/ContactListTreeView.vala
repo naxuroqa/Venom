@@ -26,13 +26,10 @@ namespace Venom {
       list_store_contacts = new Gtk.ListStore (1, typeof (Contact));
 
       name_column = new Gtk.TreeViewColumn();
-      // name_column.set_title("Name");
       ContactListCellRenderer name_column_cell = new ContactListCellRenderer();
       name_column.pack_start(name_column_cell, true);
       
       name_column.add_attribute (name_column_cell, "contact", 0);
-
-      // name_column.set_cell_data_func(name_column_cell, render_contact_name);
 
       set_model (list_store_contacts);
 
@@ -48,17 +45,6 @@ namespace Venom {
       GLib.Value v;
       model.get_value(iter, 0, out v);
       return v as Contact;
-    }
-    
-    private void render_contact_name (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
-    {
-      Contact c = get_contact_from_iter(iter);
-      if(c.online)
-        (cell as Gtk.CellRendererText).foreground = "black";
-      else
-        (cell as Gtk.CellRendererText).foreground = "gray";
-
-      (cell as Gtk.CellRendererText).text = "%s (%s)".printf(c.name, c.status_message);
     }
 
     public void add_contact(Contact contact) {
