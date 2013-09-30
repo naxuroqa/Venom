@@ -66,6 +66,7 @@ vala_precompile( VALA_C
   src/ui/ConversationWindow.vala
   src/ui/ContactListWindow.vala
   src/ui/ContactListTreeView.vala
+  src/ui/ContactListCellRenderer.vala
   src/core/Contact.vala
   src/core/DhtServer.vala
   src/core/Message.vala
@@ -103,6 +104,7 @@ INSTALL(FILES ui/contact_list.glade DESTINATION share/venom/ui)
 INSTALL(FILES ui/conversation_window.glade DESTINATION share/venom/ui)
 
 INSTALL(FILES pixmaps/add.png DESTINATION share/venom/pixmaps)
+INSTALL(FILES pixmaps/default_image.png DESTINATION share/venom/pixmaps)
 INSTALL(FILES pixmaps/groupchat.png DESTINATION share/venom/pixmaps)
 INSTALL(FILES pixmaps/settings.png DESTINATION share/venom/pixmaps)
 

@@ -173,13 +173,14 @@ namespace Venom {
       return ret == 0;
     }
 
-    /* FIXME this wont work for now, there is no such thing in the api
     public string get_self_statusmessage() {
-      uint8[] buf;
+      uint8[] buf = new uint8[Tox.MAX_STATUSMESSAGE_LENGTH];
+      int ret = 0;
       lock(handle) {
-        buf = new uint8[handle.get_statusmessage_size()];
+        ret = handle.copy_self_statusmessage(buf);
       }
-    }*/
+      return (string)buf;
+    }
     
     // get personal id
     public uint8[] get_address() {
@@ -229,12 +230,11 @@ namespace Venom {
     
     public string get_statusmessage(int friend_number) {
       int size = 0;
+      int ret = 0;
+      uint8 [] buf;
       lock(handle) {
         size = handle.get_statusmessage_size(friend_number);
-      }
-      uint8 [] buf = new uint8[size];
-      int ret = 0;
-      lock(handle) {
+        buf = new uint8[size];
         ret = handle.copy_statusmessage(friend_number, buf);
       }
       return (string)buf;
@@ -264,7 +264,10 @@ namespace Venom {
       for(int i = 0; i < friend_numbers.length; ++i) {
         int friend_id = friend_numbers[i];
         uint8[] friend_key = getclient_id(friend_id);
-        contacts[i] = new Contact(friend_key, friend_id);
+        Contact c = new Contact(friend_key, friend_id);
+        c.name = getname(friend_id);
+        c.status_message = get_statusmessage(friend_id);
+        contacts[i] = c;
       }
       return contacts;
     }
@@ -333,7 +336,6 @@ namespace Venom {
     }
 
     ////////////////////////////// Load/Save of messenger data /////////////////////////
-    // Load messenger data from file (not locked, don't use while bgthread is running)
     public void load_from_file(string pathname, string filename) throws IOError, Error {
       File f = File.new_for_path(Path.build_filename(pathname, filename));
       if(!f.query_exists())
@@ -353,7 +355,7 @@ namespace Venom {
         throw new IOError.FAILED("Error while loading messenger data.");
     }
 
-    // Save messenger data from file (not locked, don't use while bgthread is running)
+    // Save messenger data from file
     public void save_to_file(string pathname, string filename) throws IOError, Error {
       File path = File.new_for_path(pathname);
       if(!path.query_exists()) {
@@ -363,10 +365,12 @@ namespace Venom {
       File f = File.new_for_path(Path.build_filename(pathname, filename));
       DataOutputStream os = new DataOutputStream(f.replace(null, false, FileCreateFlags.NONE));
 
-      uint32 size = handle.size();
-      uint8[] buf = new uint8 [size];
+      uint32 size = 0;
+      uint8[] buf;
 
       lock(handle) {
+        size = handle.size();
+        buf = new uint8 [size];
         handle.save(buf);
       }
 

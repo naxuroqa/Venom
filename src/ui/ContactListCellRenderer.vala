@@ -18,6 +18,19 @@
 namespace Venom {
   public class ContactListCellRenderer : Gtk.CellRenderer {
     public Contact contact { get; set; }
+    
+    private static string pixmaps_folder = Path.build_filename(Tools.find_data_dir(), "pixmaps");
+    private static Gdk.Pixbuf? default_image = load_default_image();
+    
+    private static Gdk.Pixbuf? load_default_image() {
+      Gdk.Pixbuf? buf = null;
+      try {
+        buf = new Gdk.Pixbuf.from_file( Path.build_filename(pixmaps_folder, "default_image.png") );
+      } catch (Error e) {
+        stderr.printf("Could not open pixbuf: %s\n", e.message);
+      }
+      return buf;
+    }
 
     public ContactListCellRenderer() {
       GLib.Object();
@@ -27,11 +40,61 @@ namespace Venom {
       x_offset = 0;
       y_offset = 0;
       width = 50;
-      height = 50;
+      height = 59;
     }
     
     public override void render(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags) {
-      //TODO
+      int x = 8;
+      int y = 6 + cell_area.y;
+      Pango.Rectangle ink_rect = render_name(ctx, widget, background_area, cell_area, y);
+      y += ink_rect.height;
+      render_status(ctx, widget, background_area, cell_area, y);
+      render_image(ctx, widget, background_area, cell_area, y);
+    }
+    
+    public void render_image(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
+      //static Gdk.Pixbuf icon = new Gdk.Pixbuf.
+      Gdk.Pixbuf? icon = contact.image != null ? contact.image : default_image;
+      Gdk.Rectangle image_rect = {8, 9 + background_area.y, 44, 41};
+      if(icon != null) {
+        Gdk.cairo_rectangle(ctx, image_rect);
+        Gdk.cairo_set_source_pixbuf(ctx, icon, image_rect.x, image_rect.y);
+			  ctx.fill();
+			}
+    }
+
+    public Pango.Rectangle? render_name(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
+      Pango.Rectangle? ink_rect, logical_rect;
+      Pango.FontDescription font = new Pango.FontDescription();
+      Pango.Layout layout = widget.create_pango_layout(null);
+      layout.set_font_description(font);
+      if(contact.name != null && contact.name != "") {
+        layout.set_markup(contact.name, -1);
+      } else {
+        layout.set_markup(Tools.bin_to_hexstring(contact.public_key), -1);
+      }
+      layout.get_pixel_extents(out ink_rect, out logical_rect);
+      
+      if (ctx != null) {
+        ctx.move_to(cell_area.x + 60, cell_area.y);
+        Pango.cairo_show_layout(ctx, layout);
+      }
+      return ink_rect;
+    }
+    
+    public Pango.Rectangle render_status(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
+      Pango.Rectangle? ink_rect, logical_rect;
+      Pango.FontDescription font = new Pango.FontDescription();
+      Pango.Layout layout = widget.create_pango_layout(null);
+      layout.set_font_description(font);
+      layout.set_markup(contact.status_message, -1);
+      layout.get_pixel_extents(out ink_rect, out logical_rect);
+      
+      if (ctx != null) {
+        ctx.move_to(cell_area.x + 60, y_offset);
+        Pango.cairo_show_layout(ctx, layout);
+      }
+      return ink_rect;
     }
   }
 }

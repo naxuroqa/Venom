@@ -26,6 +26,7 @@ namespace Venom {
     public DateTime last_seen { get; set; }
     public int user_status { get; set; }
     public bool online { get; set; }
+    public Gdk.Pixbuf? image { get; set; }
 
     public Contact(uint8[] public_key, int friend_id) {
       this.public_key = public_key;

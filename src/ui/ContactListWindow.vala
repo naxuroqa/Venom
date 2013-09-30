@@ -54,6 +54,7 @@ namespace Venom {
 
       // initialize session specific gui stuff
       label_name.set_text(session.getselfname());
+      label_status.set_text(session.get_self_statusmessage());
 
       // start the session
       session.start();
@@ -126,6 +127,8 @@ namespace Venom {
       contact_list_tree_view.show_all();
       Gtk.ScrolledWindow w = builder.get_object("contacts_window") as Gtk.ScrolledWindow;
       w.add(contact_list_tree_view);
+      
+      set_default_size(230, 600);
     }
 
     // Connect
