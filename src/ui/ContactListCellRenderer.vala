@@ -83,6 +83,8 @@ namespace Venom {
       } else {
         layout.set_markup(Tools.bin_to_hexstring(contact.public_key), -1);
       }
+      layout.set_ellipsize(Pango.EllipsizeMode.END);
+      layout.set_width((cell_area.width - 60 - 26) * Pango.SCALE);
       layout.get_pixel_extents(out ink_rect, out logical_rect);
       
       if (ctx != null) {
@@ -98,6 +100,8 @@ namespace Venom {
       Pango.Layout layout = widget.create_pango_layout(null);
       layout.set_font_description(font);
       layout.set_markup(contact.status_message, -1);
+      layout.set_ellipsize(Pango.EllipsizeMode.END);
+      layout.set_width((cell_area.width - 60 - 26) * Pango.SCALE);
       layout.get_pixel_extents(out ink_rect, out logical_rect);
       
       if (ctx != null) {
