@@ -59,6 +59,8 @@ namespace Venom {
 
       // start the session
       session.start();
+      
+      stdout.printf("ID: %s\n", Tools.bin_to_hexstring(session.get_address()));
     }
 
     // Destructor
@@ -146,6 +148,7 @@ namespace Venom {
       on_contact_added.connect(contact_list_tree_view.add_contact);
       on_contact_removed.connect(contact_list_tree_view.remove_contact);
       contact_list_tree_view.contact_activated.connect(on_contact_activated);
+      contact_list_tree_view.key_press_event.connect(on_treeview_key_pressed);
       
       // End program when window is closed
       this.destroy.connect (Gtk.main_quit);
@@ -172,6 +175,15 @@ namespace Venom {
     private void on_outgoing_message(string message, Contact receiver) {
       session.sendmessage(receiver.friend_id, message);
     }
+    
+    private bool on_treeview_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
+      if(key.keyval == Gdk.Key.Delete) {
+        Contact c = contact_list_tree_view.get_selected_contact();
+        remove_contact(c);
+        return true;
+      }
+      return false;
+    }
 
     // Session Signal callbacks
     private void on_friendrequest(uint8[] public_key, string message) {
@@ -194,7 +206,7 @@ namespace Venom {
         stdout.printf("Added new friend #%i\n", (int)far);
         add_contact(new Contact(public_key, (int)far));
       } else {
-        stderr.printf("Could not add friend: %i\n", (int)far);
+        stderr.printf("Could not add friend: %i\n", far);
       }
     }
     private void on_friendmessage(int friend_number, string message) {
@@ -332,17 +344,19 @@ namespace Venom {
       }
     }
 
-    // currently deactivated
-    [CCode (instance_pos = -1)]
-    public void button_remove_contact_clicked(Object source) {
-      Contact c = contact_list_tree_view.get_selected_contact();
+    public void remove_contact(Contact c) {
       if(c == null)
         return;
+      string name;
+      if(c.name != null && c.name != "")
+        name = c.name;
+      else
+        name = Tools.bin_to_hexstring(c.public_key);
       Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
                                   Gtk.ButtonsType.YES_NO,
-                                  "Do you really want to delete %s from your contact list?".printf(c.name));
+                                  "Do you really want to delete %s from your contact list?".printf(name));
 
 		  int response = messagedialog.run();
 		  messagedialog.destroy();

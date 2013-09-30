@@ -137,8 +137,8 @@ namespace Venom {
     public Tox.FriendAddError addfriend_norequest(uint8[] id) {
       Tox.FriendAddError ret = Tox.FriendAddError.UNKNOWN;
 
-      if(id.length != Tox.FRIEND_ADDRESS_SIZE)
-        return ret;
+      //if(id.length != Tox.FRIEND_ADDRESS_SIZE)
+      //  return ret;
       
       lock(handle) {
         ret = handle.addfriend_norequest(id);
