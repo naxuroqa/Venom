@@ -51,19 +51,25 @@ namespace Venom {
     
     public void render_userstatus(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
       Gdk.Pixbuf? status = null;
-      switch(contact.user_status) {
-        case Tox.UserStatus.NONE:
-          status = ResourceFactory.instance.online;
-          break;
-        case Tox.UserStatus.AWAY:
-          status = ResourceFactory.instance.away;
-          break;
-        case Tox.UserStatus.BUSY:
-          status = ResourceFactory.instance.offline_glow;
-          break;
-        case Tox.UserStatus.INVALID:
-          status = ResourceFactory.instance.offline;
-          break;
+      
+      if(!contact.online) {
+        status = ResourceFactory.instance.offline;
+      }
+      else {
+        switch(contact.user_status) {
+          case Tox.UserStatus.NONE:
+            status = ResourceFactory.instance.online;
+            break;
+          case Tox.UserStatus.AWAY:
+            status = ResourceFactory.instance.away;
+            break;
+          case Tox.UserStatus.BUSY:
+            status = ResourceFactory.instance.offline_glow;
+            break;
+          case Tox.UserStatus.INVALID:
+            status = ResourceFactory.instance.offline;
+            break;
+        }
       }
       if(status != null) {
         Gdk.Rectangle image_rect = {cell_area.x + cell_area.width - 26, cell_area.y + cell_area.height / 2 - 13, 26, 26};

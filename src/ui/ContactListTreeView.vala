@@ -55,7 +55,8 @@ namespace Venom {
     }
 
     public void update_contact(Contact contact) {
-      queue_draw();
+      Gtk.TreeIter? iter = find_iter(contact);
+      list_store_contacts.row_changed(model.get_path(iter), iter);
     }
 
     public void remove_contact(Contact contact) {

@@ -218,6 +218,7 @@ namespace Venom {
       if(contacts[friend_number] != null) {
         stdout.printf("%s changed his name to %s\n", contacts[friend_number].name, new_name);
         contacts[friend_number].name = new_name;
+        contact_list_tree_view.update_contact(contacts[friend_number]);
       } else {
         stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
       }
@@ -226,6 +227,7 @@ namespace Venom {
       if(contacts[friend_number] != null) {
         stdout.printf("%s changed his status to %s\n", contacts[friend_number].name, status_message);
         contacts[friend_number].status_message = status_message;
+        contact_list_tree_view.update_contact(contacts[friend_number]);
       } else {
         stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
       }
@@ -234,6 +236,7 @@ namespace Venom {
       if(contacts[friend_number] != null) {
         stdout.printf("[us] %s:%i\n", contacts[friend_number].name, user_status);
         contacts[friend_number].user_status = user_status;
+        contact_list_tree_view.update_contact(contacts[friend_number]);
       } else {
         stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
       }
@@ -251,6 +254,7 @@ namespace Venom {
         if(!status && contacts[friend_number].online)
           contacts[friend_number].last_seen = new DateTime.now_local();
         contacts[friend_number].online = status;
+        contact_list_tree_view.update_contact(contacts[friend_number]);
       } else {
         stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
       }
@@ -269,12 +273,7 @@ namespace Venom {
     private ConversationWindow? open_conversation_with(Contact c) {
       ConversationWindow w = conversation_windows[c.friend_id];
       if(w == null) {
-        try {
-          w = new ConversationWindow(c);
-        } catch (Error e) {
-          stderr.printf("Could not create conversation window: %s\n", e.message);
-          return null;
-        }
+        w = new ConversationWindow(c);
         incoming_message.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
         
