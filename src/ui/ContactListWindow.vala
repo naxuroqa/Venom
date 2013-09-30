@@ -126,6 +126,7 @@ namespace Venom {
       w.add(contact_list_tree_view);
       
       set_default_size(230, 600);
+      set_icon(ResourceFactory.instance.tox_logo);
     }
 
     // Connect

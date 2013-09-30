@@ -48,6 +48,8 @@ namespace Venom {
       settings = load_image(Path.build_filename(pixmaps_folder, "settings.png"));
       
       default_image = load_image(Path.build_filename(pixmaps_folder, "default_image.png"));
+      
+      tox_logo = load_image(Path.build_filename(pixmaps_folder, "tox_logo.png"));
     }
     
     public Gdk.Pixbuf away {get; private set;}
@@ -65,6 +67,8 @@ namespace Venom {
     public Gdk.Pixbuf settings {get; private set;}
 
     public Gdk.Pixbuf default_image {get; private set;}
+    
+    public Gdk.Pixbuf tox_logo {get; private set;}
     
     private Gdk.Pixbuf? load_image(string filename) {
       Gdk.Pixbuf? buf = null;
