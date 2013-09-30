@@ -36,6 +36,7 @@ namespace Venom {
       y += ink_rect.height;
       render_status(ctx, widget, background_area, cell_area, y);
       render_image(ctx, widget, background_area, cell_area, y);
+      render_userstatus(ctx, widget, background_area, cell_area);
     }
     
     public void render_image(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
@@ -46,6 +47,30 @@ namespace Venom {
         Gdk.cairo_set_source_pixbuf(ctx, icon, image_rect.x, image_rect.y);
 			  ctx.fill();
 			}
+    }
+    
+    public void render_userstatus(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
+      Gdk.Pixbuf? status = null;
+      switch(contact.user_status) {
+        case Tox.UserStatus.NONE:
+          status = ResourceFactory.instance.online;
+          break;
+        case Tox.UserStatus.AWAY:
+          status = ResourceFactory.instance.away;
+          break;
+        case Tox.UserStatus.BUSY:
+          status = ResourceFactory.instance.offline_glow;
+          break;
+        case Tox.UserStatus.INVALID:
+          status = ResourceFactory.instance.offline;
+          break;
+      }
+      if(status != null) {
+        Gdk.Rectangle image_rect = {cell_area.x + cell_area.width - 26, cell_area.y + cell_area.height / 2 - 13, 26, 26};
+        Gdk.cairo_rectangle(ctx, image_rect);
+        Gdk.cairo_set_source_pixbuf(ctx, status, image_rect.x, image_rect.y);
+		    ctx.fill();
+		  }
     }
 
     public Pango.Rectangle? render_name(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
