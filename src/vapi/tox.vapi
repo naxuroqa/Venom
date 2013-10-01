@@ -329,14 +329,14 @@ namespace Tox {
      * return group number on success.
      * return -1 on failure.
      */
-    int add_groupchat();
+    public int add_groupchat();
 
     /* Delete a groupchat from the chats array.
      *
      * return 0 on success.
      * return -1 if failure.
      */
-    int del_groupchat(int groupnumber);
+    public int del_groupchat(int groupnumber);
 
     /* Copy the name of peernumber who is in groupnumber to name.
      * name must be at least TOX_MAX_NAME_LENGTH long.
@@ -344,26 +344,26 @@ namespace Tox {
      * return length of name if success
      * return -1 if failure
      */
-    int group_peername(int groupnumber, int peernumber, [CCode(array_length=false)] uint8[] name);
+    public int group_peername(int groupnumber, int peernumber, [CCode(array_length=false)] uint8[] name);
 
     /* invite friendnumber to groupnumber
      * return 0 on success
      * return -1 on failure
      */
-    int invite_friend(int friendnumber, int groupnumber);
+    public int invite_friend(int friendnumber, int groupnumber);
 
     /* Join a group (you need to have been invited first.)
      *
      * returns group number on success
      * returns -1 on failure.
      */
-    int join_groupchat(int friendnumber, [CCode(array_length=false)] uint8[] friend_group_public_key);
+    public int join_groupchat(int friendnumber, [CCode(array_length=false)] uint8[] friend_group_public_key);
 
     /* send a group message
      * return 0 on success
      * return -1 on failure
      */
-    int group_message_send(int groupnumber, uint8[] message);
+    public int group_message_send(int groupnumber, uint8[] message);
 
     /******************END OF GROUP CHAT FUNCTIONS************************/
 

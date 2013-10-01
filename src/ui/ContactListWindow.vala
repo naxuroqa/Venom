@@ -47,6 +47,7 @@ namespace Venom {
       this.contacts = new Gee.HashMap<int, Contact>();
       this.conversation_windows = new Gee.HashMap<int, ConversationWindow>();
 
+      init_theme();
       init_session();      
       init_widgets();
       init_signals();
@@ -74,6 +75,29 @@ namespace Venom {
       // Save session before shutdown
       session.save_to_file(data_pathname, data_filename);
       stdout.printf("Session ended gracefully.\n");
+    }
+    
+    private bool on_contact_list_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
+      // only for debugging!!!
+      if(key.keyval == Gdk.Key.F5) {
+        init_theme();
+        return true;
+      }
+      return false;
+    }
+    
+    private void init_theme() {
+          
+      Gtk.CssProvider provider = new Gtk.CssProvider();
+      try {
+      provider.load_from_path(ResourceFactory.instance.default_theme_filename); 
+      } catch (Error e) {
+        stderr.printf("Could not read css file \"%s\": %s\n", ResourceFactory.instance.default_theme_filename,  e.message);
+      }     
+      
+      Gdk.Screen screen = Gdk.Screen.get_default();
+
+      Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
     }
 
     // Create a new session, load/create session data
@@ -152,6 +176,9 @@ namespace Venom {
       
       // End program when window is closed
       this.destroy.connect (Gtk.main_quit);
+      
+      // FIXME remove after testing is done!
+      this.key_press_event.connect(on_contact_list_key_pressed);
     }
     
     // Restore friends from datafile

@@ -60,6 +60,21 @@ GENERATE_VAPI
 GENERATE_HEADER
 )
 
+vala_precompile( VALA_C_GROUPTEST
+  testing/GroupTest.vala
+  src/core/Tools.vala
+PACKAGES
+  gee-1.0
+  gio-2.0
+OPTIONS
+  --debug
+  --save-temps
+CUSTOM_VAPIS
+  src/vapi/tox.vapi
+GENERATE_VAPI
+GENERATE_HEADER
+)
+
 vala_precompile( VALA_C
   src/core/Contact.vala
   src/core/DhtServer.vala
@@ -96,6 +111,10 @@ ADD_EXECUTABLE( vapi_test
   ${VALA_C_TEST}
 )
 
+ADD_EXECUTABLE( grouptest
+  ${VALA_C_GROUPTEST}
+)
+
 INSTALL( TARGETS venom 
   RUNTIME DESTINATION bin
 )
@@ -119,5 +138,7 @@ INSTALL(FILES pixmaps/online_glow.png DESTINATION share/venom/pixmaps)
 
 INSTALL(FILES pixmaps/call.png DESTINATION share/venom/pixmaps)
 INSTALL(FILES pixmaps/call_video.png DESTINATION share/venom/pixmaps)
+
+INSTALL(FILES theme/default.css DESTINATION share/venom/theme)
 
 # vim:set ts=2 sw=2 et:

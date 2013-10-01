@@ -84,10 +84,12 @@ namespace Venom {
       Pango.FontDescription font = new Pango.FontDescription();
       Pango.Layout layout = widget.create_pango_layout(null);
       layout.set_font_description(font);
+      Gdk.RGBA color = widget.get_style_context().get_color(Gtk.StateFlags.NORMAL);
+      string color_string = "#%02x%02x%02x".printf((uint)(color.red * 255.0), (uint)(color.green * 255.0), (uint)(color.blue * 255.0));
       if(contact.name != null && contact.name != "") {
-        layout.set_markup(contact.name, -1);
+        layout.set_markup("<span color=\"%s\">%s</span>".printf(color_string, contact.name), -1);
       } else {
-        layout.set_markup(Tools.bin_to_hexstring(contact.public_key), -1);
+        layout.set_markup("<span color=\"%s\">%s</span>".printf(color_string, Tools.bin_to_hexstring(contact.public_key)), -1);
       }
       layout.set_ellipsize(Pango.EllipsizeMode.END);
       layout.set_width((cell_area.width - 60 - 26) * Pango.SCALE);
@@ -105,7 +107,9 @@ namespace Venom {
       Pango.FontDescription font = new Pango.FontDescription();
       Pango.Layout layout = widget.create_pango_layout(null);
       layout.set_font_description(font);
-      layout.set_markup(contact.status_message, -1);
+      Gdk.RGBA color = widget.get_style_context().get_color(Gtk.StateFlags.NORMAL);
+      string color_string = "#%02x%02x%02x".printf((uint)(color.red * 255.0), (uint)(color.green * 255.0), (uint)(color.blue * 255.0));
+      layout.set_markup("<span color=\"%s\">%s</span>".printf(color_string, contact.status_message), -1);
       layout.set_ellipsize(Pango.EllipsizeMode.END);
       layout.set_width((cell_area.width - 60 - 26) * Pango.SCALE);
       layout.get_pixel_extents(out ink_rect, out logical_rect);

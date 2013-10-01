@@ -32,6 +32,7 @@ namespace Venom {
 
     private ResourceFactory () {
       string pixmaps_folder = Path.build_filename(Tools.find_data_dir(), "pixmaps");
+      string theme_folder = Path.build_filename(Tools.find_data_dir(), "theme");
 
       away = load_image(Path.build_filename(pixmaps_folder, "away.png"));
       away_glow = load_image(Path.build_filename(pixmaps_folder, "away_glow.png"));
@@ -50,6 +51,8 @@ namespace Venom {
       default_image = load_image(Path.build_filename(pixmaps_folder, "default_image.png"));
       
       tox_logo = load_image(Path.build_filename(pixmaps_folder, "tox_logo.png"));
+      
+      default_theme_filename = Path.build_filename(theme_folder, "default.css");
     }
     
     public Gdk.Pixbuf away {get; private set;}
@@ -69,6 +72,8 @@ namespace Venom {
     public Gdk.Pixbuf default_image {get; private set;}
     
     public Gdk.Pixbuf tox_logo {get; private set;}
+    
+    public string default_theme_filename {get; private set;}
     
     private Gdk.Pixbuf? load_image(string filename) {
       Gdk.Pixbuf? buf = null;
