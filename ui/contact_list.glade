@@ -167,8 +167,8 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="has_tooltip">True</property>
-            <property name="tooltip_markup" translatable="yes">Remove contact</property>
-            <property name="tooltip_text" translatable="yes">Remove contact</property>
+            <property name="tooltip_markup" translatable="yes">Create groupchat</property>
+            <property name="tooltip_text" translatable="yes">Create groupchat</property>
             <property name="image">image_group_chat</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="venom_contact_list_window_button_groupchat_clicked" swapped="no"/>
@@ -184,6 +184,9 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="has_tooltip">True</property>
+            <property name="tooltip_markup" translatable="yes">Open preferences</property>
+            <property name="tooltip_text" translatable="yes">Open preferences</property>
             <property name="image">image_preferences</property>
             <property name="relief">none</property>
             <signal name="clicked" handler="venom_contact_list_window_button_preferences_clicked" swapped="no"/>
