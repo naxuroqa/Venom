@@ -78,7 +78,7 @@ tbd
 ####Using a precompiled bundle
 
 * Download and install a recent Vala+Gtk3 bundle from [here](http://www.tarnyko.net/dl/),
-like [this one](http://www.tarnyko.net/repo/vala-0.20.1_(GTK+-3.6.4)(TARNYKO).exe).
+like [this one](http://www.tarnyko.net/repo/vala-0.20.1_\(GTK+-3.6.4\)\(TARNYKO\).exe).
 * Download and install cmake from [here](http://www.cmake.org/cmake/resources/software.html).
 * Download libgee06 from [here](https://vala-win32.googlecode.com/files/libgee-0.6.1.zip) and unzip it to your msys root.
 
