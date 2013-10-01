@@ -22,7 +22,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="valign">center</property>
-                <property name="margin_left">8</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">8</property>
                 <property name="stock">gtk-missing-image</property>
               </object>
               <packing>
@@ -42,6 +43,7 @@
                   <object class="GtkBox" id="box5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="spacing">4</property>
                     <child>
                       <object class="GtkLabel" id="label_contact_name">
                         <property name="visible">True</property>
