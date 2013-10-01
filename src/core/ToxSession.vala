@@ -26,6 +26,7 @@ namespace Venom {
     private unowned Thread<int> session_thread = null;
 #endif
     private bool bootstrapped = false;
+	private bool ipv6 = false;
     public bool running {get; private set; default=false; }
     public bool connected { get; private set; default=false; }
     public DhtServer connected_dht_server { get; private set; default=null; }
@@ -40,15 +41,17 @@ namespace Venom {
     public signal void on_connectionstatus(int friend_number, bool status);
     public signal void on_ownconnectionstatus(bool status);
 
-    public ToxSession() {
+    public ToxSession( bool ipv6 = false ) {
+	  this.ipv6 = ipv6;
+
       // create handle
-      handle = new Tox.Tox(1);
+      handle = new Tox.Tox( ipv6 ? 1 : 0);
 
       // Add one default dht server
       string ip = "192.184.81.118";
       uint16 port = ((uint16)33445).to_big_endian();
       uint8[] pub_key = Tools.hexstring_to_bin("5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143");
-      dht_servers.add(new DhtServer.withArgs(ip, port, pub_key));
+      dht_servers.add(new DhtServer.with_args(ip, port, pub_key));
 
       // setup callbacks
       handle.callback_friendrequest(this.on_friendrequest_callback);
@@ -279,7 +282,7 @@ namespace Venom {
       stdout.printf("Background thread started.\n");
       lock(handle) {
         if(!bootstrapped) {
-          stdout.printf("Connecting to DHT server:\n%s\n", dht_servers[0].toString());
+          stdout.printf("Connecting to DHT server:\n%s\n", dht_servers[0].to_string());
           handle.bootstrap_from_address(dht_servers[0].ip, dht_servers[0].ipv6 ? 1 : 0, dht_servers[0].port, dht_servers[0].pub_key);
           bootstrapped = true;
         }
@@ -291,8 +294,8 @@ namespace Venom {
           new_status = (handle.isconnected() != 0);
         }
         if(new_status && !connected) {
-          Idle.add(() => { on_ownconnectionstatus(true); return false; });
           connected_dht_server = dht_servers[0];
+		  Idle.add(() => { on_ownconnectionstatus(true); return false; });
         } else if(!new_status && connected) {
           Idle.add(() => { on_ownconnectionstatus(false); return false; });
         }

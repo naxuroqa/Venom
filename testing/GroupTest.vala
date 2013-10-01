@@ -21,7 +21,7 @@ namespace Testing {
     private int groupchat_number = 0;
     private Gee.List<int> new_contacts = new Gee.ArrayList<int>();
     private Gee.List<int> online_contacts = new Gee.ArrayList<int>();
-    public GroupTest( bool ipv6 = true ) {
+    public GroupTest( bool ipv6 = false ) {
       tox = new Tox.Tox(ipv6 ? 1 : 0);
       tox.callback_friendrequest(on_friend_request);
       tox.callback_group_message(on_groupchat_message);

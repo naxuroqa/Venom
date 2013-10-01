@@ -302,10 +302,10 @@ namespace Venom {
     private void on_ownconnectionstatus(bool status) {
       if(status) {
         image_status.set_from_pixbuf(ResourceFactory.instance.online);
-        image_status.set_tooltip_text("Connected to: %s".printf(session.connected_dht_server.toString()));
+        image_status.set_tooltip_text("Connected to: %s".printf(session.connected_dht_server.to_string()));
       } else {
         image_status.set_from_pixbuf(ResourceFactory.instance.offline);
-        image_status.set_tooltip_text("");
+        image_status.set_tooltip_text("Not connected.");
       }
     }
     

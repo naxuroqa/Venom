@@ -24,16 +24,15 @@ namespace Venom {
     public uint16 port {get; set;}
     public uint8[] pub_key {get; set;}
     public bool ipv6 {get; set;}
-    public DhtServer() {
-    }
-    public DhtServer.withArgs(string ip, uint16 port, uint8[] pub_key, bool ipv6 = true) {
+
+    public DhtServer.with_args(string ip, uint16 port, uint8[] pub_key, bool ipv6 = false) {
       assert(pub_key.length == 32);
       this.ip = ip;
       this.port = port;
       this.pub_key = Tools.clone(pub_key, pub_key.length);
       this.ipv6 = ipv6;
     }
-    public string toString() {
+    public string to_string() {
       return "%s:%u%s %s".printf(ip, uint16.from_big_endian(port), ipv6 ? " (ipv6)" : "", Tools.bin_to_hexstring(pub_key));
     }
   }
