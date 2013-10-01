@@ -80,6 +80,12 @@ namespace Venom {
     private bool on_contact_list_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
       // only for debugging!!!
       if(key.keyval == Gdk.Key.F5) {
+        // reset theme
+        Gtk.CssProvider provider = Gtk.CssProvider.get_default();        
+        Gdk.Screen screen = Gdk.Screen.get_default();
+        Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+        
+        // set user theme
         init_theme();
         return true;
       }
@@ -87,7 +93,6 @@ namespace Venom {
     }
     
     private void init_theme() {
-          
       Gtk.CssProvider provider = new Gtk.CssProvider();
       try {
       provider.load_from_path(ResourceFactory.instance.default_theme_filename); 

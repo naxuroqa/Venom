@@ -34,19 +34,20 @@ GtkTooltip {
 .button:focus:active{
   background-color: lighter (@treeview-selected);
   background-image: none;
-  /*border: none;*/
 }
 
 .button:selected,
 .button:hover {
   background-color: @treeview-selected;
   background-image: none;
-  /*border: none;*/
+  border-color: @background;
+  border-image: none;
 }
 
 .button {
   background-color: @background;
   background-image: none;
+  border-image: none;
 }
 
 GtkBox#contact_list .cell {
