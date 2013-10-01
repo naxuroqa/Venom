@@ -91,7 +91,7 @@ namespace Venom {
       new_conversation_message(message);
     }
 
-    [CCode (instance_pos = -1)]
+    [CCode (cname="G_MODULE_EXPORT venom_conversation_window_entry_activate", instance_pos = -1)]
     public void entry_activate(Gtk.Entry source) {
       string s = source.text;
       Message m = new Message(null, s);

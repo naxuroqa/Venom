@@ -331,7 +331,7 @@ namespace Venom {
     }
 
     // GUI Events
-    [CCode (instance_pos = -1)]
+    [CCode (cname="G_MODULE_EXPORT venom_contact_list_window_button_add_contact_clicked", instance_pos = -1)]
     public void button_add_contact_clicked(Object source) {
       AddFriendDialog dialog = null;
       try {
@@ -395,13 +395,15 @@ namespace Venom {
       on_contact_removed(c);
     }
     
-    [CCode (instance_pos = -1)]
+    [CCode (cname="G_MODULE_EXPORT venom_contact_list_window_button_groupchat_clicked", instance_pos = -1)]
     public void button_groupchat_clicked(Object source) {
       stdout.printf("Groupchat button clicked\n");
+      //TODO
     }
 
-    [CCode (instance_pos = -1)]
+    [CCode (cname="G_MODULE_EXPORT venom_contact_list_window_button_preferences_clicked", instance_pos = -1)]
     public void button_preferences_clicked(Object source) {
+      stdout.printf("Settings button clicked\n");
       //TODO
     }
   }

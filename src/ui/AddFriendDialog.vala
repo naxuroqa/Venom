@@ -46,23 +46,23 @@ namespace Venom {
       gtk_add_friend_dialog.destroy();
     }
 
-    [CCode (instance_pos = -1)] //DO NEVER FORGET ABOUT THIS!
+    [CCode (cname="G_MODULE_EXPORT venom_add_friend_dialog_on_close", instance_pos = -1)]
     public void on_close(Gtk.Dialog source) {
       gtk_add_friend_dialog.response(ResponseType.CANCEL);
     }
 
-    [CCode (instance_pos = -1)]
+    [CCode (cname="G_MODULE_EXPORT venom_add_friend_dialog_on_button_ok_clicked", instance_pos = -1)]
     public void on_button_ok_clicked(Object source) {
       if(msg_ok && id_ok)
         gtk_add_friend_dialog.response(ResponseType.OK);
     }
 
-    [CCode (instance_pos = -1)]
+    [CCode (cname="G_MODULE_EXPORT venom_add_friend_dialog_on_button_cancel_clicked", instance_pos = -1)]
     public void on_button_cancel_clicked(Gtk.Button source) {
       gtk_add_friend_dialog.response(ResponseType.CANCEL);
     }
 
-    [CCode (instance_pos = -1)]
+    [CCode (cname="G_MODULE_EXPORT venom_add_friend_dialog_on_text_changed", instance_pos = -1)]
     public void on_text_changed(Object source) {
       friend_id = gtk_friend_id_entry.get_text();
       friend_msg = gtk_friend_message_entry.get_text();
