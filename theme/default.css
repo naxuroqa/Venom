@@ -10,6 +10,9 @@
   -GtkRange-trough-under-steppers: 1;
   -GtkScrollbar-has-backward-stepper: false;
   -GtkScrollbar-has-forward-stepper: false;
+  -GtkWindow-resize-grip-default: false;
+  -GtkWindow-resize-grip-height: 0;
+  -GtkWindow-resize-grip-width: 0;
 }
 
 .background {
