@@ -68,6 +68,29 @@ To be done
 <a name="windows" />
 ###Windows:
 
-This is currently difficult, since there are no official gtk3 packages for windows (yet).
-There is a [branch](https://github.com/naxuroqa/Venom/tree/gtk2) which is using gtk2 and builds on windows, 
-but it is not up to date.
+Follow ProjectTox-Core [installation instructions](https://github.com/irungentoo/ProjectTox-Core/blob/master/INSTALL.md#windows).
+
+After that you can either build vala and gtk3 from source or grab a binary bundle.
+
+####Compiling from source
+tbd
+
+####Using a precompiled bundle
+
+* Download and install a recent Vala+Gtk3 bundle from [here](http://www.tarnyko.net/dl/),
+like [this one](http://www.tarnyko.net/repo/vala-0.20.1_(GTK+-3.6.4)(TARNYKO).exe).
+* Download and install cmake from [here](http://www.cmake.org/cmake/resources/software.html).
+* Download libgee06 from [here](https://vala-win32.googlecode.com/files/libgee-0.6.1.zip) and unzip it to your msys root.
+
+####Compiling Venom
+
+After this, you can begin compiling Venom:
+
+```bash
+git clone git://github.com/naxuroqa/Venom.git
+cd Venom
+mkdir build
+cd build
+cmake ..
+make
+```
