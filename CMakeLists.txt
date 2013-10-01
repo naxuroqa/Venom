@@ -139,6 +139,8 @@ INSTALL(FILES pixmaps/online_glow.png DESTINATION share/venom/pixmaps)
 INSTALL(FILES pixmaps/call.png DESTINATION share/venom/pixmaps)
 INSTALL(FILES pixmaps/call_video.png DESTINATION share/venom/pixmaps)
 
+INSTALL(FILES pixmaps/tox_logo.png DESTINATION share/venom/pixmaps)
+
 INSTALL(FILES theme/default.css DESTINATION share/venom/theme)
 
 # vim:set ts=2 sw=2 et:
