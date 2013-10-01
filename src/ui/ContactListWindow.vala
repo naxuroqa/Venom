@@ -228,12 +228,12 @@ namespace Venom {
       if(response != Gtk.ResponseType.YES)
         return;
 
-      Tox.FriendAddError far = session.addfriend_norequest(public_key);
-      if((int)far >= 0) {
-        stdout.printf("Added new friend #%i\n", (int)far);
-        add_contact(new Contact(public_key, (int)far));
+      Tox.FriendAddError friend_add_error = session.addfriend_norequest(public_key);
+      if((int)friend_add_error >= 0) {
+        stdout.printf("Added new friend #%i\n", (int)friend_add_error);
+        add_contact(new Contact(public_key, (int)friend_add_error));
       } else {
-        stderr.printf("Could not add friend: %i\n", far);
+        stderr.printf("Could not add friend: %i\n", friend_add_error);
       }
     }
     private void on_friendmessage(int friend_number, string message) {

@@ -29,7 +29,7 @@ namespace Testing {
       tox.bootstrap_from_address(ip_address, ipv6 ? 1 : 0, ip_port_be, pub_key);
       
       bool connected = false;
-      for(int i = 0; i < 5000; ++i) {
+      for(int i = 0; i < 1000; ++i) {
         if(connected = (tox.isconnected() != 0))
           break;
         tox.do();
@@ -40,6 +40,7 @@ namespace Testing {
       } else {
         stdout.printf("[ ] Could not establish connection!\n");
       }
+      stdout.flush();
     }
 
     public static void main(string[] args) {

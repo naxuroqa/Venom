@@ -108,12 +108,6 @@ namespace Testing {
             tox.sendmessage(friend_number, Venom.Tools.string_to_nullterm_uint("Failed :/"));
           }
         }
-             
-      
-      
-    
-
-
         tox.do();
         Thread.usleep(10000);
       }
