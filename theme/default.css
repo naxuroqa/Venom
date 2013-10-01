@@ -10,35 +10,61 @@
   -GtkRange-trough-under-steppers: 1;
   -GtkScrollbar-has-backward-stepper: false;
   -GtkScrollbar-has-forward-stepper: false;
-  -GtkScrollbar-min-slider-length: 50;
 }
 
-GtkWindow {
+.background {
   color: #ffffff;
   background-color: @background;
 }
 
+GtkLabel {
+  color: #ffffff;
+}
+
+GtkTooltip {
+  color: #ffffff;
+}
+
+.arrow {
+  color: #ffffff;
+}
+
 .button:active,
 .button:hover:active,
-.button:focus:active,
+.button:focus:active{
+  background-color: lighter (@treeview-selected);
+  background-image: none;
+  /*border: none;*/
+}
+
+.button:selected,
 .button:hover {
   background-color: @treeview-selected;
   background-image: none;
-  border: none;
-  box-shadow: none;
+  /*border: none;*/
 }
 
-.cell {
+.button {
+  background-color: @background;
+  background-image: none;
+}
+
+GtkBox#contact_list .cell {
   color: #ffffff;
   background-color: @treeview-background;
 }
 
-row:selected {
+GtkBox#contact_list GtkTreeView {
+  background-color: @treeview-background;
+}
+
+GtkBox#contact_list row:selected {
   background-color: @treeview-selected;
 }
 
 .scrollbar {
   background-color: @background;
+  background-image: none;
 }
 
 .slider:active {
@@ -47,4 +73,6 @@ row:selected {
 
 .slider {
   background-color: @treeview-background;
+  background-image: none;
+  border-radius: 10px;
 }

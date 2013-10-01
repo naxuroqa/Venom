@@ -17,7 +17,7 @@
 
 namespace Testing {
   public class ToxTest {
-    public void run_connection_test(string ip_string, string pub_key_string, int port = 33445, int timeout = 100, bool ipv6 = false) {
+    public void run_connection_test(string ip_string, string pub_key_string, int port = 33445, int timeout = 2000, bool ipv6 = false) {
       Tox.Tox tox = new Tox.Tox(ipv6 ? 1 : 0);
       string ip_address = ip_string;
       uint16 ip_port_be = ((uint16)port).to_big_endian();
