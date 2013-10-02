@@ -115,6 +115,7 @@
 }
 
 #contact_list GtkFrame {
+  background-color: @treeview-background;
   border: 0px solid @border-color;
   border-top-width: 1px;
   border-bottom-width: 1px;
