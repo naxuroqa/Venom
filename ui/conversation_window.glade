@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkImage" id="image_call">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
   <object class="GtkBox" id="box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -43,13 +48,15 @@
                   <object class="GtkBox" id="box5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="spacing">4</property>
                     <child>
                       <object class="GtkLabel" id="label_contact_name">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">#name</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -58,10 +65,18 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkArrow" id="arrow1">
+                      <object class="GtkButton" id="button1">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="arrow_type">down</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <child>
+                          <object class="GtkArrow" id="arrow1">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="arrow_type">down</property>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -82,6 +97,9 @@
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
                     <property name="label" translatable="yes">#Statusmessage</property>
+                    <attributes>
+                      <attribute name="foreground" value="#414140404242"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -108,17 +126,20 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="border_width">8</property>
-            <property name="spacing">6</property>
+            <property name="spacing">19</property>
             <property name="homogeneous">True</property>
             <child>
               <object class="GtkButton" id="button_call">
+                <property name="width_request">51</property>
+                <property name="height_request">32</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">test</property>
+                <property name="tooltip_text" translatable="yes">Call contact</property>
                 <property name="image">image_call</property>
-                <property name="relief">none</property>
-                <property name="always_show_image">True</property>
+                <style>
+                  <class name="callbutton"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -128,12 +149,16 @@
             </child>
             <child>
               <object class="GtkButton" id="button_call_video">
+                <property name="width_request">51</property>
+                <property name="height_request">32</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Call contact with video</property>
                 <property name="image">image_call_video</property>
-                <property name="relief">none</property>
-                <property name="always_show_image">True</property>
+                <style>
+                  <class name="callbutton"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -188,11 +213,6 @@
         <property name="position">2</property>
       </packing>
     </child>
-  </object>
-  <object class="GtkImage" id="image_call">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-missing-image</property>
   </object>
   <object class="GtkImage" id="image_call_video">
     <property name="visible">True</property>

@@ -83,6 +83,7 @@ namespace Venom {
       conversation_tree_view = new ConversationTreeView();
       conversation_tree_view.show_all();
       scrolled_window.add(conversation_tree_view);
+      set_property("name", "conversation");
     }
 
     public void on_incoming_message(Message message) {

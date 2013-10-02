@@ -71,7 +71,7 @@
                 <property name="halign">start</property>
                 <property name="label" translatable="yes">#userstatus</property>
                 <attributes>
-                  <attribute name="foreground" value="#92a792a792a7"/>
+                  <attribute name="foreground" value="#636364646666"/>
                 </attributes>
               </object>
               <packing>

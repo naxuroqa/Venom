@@ -1,13 +1,15 @@
 @define-color treeview-background #414042;
 @define-color treeview-selected lighter(@treeview-background);
 @define-color background #231f20;
+@define-color foreground #f1f2f2;
+@define-color border-color #636466;
+@define-color callbutton-color #6bc260;
+@define-color callbutton-selected lighter(@callbutton-color);
 
 * {
   -engine: none;
-  -GtkRange-slider-width: 15;
+  -GtkRange-slider-width: 13;
   -GtkRange-stepper-spacing: 0;
-  -GtkRange-trough-border: -1;
-  -GtkRange-trough-under-steppers: 1;
   -GtkScrollbar-has-backward-stepper: false;
   -GtkScrollbar-has-forward-stepper: false;
   -GtkWindow-resize-grip-default: false;
@@ -16,20 +18,20 @@
 }
 
 #contact_list {
-  color: #ffffff;
+  color: @foreground;
   background-color: @background;
 }
 
 #contact_list GtkLabel {
-  color: #ffffff;
+  color: @foreground;
 }
 
 #contact_list GtkTooltip {
-  color: #ffffff;
+  color: @foreground;
 }
 
 #contact_list .arrow {
-  color: #ffffff;
+  color: @foreground;
 }
 
 #contact_list .button:active,
@@ -54,7 +56,7 @@
 }
 
 #contact_list .cell {
-  color: #ffffff;
+  color: @foreground;
   background-color: @treeview-background;
   border: none;
 }
@@ -68,7 +70,7 @@
 }
 
 #contact_list GtkScrolledWindow {
-  border: 0px solid gray;
+  border: 0px solid @border-color;
   border-top-width: 1px;
   border-bottom-width: 1px;
 }
@@ -85,5 +87,33 @@
 #contact_list .slider {
   background-color: @treeview-background;
   background-image: none;
-  border-radius: 10px;
+  border: 1px solid @background;
+  border-radius: 4px;
+}
+
+#conversation,
+#conversation GtkTreeView {
+  color: black;
+  background-color: @foreground;
+}
+
+#conversation .callbutton:active,
+#conversation .callbutton:hover:active,
+#conversation .callbutton:focus:active {
+  background-color: lighter (@callbutton-selected);
+  background-image: none;
+}
+
+#conversation .callbutton:selected,
+#conversation .callbutton:hover {
+  background-color: @callbutton-selected;
+  background-image: none;
+  border-image: none;
+}
+
+#conversation .callbutton {
+  background-color: @callbutton-color;
+  background-image: none;
+  border-image: none;
+  border-radius: 4px;
 }
