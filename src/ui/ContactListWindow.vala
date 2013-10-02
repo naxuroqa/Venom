@@ -161,6 +161,7 @@ namespace Venom {
 
       Gtk.ScrolledWindow scrolled_window_contact_list = builder.get_object("scrolled_window_contact_list") as Gtk.ScrolledWindow;
       scrolled_window_contact_list.add(contact_list_tree_view);
+      scrolled_window_contact_list.get_vscrollbar().hide();
       
       set_default_size(230, 600);
       set_property("name", "contact_list");
