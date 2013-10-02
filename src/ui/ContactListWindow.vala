@@ -22,6 +22,7 @@ namespace Venom {
     private Gee.HashMap<int, ConversationWindow> conversation_windows;
     // Tox session wrapper
     private ToxSession session;
+    private Tox.UserStatus user_status = Tox.UserStatus.NONE;
 
     // Widgets
     private Gtk.Button button_add_contact;
@@ -54,7 +55,6 @@ namespace Venom {
       init_contacts();
 
       // initialize session specific gui stuff
-      image_userimage.set_from_pixbuf(ResourceFactory.instance.default_image);
       label_name.set_text(session.getselfname());
       label_status.set_text(session.get_self_statusmessage());
 
@@ -120,8 +120,14 @@ namespace Venom {
       }
     }
 
-    // Load widgets from file
+    // Initialize widgets
     private void init_widgets() {
+      // Set up Window
+      set_default_size(230, 600);
+      set_property("name", "contact_list");
+      set_icon(ResourceFactory.instance.tox_logo);
+
+      // Load widgets from file
       Gtk.Builder builder = new Gtk.Builder();
       try {
         builder.add_from_file(Path.build_filename(Tools.find_data_dir(), "ui", "contact_list.glade"));
@@ -131,11 +137,6 @@ namespace Venom {
       
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.add(box);
-      
-      Gtk.Menu menu_user = builder.get_object("menu_user") as Gtk.Menu;
-      
-      Gtk.Button button_user = builder.get_object("button_user") as Gtk.Button;
-      button_user.clicked.connect( () => {menu_user.popup(null, button_user, null, 0, 0);});
       
       button_add_contact = builder.get_object("button_add_contact") as Gtk.Button;
       button_group_chat = builder.get_object("button_group_chat") as Gtk.Button;
@@ -148,14 +149,18 @@ namespace Venom {
       Gtk.Image image_add_contact = builder.get_object("image_add_contact") as Gtk.Image;
       Gtk.Image image_group_chat  = builder.get_object("image_group_chat") as Gtk.Image;
       Gtk.Image image_preferences = builder.get_object("image_preferences") as Gtk.Image;
+      
+      Gtk.ImageMenuItem menuitem_edit_info = builder.get_object("menuitem_edit_info") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.ImageMenuItem;
+
+      image_status.set_from_pixbuf(ResourceFactory.instance.offline);
+      image_userimage.set_from_pixbuf(ResourceFactory.instance.default_image);
 
       image_add_contact.set_from_pixbuf(ResourceFactory.instance.add);
       image_group_chat.set_from_pixbuf(ResourceFactory.instance.groupchat);
       image_preferences.set_from_pixbuf(ResourceFactory.instance.settings);
-      image_status.set_from_pixbuf(ResourceFactory.instance.offline);
 
-      builder.connect_signals(this);
-      
+      // Create and add custom treeview
       contact_list_tree_view = new ContactListTreeView();
       contact_list_tree_view.show_all();
 
@@ -163,9 +168,15 @@ namespace Venom {
       scrolled_window_contact_list.add(contact_list_tree_view);
       scrolled_window_contact_list.get_vscrollbar().hide();
       
-      set_default_size(230, 600);
-      set_property("name", "contact_list");
-      set_icon(ResourceFactory.instance.tox_logo);
+      //Signals
+      builder.connect_signals(this);
+      
+      Gtk.Menu menu_user = builder.get_object("menu_user") as Gtk.Menu;
+      Gtk.Button button_user = builder.get_object("button_user") as Gtk.Button;
+      button_user.clicked.connect( () => {menu_user.popup(null, button_user, null, 0, 0);});
+      
+      menuitem_edit_info.activate.connect( edit_user_information );
+      menuitem_copy_id.activate.connect( copy_id_to_clipboard);
     }
 
     // Connect
@@ -180,6 +191,10 @@ namespace Venom {
       session.on_read_receipt.connect(this.on_read_receipt);
       session.on_connectionstatus.connect(this.on_connectionstatus);
       session.on_ownconnectionstatus.connect(this.on_ownconnectionstatus);
+      
+      //groupmessage signals
+      session.on_group_invite.connect(this.on_group_invite);
+      session.on_group_message.connect(this.on_group_message);
       
       // Contact list treeview signals
       on_contact_added.connect(contact_list_tree_view.add_contact);
@@ -207,10 +222,28 @@ namespace Venom {
         stderr.printf("Could not retrieve contacts!\n");
       }
     }
+    
+    private void update_status() {/*
+      switch(user_status) {
+        Tox.
+      }*/
+      image_status.set_from_pixbuf(ResourceFactory.instance.online);
+    }
 
     public void add_contact(Contact contact) {
       contacts[contact.friend_id] = contact;
       on_contact_added(contact);    
+    }
+    
+    public void copy_id_to_clipboard() {
+      string id_string = Tools.bin_to_hexstring(session.get_address());
+      Gdk.Display display = get_display();
+      Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD).set_text(id_string, -1);
+      Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_PRIMARY).set_text(id_string, -1);
+    }
+    
+    public void edit_user_information() {
+      stdout.printf("TODO: edit user information\n");
     }
 
     private void on_outgoing_message(string message, Contact receiver) {
@@ -315,12 +348,20 @@ namespace Venom {
 
     private void on_ownconnectionstatus(bool status) {
       if(status) {
-        image_status.set_from_pixbuf(ResourceFactory.instance.online);
+        update_status();
         image_status.set_tooltip_text("Connected to: %s".printf(session.connected_dht_server.to_string()));
       } else {
         image_status.set_from_pixbuf(ResourceFactory.instance.offline);
         image_status.set_tooltip_text("Not connected.");
       }
+    }
+
+    private void on_group_invite(int friend_number, uint8[] group_public_key) {
+      stdout.printf("Got a group invite from %s with public key %s\n", contacts[friend_number].name, Tools.bin_to_hexstring(group_public_key));
+    }
+
+    private void on_group_message(int groupnumber, int friendgroupnumber, string message) {
+      stdout.printf("[gm] %i@%i: %s", friendgroupnumber, groupnumber, message);
     }
     
     private ConversationWindow? open_conversation_with(Contact c) {
