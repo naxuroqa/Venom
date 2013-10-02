@@ -15,74 +15,74 @@
   -GtkWindow-resize-grip-width: 0;
 }
 
-.background {
+#contact_list {
   color: #ffffff;
   background-color: @background;
 }
 
-GtkLabel {
+#contact_list GtkLabel {
   color: #ffffff;
 }
 
-GtkTooltip {
+#contact_list GtkTooltip {
   color: #ffffff;
 }
 
-.arrow {
+#contact_list .arrow {
   color: #ffffff;
 }
 
-.button:active,
-.button:hover:active,
-.button:focus:active{
+#contact_list .button:active,
+#contact_list .button:hover:active,
+#contact_list .button:focus:active{
   background-color: lighter (@treeview-selected);
   background-image: none;
 }
 
-.button:selected,
-.button:hover {
+#contact_list .button:selected,
+#contact_list .button:hover {
   background-color: @treeview-selected;
   background-image: none;
   border-color: @background;
   border-image: none;
 }
 
-.button {
+#contact_list .button {
   background-color: @background;
   background-image: none;
   border-image: none;
 }
 
-GtkBox#contact_list .cell {
+#contact_list .cell {
   color: #ffffff;
   background-color: @treeview-background;
   border: none;
 }
 
-GtkBox#contact_list GtkTreeView {
+#contact_list GtkTreeView {
   background-color: @treeview-background;
 }
 
-GtkBox#contact_list row:selected {
+#contact_list row:selected {
   background-color: @treeview-selected;
 }
 
-GtkScrolledWindow {
+#contact_list GtkScrolledWindow {
   border: 0px solid gray;
   border-top-width: 1px;
   border-bottom-width: 1px;
 }
 
-.scrollbar {
+#contact_list .scrollbar {
   background-color: @background;
   background-image: none;
 }
 
-.slider:active {
+#contact_list .slider:active {
   background-color: @treeview-selected;
 }
 
-.slider {
+#contact_list .slider {
   background-color: @treeview-background;
   background-image: none;
   border-radius: 10px;
