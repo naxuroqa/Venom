@@ -30,7 +30,7 @@ namespace Venom {
     private Gtk.Entry entry_message;
     
     private ConversationTreeView conversation_tree_view;
-    private unowned Contact contact;
+    public unowned Contact contact {get; private set;}
 
     private signal void new_conversation_message(Message message);
     public signal void new_outgoing_message(string message, Contact receiver);
@@ -40,9 +40,8 @@ namespace Venom {
       init_widgets();
 
       delete_event.connect(() => {hide(); return true;});
-
-      label_contact_name.set_text(contact.name);
-      label_contact_statusmessage.set_text(contact.status_message);
+      
+      update_contact();
       
       image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_image);
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
@@ -51,6 +50,14 @@ namespace Venom {
       new_conversation_message.connect(conversation_tree_view.add_message);
       
       set_default_size(600, 500);
+    }
+    
+    public void update_contact() {
+      if(contact.name == null || contact.name == "")
+        label_contact_name.set_text(Tools.bin_to_hexstring(contact.public_key));
+      else
+        label_contact_name.set_text(contact.name);
+      label_contact_statusmessage.set_text(contact.status_message);
     }
     
     private void init_widgets() {

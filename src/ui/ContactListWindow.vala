@@ -182,6 +182,7 @@ namespace Venom {
       
       // Contact list treeview signals
       on_contact_added.connect(contact_list_tree_view.add_contact);
+      on_contact_changed.connect(contact_list_tree_view.update_contact);
       on_contact_removed.connect(contact_list_tree_view.remove_contact);
       contact_list_tree_view.contact_activated.connect(on_contact_activated);
       contact_list_tree_view.key_press_event.connect(on_treeview_key_pressed);
@@ -269,7 +270,7 @@ namespace Venom {
       if(contacts[friend_number] != null) {
         stdout.printf("%s changed his name to %s\n", contacts[friend_number].name, new_name);
         contacts[friend_number].name = new_name;
-        contact_list_tree_view.update_contact(contacts[friend_number]);
+        on_contact_changed(contacts[friend_number]);
       } else {
         stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
       }
@@ -278,7 +279,7 @@ namespace Venom {
       if(contacts[friend_number] != null) {
         stdout.printf("%s changed his status to %s\n", contacts[friend_number].name, status_message);
         contacts[friend_number].status_message = status_message;
-        contact_list_tree_view.update_contact(contacts[friend_number]);
+        on_contact_changed(contacts[friend_number]);
       } else {
         stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
       }
@@ -287,7 +288,7 @@ namespace Venom {
       if(contacts[friend_number] != null) {
         stdout.printf("[us] %s:%i\n", contacts[friend_number].name, user_status);
         contacts[friend_number].user_status = user_status;
-        contact_list_tree_view.update_contact(contacts[friend_number]);
+        on_contact_changed(contacts[friend_number]);
       } else {
         stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
       }
@@ -305,7 +306,7 @@ namespace Venom {
         if(!status && contacts[friend_number].online)
           contacts[friend_number].last_seen = new DateTime.now_local();
         contacts[friend_number].online = status;
-        contact_list_tree_view.update_contact(contacts[friend_number]);
+        on_contact_changed(contacts[friend_number]);
       } else {
         stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
       }
@@ -327,7 +328,8 @@ namespace Venom {
         w = new ConversationWindow(c);
         incoming_message.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
-        
+        on_contact_changed.connect( (c_) => {if(c == c_) w.update_contact();} );
+        on_contact_removed.connect( (c_) => {if(c == c_) w.destroy();} );
         conversation_windows[c.friend_id] = w;
       }
       return w;
