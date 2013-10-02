@@ -153,8 +153,9 @@ namespace Venom {
       
       contact_list_tree_view = new ContactListTreeView();
       contact_list_tree_view.show_all();
-      Gtk.ScrolledWindow w = builder.get_object("contacts_window") as Gtk.ScrolledWindow;
-      w.add(contact_list_tree_view);
+
+      Gtk.ScrolledWindow scrolled_window_contact_list = builder.get_object("scrolled_window_contact_list") as Gtk.ScrolledWindow;
+      scrolled_window_contact_list.add(contact_list_tree_view);
       
       set_default_size(230, 600);
       set_icon(ResourceFactory.instance.tox_logo);
