@@ -132,6 +132,11 @@ namespace Venom {
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.add(box);
       
+      Gtk.Menu menu_user = builder.get_object("menu_user") as Gtk.Menu;
+      
+      Gtk.Button button_user = builder.get_object("button_user") as Gtk.Button;
+      button_user.clicked.connect( () => {menu_user.popup(null, button_user, null, 0, 0);});
+      
       button_add_contact = builder.get_object("button_add_contact") as Gtk.Button;
       button_group_chat = builder.get_object("button_group_chat") as Gtk.Button;
       button_preferences = builder.get_object("button_preferences") as Gtk.Button;

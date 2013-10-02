@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkImage" id="image_add_contact">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -105,11 +110,15 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <style>
+              <class name="userbutton"/>
+            </style>
             <child>
               <object class="GtkArrow" id="arrow1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="arrow_type">down</property>
+                <property name="shadow_type">none</property>
               </object>
             </child>
           </object>
@@ -127,14 +136,95 @@
       </packing>
     </child>
     <child>
-      <object class="GtkScrolledWindow" id="scrolled_window_contact_list">
+      <object class="GtkBox" id="box1">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="hscrollbar_policy">never</property>
-        <property name="vscrollbar_policy">always</property>
-        <property name="shadow_type">in</property>
+        <property name="can_focus">False</property>
         <child>
-          <placeholder/>
+          <object class="GtkFrame" id="frame1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label_xalign">0</property>
+            <property name="label_yalign">0</property>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolled_window_contact_list">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="vadjustment">adjustment1</property>
+                <property name="hscrollbar_policy">never</property>
+                <property name="vscrollbar_policy">never</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+            </child>
+            <child type="label">
+              <object class="GtkButton" id="button1">
+                <property name="height_request">27</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="halign">start</property>
+                <property name="margin_left">5</property>
+                <property name="margin_right">6</property>
+                <property name="margin_top">6</property>
+                <property name="margin_bottom">6</property>
+                <style>
+                  <class name="statusbutton"/>
+                </style>
+                <child>
+                  <object class="GtkBox" id="box3">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel" id="label1">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Online</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkArrow" id="arrow2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="arrow_type">down</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrollbar" id="scrollbar_contact_list">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="adjustment">adjustment1</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
         </child>
       </object>
       <packing>
@@ -158,6 +248,9 @@
             <property name="tooltip_markup" translatable="yes">Add contact</property>
             <property name="tooltip_text" translatable="yes">Add contact</property>
             <property name="image">image_add_contact</property>
+            <style>
+              <class name="bottombutton"/>
+            </style>
             <signal name="clicked" handler="venom_contact_list_window_button_add_contact_clicked" swapped="no"/>
           </object>
           <packing>
@@ -175,6 +268,9 @@
             <property name="tooltip_markup" translatable="yes">Create groupchat</property>
             <property name="tooltip_text" translatable="yes">Create groupchat</property>
             <property name="image">image_group_chat</property>
+            <style>
+              <class name="bottombutton"/>
+            </style>
             <signal name="clicked" handler="venom_contact_list_window_button_groupchat_clicked" swapped="no"/>
           </object>
           <packing>
@@ -192,6 +288,9 @@
             <property name="tooltip_markup" translatable="yes">Open preferences</property>
             <property name="tooltip_text" translatable="yes">Open preferences</property>
             <property name="image">image_preferences</property>
+            <style>
+              <class name="bottombutton"/>
+            </style>
             <signal name="clicked" handler="venom_contact_list_window_button_preferences_clicked" swapped="no"/>
           </object>
           <packing>
@@ -206,6 +305,26 @@
         <property name="fill">True</property>
         <property name="position">2</property>
       </packing>
+    </child>
+  </object>
+  <object class="GtkMenu" id="menu_user">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkMenuItem" id="menuitem1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">rename</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="menuitem2">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">set status</property>
+        <property name="use_underline">True</property>
+      </object>
     </child>
   </object>
 </interface>

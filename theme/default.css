@@ -32,6 +32,7 @@
   -GtkWindow-resize-grip-default: false;
   -GtkWindow-resize-grip-height: 0;
   -GtkWindow-resize-grip-width: 0;
+  font: sans 10;
 }
 
 #contact_list {
@@ -51,25 +52,60 @@
   color: @foreground;
 }
 
-#contact_list .button:active,
-#contact_list .button:hover:active,
-#contact_list .button:focus:active{
+#contact_list .bottombutton:active,
+#contact_list .bottombutton:hover:active,
+#contact_list .bottombutton:focus:active{
   background-color: lighter (@treeview-selected);
   background-image: none;
+  border-style: none;
 }
 
-#contact_list .button:selected,
-#contact_list .button:hover {
+#contact_list .bottombutton:selected,
+#contact_list .bottombutton:hover {
   background-color: @treeview-selected;
   background-image: none;
-  border-color: @background;
-  border-image: none;
+  border-style: none;
 }
 
-#contact_list .button {
+#contact_list .bottombutton {
   background-color: @background;
   background-image: none;
   border-image: none;
+  border-style: none;
+}
+
+#contact_list .statusbutton:active,
+#contact_list .statusbutton:hover:active,
+#contact_list .statusbutton:focus:active{
+  background-color: lighter (@border-color);
+  background-image: none;
+  border-style: none;
+}
+
+#contact_list .statusbutton {
+  background-color: @border-color;
+  background-image: none;
+  border-image: none;
+  border-style: none;
+}
+
+#contact_list .statusbutton * {
+  text-shadow: none;
+}
+
+#contact_list .userbutton:active,
+#contact_list .userbutton:hover:active,
+#contact_list .userbutton:focus:active{
+  background-color: lighter (@treeview-background);
+  background-image: none;
+  border-style: none;
+}
+
+#contact_list .userbutton {
+  background-color: @treeview-background;
+  background-image: none;
+  border-image: none;
+  border-style: none;
 }
 
 #contact_list .cell {
@@ -78,8 +114,11 @@
   border: none;
 }
 
-#contact_list GtkTreeView {
+#contact_list GtkFrame {
   background-color: @treeview-background;
+  border: 0px solid @border-color;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
 }
 
 #contact_list row:selected {
@@ -87,9 +126,7 @@
 }
 
 #contact_list GtkScrolledWindow {
-  border: 0px solid @border-color;
-  border-top-width: 1px;
-  border-bottom-width: 1px;
+  border: none;
 }
 
 #contact_list .scrollbar {
