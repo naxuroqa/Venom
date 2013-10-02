@@ -23,7 +23,6 @@ public class Main {
       Gtk.init (ref args);
 
       ContactListWindow contact_list = new ContactListWindow();
-      contact_list.set_property("name", "contact_list");
       contact_list.show_all();
 
       Gtk.main();

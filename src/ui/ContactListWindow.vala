@@ -158,6 +158,7 @@ namespace Venom {
       scrolled_window_contact_list.add(contact_list_tree_view);
       
       set_default_size(230, 600);
+      set_property("name", "contact_list");
       set_icon(ResourceFactory.instance.tox_logo);
     }
 
