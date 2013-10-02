@@ -114,9 +114,13 @@
   border: none;
 }
 
-#contact_list GtkFrame {
+#contact_list GtkEventBox {
   background-color: @treeview-background;
+}
+
+#contact_list .frame {
   border: 0px solid @border-color;
+  border-style: solid;
   border-top-width: 1px;
   border-bottom-width: 1px;
 }
