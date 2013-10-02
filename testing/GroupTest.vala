@@ -19,8 +19,8 @@ namespace Testing {
   public class GroupTest {
     private Tox.Tox tox;
     private int groupchat_number = 0;
-    private Gee.List<int> new_contacts = new Gee.ArrayList<int>();
-    private Gee.List<int> online_contacts = new Gee.ArrayList<int>();
+    private Gee.ArrayList<int> new_contacts = new Gee.ArrayList<int>();
+    private Gee.ArrayList<int> online_contacts = new Gee.ArrayList<int>();
     public GroupTest( bool ipv6 = false ) {
       tox = new Tox.Tox(ipv6 ? 1 : 0);
       tox.callback_friendrequest(on_friend_request);
@@ -28,6 +28,7 @@ namespace Testing {
       tox.callback_connectionstatus(on_connection_status);
     }
 
+    [CCode (instance_pos = -1)]
     public void on_connection_status(Tox.Tox tox, int friend_number, uint8 status) {
       if(status != 1)
         return;
@@ -38,6 +39,7 @@ namespace Testing {
       online_contacts.add(friend_number);
     }
 
+    [CCode (instance_pos = -1)]
     public void on_groupchat_message(Tox.Tox tox, int groupnumber, int friendgroupnumber, uint8[] message) {
       uint8[] name_buf = new uint8[Tox.MAX_NAME_LENGTH];
       tox.getname(friendgroupnumber, name_buf);
@@ -45,6 +47,7 @@ namespace Testing {
       stdout.printf("%s: %s\n", friend_name, (string)message);
     }
 
+    [CCode (instance_pos = -1)]
     public void on_friend_request(uint8[] key, uint8[] data) {
       uint8[] public_key = Venom.Tools.clone(key, Tox.CLIENT_ID_SIZE);
       stdout.printf("Friend request from %s received.\n", Venom.Tools.bin_to_hexstring(public_key));
@@ -55,8 +58,8 @@ namespace Testing {
       }
       
       new_contacts.add(friend_number);
-      
     }
+
     public void run_group_test(string ip_string, string pub_key_string, int port = 33445, int timeout = 5000, bool ipv6 = true) {
       string ip_address = ip_string;
       uint16 ip_port_be = ((uint16)port).to_big_endian();

@@ -40,6 +40,8 @@ namespace Venom {
     public signal void on_read_receipt(int friend_number, uint32 receipt);
     public signal void on_connectionstatus(int friend_number, bool status);
     public signal void on_ownconnectionstatus(bool status);
+    public signal void on_group_invite(int friend_number, uint8[] group_public_key);
+    public signal void on_group_message(int groupnumber, int friendgroupnumber, string message);
 
     public ToxSession( bool ipv6 = false ) {
 	  this.ipv6 = ipv6;
@@ -62,6 +64,9 @@ namespace Venom {
       handle.callback_userstatus(this.on_userstatus_callback);
       handle.callback_read_receipt(this.on_read_receipt_callback);
       handle.callback_connectionstatus(this.on_connectionstatus_callback);
+      
+      handle.callback_group_invite(this.on_group_invite_callback);
+      handle.callback_group_message(this.on_group_message_callback);
     }
 
     // destructor
@@ -118,6 +123,20 @@ namespace Venom {
     [CCode (instance_pos = -1)]
     private void on_connectionstatus_callback(Tox.Tox tox, int friend_number, uint8 status) {
       Idle.add(() => { on_connectionstatus(friend_number, (status != 0)); return false; });
+    }
+
+    // Group chat callbacks
+
+    [CCode (instance_pos = -1)]
+    private void on_group_invite_callback(Tox.Tox tox, int friendnumber, uint8[] group_public_key) {
+      uint8[] public_key_clone = Tools.clone(group_public_key, Tox.CLIENT_ID_SIZE);
+      Idle.add(() => { on_group_invite(friendnumber, public_key_clone); return false; });
+    }
+
+    [CCode (instance_pos = -1)]
+    private void on_group_message_callback(Tox.Tox tox, int groupnumber, int friendgroupnumber, uint8[] message) {
+      string message_string = ((string)message).dup();
+      Idle.add(() => { on_group_message(groupnumber, friendgroupnumber, message_string); return false; });
     }
 
     ////////////////////////////// Wrapper functions ////////////////////////////////

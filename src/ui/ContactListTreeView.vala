@@ -23,7 +23,7 @@ namespace Venom {
     public signal void contact_activated(Contact contact);
 
     public ContactListTreeView() {
-      list_store_contacts = new Gtk.ListStore (1, typeof (Contact));
+      list_store_contacts = new Gtk.ListStore (2, typeof(Contact), typeof(string));
 
       name_column = new Gtk.TreeViewColumn();
       ContactListCellRenderer name_column_cell = new ContactListCellRenderer();
@@ -36,6 +36,8 @@ namespace Venom {
       append_column(name_column);
 
       row_activated.connect(on_row_activated);
+      
+      set_tooltip_column(1);
 
       //hide headers
       set_headers_visible(false);
@@ -50,8 +52,7 @@ namespace Venom {
     public void add_contact(Contact contact) {
       Gtk.TreeIter iter;
       list_store_contacts.append (out iter);
-      list_store_contacts.set (iter, 0, contact);
-      
+      list_store_contacts.set (iter, 0, contact, 1, Tools.bin_to_hexstring(contact.public_key));
     }
 
     public void update_contact(Contact contact) {
