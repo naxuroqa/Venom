@@ -54,6 +54,7 @@
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">#name</property>
+                        <property name="ellipsize">end</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -97,6 +98,7 @@
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
                     <property name="label" translatable="yes">#Statusmessage</property>
+                    <property name="ellipsize">end</property>
                     <attributes>
                       <attribute name="foreground" value="#414140404242"/>
                     </attributes>
