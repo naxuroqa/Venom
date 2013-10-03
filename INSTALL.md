@@ -86,7 +86,7 @@ Since the uninstaller will completely f*** you over, put it in a separate direct
 Add the included bin directory to your $PATH (C:\gtk3\bin).
 
 * Download libgee-0.8 from [here](http://download.gnome.org/sources/libgee/0.8/libgee-0.8.7.tar.xz).
-  Unzip it to your msys home directory. (e.g. C;\mingw/msys/1.0/home/$username).
+  Unzip it to your msys home directory. (e.g. C:\mingw\msys\1.0\home\$username).
 
 Compile libgee:
 ```bash
