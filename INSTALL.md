@@ -106,5 +106,7 @@ cd Venom
 mkdir build
 cd build
 cmake ..
+# you can hide the console window by passing this to the c-compiler
+cmake -DCMAKE_C_FLAGS="-mwindows" .
 make
 ```
