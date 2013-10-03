@@ -16,12 +16,19 @@
  */
 
 namespace Venom {
+  class Client : GLib.Object{
+    private ContactListWindow contact_list;
 
-public class Main {
-    public static int main (string[] args) {
-      Client client = new Client(args);
-      client.main();
-      return 0;
+    public Client(string [] args) {
+      Gtk.init (ref args);
+      contact_list = new ContactListWindow();
+    }
+    
+    public void main() {
+      contact_list.show_all();
+      Gtk.main();
+      
+      stdout.printf("Shutting down...\n");
     }
   }
 }

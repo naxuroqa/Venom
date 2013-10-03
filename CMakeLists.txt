@@ -27,7 +27,7 @@ FIND_PACKAGE(Vala "0.17.0" REQUIRED)
 
 FIND_PACKAGE(PkgConfig)
 PKG_CHECK_MODULES(GTK REQUIRED gtk+-3.0)
-PKG_CHECK_MODULES(GEE REQUIRED gee-1.0)
+PKG_CHECK_MODULES(GEE REQUIRED gee-0.8)
 PKG_CHECK_MODULES(GIO REQUIRED gio-2.0)
 PKG_CHECK_MODULES(GLIB REQUIRED glib-2.0)
 ADD_DEFINITIONS(${GTK_CFLAGS} ${GTK_CFLAGS_OTHER})
@@ -64,7 +64,7 @@ vala_precompile( VALA_C_GROUPTEST
   testing/GroupTest.vala
   src/core/Tools.vala
 PACKAGES
-  gee-1.0
+  gee-0.8
   gio-2.0
 OPTIONS
   --debug
@@ -76,6 +76,7 @@ GENERATE_HEADER
 )
 
 vala_precompile( VALA_C
+  src/core/Client.vala
   src/core/Contact.vala
   src/core/DhtServer.vala
   src/core/Message.vala
@@ -90,7 +91,7 @@ vala_precompile( VALA_C
   src/ui/ContactListCellRenderer.vala
   src/Main.vala
 PACKAGES
-  gee-1.0
+  gee-0.8
   gtk+-3.0
   glib-2.0
   gio-2.0

@@ -16,7 +16,7 @@
  */
 
 namespace Venom {
-  public class ResourceFactory : Object{
+  public class ResourceFactory : GLib.Object{
 
     private static ResourceFactory? _instance;
     public static ResourceFactory instance { 
