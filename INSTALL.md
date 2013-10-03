@@ -76,11 +76,25 @@ After that you can either build vala and gtk3 from source or grab a binary bundl
 tbd
 
 ####Using a precompiled bundle
+If you don't have cmake and git installed already:
+* Download and install cmake from [here](http://www.cmake.org/cmake/resources/software.html).
+* Download and install Git from [here](http://git-scm.com/download/win).
 
 * Download and install a recent Vala+Gtk3 bundle from [here](http://www.tarnyko.net/dl/),
 like [this one](http://www.tarnyko.net/repo/vala-0.20.1_\(GTK+-3.6.4\)\(TARNYKO\).exe).
-* Download and install cmake from [here](http://www.cmake.org/cmake/resources/software.html).
-* Download libgee06 from [here](https://vala-win32.googlecode.com/files/libgee-0.6.1.zip) and unzip it to your msys root.
+Since the uninstaller will completely f*** you over, put it in a separate directory (e.g. C:\gtk3).
+Add the included bin directory to your $PATH (C:\gtk3\bin).
+
+* Download libgee-0.8 from [here](http://download.gnome.org/sources/libgee/0.8/libgee-0.8.7.tar.xz).
+  Unzip it to your msys home directory. (e.g. C;\mingw/msys/1.0/home/$username).
+
+Compile libgee:
+```bash
+cd libgee-0.8.7
+./configure
+make
+make install
+```
 
 ####Compiling Venom
 
