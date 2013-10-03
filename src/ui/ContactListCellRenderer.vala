@@ -113,7 +113,10 @@ namespace Venom {
       layout.set_font_description(font);
       Gtk.StateFlags state = widget.get_state_flags();
       Gdk.RGBA color = widget.get_style_context().get_color(state);
-      
+      //FIXME find a better way for this (css styling if possible)
+      color.red -= 0.4;
+      color.green -= 0.4;
+      color.blue -= 0.4;
       if(contact.status_message != null && contact.status_message != "") {
         layout.set_text(contact.status_message, -1);
       }
