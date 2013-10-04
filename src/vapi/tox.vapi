@@ -58,6 +58,14 @@ namespace Tox {
     BUSY,
     INVALID
   }
+  
+  [CCode (cprefix="TOX_FILECONTROL_")]
+  public enum FileControlStatus {
+    ACCEPT,
+    PAUSE,
+    KILL,
+    FINISHED
+  }
 
   [Compact]
   [CCode (cname="Tox", free_function="tox_kill", cprefix="tox_")]
@@ -148,15 +156,15 @@ namespace Tox {
      * m_sendmessage_withid will send a message with the id of your choosing,
      * however we can generate an id for you by calling plain m_sendmessage.
      */
-    public uint32 sendmessage(int friendnumber, uint8[] message);
-    public uint32 sendmessage_withid(int friendnumber, uint32 id, uint8[] message);
+    public uint32 sendmessage(int friendnumber, [CCode(array_length_type="guint32")] uint8[] message);
+    public uint32 sendmessage_withid(int friendnumber, uint32 id, [CCode(array_length_type="guint32")] uint8[] message);
 
     /* Send an action to an online friend.
      *
      *  return 1 if packet was successfully put into the send queue.
      *  return 0 if it was not.
      */
-    public int sendaction(int friendnumber, uint8[] action);
+    public int sendaction(int friendnumber, [CCode(array_length_type="guint32")] uint8[] action);
 
     /* Set friendnumber's nickname.
      * name must be a string of maximum MAX_NAME_LENGTH length.
@@ -214,9 +222,12 @@ namespace Tox {
     /* Copy friendnumber's status message into buf, truncating if size is over maxlen.
      * Get the size you need to allocate from m_get_statusmessage_size.
      * The self variant will copy our own status message.
+     *
+     * returns the length of the copied data on success
+     * retruns -1 on failure.
      */
-    public int copy_statusmessage(int friendnumber, uint8[] buf);
-    public int copy_self_statusmessage(uint8[] buf);
+    public int copy_statusmessage(int friendnumber, [CCode(array_length_type="guint32")] uint8[] buf);
+    public int copy_self_statusmessage([CCode(array_length_type="guint32")] uint8[] buf);
 
     /*  return one of USERSTATUS values.
      *  Values unknown to your application should be represented as USERSTATUS_NONE.
@@ -363,10 +374,91 @@ namespace Tox {
      * return 0 on success
      * return -1 on failure
      */
-    public int group_message_send(int groupnumber, uint8[] message);
+    public int group_message_send(int groupnumber, [CCode(array_length_type="guint32")] uint8[] message);
 
     /******************END OF GROUP CHAT FUNCTIONS************************/
 
+    /****************FILE SENDING FUNCTIONS*****************/
+    /* NOTE: This how to will be updated.
+     *
+     * HOW TO SEND FILES CORRECTLY:
+     * 1. Use tox_new_filesender(...) to create a new file sender.
+     * 2. Wait for the callback set with tox_callback_file_control(...) to be called with receive_send == 1 and control_type == TOX_FILECONTROL_ACCEPT
+     * 3. Send the data with tox_file_senddata(...)
+     * 4. When sending is done, send a tox_file_sendcontrol(...) with send_receive = 0 and message_id = TOX_FILECONTROL_FINISHED
+     *
+     * HOW TO RECEIVE FILES CORRECTLY:
+     * 1. wait for the callback set with tox_callback_file_sendrequest(...)
+     * 2. accept or refuse the connection with tox_file_sendcontrol(...) with send_receive = 1 and message_id = TOX_FILECONTROL_ACCEPT or TOX_FILECONTROL_KILL
+     * 3. save all the data received with the callback set with tox_callback_file_data(...) to a file.
+     * 4. when the callback set with tox_callback_file_control(...) is called with receive_send == 0 and control_type == TOX_FILECONTROL_FINISHED
+     * the file is done transferring.
+     *
+     * tox_file_dataremaining(...) can be used to know how many bytes are left to send/receive.
+     *
+     * More to come...
+     */
+
+    /* Set the callback for file send requests.
+     *
+     *  Function(Tox *tox, int friendnumber, uint8_t filenumber, uint64_t filesize, uint8_t *filename, uint16_t filename_length, void *userdata)
+     */
+    public delegate void FileSendrequestCallback(Tox tox, int friendnumber, uint8 filenumber, uint64 filesize, [CCode(array_length_type="guint16")] uint8[] filename);
+    public void callback_file_sendrequest(FileSendrequestCallback callback);
+
+    /* Set the callback for file control requests.
+     *
+     *  receive_send is 1 if the message is for a slot on which we are currently sending a file and 0 if the message
+     *  is for a slot on which we are receiving the file
+     *
+     *  Function(Tox *tox, int friendnumber, uint8_t receive_send, uint8_t filenumber, uint8_t control_type, uint8_t *data, uint16_t length, void *userdata)
+     *
+     */
+    public delegate void FileControlCallback(Tox tox, int friendnumber, uint8 receive_send, uint8 filenumber, FileControlStatus status, [CCode(array_length_type="guint16")] uint8[] data);
+    public void callback_file_control(FileControlCallback callback);
+
+    /* Set the callback for file data.
+     *
+     *  Function(Tox *tox, int friendnumber, uint8_t filenumber, uint8_t *data, uint16_t length, void *userdata)
+     *
+     */
+    public delegate void FileDataCallback(Tox tox, int friendnumber, uint8 filenumber, [CCode(array_length_type="guint16")] uint8[] data);
+    public void callback_file_data(FileDataCallback callback);
+
+    /* Send a file send request.
+     * Maximum filename length is 255 bytes.
+     *  return file number on success
+     *  return -1 on failure
+     */
+     public int new_filesender(int friendnumber, uint64 filesize, [CCode(array_length_type="guint16")] uint8[] filename);
+
+    /* Send a file control request.
+     *
+     * send_receive is 0 if we want the control packet to target a file we are currently sending,
+     * 1 if it targets a file we are currently receiving.
+     *
+     *  return 1 on success
+     *  return 0 on failure
+     */
+    public int tox_file_sendcontrol(int friendnumber, uint8 send_receive, uint8 filenumber, uint8 message_id, [CCode(array_length_type="guint16")] uint8[] data);
+
+    /* Send file data.
+     *
+     *  return 1 on success
+     *  return 0 on failure
+     */
+    public int file_senddata(int friendnumber, uint8 filenumber, [CCode(array_length_type="guint16")] uint8[] data);
+
+    /* Give the number of bytes left to be sent/received.
+     *
+     *  send_receive is 0 if we want the sending files, 1 if we want the receiving.
+     *
+     *  return number of bytes remaining to be sent/received on success
+     *  return 0 on failure
+     */
+    uint64 file_dataremaining(int friendnumber, uint8 filenumber, uint8 send_receive);
+
+    /***************END OF FILE SENDING FUNCTIONS******************/
     /*
      * Use these two functions to bootstrap the client.
      */
