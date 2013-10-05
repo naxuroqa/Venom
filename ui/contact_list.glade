@@ -139,51 +139,25 @@
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkButton" id="button1">
+                      <object class="GtkComboBox" id="combobox_status">
                         <property name="height_request">27</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="margin_left">5</property>
-                        <property name="margin_right">6</property>
-                        <property name="margin_top">6</property>
-                        <property name="margin_bottom">6</property>
+                        <property name="margin_left">8</property>
+                        <property name="margin_top">5</property>
+                        <property name="margin_bottom">1</property>
+                        <property name="model">liststore1</property>
+                        <property name="active">0</property>
+                        <property name="id_column">0</property>
                         <style>
-                          <class name="statusbutton"/>
+                          <class name="statuscombo"/>
                         </style>
                         <child>
-                          <object class="GtkBox" id="box3">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <child>
-                              <object class="GtkLabel" id="label2">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Online</property>
-                                <attributes>
-                                  <attribute name="weight" value="bold"/>
-                                </attributes>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkArrow" id="arrow2">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="arrow_type">down</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </object>
+                          <object class="GtkCellRendererText" id="cellrenderertext1"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
                         </child>
                       </object>
                       <packing>
@@ -342,6 +316,26 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkListStore" id="liststore1">
+    <columns>
+      <!-- column-name status -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Online</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Away</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Busy</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Offline</col>
+      </row>
+    </data>
   </object>
   <object class="GtkMenu" id="menu_user">
     <property name="visible">True</property>

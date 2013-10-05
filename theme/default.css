@@ -74,22 +74,23 @@
   border-style: none;
 }
 
-#contact_list .statusbutton:active,
-#contact_list .statusbutton:hover:active,
-#contact_list .statusbutton:focus:active{
+#contact_list .statuscombo *:active,
+#contact_list .statuscombo *:hover,
+#contact_list .statuscombo *:focus:active{
   background-color: lighter (@border-color);
   background-image: none;
   border-style: none;
 }
 
-#contact_list .statusbutton {
+#contact_list .statuscombo * {
+  font-weight: bold;
   background-color: @border-color;
   background-image: none;
   border-image: none;
   border-style: none;
 }
 
-#contact_list .statusbutton * {
+#contact_list .statuscombo *{
   text-shadow: none;
 }
 
