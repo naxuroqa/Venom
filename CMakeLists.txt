@@ -89,6 +89,7 @@ vala_precompile( VALA_C
   src/ui/ContactListWindow.vala
   src/ui/ContactListTreeView.vala
   src/ui/ContactListCellRenderer.vala
+  src/ui/UserInfoWindow.vala
   src/Main.vala
 PACKAGES
   gee-0.8
@@ -123,6 +124,7 @@ INSTALL( TARGETS venom
 INSTALL(FILES ui/add_friend_dialog.glade DESTINATION share/venom/ui)
 INSTALL(FILES ui/contact_list.glade DESTINATION share/venom/ui)
 INSTALL(FILES ui/conversation_window.glade DESTINATION share/venom/ui)
+INSTALL(FILES ui/user_info_window.glade DESTINATION share/venom/ui)
 
 INSTALL(FILES pixmaps/add.png DESTINATION share/venom/pixmaps)
 INSTALL(FILES pixmaps/groupchat.png DESTINATION share/venom/pixmaps)

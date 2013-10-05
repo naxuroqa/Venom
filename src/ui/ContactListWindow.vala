@@ -297,7 +297,24 @@ namespace Venom {
     }
     
     public void edit_user_information() {
-      stdout.printf("TODO: edit user information\n");
+      UserInfoWindow w = new UserInfoWindow();
+      w.user_name  = label_name.get_text();
+      w.user_status = label_status.get_text();
+      w.user_image = image_userimage.get_pixbuf();
+
+      w.show_all();
+      int response = w.run();
+
+      if(response == Gtk.ResponseType.APPLY) {
+        image_userimage.set_from_pixbuf(w.user_image);
+
+        label_name.set_text(w.user_name);
+        label_status.set_text(w.user_status);
+
+        session.setname(w.user_name);
+        session.set_statusmessage(w.user_status);
+      }
+      w.destroy();
     }
 
     private void on_outgoing_message(string message, Contact receiver) {
