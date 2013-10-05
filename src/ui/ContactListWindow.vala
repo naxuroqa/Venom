@@ -16,13 +16,21 @@
  */
 
 namespace Venom {
+
+  public enum ConnectionStatus {
+    ONLINE,
+    AWAY,
+    BUSY,
+    OFFLINE
+  }
+
   public class ContactListWindow : Gtk.Window {
     // Containers
     private Gee.HashMap<int, Contact> contacts;
     private Gee.HashMap<int, ConversationWindow> conversation_windows;
     // Tox session wrapper
     private ToxSession session;
-    private Tox.UserStatus user_status = Tox.UserStatus.NONE;
+    private ConnectionStatus connection_status = ConnectionStatus.OFFLINE;
 
     // Widgets
     private Gtk.Button button_add_contact;
@@ -33,6 +41,7 @@ namespace Venom {
     private Gtk.Label label_name;
     private Gtk.Label label_status;
     private ContactListTreeView contact_list_tree_view;
+    private Gtk.ComboBox combobox_status;
 
     private string data_filename = "data";
     private string data_pathname = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox");
@@ -42,6 +51,7 @@ namespace Venom {
     public signal void on_contact_changed(Contact c);
     public signal void on_contact_removed(Contact c);
     public signal void incoming_message(Message m);
+    public signal void status_changed(ConnectionStatus s);
 
     // Default Constructor
     public ContactListWindow () {
@@ -57,9 +67,6 @@ namespace Venom {
       // initialize session specific gui stuff
       label_name.set_text(session.getselfname());
       label_status.set_text(session.get_self_statusmessage());
-
-      // start the session
-      session.start();
       
       stdout.printf("ID: %s\n", Tools.bin_to_hexstring(session.get_address()));
     }
@@ -146,6 +153,22 @@ namespace Venom {
       label_name = builder.get_object("label_username") as Gtk.Label;
       label_status = builder.get_object("label_userstatus") as Gtk.Label;
 
+      combobox_status = builder.get_object("combobox_status") as Gtk.ComboBox;
+
+      Gtk.ListStore liststore_status = builder.get_object("liststore_status") as Gtk.ListStore;
+      
+      Gtk.TreeIter iter;
+      liststore_status.append(out iter);
+      liststore_status.set(iter, 0, "Online" , -1);
+      liststore_status.append(out iter);
+      liststore_status.set(iter, 0, "Away"   , -1);
+      liststore_status.append(out iter);
+      liststore_status.set(iter, 0, "Busy"   , -1);
+      liststore_status.append(out iter);
+      liststore_status.set(iter, 0, "Offline", -1);
+      combobox_status.set_active(3);
+
+
       Gtk.Image image_add_contact = builder.get_object("image_add_contact") as Gtk.Image;
       Gtk.Image image_group_chat  = builder.get_object("image_group_chat") as Gtk.Image;
       Gtk.Image image_preferences = builder.get_object("image_preferences") as Gtk.Image;
@@ -203,6 +226,11 @@ namespace Venom {
       contact_list_tree_view.contact_activated.connect(on_contact_activated);
       contact_list_tree_view.key_press_event.connect(on_treeview_key_pressed);
       
+      //ComboboxStatus signals
+      combobox_status.changed.connect( () => {status_changed((ConnectionStatus)combobox_status.get_active());} );
+      status_changed.connect( (s) => {combobox_status.set_active(s);});
+      status_changed.connect( update_status );
+      
       // End program when window is closed
       this.destroy.connect (Gtk.main_quit);
       
@@ -223,11 +251,37 @@ namespace Venom {
       }
     }
     
-    private void update_status() {/*
-      switch(user_status) {
-        Tox.
-      }*/
-      image_status.set_from_pixbuf(ResourceFactory.instance.online);
+    private void update_status(ConnectionStatus s) {
+      if(connection_status == s)
+        return;
+      if(connection_status == ConnectionStatus.OFFLINE) {
+        session.start();
+      }
+        
+      switch(s) {
+        case ConnectionStatus.ONLINE:
+          session.set_status(Tox.UserStatus.NONE);
+          image_status.set_from_pixbuf(ResourceFactory.instance.online);
+          break;
+        case ConnectionStatus.AWAY:
+          session.set_status(Tox.UserStatus.AWAY);
+          image_status.set_from_pixbuf(ResourceFactory.instance.away);
+          break;
+        case ConnectionStatus.BUSY:
+          session.set_status(Tox.UserStatus.BUSY);
+          image_status.set_from_pixbuf(ResourceFactory.instance.offline_glow);
+          break;
+        case ConnectionStatus.OFFLINE:
+          session.set_status(Tox.UserStatus.NONE);
+          image_status.set_from_pixbuf(ResourceFactory.instance.offline);
+          break;
+      }
+      
+      if(s == ConnectionStatus.OFFLINE) {
+        session.stop();
+      }
+      
+      connection_status = s;
     }
 
     public void add_contact(Contact contact) {
@@ -348,16 +402,14 @@ namespace Venom {
 
     private void on_ownconnectionstatus(bool status) {
       if(status) {
-        update_status();
         image_status.set_tooltip_text("Connected to: %s".printf(session.connected_dht_server.to_string()));
       } else {
-        image_status.set_from_pixbuf(ResourceFactory.instance.offline);
         image_status.set_tooltip_text("Not connected.");
       }
     }
 
     private void on_group_invite(int friend_number, uint8[] group_public_key) {
-      stdout.printf("Got a group invite from %s with public key %s\n", contacts[friend_number].name, Tools.bin_to_hexstring(group_public_key));
+      stdout.printf("Group invite from %s with public key %s\n", contacts[friend_number].name, Tools.bin_to_hexstring(group_public_key));
     }
 
     private void on_group_message(int groupnumber, int friendgroupnumber, string message) {
