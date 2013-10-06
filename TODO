@@ -1,4 +1,14 @@
-* create Treeview model for contacts and conversations
-* make basic chat functionality work
 * test all vapi functions
-* ...
+* add groupchat
+* add filetransfer
+* add local nicknames for contacts
+* store userinformation locally
+* add highres icon for tox
+* use same icon for chatwindows
+* add settings window
+* fix treeviewrenderer (text off center)
+* add plugins
+- sound plugin
+- inotify plugin
+- logger plugin
+- ...
