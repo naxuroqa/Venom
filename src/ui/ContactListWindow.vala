@@ -45,6 +45,7 @@ namespace Venom {
 
     private string data_filename = "data";
     private string data_pathname = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox");
+    private bool cleaned_up = false;
 
     // Signals
     public signal void on_contact_added(Contact c);
@@ -73,6 +74,12 @@ namespace Venom {
 
     // Destructor
     ~ContactListWindow() {
+      cleanup();
+    }
+    
+    public void cleanup() {
+      if(cleaned_up)
+        return;
       stdout.printf("Ending session...\n");
       // Stop background thread
       session.stop();
@@ -80,8 +87,13 @@ namespace Venom {
       session.join();
 
       // Save session before shutdown
-      session.save_to_file(data_pathname, data_filename);
+      try {
+        session.save_to_file(data_pathname, data_filename);
+      } catch (Error e) {
+        stderr.printf("Saving session file failed: %s\n", e.message);
+      }
       stdout.printf("Session ended gracefully.\n");
+      cleaned_up = true;
     }
     
     private bool on_contact_list_key_pressed (Gtk.Widget source, Gdk.EventKey key) {

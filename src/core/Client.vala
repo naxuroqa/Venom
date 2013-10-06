@@ -29,6 +29,10 @@ namespace Venom {
       Gtk.main();
       
       stdout.printf("Shutting down...\n");
+      
+      // FIXME If gtk_main_quit is called, the destructor of contact_list is not called,
+      // this is just a workaround and no clean solution.
+      contact_list.cleanup();
     }
   }
 }

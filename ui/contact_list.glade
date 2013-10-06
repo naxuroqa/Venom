@@ -6,6 +6,12 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkListStore" id="liststore_status">
+    <columns>
+      <!-- column-name status -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -32,12 +38,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
-  </object>
-  <object class="GtkListStore" id="liststore_status">
-    <columns>
-      <!-- column-name status -->
-      <column type="gchararray"/>
-    </columns>
   </object>
   <object class="GtkBox" id="box">
     <property name="visible">True</property>
@@ -343,6 +343,21 @@
         <property name="image">image1</property>
         <property name="use_stock">False</property>
         <property name="always_show_image">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="menuitem1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="menuitem2">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Quit</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="gtk_main_quit" swapped="no"/>
       </object>
     </child>
   </object>

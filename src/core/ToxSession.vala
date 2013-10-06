@@ -395,6 +395,8 @@ namespace Venom {
         buf = new uint8 [size];
         handle.save(buf);
       }
+      
+      assert(size != 0);
 
       if(os.write(buf) != size)
         throw new IOError.FAILED("Error while writing to stream.");
