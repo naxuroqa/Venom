@@ -107,6 +107,8 @@
   background-image: none;
   border-image: none;
   border-style: none;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 #contact_list .cell {
@@ -115,7 +117,7 @@
   border: none;
 }
 
-#contact_list GtkEventBox {
+#contact_list .contactlist-box {
   background-color: @treeview-background;
 }
 

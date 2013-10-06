@@ -51,6 +51,7 @@ namespace Venom {
       default_image = load_image(Path.build_filename(pixmaps_folder, "default_image.png"));
       
       tox_logo = load_image(Path.build_filename(pixmaps_folder, "tox_logo.png"));
+      arrow = load_image(Path.build_filename(pixmaps_folder, "arrow.png"));
       
       default_theme_filename = Path.build_filename(theme_folder, "default.css");
     }
@@ -72,6 +73,7 @@ namespace Venom {
     public Gdk.Pixbuf default_image {get; private set;}
     
     public Gdk.Pixbuf tox_logo {get; private set;}
+    public Gdk.Pixbuf arrow {get; private set;}
     
     public string default_theme_filename {get; private set;}
     

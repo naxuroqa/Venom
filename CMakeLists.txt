@@ -143,6 +143,7 @@ INSTALL(FILES pixmaps/call.png DESTINATION share/venom/pixmaps)
 INSTALL(FILES pixmaps/call_video.png DESTINATION share/venom/pixmaps)
 
 INSTALL(FILES pixmaps/tox_logo.png DESTINATION share/venom/pixmaps)
+INSTALL(FILES pixmaps/arrow.png DESTINATION share/venom/pixmaps)
 
 INSTALL(FILES theme/default.css DESTINATION share/venom/theme)
 

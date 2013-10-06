@@ -194,6 +194,9 @@ namespace Venom {
       image_add_contact.set_from_pixbuf(ResourceFactory.instance.add);
       image_group_chat.set_from_pixbuf(ResourceFactory.instance.groupchat);
       image_preferences.set_from_pixbuf(ResourceFactory.instance.settings);
+      
+      Gtk.Image image_arrow = builder.get_object("image_arrow") as Gtk.Image;
+      image_arrow.set_from_pixbuf(ResourceFactory.instance.arrow);
 
       // Create and add custom treeview
       contact_list_tree_view = new ContactListTreeView();
