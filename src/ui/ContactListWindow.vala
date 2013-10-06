@@ -187,6 +187,7 @@ namespace Venom {
       
       Gtk.ImageMenuItem menuitem_edit_info = builder.get_object("menuitem_edit_info") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.ImageMenuItem;
+      Gtk.MenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.MenuItem;
 
       image_status.set_from_pixbuf(ResourceFactory.instance.offline);
       image_userimage.set_from_pixbuf(ResourceFactory.instance.default_image);
@@ -215,6 +216,7 @@ namespace Venom {
       
       menuitem_edit_info.activate.connect( edit_user_information );
       menuitem_copy_id.activate.connect( copy_id_to_clipboard);
+      menuitem_about.activate.connect( show_about_dialog );
     }
 
     // Connect
@@ -299,19 +301,26 @@ namespace Venom {
       connection_status = s;
     }
 
-    public void add_contact(Contact contact) {
+    private void add_contact(Contact contact) {
       contacts[contact.friend_id] = contact;
       on_contact_added(contact);    
     }
     
-    public void copy_id_to_clipboard() {
+    private void copy_id_to_clipboard() {
       string id_string = Tools.bin_to_hexstring(session.get_address());
       Gdk.Display display = get_display();
       Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD).set_text(id_string, -1);
       Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_PRIMARY).set_text(id_string, -1);
     }
     
-    public void edit_user_information() {
+    private void show_about_dialog() {
+      AboutDialog dialog = new AboutDialog();
+      dialog.show_all();
+      dialog.run();
+      dialog.destroy();
+    }
+    
+    private void edit_user_information() {
       UserInfoWindow w = new UserInfoWindow();
       w.user_name  = label_name.get_text();
       w.user_status = label_status.get_text();
