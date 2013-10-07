@@ -66,5 +66,29 @@ namespace Venom {
       Memory.copy(clone, input, length * sizeof(uint8));
       return clone;
     }
+    
+    public static string friend_add_error_to_string(Tox.FriendAddError friend_add_error) {
+      switch(friend_add_error) {
+        case Tox.FriendAddError.TOOLONG:
+          return "Message too long";
+        case Tox.FriendAddError.NOMESSAGE:
+          return "No message included";
+        case Tox.FriendAddError.OWNKEY:
+          return "Can't send to own key";
+        case Tox.FriendAddError.ALREADYSENT:
+          return "Friend request already sent";
+        case Tox.FriendAddError.UNKNOWN:
+          return "Unknown error";
+        case Tox.FriendAddError.BADCHECKSUM:
+          return "Bad checksum";
+        case Tox.FriendAddError.SETNEWNOSPAM:
+          //FIXME wat?
+          return "Set new nospam";
+        case Tox.FriendAddError.NOMEM:
+          return "Out of memory";
+        default:
+          return "Friend request successfully sent";
+      }
+    }
   }
 }

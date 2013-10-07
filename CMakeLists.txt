@@ -54,7 +54,7 @@ vala_precompile( VALA_C
   src/core/ResourceFactory.vala
   src/core/Tools.vala
   src/core/ToxSession.vala
-  src/ui/AddFriendDialog.vala
+  src/ui/AddContactDialog.vala
   src/ui/AboutDialog.vala
   src/ui/ConversationTreeView.vala
   src/ui/ConversationWindow.vala

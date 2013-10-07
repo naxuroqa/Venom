@@ -482,42 +482,27 @@ namespace Venom {
     // GUI Events
     [CCode (cname="G_MODULE_EXPORT venom_contact_list_window_button_add_contact_clicked", instance_pos = -1)]
     public void button_add_contact_clicked(Object source) {
-      AddFriendDialog dialog = null;
-      try {
-        dialog = AddFriendDialog.create();
-      } catch (Error e) {
-        stderr.printf("Error creating AddFriendDialog: %s\n", e.message);
-      }
+      AddContactDialog dialog = new AddContactDialog();
+      
+      int response = dialog.run();
+      uint8[] contact_id = Tools.hexstring_to_bin(dialog.contact_id);
+      string contact_message = dialog.contact_message;
+      dialog.destroy();
 
-      if(dialog.gtk_add_friend_dialog.run() != Gtk.ResponseType.OK)
-        return;
-
-      uint8[] friend_id = Tools.hexstring_to_bin(dialog.friend_id);
+      if(response != Gtk.ResponseType.OK)
+          return;
 
       // add friend
-      Tox.FriendAddError ret = session.addfriend(friend_id, dialog.friend_msg);
-      switch(ret) {
-        case Tox.FriendAddError.TOOLONG:
-        break;
-        case Tox.FriendAddError.NOMESSAGE:
-        break;
-        case Tox.FriendAddError.OWNKEY:
-        break;
-        case Tox.FriendAddError.ALREADYSENT:
-        break;
-        case Tox.FriendAddError.UNKNOWN:
-        break;
-        case Tox.FriendAddError.BADCHECKSUM:
-        break;
-        case Tox.FriendAddError.SETNEWNOSPAM:
-        break;
-        case Tox.FriendAddError.NOMEM:
-        break;
-        default:
-          stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
-          add_contact(new Contact(friend_id, (int)ret));
-        break;
+      Tox.FriendAddError ret = session.addfriend(contact_id, contact_message);
+      if(ret < 0) {
+        //TODO turn this into a message box.
+        stderr.printf("Error: %s.\n", Tools.friend_add_error_to_string(ret));
+        return;
       }
+
+      stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
+      add_contact(new Contact(contact_id, (int)ret));
+      return;
     }
 
     public void remove_contact(Contact c) {
