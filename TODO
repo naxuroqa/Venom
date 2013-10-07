@@ -1,14 +1,26 @@
-* test all vapi functions
+[next release]
+* add option for multiaccount
 * add groupchat
 * add filetransfer
 * add local nicknames for contacts
-* store userinformation locally
+* use textview (http://www.valadoc.org/#!api=gtk+-3.0/Gtk.TextView) for conversations
+* store userinformation locally (sqlite?)
 * add highres icon for tox
 * use same icon for chatwindows
 * add settings window
 * fix treeviewrenderer (text off center)
+* make dht servers editable / selectable
+* make nsis install script for windows
+* better source structuring (separate gui from application logic)
+
+[future]
+* unit tests
+* build & test it on mac
+* add audiochat
+* add videochat
 * add plugins
 - sound plugin
 - inotify plugin
 - logger plugin
+- anonymizer plugin (strip metadata of known media)
 - ...

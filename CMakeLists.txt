@@ -30,49 +30,20 @@ PKG_CHECK_MODULES(GTK REQUIRED gtk+-3.0)
 PKG_CHECK_MODULES(GEE REQUIRED gee-0.8)
 PKG_CHECK_MODULES(GIO REQUIRED gio-2.0)
 PKG_CHECK_MODULES(GLIB REQUIRED glib-2.0)
-ADD_DEFINITIONS(${GTK_CFLAGS} ${GTK_CFLAGS_OTHER})
-ADD_DEFINITIONS(${GEE_CFLAGS} ${GEE_CFLAGS_OTHER})
-ADD_DEFINITIONS(${GIO_CFLAGS} ${GIO_CFLAGS_OTHER})
-ADD_DEFINITIONS(${GLIB_CFLAGS} ${GLIB_CFLAGS_OTHER})
-LINK_LIBRARIES( toxcore
-                ${GTK_LIBRARIES}
-                ${GEE_LIBRARIES}
-                ${GIO_LIBRARIES}
-                ${GLIB_LIBRARIES}
+PKG_CHECK_MODULES(TOX REQUIRED libtoxcore)
+
+ADD_DEFINITIONS( ${GTK_CFLAGS} ${GTK_CFLAGS_OTHER}
+                 ${GEE_CFLAGS} ${GEE_CFLAGS_OTHER}
+                 ${GIO_CFLAGS} ${GIO_CFLAGS_OTHER}
+                 ${GLIB_CFLAGS} ${GLIB_CFLAGS_OTHER}
+                 ${TOX_CFLAGS} ${TOX_CFLAGS_OTHER}
 )
+
 LINK_DIRECTORIES( ${GTK_LIBRARY_DIRS}
                   ${GEE_LIBRARY_DIRS}
                   ${GIO_LIBRARY_DIRS}
                   ${GLIB_LIBRARY_DIRS}
-)
-
-vala_precompile( VALA_C_TEST
-  testing/ToxVapiTest.vala
-  src/core/Tools.vala
-PACKAGES
-  gio-2.0
-OPTIONS
-  --debug
-  --save-temps
-CUSTOM_VAPIS
-  src/vapi/tox.vapi
-GENERATE_VAPI
-GENERATE_HEADER
-)
-
-vala_precompile( VALA_C_GROUPTEST
-  testing/GroupTest.vala
-  src/core/Tools.vala
-PACKAGES
-  gee-0.8
-  gio-2.0
-OPTIONS
-  --debug
-  --save-temps
-CUSTOM_VAPIS
-  src/vapi/tox.vapi
-GENERATE_VAPI
-GENERATE_HEADER
+                  ${TOX_LIBRARY_DIRS}
 )
 
 vala_precompile( VALA_C
@@ -106,6 +77,33 @@ GENERATE_VAPI
 GENERATE_HEADER
 )
 
+vala_precompile( VALA_C_TEST
+  testing/ToxVapiTest.vala
+  src/core/Tools.vala
+PACKAGES
+  gio-2.0
+OPTIONS
+  --debug
+CUSTOM_VAPIS
+  src/vapi/tox.vapi
+GENERATE_VAPI
+GENERATE_HEADER
+)
+
+vala_precompile( VALA_C_GROUPTEST
+  testing/GroupTest.vala
+  src/core/Tools.vala
+PACKAGES
+  gee-0.8
+  gio-2.0
+OPTIONS
+  --debug
+CUSTOM_VAPIS
+  src/vapi/tox.vapi
+GENERATE_VAPI
+GENERATE_HEADER
+)
+
 ADD_EXECUTABLE( venom
   ${VALA_C}
 )
@@ -118,9 +116,26 @@ ADD_EXECUTABLE( grouptest
   ${VALA_C_GROUPTEST}
 )
 
-INSTALL( TARGETS venom 
-  RUNTIME DESTINATION bin
+TARGET_LINK_LIBRARIES( venom
+                       ${GTK_LIBRARIES}
+                       ${GEE_LIBRARIES}
+                       ${GIO_LIBRARIES}
+                       ${GLIB_LIBRARIES}
+                       ${TOX_LIBRARIES}
 )
+
+TARGET_LINK_LIBRARIES( vapi_test
+                       ${GIO_LIBRARIES}
+                       ${TOX_LIBRARIES}
+)
+
+TARGET_LINK_LIBRARIES( grouptest
+                       ${GEE_LIBRARIES}
+                       ${GIO_LIBRARIES}
+                       ${TOX_LIBRARIES}
+)
+
+INSTALL( TARGETS venom RUNTIME DESTINATION bin)
 
 INSTALL(FILES ui/add_friend_dialog.glade DESTINATION share/venom/ui)
 INSTALL(FILES ui/contact_list.glade DESTINATION share/venom/ui)
