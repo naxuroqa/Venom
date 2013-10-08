@@ -5,8 +5,6 @@
 * add local nicknames for contacts
 * use textview (http://www.valadoc.org/#!api=gtk+-3.0/Gtk.TextView) for conversations
 * store userinformation locally (sqlite?)
-* add highres icon for tox
-* use same icon for chatwindows
 * add settings window
 * fix treeviewrenderer (text off center)
 * make dht servers editable / selectable
