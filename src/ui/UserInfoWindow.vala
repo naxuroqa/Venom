@@ -52,7 +52,7 @@ namespace Venom {
       entry_statusmessage = builder.get_object("entry_statusmessage") as Gtk.Entry;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
       
-      this.add_buttons(Gtk.Stock.CANCEL, Gtk.ResponseType.CANCEL, Gtk.Stock.APPLY, Gtk.ResponseType.APPLY, null);
+      this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Apply", Gtk.ResponseType.APPLY, null);
       this.set_default_response(Gtk.ResponseType.APPLY);
     }
   }

@@ -50,7 +50,7 @@ namespace Venom {
       Gtk.Image image_default = builder.get_object("image_default") as Gtk.Image;
       image_default.set_from_pixbuf(ResourceFactory.instance.default_image);
 
-      this.add_buttons(Gtk.Stock.CANCEL, Gtk.ResponseType.CANCEL, Gtk.Stock.OK, Gtk.ResponseType.OK, null);
+      this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Ok", Gtk.ResponseType.OK, null);
       this.set_default_response(Gtk.ResponseType.OK);
       this.title = "Add contact";
       this.set_default_size(400, 250);
