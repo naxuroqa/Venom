@@ -12,6 +12,7 @@
 * make dht servers editable / selectable
 * make nsis install script for windows
 * better source structuring (separate gui from application logic)
+* add .desktop file and icon
 
 [future]
 * unit tests
