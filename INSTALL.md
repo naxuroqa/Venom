@@ -91,7 +91,9 @@ Add the included bin directory to your $PATH (C:\gtk3\bin).
 Compile libgee:
 ```bash
 cd libgee-0.8.7
-./configure
+./configure --prefix=/<yourprefix>
+# if you have mingw mounted on /mingw, it should look like this:
+# ./configure --prefix=/mingw
 make
 make install
 ```
@@ -105,8 +107,19 @@ git clone git://github.com/naxuroqa/Venom.git
 cd Venom
 mkdir build
 cd build
-cmake ..
+cmake -G "MinGW Makefiles" ..
+# Ignore cmake complaining about sh.exe being in PATH for now,
+# just run it again and it will work
+# 
 # you can hide the console window by passing this to the c-compiler
-cmake -DCMAKE_C_FLAGS="-mwindows" ..
-make
+# cmake -G "MinGW Makefiles" -DCMAKE_C_FLAGS="-mwindows" ..
+# 
+# If you are getting pkg-config errors, provide pkg-config with the correct path
+# and run cmake again
+# PKG_CONFIG_PATH=/<yourprefix>/lib/pkgconfig cmake ..
+# so if you installed tox to /mingw, use
+# PKG_CONFIG_PATH=/mingw/lib/pkgconfig cmake ..
+# 
+# (finally) build it
+mingw32-make
 ```
