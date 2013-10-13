@@ -15,8 +15,6 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using GLib;
-
 // Tested with Tox version e0779ed0a615002684594cd48f1e3f5f9c7639f9
 [CCode(cheader_filename="tox/tox.h", cprefix = "tox_")]
 namespace Tox {
@@ -440,7 +438,7 @@ namespace Tox {
      *  return 1 on success
      *  return 0 on failure
      */
-    public int tox_file_sendcontrol(int friendnumber, uint8 send_receive, uint8 filenumber, uint8 message_id, [CCode(array_length_type="guint16")] uint8[] data);
+    public int file_sendcontrol(int friendnumber, uint8 send_receive, uint8 filenumber, uint8 message_id, [CCode(array_length_type="guint16")] uint8[] data);
 
     /* Send file data.
      *
@@ -456,7 +454,7 @@ namespace Tox {
      *  return number of bytes remaining to be sent/received on success
      *  return 0 on failure
      */
-    uint64 file_dataremaining(int friendnumber, uint8 filenumber, uint8 send_receive);
+    public uint64 file_dataremaining(int friendnumber, uint8 filenumber, uint8 send_receive);
 
     /***************END OF FILE SENDING FUNCTIONS******************/
     /*
@@ -486,6 +484,38 @@ namespace Tox {
 
     /* the main loop that needs to be run at least 20 times per second */
     public void do();
+    
+    /*
+     * tox_wait_prepare(): function should be called under lock
+     * Prepares the data required to call tox_wait_execute() asynchronously
+     *
+     * data[] is reserved and kept by the caller
+     * len is in/out: in = reserved data[], out = required data[]
+     *
+     *  returns 1 on success
+     *  returns 0 on failure (length is insufficient)
+     *
+     *
+     * tox_wait_execute(): function can be called asynchronously
+     * Waits for something to happen on the socket for up to milliseconds milliseconds.
+     * *** Function MUSTN'T poll. ***
+     * The function mustn't modify anything at all, so it can be called completely
+     * asynchronously without any worry.
+     *
+     *  returns  1 if there is socket activity (i.e. tox_do() should be called)
+     *  returns  0 if the timeout was reached
+     *  returns -1 if data was NULL or len too short
+     *
+     *
+     * tox_wait_cleanup(): function should be called under lock
+     * Stores results from tox_wait_execute().
+     *
+     * data[]/len shall be the exact same as given to tox_wait_execute()
+     *
+     */
+    public int wait_prepare([CCode(array_length=false)]out uint8[] data, ref uint16 lenptr);
+    public int wait_execute([CCode(array_length_type="guint16")]uint8[] data, uint16 milliseconds);
+    public void wait_cleanup([CCode(array_length_type="guint16")]uint8[] data);
 
     /* SAVING AND LOADING FUNCTIONS: */
 
