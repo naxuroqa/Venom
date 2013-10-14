@@ -20,32 +20,32 @@ Additionally to the tox build dependencies, you will need:
 valac (>=0.17)
 cmake (>=2.6.0)
 libgtk-3-dev (>=3.2)
-libgee-dev (1.0)
+libgee-0.8-dev
 ```
 
 On Ubuntu:
 
 ```bash
-apt-get install valac cmake libgtk-3-dev libgee-dev
+apt-get install valac cmake libgtk-3-dev libgee-0.8-dev
 ```
 
 Ubuntu <= 12.04 (Precise Pangolin) needs a ppa to get a newer version of valac
 ```bash
 apt-add-repository ppa:vala-team/ppa
 apt-get update
-apt-get install valac cmake libgtk-3-dev libgee-dev
+apt-get install valac cmake libgtk-3-dev libgee-0.8-dev
 ```
 
 On Fedora:
 
 ```bash
-yum install vala cmake gtk3-devel libgee06-devel
+yum install vala cmake gtk3-devel libgee-devel
 ```
 
 On Arch Linux: (There is an [aur-package](https://aur.archlinux.org/packages/venom-git))
 
 ```bash
-pacman -S vala cmake gtk3 libgee06
+pacman -S vala cmake gtk3 libgee
 ```
 
 After you installed the dependencies, clone, build and install venom:
