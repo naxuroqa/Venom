@@ -63,6 +63,8 @@ sudo make install
 <a name="osx" />
 ###OS X:
 
+Follow ProjectTox-Core [installation instructions](https://github.com/irungentoo/ProjectTox-Core/blob/master/INSTALL.md#os-x).
+
 With Homebrew:
 ```bash
 brew install vala cmake gtk+3 libgee git
