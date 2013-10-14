@@ -138,7 +138,7 @@ TARGET_LINK_LIBRARIES( grouptest
 
 INSTALL(TARGETS venom RUNTIME DESTINATION bin)
 
-INSTALL(FILES ui/add_friend_dialog.glade DESTINATION share/venom/ui)
+INSTALL(FILES ui/add_contact_dialog.glade DESTINATION share/venom/ui)
 INSTALL(FILES ui/contact_list.glade DESTINATION share/venom/ui)
 INSTALL(FILES ui/conversation_window.glade DESTINATION share/venom/ui)
 INSTALL(FILES ui/user_info_window.glade DESTINATION share/venom/ui)
