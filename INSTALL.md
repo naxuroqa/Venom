@@ -63,8 +63,17 @@ sudo make install
 <a name="osx" />
 ###OS X:
 
-To be done
-
+With Homebrew:
+```bash
+brew install vala cmake gtk+3 libgee git
+git clone git://github.com/naxuroqa/Venom.git
+cd Venom
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
 <a name="windows" />
 ###Windows:
 
