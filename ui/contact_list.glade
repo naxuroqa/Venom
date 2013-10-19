@@ -256,7 +256,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="button_group_chat">
+          <object class="GtkToggleButton" id="button_group_chat">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
@@ -276,7 +276,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="button_preferences">
+          <object class="GtkToggleButton" id="button_preferences">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>

@@ -34,8 +34,8 @@ namespace Venom {
 
     // Widgets
     private Gtk.Button button_add_contact;
-    private Gtk.Button button_group_chat;
-    private Gtk.Button button_preferences;
+    private Gtk.ToggleButton button_group_chat;
+    private Gtk.ToggleButton button_preferences;
     private Gtk.Image image_status;
     private Gtk.Image image_userimage;
     private Gtk.Label label_name;
@@ -531,12 +531,14 @@ namespace Venom {
     
     [CCode (cname="G_MODULE_EXPORT venom_contact_list_window_button_groupchat_clicked", instance_pos = -1)]
     public void button_groupchat_clicked(Object source) {
+      button_preferences.set_active(false)
       stdout.printf("Groupchat button clicked\n");
       //TODO
     }
 
     [CCode (cname="G_MODULE_EXPORT venom_contact_list_window_button_preferences_clicked", instance_pos = -1)]
     public void button_preferences_clicked(Object source) {
+      button_groupchat.set_active(false)
       stdout.printf("Settings button clicked\n");
       //TODO
     }
