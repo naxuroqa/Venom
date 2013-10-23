@@ -28,6 +28,7 @@ namespace Venom {
     private Gtk.Button button_call_video;
     
     private Gtk.Entry entry_message;
+    private Gtk.ScrolledWindow scrolled_window;
     
     private ConversationTreeView conversation_tree_view;
     public unowned Contact contact {get; private set;}
@@ -81,25 +82,30 @@ namespace Venom {
       button_call_video = builder.get_object("button_call_video") as Gtk.Button;
       
       entry_message = builder.get_object("entry_message") as Gtk.Entry;
-      
-      
-      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
+      entry_message.activate.connect(entry_activate);
 
-      builder.connect_signals(this);
+      scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
       
       conversation_tree_view = new ConversationTreeView();
       conversation_tree_view.show_all();
       scrolled_window.add(conversation_tree_view);
+
+      //TODO: move to bottom only when wanted
+      conversation_tree_view.size_allocate.connect( () => {
+        Gtk.Adjustment adjustment = scrolled_window.get_vadjustment();
+        adjustment.set_value(adjustment.upper - adjustment.page_size);
+      });
+      
       set_property("name", "conversation");
     }
 
     public void on_incoming_message(Message message) {
       if(message.sender != contact)
         return;
+
       new_conversation_message(message);
     }
 
-    [CCode (cname="G_MODULE_EXPORT venom_conversation_window_entry_activate", instance_pos = -1)]
     public void entry_activate(Gtk.Entry source) {
       string s = source.text;
       Message m = new Message(null, s);

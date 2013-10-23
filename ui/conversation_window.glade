@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.0 on Wed Oct 23 12:55:19 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkImage" id="image_call">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image_call_video">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
@@ -186,6 +192,7 @@
       <object class="GtkScrolledWindow" id="scrolled_window">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="hscrollbar_policy">never</property>
         <child>
           <placeholder/>
         </child>
@@ -205,9 +212,7 @@
         <property name="margin_right">2</property>
         <property name="margin_bottom">2</property>
         <property name="invisible_char">●</property>
-        <property name="invisible_char_set">True</property>
         <property name="placeholder_text">Type your message here...</property>
-        <signal name="activate" handler="venom_conversation_window_entry_activate" swapped="no"/>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -215,10 +220,5 @@
         <property name="position">2</property>
       </packing>
     </child>
-  </object>
-  <object class="GtkImage" id="image_call_video">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-missing-image</property>
   </object>
 </interface>

@@ -29,10 +29,11 @@ namespace Venom {
 
         Gtk.TreeViewColumn message_column = new Gtk.TreeViewColumn();
         Gtk.CellRendererText message_column_cell = new Gtk.CellRendererText();
-        //message_column_cell.wrap_mode = Pango.WrapMode.WORD_CHAR;
-        //message_column_cell.wrap_width = message_column.width * Pango.SCALE;
+        message_column_cell.wrap_mode = Pango.WrapMode.WORD_CHAR;
         message_column.pack_start(message_column_cell, false);
         message_column.expand = true;
+        // change wrap width when column size changes
+        message_column.notify["width"].connect( () => {message_column_cell.wrap_width = message_column.get_width();});
         
         Gtk.TreeViewColumn time_column = new Gtk.TreeViewColumn();
         Gtk.CellRendererText time_column_cell = new Gtk.CellRendererText();
