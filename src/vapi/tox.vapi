@@ -62,7 +62,8 @@ namespace Tox {
     ACCEPT,
     PAUSE,
     KILL,
-    FINISHED
+    FINISHED,
+    RESUME_BROKEN
   }
 
   [Compact]
@@ -412,7 +413,7 @@ namespace Tox {
      *  Function(Tox *tox, int friendnumber, uint8_t receive_send, uint8_t filenumber, uint8_t control_type, uint8_t *data, uint16_t length, void *userdata)
      *
      */
-    public delegate void FileControlCallback(Tox tox, int friendnumber, uint8 receive_send, uint8 filenumber, FileControlStatus status, [CCode(array_length_type="guint16")] uint8[] data);
+    public delegate void FileControlCallback(Tox tox, int friendnumber, uint8 receive_send, uint8 filenumber, uint8 status, [CCode(array_length_type="guint16")] uint8[] data);
     public void callback_file_control(FileControlCallback callback);
 
     /* Set the callback for file data.

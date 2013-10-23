@@ -32,7 +32,8 @@ namespace Venom {
     public bool running {get; private set; default=false; }
     public bool connected { get; private set; default=false; }
     public DhtServer connected_dht_server { get; private set; default=null; }
-    
+
+    // Core functionality signals
     public signal void on_friendrequest(Contact c, string message);
     public signal void on_friendmessage(Contact c, string message);
     public signal void on_action(Contact c, string action);
@@ -42,8 +43,17 @@ namespace Venom {
     public signal void on_read_receipt(Contact c, uint32 receipt);
     public signal void on_connectionstatus(Contact c);
     public signal void on_ownconnectionstatus(bool status);
+
+    // Groupchat signals
     public signal void on_group_invite(Contact c, GroupChat g);
     public signal void on_group_message(GroupChat g, int friendgroupnumber, string message);
+
+    // File sending callbacks
+    /*
+    public signal void on_file_sendrequest();
+    public signal void on_file_control();
+    public signal void on_file_data();
+    */
 
     public ToxSession( bool ipv6 = false ) {
 	  this.ipv6 = ipv6;
@@ -66,9 +76,15 @@ namespace Venom {
       handle.callback_userstatus(this.on_userstatus_callback);
       handle.callback_read_receipt(this.on_read_receipt_callback);
       handle.callback_connectionstatus(this.on_connectionstatus_callback);
-      
+
+      // Groupchat callbacks
       handle.callback_group_invite(this.on_group_invite_callback);
       handle.callback_group_message(this.on_group_message_callback);
+
+      // File sending callbacks
+      handle.callback_file_sendrequest(this.on_file_sendrequest_callback);
+      handle.callback_file_control(this.on_file_control_callback);
+      handle.callback_file_data(this.on_file_data_callback);
     }
 
     // destructor
@@ -172,6 +188,19 @@ namespace Venom {
     private void on_group_message_callback(Tox.Tox tox, int groupnumber, int friendgroupnumber, uint8[] message) {
       string message_string = ((string)message).dup();
       Idle.add(() => { on_group_message(_groups.get(groupnumber), friendgroupnumber, message_string); return false; });
+    }
+
+    //File sending callbacks
+    [CCode (instance_pos = -1)]
+    private void on_file_sendrequest_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint64 filesize, uint8[] filename) {
+    }
+
+    [CCode (instance_pos = -1)]
+    private void on_file_control_callback(Tox.Tox tox, int friendnumber, uint8 receive_send, uint8 filenumber, uint8 status, uint8[] data) {
+    }
+
+    [CCode (instance_pos = -1)]
+    private void on_file_data_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint8[] data) {
     }
 
     ////////////////////////////// Wrapper functions ////////////////////////////////
