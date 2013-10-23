@@ -26,7 +26,7 @@ namespace Venom {
 
   public class ContactListWindow : Gtk.Window {
     // Containers
-    private Gee.HashMap<int, ConversationWindow> conversation_windows;
+    private Gee.AbstractMap<int, ConversationWindow> conversation_windows;
     // Tox session wrapper
     private ToxSession session;
     private ConnectionStatus connection_status = ConnectionStatus.OFFLINE;
@@ -178,8 +178,8 @@ namespace Venom {
       Gtk.Image image_group_chat  = builder.get_object("image_group_chat") as Gtk.Image;
       Gtk.Image image_preferences = builder.get_object("image_preferences") as Gtk.Image;
       
-      Gtk.ImageMenuItem menuitem_edit_info = builder.get_object("menuitem_edit_info") as Gtk.ImageMenuItem;
-      Gtk.ImageMenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.ImageMenuItem;
+      Gtk.MenuItem menuitem_edit_info = builder.get_object("menuitem_edit_info") as Gtk.MenuItem;
+      Gtk.MenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.MenuItem;
       Gtk.MenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.MenuItem;
 
       image_status.set_from_pixbuf(ResourceFactory.instance.offline);
@@ -464,7 +464,7 @@ namespace Venom {
     }
 
     // GUI Events
-    public void button_add_contact_clicked(Object source) {
+    public void button_add_contact_clicked(Gtk.Button source) {
       AddContactDialog dialog = new AddContactDialog();
       
       int response = dialog.run();
@@ -488,14 +488,15 @@ namespace Venom {
       contact_added(c);
     }
     
-    public void button_group_chat_clicked(Object source) {
+    public void button_group_chat_clicked(Gtk.Button source) {
       stdout.printf("Groupchat button clicked\n");
       //TODO
     }
 
-    public void button_preferences_clicked(Object source) {
-      stdout.printf("Settings button clicked\n");
-      //TODO
+    public void button_preferences_clicked(Gtk.Button source) {
+      //PreferencesWindow preferences_window = new PreferencesWindow();
+      //preferences_window.run();
+      //preferences_window.destroy();
     }
   }
 }

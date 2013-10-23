@@ -54,6 +54,7 @@ vala_precompile( VALA_C
   src/core/GroupChat.vala
   src/core/Message.vala
   src/core/ResourceFactory.vala
+  src/core/SettingsProvider.vala
   src/core/Tools.vala
   src/core/ToxSession.vala
   src/ui/AddContactDialog.vala
@@ -63,6 +64,7 @@ vala_precompile( VALA_C
   src/ui/ContactListWindow.vala
   src/ui/ContactListTreeView.vala
   src/ui/ContactListCellRenderer.vala
+  src/ui/PreferencesWindow.vala
   src/ui/UserInfoWindow.vala
   src/Main.vala
 PACKAGES

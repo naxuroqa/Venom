@@ -25,6 +25,7 @@ namespace Venom {
         if(f.query_exists())
           return dir;
       }
+      // Assume that our current pwd is our data dir
       return "";
     }
 

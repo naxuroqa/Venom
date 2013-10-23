@@ -54,6 +54,7 @@ namespace Venom {
       arrow = load_image(Path.build_filename(pixmaps_folder, "arrow.png"));
       
       default_theme_filename = Path.build_filename(theme_folder, "default.css");
+      settings_providers = new Gee.ArrayList<SettingsProvider>();
     }
     
     public Gdk.Pixbuf away {get; private set;}
@@ -76,6 +77,8 @@ namespace Venom {
     public Gdk.Pixbuf arrow {get; private set;}
     
     public string default_theme_filename {get; private set;}
+    
+    public Gee.ArrayList<SettingsProvider> settings_providers {get; set;}
     
     private Gdk.Pixbuf? load_image(string filename) {
       Gdk.Pixbuf? buf = null;
