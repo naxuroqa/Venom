@@ -26,16 +26,12 @@ namespace Venom {
 
   public class ContactListWindow : Gtk.Window {
     // Containers
-    private Gee.HashMap<int, Contact> contacts;
     private Gee.HashMap<int, ConversationWindow> conversation_windows;
     // Tox session wrapper
     private ToxSession session;
     private ConnectionStatus connection_status = ConnectionStatus.OFFLINE;
 
     // Widgets
-    private Gtk.Button button_add_contact;
-    private Gtk.Button button_group_chat;
-    private Gtk.Button button_preferences;
     private Gtk.Image image_status;
     private Gtk.Image image_userimage;
     private Gtk.Label label_name;
@@ -48,15 +44,14 @@ namespace Venom {
     private bool cleaned_up = false;
 
     // Signals
-    public signal void on_contact_added(Contact c);
-    public signal void on_contact_changed(Contact c);
-    public signal void on_contact_removed(Contact c);
+    public signal void contact_added(Contact c);
+    public signal void contact_changed(Contact c);
+    public signal void contact_removed(Contact c);
     public signal void incoming_message(Message m);
     public signal void status_changed(ConnectionStatus s);
 
     // Default Constructor
     public ContactListWindow () {
-      this.contacts = new Gee.HashMap<int, Contact>();
       this.conversation_windows = new Gee.HashMap<int, ConversationWindow>();
 
       init_theme();
@@ -68,6 +63,7 @@ namespace Venom {
       // initialize session specific gui stuff
       label_name.set_text(session.getselfname());
       label_status.set_text(session.get_self_statusmessage());
+      on_ownconnectionstatus(false);
       
       stdout.printf("ID: %s\n", Tools.bin_to_hexstring(session.get_address()));
     }
@@ -157,9 +153,6 @@ namespace Venom {
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.add(box);
       
-      button_add_contact = builder.get_object("button_add_contact") as Gtk.Button;
-      button_group_chat = builder.get_object("button_group_chat") as Gtk.Button;
-      button_preferences = builder.get_object("button_preferences") as Gtk.Button;
       image_status = builder.get_object("image_status") as Gtk.Image;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
       label_name = builder.get_object("label_username") as Gtk.Label;
@@ -207,12 +200,16 @@ namespace Venom {
       scrolled_window_contact_list.add(contact_list_tree_view);
       scrolled_window_contact_list.get_vscrollbar().hide();
       
-      //Signals
-      builder.connect_signals(this);
-      
       Gtk.Menu menu_user = builder.get_object("menu_user") as Gtk.Menu;
       Gtk.Button button_user = builder.get_object("button_user") as Gtk.Button;
+      Gtk.Button button_add_contact = builder.get_object("button_add_contact") as Gtk.Button;
+      Gtk.Button button_group_chat = builder.get_object("button_group_chat") as Gtk.Button;
+      Gtk.Button button_preferences = builder.get_object("button_preferences") as Gtk.Button;
+      
       button_user.clicked.connect( () => {menu_user.popup(null, button_user, null, 0, 0);});
+      button_add_contact.clicked.connect(button_add_contact_clicked);
+      button_group_chat.clicked.connect(button_group_chat_clicked);
+      button_preferences.clicked.connect(button_preferences_clicked);
       
       menuitem_edit_info.activate.connect( edit_user_information );
       menuitem_copy_id.activate.connect( copy_id_to_clipboard);
@@ -237,9 +234,9 @@ namespace Venom {
       session.on_group_message.connect(this.on_group_message);
       
       // Contact list treeview signals
-      on_contact_added.connect(contact_list_tree_view.add_contact);
-      on_contact_changed.connect(contact_list_tree_view.update_contact);
-      on_contact_removed.connect(contact_list_tree_view.remove_contact);
+      contact_added.connect(contact_list_tree_view.add_contact);
+      contact_changed.connect(contact_list_tree_view.update_contact);
+      contact_removed.connect(contact_list_tree_view.remove_contact);
       contact_list_tree_view.contact_activated.connect(on_contact_activated);
       contact_list_tree_view.key_press_event.connect(on_treeview_key_pressed);
       
@@ -257,14 +254,10 @@ namespace Venom {
     
     // Restore friends from datafile
     private void init_contacts() {
-      Contact[] contacts = session.get_friendlist();
-      if (contacts != null) {
-        foreach(Contact c in contacts) {
-          stdout.printf("Retrieved contact %s from savefile.\n", Tools.bin_to_hexstring(c.public_key));
-          add_contact(c);
-        }
-      } else {
-        stderr.printf("Could not retrieve contacts!\n");
+      Gee.HashMap<int, Contact> contacts = session.get_contact_list();
+      foreach(Contact c in contacts) {
+        stdout.printf("Retrieved contact %s from savefile.\n", Tools.bin_to_hexstring(c.public_key));
+        contact_added(c);
       }
     }
     
@@ -299,11 +292,6 @@ namespace Venom {
       }
       
       connection_status = s;
-    }
-
-    private void add_contact(Contact contact) {
-      contacts[contact.friend_id] = contact;
-      on_contact_added(contact);    
     }
     
     private void copy_id_to_clipboard() {
@@ -355,8 +343,8 @@ namespace Venom {
     }
 
     // Session Signal callbacks
-    private void on_friendrequest(uint8[] public_key, string message) {
-      string public_key_string = Tools.bin_to_hexstring(public_key);
+    private void on_friendrequest(Contact c, string message) {
+      string public_key_string = Tools.bin_to_hexstring(c.public_key);
       stdout.printf("[fr] %s:%s\n", public_key_string, message);
 
       Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
@@ -370,75 +358,44 @@ namespace Venom {
       if(response != Gtk.ResponseType.YES)
         return;
 
-      Tox.FriendAddError friend_add_error = session.addfriend_norequest(public_key);
-      if((int)friend_add_error >= 0) {
-        stdout.printf("Added new friend #%i\n", (int)friend_add_error);
-        add_contact(new Contact(public_key, (int)friend_add_error));
-      } else {
-        stderr.printf("Could not add friend: %i\n", friend_add_error);
+      Tox.FriendAddError friend_add_error = session.addfriend_norequest(c);
+      if((int)friend_add_error < 0) {
+        stderr.printf("Could not add friend: %s\n", Tools.friend_add_error_to_string(friend_add_error));
+        return;
       }
+      stdout.printf("Added new friend #%i\n", c.friend_id);
+      contact_added(c);
     }
-    private void on_friendmessage(int friend_number, string message) {
-      if(contacts[friend_number] != null) {
-        Contact c = contacts[friend_number];
-        stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name, message);
+    private void on_friendmessage(Contact c, string message) {
+      stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name != null ? c.name : "<%i>".printf(c.friend_id), message);
 
-        ConversationWindow w = open_conversation_with(c);
-        if(w == null)
-          return;
-        w.show_all();        
-        incoming_message(new Message(c, message));
-      } else {
-        stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
-      }
+      ConversationWindow w = open_conversation_with(c);
+      if(w == null)
+        return;
+      w.show_all();
+      incoming_message(new Message(c, message));
     }
-    private void on_action(int friend_number, string action) {
-      stdout.printf("[ac] %i:%s\n", friend_number, action);
+    private void on_action(Contact c, string action) {
+      stdout.printf("[ac] %i:%s\n", c.friend_id, action);
     }
-    private void on_namechange(int friend_number, string new_name) {
-      if(contacts[friend_number] != null) {
-        stdout.printf("%s changed his name to %s\n", contacts[friend_number].name, new_name);
-        contacts[friend_number].name = new_name;
-        on_contact_changed(contacts[friend_number]);
-      } else {
-        stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
-      }
+    private void on_namechange(Contact c, string? old_name) {
+      stdout.printf("%s changed his name to %s\n", old_name, c.name);
+      contact_changed(c);
     }
-    private void on_statusmessage(int friend_number, string status_message) {
-      if(contacts[friend_number] != null) {
-        stdout.printf("%s changed his status to %s\n", contacts[friend_number].name, status_message);
-        contacts[friend_number].status_message = status_message;
-        on_contact_changed(contacts[friend_number]);
-      } else {
-        stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
-      }
+    private void on_statusmessage(Contact c, string? old_status) {
+      stdout.printf("%s changed his status to %s\n", c.name, c.status_message);
+      contact_changed(c);
     }
-    private void on_userstatus(int friend_number, int user_status) {
-      if(contacts[friend_number] != null) {
-        stdout.printf("[us] %s:%i\n", contacts[friend_number].name, user_status);
-        contacts[friend_number].user_status = user_status;
-        on_contact_changed(contacts[friend_number]);
-      } else {
-        stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
-      }
+    private void on_userstatus(Contact c, int old_status) {
+      stdout.printf("[us] %s:%i\n", c.name, c.user_status);
+      contact_changed(c);
     }
-    private void on_read_receipt(int friend_number, uint32 receipt) {
-      if(contacts[friend_number] != null) {
-        stdout.printf("[rr] %s:%u\n", contacts[friend_number].name, receipt);
-      } else {
-        stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
-      }
+    private void on_read_receipt(Contact c, uint32 receipt) {
+      stdout.printf("[rr] %s:%u\n", c.name, receipt);
     }
-    private void on_connectionstatus(int friend_number, bool status) {
-      if(contacts[friend_number] != null) {
-        stdout.printf("%s is now %s.\n", contacts[friend_number].name, status ? "online" : "offline");
-        if(!status && contacts[friend_number].online)
-          contacts[friend_number].last_seen = new DateTime.now_local();
-        contacts[friend_number].online = status;
-        on_contact_changed(contacts[friend_number]);
-      } else {
-        stderr.printf("Contact #%i is not in contactlist!\n", friend_number);
-      }
+    private void on_connectionstatus(Contact c) {
+      stdout.printf("%s is now %s.\n", c.name, c.online ? "online" : "offline");
+      contact_changed(c);
     }
 
     private void on_ownconnectionstatus(bool status) {
@@ -449,12 +406,12 @@ namespace Venom {
       }
     }
 
-    private void on_group_invite(int friend_number, uint8[] group_public_key) {
-      stdout.printf("Group invite from %s with public key %s\n", contacts[friend_number].name, Tools.bin_to_hexstring(group_public_key));
+    private void on_group_invite(Contact c, GroupChat g) {
+      stdout.printf("Group invite from %s with public key %s\n", c.name, Tools.bin_to_hexstring(g.public_key));
     }
 
-    private void on_group_message(int groupnumber, int friendgroupnumber, string message) {
-      stdout.printf("[gm] %i@%i: %s", friendgroupnumber, groupnumber, message);
+    private void on_group_message(GroupChat g, int friendgroupnumber, string message) {
+      stdout.printf("[gm] %i@%i: %s", friendgroupnumber, g.group_id, message);
     }
     
     private ConversationWindow? open_conversation_with(Contact c) {
@@ -463,8 +420,8 @@ namespace Venom {
         w = new ConversationWindow(c);
         incoming_message.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
-        on_contact_changed.connect( (c_) => {if(c == c_) w.update_contact();} );
-        on_contact_removed.connect( (c_) => {if(c == c_) w.destroy();} );
+        contact_changed.connect( (c_) => {if(c == c_) w.update_contact();} );
+        contact_removed.connect( (c_) => {if(c == c_) w.destroy();} );
         conversation_windows[c.friend_id] = w;
       }
       return w;
@@ -478,9 +435,35 @@ namespace Venom {
       w.show_all();
       w.present();
     }
+    
+    public void remove_contact(Contact c) {
+      if(c == null)
+        return;
+      string name;
+      if(c.name != null && c.name != "") {
+        name = c.name;
+      } else {
+        name = Tools.bin_to_hexstring(c.public_key);
+      }
+      Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
+                                  Gtk.DialogFlags.MODAL,
+                                  Gtk.MessageType.QUESTION,
+                                  Gtk.ButtonsType.YES_NO,
+                                  "Do you really want to delete %s from your contact list?".printf(name));
+
+		  int response = messagedialog.run();
+		  messagedialog.destroy();
+      if(response != Gtk.ResponseType.YES)
+        return;
+
+      if(!session.delfriend(c)) {
+        stderr.printf("Could not remove contact %i.\n", c.friend_id);
+        return;
+      }
+      contact_removed(c);
+    }
 
     // GUI Events
-    [CCode (cname="G_MODULE_EXPORT venom_contact_list_window_button_add_contact_clicked", instance_pos = -1)]
     public void button_add_contact_clicked(Object source) {
       AddContactDialog dialog = new AddContactDialog();
       
@@ -493,7 +476,8 @@ namespace Venom {
           return;
 
       // add friend
-      Tox.FriendAddError ret = session.addfriend(contact_id, contact_message);
+      Contact c = new Contact(contact_id);
+      Tox.FriendAddError ret = session.addfriend(c, contact_message);
       if(ret < 0) {
         //TODO turn this into a message box.
         stderr.printf("Error: %s.\n", Tools.friend_add_error_to_string(ret));
@@ -501,41 +485,14 @@ namespace Venom {
       }
 
       stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
-      add_contact(new Contact(contact_id, (int)ret));
-      return;
-    }
-
-    public void remove_contact(Contact c) {
-      if(c == null)
-        return;
-      string name;
-      if(c.name != null && c.name != "")
-        name = c.name;
-      else
-        name = Tools.bin_to_hexstring(c.public_key);
-      Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
-                                  Gtk.DialogFlags.MODAL,
-                                  Gtk.MessageType.QUESTION,
-                                  Gtk.ButtonsType.YES_NO,
-                                  "Do you really want to delete %s from your contact list?".printf(name));
-
-		  int response = messagedialog.run();
-		  messagedialog.destroy();
-      if(response != Gtk.ResponseType.YES)
-        return;
-
-      session.delfriend(c.friend_id);
-      contacts.unset(c.friend_id);
-      on_contact_removed(c);
+      contact_added(c);
     }
     
-    [CCode (cname="G_MODULE_EXPORT venom_contact_list_window_button_groupchat_clicked", instance_pos = -1)]
-    public void button_groupchat_clicked(Object source) {
+    public void button_group_chat_clicked(Object source) {
       stdout.printf("Groupchat button clicked\n");
       //TODO
     }
 
-    [CCode (cname="G_MODULE_EXPORT venom_contact_list_window_button_preferences_clicked", instance_pos = -1)]
     public void button_preferences_clicked(Object source) {
       stdout.printf("Settings button clicked\n");
       //TODO

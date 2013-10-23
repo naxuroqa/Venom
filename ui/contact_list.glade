@@ -1,10 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.0 on Wed Oct 23 10:30:14 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
+  </object>
+  <object class="GtkImage" id="image_add_contact">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image_group_chat">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image_preferences">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkListStore" id="liststore_status">
+    <columns>
+      <!-- column-name status -->
+      <column type="gchararray"/>
+    </columns>
   </object>
   <object class="GtkBox" id="box">
     <property name="visible">True</property>
@@ -247,7 +269,6 @@
             <style>
               <class name="bottombutton"/>
             </style>
-            <signal name="clicked" handler="venom_contact_list_window_button_add_contact_clicked" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -267,7 +288,6 @@
             <style>
               <class name="bottombutton"/>
             </style>
-            <signal name="clicked" handler="venom_contact_list_window_button_groupchat_clicked" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -287,7 +307,6 @@
             <style>
               <class name="bottombutton"/>
             </style>
-            <signal name="clicked" handler="venom_contact_list_window_button_preferences_clicked" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -314,27 +333,6 @@
     <property name="can_focus">False</property>
     <property name="xalign">0.49000000953674316</property>
     <property name="stock">gtk-edit</property>
-  </object>
-  <object class="GtkImage" id="image_add_contact">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-missing-image</property>
-  </object>
-  <object class="GtkImage" id="image_preferences">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-missing-image</property>
-  </object>
-  <object class="GtkListStore" id="liststore_status">
-    <columns>
-      <!-- column-name status -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
-  <object class="GtkImage" id="image_group_chat">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-missing-image</property>
   </object>
   <object class="GtkMenu" id="menu_user">
     <property name="visible">True</property>

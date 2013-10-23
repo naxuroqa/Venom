@@ -20,6 +20,8 @@ namespace Venom {
   public class ToxSession : Object {
     private Tox.Tox handle;
     private Gee.ArrayList<DhtServer> dht_servers = new Gee.ArrayList<DhtServer>();
+    private Gee.HashMap<int, Contact> _contacts = new Gee.HashMap<int, Contact>();
+    private Gee.HashMap<int, GroupChat> _groups = new Gee.HashMap<int, GroupChat>();
 #if GLIB_2_32
     private Thread<int> session_thread = null;
 #else
@@ -31,17 +33,17 @@ namespace Venom {
     public bool connected { get; private set; default=false; }
     public DhtServer connected_dht_server { get; private set; default=null; }
     
-    public signal void on_friendrequest(uint8[] public_key, string message);
-    public signal void on_friendmessage(int friend_number, string message);
-    public signal void on_action(int friend_number, string action);
-    public signal void on_namechange(int friend_number, string new_name);
-    public signal void on_statusmessage(int friend_number, string status);
-    public signal void on_userstatus(int friend_number, int user_status);
-    public signal void on_read_receipt(int friend_number, uint32 receipt);
-    public signal void on_connectionstatus(int friend_number, bool status);
+    public signal void on_friendrequest(Contact c, string message);
+    public signal void on_friendmessage(Contact c, string message);
+    public signal void on_action(Contact c, string action);
+    public signal void on_namechange(Contact c, string? old_name);
+    public signal void on_statusmessage(Contact c, string? old_status);
+    public signal void on_userstatus(Contact c, int old_status);
+    public signal void on_read_receipt(Contact c, uint32 receipt);
+    public signal void on_connectionstatus(Contact c);
     public signal void on_ownconnectionstatus(bool status);
-    public signal void on_group_invite(int friend_number, uint8[] group_public_key);
-    public signal void on_group_message(int groupnumber, int friendgroupnumber, string message);
+    public signal void on_group_invite(Contact c, GroupChat g);
+    public signal void on_group_message(GroupChat g, int friendgroupnumber, string message);
 
     public ToxSession( bool ipv6 = false ) {
 	  this.ipv6 = ipv6;
@@ -73,6 +75,29 @@ namespace Venom {
     ~ToxSession() {
       running = false;
     }
+    
+    private void init_contact_list() {
+      int[] friend_numbers;
+      uint ret = 0;
+      uint count_friendlist = 0;
+      lock(handle) {
+        count_friendlist = handle.count_friendlist();
+        friend_numbers = new int[count_friendlist];
+        ret = handle.copy_friendlist(friend_numbers);
+      }
+      if(ret != count_friendlist)
+        return;
+      _contacts.clear();
+      _groups.clear();
+      for(int i = 0; i < friend_numbers.length; ++i) {
+        int friend_id = friend_numbers[i];
+        uint8[] friend_key = getclient_id(friend_id);
+        Contact c = new Contact(friend_key, friend_id);
+        c.name = getname(friend_id);
+        c.status_message = get_statusmessage(friend_id);
+        _contacts.set(friend_id, c);
+      };
+    }
 
     ////////////////////////////// Callbacks /////////////////////////////////////////
     [CCode (instance_pos = -1)]
@@ -83,95 +108,118 @@ namespace Venom {
       }
       string message = ((string)data).dup(); //FIXME string may be copied two times here, check
       uint8[] public_key_clone = Tools.clone(public_key, Tox.CLIENT_ID_SIZE);
-      Idle.add(() => { on_friendrequest(public_key_clone, message); return false; });
+      Contact contact = new Contact(public_key_clone, -1);
+      Idle.add(() => { on_friendrequest(contact, message); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_friendmessage_callback(Tox.Tox tox, int friend_number, uint8[] message) {
       string message_string = ((string)message).dup();
-      Idle.add(() => { on_friendmessage(friend_number, message_string); return false; });
+      Idle.add(() => { on_friendmessage(_contacts.get(friend_number), message_string); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_action_callback(Tox.Tox tox, int friend_number, uint8[] action) {
       string action_string = ((string)action).dup();
-      Idle.add(() => { on_action(friend_number, action_string); return false; });
+      Idle.add(() => { on_action(_contacts.get(friend_number), action_string); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_namechange_callback(Tox.Tox tox, int friend_number, uint8[] new_name) {
-      string name_string = ((string)new_name).dup();
-      Idle.add(() => { on_namechange(friend_number, name_string); return false; });
+      Contact contact = _contacts.get(friend_number);
+      string old_name = contact.name;
+      contact.name = ((string)new_name).dup();
+      Idle.add(() => { on_namechange(contact, old_name); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_statusmessage_callback(Tox.Tox tox, int friend_number, uint8[] status) {
-      string status_string = ((string)status).dup();
-      Idle.add(() => { on_statusmessage(friend_number, status_string); return false; });
+      Contact contact = _contacts.get(friend_number);
+      string old_status = contact.status_message;
+      contact.status_message = ((string)status).dup();
+      Idle.add(() => { on_statusmessage(contact, old_status); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_userstatus_callback(Tox.Tox tox, int friend_number, Tox.UserStatus user_status) {
-      Idle.add(() => { on_userstatus(friend_number, user_status); return false; });
+      Contact contact = _contacts.get(friend_number);
+      int old_status = contact.user_status;
+      contact.user_status = user_status;
+      Idle.add(() => { on_userstatus(contact, old_status); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_read_receipt_callback(Tox.Tox tox, int friend_number, uint32 receipt) {
-      Idle.add(() => { on_read_receipt(friend_number, receipt); return false; });
+      Idle.add(() => { on_read_receipt(_contacts.get(friend_number), receipt); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_connectionstatus_callback(Tox.Tox tox, int friend_number, uint8 status) {
-      Idle.add(() => { on_connectionstatus(friend_number, (status != 0)); return false; });
+      Contact contact = _contacts.get(friend_number);
+      contact.online = (status != 0);
+      Idle.add(() => { on_connectionstatus(contact); return false; });
     }
 
     // Group chat callbacks
-
     [CCode (instance_pos = -1)]
     private void on_group_invite_callback(Tox.Tox tox, int friendnumber, uint8[] group_public_key) {
       uint8[] public_key_clone = Tools.clone(group_public_key, Tox.CLIENT_ID_SIZE);
-      Idle.add(() => { on_group_invite(friendnumber, public_key_clone); return false; });
+      GroupChat group_contact = new GroupChat(public_key_clone);
+      Idle.add(() => { on_group_invite(_contacts.get(friendnumber), group_contact); return false; });
     }
 
     [CCode (instance_pos = -1)]
     private void on_group_message_callback(Tox.Tox tox, int groupnumber, int friendgroupnumber, uint8[] message) {
       string message_string = ((string)message).dup();
-      Idle.add(() => { on_group_message(groupnumber, friendgroupnumber, message_string); return false; });
+      Idle.add(() => { on_group_message(_groups.get(groupnumber), friendgroupnumber, message_string); return false; });
     }
 
     ////////////////////////////// Wrapper functions ////////////////////////////////
 
     // Add a friend, returns Tox.FriendAddError on error and friend_number on success
-    public Tox.FriendAddError addfriend(uint8[] id, string message) {
+    public Tox.FriendAddError addfriend(Contact c, string message) {
       Tox.FriendAddError ret = Tox.FriendAddError.UNKNOWN;
 
-      if(id.length != Tox.FRIEND_ADDRESS_SIZE)
+      if(c.public_key.length != Tox.FRIEND_ADDRESS_SIZE)
         return ret;
 
       uint8[] data = Tools.string_to_nullterm_uint(message);
       
       lock(handle) {
-        ret = handle.addfriend(id, data);
+        ret = handle.addfriend(c.public_key, data);
       }
+      
+      if(ret < 0)
+        return ret;
+      c.public_key = Tools.clone(c.public_key, Tox.CLIENT_ID_SIZE);
+      c.friend_id = (int)ret;
+      _contacts.set((int)ret, c);
       return ret;
     }
 
-    public Tox.FriendAddError addfriend_norequest(uint8[] id) {
+    public Tox.FriendAddError addfriend_norequest(Contact c) {
       Tox.FriendAddError ret = Tox.FriendAddError.UNKNOWN;
 
-      if(id.length != Tox.CLIENT_ID_SIZE)
+      if(c.public_key.length != Tox.CLIENT_ID_SIZE)
         return ret;
       
       lock(handle) {
-        ret = handle.addfriend_norequest(id);
+        ret = handle.addfriend_norequest(c.public_key);
       }
+      if(ret < 0)
+        return ret;
+      c.friend_id = (int)ret;
+      _contacts.set((int)ret, c);
       return ret;
     }
     
-    public bool delfriend(int friendnumber) {
+    public bool delfriend(Contact c) {
       int ret = -1;
       lock(handle) {
-        ret = handle.delfriend(friendnumber);
+        ret = handle.delfriend(c.friend_id);
+      }
+      if(ret == 0) {
+        _contacts.unset(c.friend_id);
       }
       return ret == 0;
     }
@@ -271,27 +319,8 @@ namespace Venom {
       return ret;
     }
     
-    public Contact[]? get_friendlist() {
-      int[] friend_numbers;
-      uint ret = 0;
-      uint count_friendlist = 0;
-      lock(handle) {
-        count_friendlist = handle.count_friendlist();
-        friend_numbers = new int[count_friendlist];
-        ret = handle.copy_friendlist(friend_numbers);
-      }
-      if(ret != count_friendlist)
-        return null;
-      Contact[] contacts = new Contact[friend_numbers.length];
-      for(int i = 0; i < friend_numbers.length; ++i) {
-        int friend_id = friend_numbers[i];
-        uint8[] friend_key = getclient_id(friend_id);
-        Contact c = new Contact(friend_key, friend_id);
-        c.name = getname(friend_id);
-        c.status_message = get_statusmessage(friend_id);
-        contacts[i] = c;
-      }
-      return contacts;
+    public unowned Gee.HashMap<int, Contact> get_contact_list() {
+      return _contacts;
     }
 
     ////////////////////////////// Thread related operations /////////////////////////
@@ -375,6 +404,7 @@ namespace Venom {
       }
       if(ret != 0)
         throw new IOError.FAILED("Error while loading messenger data.");
+      init_contact_list();
     }
 
     // Save messenger data from file

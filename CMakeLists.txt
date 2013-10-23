@@ -51,6 +51,7 @@ vala_precompile( VALA_C
   src/core/Client.vala
   src/core/Contact.vala
   src/core/DhtServer.vala
+  src/core/GroupChat.vala
   src/core/Message.vala
   src/core/ResourceFactory.vala
   src/core/Tools.vala

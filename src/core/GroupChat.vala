@@ -16,26 +16,17 @@
  */
 
 namespace Venom {
-  public class Contact : GLib.Object{
+  public class GroupChat : GLib.Object{
 
     public uint8[] public_key { get; set; }
-    public int friend_id { get; set; }
-    public string name { get; set; }
+    public int group_id { get; set; }
     public string local_name { get; set; }
-    public string status_message { get; set; }
-    public DateTime last_seen { get; set; }
-    public int user_status { get; set; }
-    public bool online { get; set; }
     public Gdk.Pixbuf? image { get; set; }
 
-    public Contact(uint8[] public_key, int friend_id = -1) {
+    public GroupChat(uint8[] public_key, int group_id = -1) {
       this.public_key = public_key;
-      this.friend_id = friend_id;
-      this.name = "";
-      this.local_name = name;
-      this.status_message = "";
-      this.last_seen = new DateTime.now_local();
-      this.user_status = (int)Tox.UserStatus.INVALID;
+      this.group_id = group_id;
+      this.local_name = "";
       this.image = null;
     }
   }
