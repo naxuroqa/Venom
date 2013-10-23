@@ -140,7 +140,7 @@ namespace Venom {
       // Set up Window
       set_default_size(230, 600);
       set_property("name", "contact_list");
-      set_default_icon(ResourceFactory.instance.tox_logo);
+      set_default_icon(ResourceFactory.instance.venom);
 
       // Load widgets from file
       Gtk.Builder builder = new Gtk.Builder();
