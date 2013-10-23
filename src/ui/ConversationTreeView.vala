@@ -79,7 +79,7 @@ namespace Venom {
     private void render_time (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
     {
       Message m = get_message_from_iter(iter);
-      (cell as Gtk.CellRendererText).text = m.time_sent.format("%R");
+      (cell as Gtk.CellRendererText).markup = "<span color='#939598'>%s</span>".printf(m.time_sent.format("%R"));
     }
 
     public void add_message(Message message) {
