@@ -62,11 +62,12 @@ namespace Venom {
 
     private void render_sender_name (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
     {
+      //TODO move markup into css if possible
       Message m = get_message_from_iter(iter);
       if(m.sender == null)
-        (cell as Gtk.CellRendererText).text = "Me:";
+        (cell as Gtk.CellRendererText).markup = "<span color='#939598'font_weight='bold'>Me</span>";
       else
-        (cell as Gtk.CellRendererText).text = "%s:".printf(m.sender.name);
+        (cell as Gtk.CellRendererText).markup = "<b>%s</b>".printf(m.sender.name);
     }
 
     private void render_message (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
