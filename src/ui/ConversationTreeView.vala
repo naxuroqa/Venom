@@ -24,19 +24,30 @@ namespace Venom {
 
         Gtk.TreeViewColumn name_column = new Gtk.TreeViewColumn();
         Gtk.CellRendererText name_column_cell = new Gtk.CellRendererText();
+        name_column_cell.yalign = 0;
         name_column.pack_start(name_column_cell, true);
 
         Gtk.TreeViewColumn message_column = new Gtk.TreeViewColumn();
         Gtk.CellRendererText message_column_cell = new Gtk.CellRendererText();
-        message_column.pack_start(message_column_cell, true);
+        //message_column_cell.wrap_mode = Pango.WrapMode.WORD_CHAR;
+        //message_column_cell.wrap_width = message_column.width * Pango.SCALE;
+        message_column.pack_start(message_column_cell, false);
+        message_column.expand = true;
+        
+        Gtk.TreeViewColumn time_column = new Gtk.TreeViewColumn();
+        Gtk.CellRendererText time_column_cell = new Gtk.CellRendererText();
+        time_column_cell.yalign = 0;
+        time_column.pack_start(time_column_cell, true);
 
         name_column.set_cell_data_func(name_column_cell, render_sender_name);
         message_column.set_cell_data_func(message_column_cell, render_message);
+        time_column.set_cell_data_func(time_column_cell, render_time);
 
         set_model (list_store_messages);
 
         append_column(name_column);
         append_column(message_column);
+        append_column(time_column);
 
         //hide headers
         set_headers_visible(false);
@@ -61,6 +72,12 @@ namespace Venom {
     {
       Message m = get_message_from_iter(iter);
       (cell as Gtk.CellRendererText).text = "%s".printf(m.message);
+    }
+
+    private void render_time (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
+    {
+      Message m = get_message_from_iter(iter);
+      (cell as Gtk.CellRendererText).text = m.time_sent.format("%R");
     }
 
     public void add_message(Message message) {
