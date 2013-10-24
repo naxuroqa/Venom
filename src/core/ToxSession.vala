@@ -342,13 +342,13 @@ namespace Venom {
       return (ret != 0) ? null : buf;
     }
 
-    public string getname(int friend_number) {
+    public string? getname(int friend_number) {
       uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH];
       int ret = -1;
       lock(handle) {
         ret = handle.getname(friend_number, buf);
       }
-      return ret == 0 ? (string)buf : null;
+      return (ret < 0) ? null: (string)buf;
     }
     
     public string get_statusmessage(int friend_number) {
