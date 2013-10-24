@@ -22,8 +22,8 @@ namespace Venom {
     }
     
     private void init_widgets() {
-      const string[] artists = {"naxuroqa"};
-      const string[] authors = {"naxuroqa"};
+      const string[] artists = {"naxuroqa", null};
+      const string[] authors = {"naxuroqa", null};
       this.artists = artists;
       this.authors = authors;
       
