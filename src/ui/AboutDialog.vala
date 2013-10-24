@@ -22,8 +22,10 @@ namespace Venom {
     }
     
     private void init_widgets() {
-      this.artists = {"naxuroqa"};
-      this.authors = {"naxuroqa"};
+      const string[] artists = {"naxuroqa"};
+      const string[] authors = {"naxuroqa"};
+      this.artists = artists;
+      this.authors = authors;
       
       this.program_name = "Venom";
       this.comments = "GTK+/Vala GUI for Tox";
