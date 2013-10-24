@@ -16,7 +16,7 @@
  */
 
 @define-color treeview-background #414042;
-@define-color treeview-selected lighter(@treeview-background);
+@define-color treeview-selected #636466;
 @define-color background #231f20;
 @define-color foreground #f1f2f2;
 @define-color border-color #636466;
@@ -24,15 +24,65 @@
 @define-color callbutton-selected lighter(@callbutton-color);
 
 * {
-  -engine: none;
-  -GtkRange-slider-width: 13;
-  -GtkRange-stepper-spacing: 0;
-  -GtkScrollbar-has-backward-stepper: false;
-  -GtkScrollbar-has-forward-stepper: false;
-  -GtkWindow-resize-grip-default: false;
-  -GtkWindow-resize-grip-height: 0;
-  -GtkWindow-resize-grip-width: 0;
-  font: sans 10;
+engine: none;
+
+/*border-width: 0px;*/
+background-clip: padding-box;
+
+-GtkArrow-arrow-scaling: 0.5;
+-GtkButton-child-displacement-x: 1;
+-GtkButton-child-displacement-y: 1;
+-GtkButton-default-border: 0;
+-GtkButton-image-spacing: 0;
+-GtkButton-interior-focus: true;
+-GtkButton-inner-border: 1;
+-GtkCheckButton-indicator-size: 15;
+-GtkCheckMenuItem-indicator-size: 12;
+-GtkEntry-inner-border: 1;
+-GtkEntry-progress-border: 0;
+-GtkExpander-expander-size: 12;
+-GtkHTML-link-color: @link_color;
+-GtkIMHtml-hyperlink-color: @link_color;
+-GtkMenu-horizontal-padding: 0;
+-GtkMenu-vertical-padding: 0;
+-GtkMenuBar-internal-padding: 0;
+-GtkMenuItem-arrow-scaling: 0.4;
+-GtkNotebook-initial-gap: 0;
+-GtkNotebook-tab-overlap: -2;
+-GtkPaned-handle-size: 1;
+-GtkProgressBar-min-horizontal-bar-height: 10;
+-GtkProgressBar-min-vertical-bar-width: 10;
+-GtkRange-slider-width: 13;
+-GtkRange-stepper-size: 0;
+-GtkRange-stepper-spacing: 0;
+-GtkRange-trough-border: 0;
+-GtkRange-trough-under-steppers: 1;
+-GtkScale-trough-border: 1;
+-GtkScrollbar-activate-slider: 1;
+-GtkScrollbar-trough-border: 1;
+-GtkScrollbar-slider-width: 13;
+-GtkScrollbar-min-slider-length: 50;
+-GtkScrolledWindow-scrollbar-spacing: 0;
+-GtkScrolledWindow-scrollbars-within-bevel: 1;
+-GtkSeparatorMenuItem-horizontal-padding: 0;
+-GtkStatusbar-shadow-type: none;
+-GtkTextView-error-underline-color: @error_color;
+-GtkToolButton-icon-spacing: 6;
+-GtkToolItemGroup-expander-size: 11;
+-GtkToolbar-internal-padding: 0;
+-GtkTreeView-expander-size: 11;
+-GtkTreeView-vertical-separator: 0;
+-GtkWidget-wide-separators: true;
+-GtkWidget-separator-width: 1;
+-GtkWidget-separator-height: 1;
+-GtkWidget-focus-padding: 0;
+-GtkWidget-focus-line-width: 1;
+-GtkWidget-link-color: @link_color;
+-GtkWidget-visited-link-color: @link_color;
+-GtkWindow-resize-grip-default: false;
+-GtkWindow-resize-grip-height: 0;
+-GtkWindow-resize-grip-width: 0;
+-WnckTasklist-fade-overlay-rect: 0;
 }
 
 #contact_list {
@@ -143,7 +193,7 @@
 }
 
 #contact_list .scrollbar {
-  background-color: @background;
+  background-color: #1c1c1c;
   background-image: none;
   border: none;
 }
@@ -186,3 +236,4 @@
   border-radius: 4px;
   border: none;
 }
+
