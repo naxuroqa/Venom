@@ -107,10 +107,9 @@
   background-color: @treeview-background;
   background-image: none;
   border-image: none;
-  border-style: none;
   padding-left: 0;
   padding-right: 0;
-  border-radius: 0px;
+  border: none;
 }
 
 #contact_list .cell {
@@ -125,9 +124,9 @@
 
 #contact_list .frame {
   border: 0px solid @border-color;
-  border-style: solid;
   border-top-width: 1px;
   border-bottom-width: 1px;
+  padding: 0px;
 }
 
 #contact_list GtkTreeView {
@@ -145,6 +144,7 @@
 #contact_list .scrollbar {
   background-color: @background;
   background-image: none;
+  border: none;
 }
 
 #contact_list .slider:active {
@@ -183,4 +183,5 @@
   background-image: none;
   border-image: none;
   border-radius: 4px;
+  border: none;
 }
