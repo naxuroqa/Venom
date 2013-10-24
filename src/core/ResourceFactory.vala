@@ -48,7 +48,8 @@ namespace Venom {
       groupchat = load_image(Path.build_filename(pixmaps_folder, "groupchat.png"));
       settings = load_image(Path.build_filename(pixmaps_folder, "settings.png"));
       
-      default_image = load_image(Path.build_filename(pixmaps_folder, "default_image.png"));
+      default_contact = load_image(Path.build_filename(pixmaps_folder, "default_contact.png"));
+      default_groupchat = load_image(Path.build_filename(pixmaps_folder, "default_groupchat.png"));
       
       venom = load_image(Path.build_filename(pixmaps_folder, "venom.png"));
       arrow = load_image(Path.build_filename(pixmaps_folder, "arrow.png"));
@@ -71,7 +72,8 @@ namespace Venom {
     public Gdk.Pixbuf groupchat {get; private set;}
     public Gdk.Pixbuf settings {get; private set;}
 
-    public Gdk.Pixbuf default_image {get; private set;}
+    public Gdk.Pixbuf default_contact {get; private set;}
+    public Gdk.Pixbuf default_groupchat {get; private set;}
     
     public Gdk.Pixbuf venom {get; private set;}
     public Gdk.Pixbuf arrow {get; private set;}

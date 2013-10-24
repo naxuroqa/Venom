@@ -150,7 +150,8 @@ INSTALL(FILES pixmaps/add.png DESTINATION share/venom/pixmaps)
 INSTALL(FILES pixmaps/groupchat.png DESTINATION share/venom/pixmaps)
 INSTALL(FILES pixmaps/settings.png DESTINATION share/venom/pixmaps)
 
-INSTALL(FILES pixmaps/default_image.png DESTINATION share/venom/pixmaps)
+INSTALL(FILES pixmaps/default_contact.png DESTINATION share/venom/pixmaps)
+INSTALL(FILES pixmaps/default_groupchat.png DESTINATION share/venom/pixmaps)
 
 INSTALL(FILES pixmaps/away.png DESTINATION share/venom/pixmaps)
 INSTALL(FILES pixmaps/away_glow.png DESTINATION share/venom/pixmaps)

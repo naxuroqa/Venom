@@ -18,6 +18,7 @@
 namespace Venom {
   public class ContactListCellRenderer : Gtk.CellRenderer {
     public Contact contact { get; set; }
+    public GroupChat groupchat { get; set; }
 
     public ContactListCellRenderer() {
       GLib.Object();
@@ -40,7 +41,12 @@ namespace Venom {
     }
     
     public void render_image(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
-      Gdk.Pixbuf? icon = contact.image != null ? contact.image : ResourceFactory.instance.default_image;
+      Gdk.Pixbuf? icon;
+      if(contact == null) {
+        icon = groupchat.image != null ? groupchat.image : ResourceFactory.instance.default_groupchat;
+      } else {
+        icon = contact.image != null ? contact.image : ResourceFactory.instance.default_contact;
+      }
       Gdk.Rectangle image_rect = {8, 9 + background_area.y, 44, 41};
       if(icon != null) {
         Gdk.cairo_rectangle(ctx, image_rect);
@@ -50,6 +56,8 @@ namespace Venom {
     }
     
     public void render_userstatus(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
+      if(contact == null)
+        return;
       Gdk.Pixbuf? status = null;
       
       if(!contact.online) {
@@ -87,7 +95,9 @@ namespace Venom {
       Gtk.StateFlags state = widget.get_state_flags();
       Gdk.RGBA color = widget.get_style_context().get_color(state);
       
-      if(contact.name != null && contact.name != "") {
+      if(contact == null) {
+        layout.set_text(Tools.bin_to_hexstring(groupchat.public_key), -1);
+      } else if(contact.name != null && contact.name != "") {
         layout.set_text(contact.name, -1);
       } else {
         layout.set_text(Tools.bin_to_hexstring(contact.public_key), -1);
@@ -117,7 +127,7 @@ namespace Venom {
       color.red -= 0.4;
       color.green -= 0.4;
       color.blue -= 0.4;
-      if(contact.status_message != null && contact.status_message != "") {
+      if(contact != null && contact.status_message != null && contact.status_message != "") {
         layout.set_text(contact.status_message, -1);
       }
       layout.set_ellipsize(Pango.EllipsizeMode.END);

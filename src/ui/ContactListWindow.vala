@@ -47,6 +47,8 @@ namespace Venom {
     public signal void contact_added(Contact c);
     public signal void contact_changed(Contact c);
     public signal void contact_removed(Contact c);
+    public signal void groupchat_added(GroupChat g);
+    public signal void groupchat_removed(GroupChat g);
     public signal void incoming_message(Message m);
     public signal void status_changed(ConnectionStatus s);
 
@@ -183,7 +185,7 @@ namespace Venom {
       Gtk.MenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.MenuItem;
 
       image_status.set_from_pixbuf(ResourceFactory.instance.offline);
-      image_userimage.set_from_pixbuf(ResourceFactory.instance.default_image);
+      image_userimage.set_from_pixbuf(ResourceFactory.instance.default_contact);
 
       image_add_contact.set_from_pixbuf(ResourceFactory.instance.add);
       image_group_chat.set_from_pixbuf(ResourceFactory.instance.groupchat);
@@ -237,6 +239,7 @@ namespace Venom {
       contact_added.connect(contact_list_tree_view.add_contact);
       contact_changed.connect(contact_list_tree_view.update_contact);
       contact_removed.connect(contact_list_tree_view.remove_contact);
+      groupchat_added.connect(contact_list_tree_view.add_groupchat);
       contact_list_tree_view.contact_activated.connect(on_contact_activated);
       contact_list_tree_view.key_press_event.connect(on_treeview_key_pressed);
       
@@ -408,6 +411,25 @@ namespace Venom {
 
     private void on_group_invite(Contact c, GroupChat g) {
       stdout.printf("Group invite from %s with public key %s\n", c.name, Tools.bin_to_hexstring(g.public_key));
+      Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
+                                  Gtk.DialogFlags.MODAL,
+                                  Gtk.MessageType.QUESTION,
+                                  Gtk.ButtonsType.YES_NO,
+                                  "Groupchat invite from %s, do you want to accept?".printf(
+                                    (c.name != null && c.name != "") ? c.name : Tools.bin_to_hexstring(c.public_key)));
+
+		  int response = messagedialog.run();
+		  messagedialog.destroy();
+      if(response != Gtk.ResponseType.YES)
+        return;
+
+      bool ret = session.join_groupchat(c, g);
+      if(ret == false) {
+        stderr.printf("Could not join groupchat.\n");
+        return;
+      }
+      stdout.printf("Joined Groupchat #%i\n", g.group_id);
+      groupchat_added(g);
     }
 
     private void on_group_message(GroupChat g, int friendgroupnumber, string message) {
@@ -489,8 +511,6 @@ namespace Venom {
     }
     
     public void button_group_chat_clicked(Gtk.Button source) {
-      stdout.printf("Groupchat button clicked\n");
-      //TODO
     }
 
     public void button_preferences_clicked(Gtk.Button source) {

@@ -48,7 +48,7 @@ namespace Venom {
       textview_contact_message = builder.get_object("textview_contact_message") as Gtk.TextView;
 
       Gtk.Image image_default = builder.get_object("image_default") as Gtk.Image;
-      image_default.set_from_pixbuf(ResourceFactory.instance.default_image);
+      image_default.set_from_pixbuf(ResourceFactory.instance.default_contact);
 
       this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Ok", Gtk.ResponseType.OK, null);
       this.set_default_response(Gtk.ResponseType.OK);

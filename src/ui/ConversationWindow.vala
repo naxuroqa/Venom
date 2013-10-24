@@ -44,7 +44,7 @@ namespace Venom {
       
       update_contact();
       
-      image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_image);
+      image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_contact);
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
 

@@ -242,6 +242,18 @@ namespace Venom {
       return ret;
     }
     
+    public bool join_groupchat(Contact c, GroupChat g) {
+      int ret = -1;
+      lock(handle) {
+        ret = handle.join_groupchat(c.friend_id, g.public_key);
+      }
+      if(ret < 0)
+        return false;
+      g.group_id = ret;
+      _groups.set(ret, g);
+      return true;
+    }
+    
     public bool delfriend(Contact c) {
       int ret = -1;
       lock(handle) {

@@ -23,13 +23,14 @@ namespace Venom {
     public signal void contact_activated(Contact contact);
 
     public ContactListTreeView() {
-      list_store_contacts = new Gtk.ListStore (2, typeof(Contact), typeof(string));
+      list_store_contacts = new Gtk.ListStore (3, typeof(Contact), typeof(GroupChat), typeof(string));
 
       name_column = new Gtk.TreeViewColumn();
       ContactListCellRenderer name_column_cell = new ContactListCellRenderer();
       name_column.pack_start(name_column_cell, true);
       
       name_column.add_attribute (name_column_cell, "contact", 0);
+      name_column.add_attribute (name_column_cell, "groupchat", 1);
 
       set_model (list_store_contacts);
 
@@ -37,7 +38,7 @@ namespace Venom {
 
       row_activated.connect(on_row_activated);
       
-      set_tooltip_column(1);
+      set_tooltip_column(2);
 
       //hide headers
       set_headers_visible(false);
@@ -52,7 +53,13 @@ namespace Venom {
     public void add_contact(Contact contact) {
       Gtk.TreeIter iter;
       list_store_contacts.append (out iter);
-      list_store_contacts.set (iter, 0, contact, 1, Tools.bin_to_hexstring(contact.public_key));
+      list_store_contacts.set (iter, 0, contact, 2, Tools.bin_to_hexstring(contact.public_key));
+    }
+    
+    public void add_groupchat(GroupChat groupchat) {
+      Gtk.TreeIter iter;
+      list_store_contacts.append (out iter);
+      list_store_contacts.set (iter, 1, groupchat, 2, Tools.bin_to_hexstring(groupchat.public_key));
     }
 
     public void update_contact(Contact contact) {
