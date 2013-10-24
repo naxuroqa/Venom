@@ -59,7 +59,7 @@ namespace Venom {
     public void add_groupchat(GroupChat groupchat) {
       Gtk.TreeIter iter;
       list_store_contacts.append (out iter);
-      list_store_contacts.set (iter, 1, groupchat, 2, Tools.bin_to_hexstring(groupchat.public_key));
+      list_store_contacts.set (iter, 1, groupchat);
     }
 
     public void update_contact(Contact contact) {

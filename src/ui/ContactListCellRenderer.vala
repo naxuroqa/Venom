@@ -96,7 +96,7 @@ namespace Venom {
       Gdk.RGBA color = widget.get_style_context().get_color(state);
       
       if(contact == null) {
-        layout.set_text(Tools.bin_to_hexstring(groupchat.public_key), -1);
+        layout.set_text("Groupchat #%i".printf(groupchat.group_id), -1);
       } else if(contact.name != null && contact.name != "") {
         layout.set_text(contact.name, -1);
       } else {

@@ -511,6 +511,13 @@ namespace Venom {
     }
     
     public void button_group_chat_clicked(Gtk.Button source) {
+      GroupChat g = session.add_groupchat();
+      if(g == null) {
+        stderr.printf("Could not create a new groupchat.\n");
+        return;
+      }
+      stdout.printf("New Groupchat #%i created.\n", g.group_id);
+      groupchat_added(g);
     }
 
     public void button_preferences_clicked(Gtk.Button source) {

@@ -29,5 +29,11 @@ namespace Venom {
       this.local_name = "";
       this.image = null;
     }
+    public GroupChat.from_id(int group_id) {
+      this.public_key = null;
+      this.group_id = group_id;
+      this.local_name = "";
+      this.image = null;
+    }
   }
 }
