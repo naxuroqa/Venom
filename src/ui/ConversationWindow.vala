@@ -51,6 +51,14 @@ namespace Venom {
       new_conversation_message.connect(conversation_tree_view.add_message);
       
       set_default_size(600, 500);
+      update_title();
+    }
+    
+    private void update_title() {
+      this.set_title("Conversation with %s".printf(
+        (contact.name != null && contact.name != "") ? 
+          contact.name : 
+          "unnamed contact"));
     }
     
     public void update_contact() {
@@ -59,6 +67,7 @@ namespace Venom {
       else
         label_contact_name.set_text(contact.name);
       label_contact_statusmessage.set_text(contact.status_message);
+      update_title();
     }
     
     private void init_widgets() {
