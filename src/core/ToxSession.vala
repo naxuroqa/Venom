@@ -403,7 +403,8 @@ namespace Venom {
         lock(handle) {
           handle.do();
         }
-        Thread.usleep(50000);
+        //FIXME measure time to assure 20x calling tox.do per second
+        Thread.usleep(25000);
       }
       stdout.printf("Background thread stopped.\n");
       return 0;

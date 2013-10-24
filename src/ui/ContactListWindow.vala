@@ -434,7 +434,7 @@ namespace Venom {
     }
 
     private void on_group_message(GroupChat g, int friendgroupnumber, string message) {
-      stdout.printf("[gm] %i@%i: %s", friendgroupnumber, g.group_id, message);
+      stdout.printf("[gm] %i@%i: %s\n", friendgroupnumber, g.group_id, message);
     }
     
     private ConversationWindow? open_conversation_with(Contact c) {
