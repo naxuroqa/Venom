@@ -85,6 +85,11 @@ background-clip: padding-box;
 -WnckTasklist-fade-overlay-rect: 0;
 }
 
+#contact_list
+#contact_list * {
+  border-width: 0px;
+}
+
 #contact_list {
   color: @foreground;
   background-color: @background;
