@@ -441,8 +441,8 @@ namespace Venom {
     }
 
     ////////////////////////////// Load/Save of messenger data /////////////////////////
-    public void load_from_file(string pathname, string filename) throws IOError, Error {
-      File f = File.new_for_path(Path.build_filename(pathname, filename));
+    public void load_from_file(string filename) throws IOError, Error {
+      File f = File.new_for_path(filename);
       if(!f.query_exists())
         throw new IOError.NOT_FOUND("File \"" + filename + "\" does not exist.");
       FileInfo file_info = f.query_info("*", FileQueryInfoFlags.NONE);
@@ -462,14 +462,12 @@ namespace Venom {
     }
 
     // Save messenger data from file
-    public void save_to_file(string pathname, string filename) throws IOError, Error {
-      File path = File.new_for_path(pathname);
-      if(!path.query_exists()) {
-        DirUtils.create_with_parents(pathname, 0755);
-        stdout.printf("creating Directory %s\n", pathname);
+    public void save_to_file(string filename) throws IOError, Error {
+      File file = File.new_for_path(filename);
+      if(!file.query_exists()) {
+        Tools.create_path_for_file(file, 0755);
       }
-      File f = File.new_for_path(Path.build_filename(pathname, filename));
-      DataOutputStream os = new DataOutputStream(f.replace(null, false, FileCreateFlags.NONE));
+      DataOutputStream os = new DataOutputStream(file.replace(null, false, FileCreateFlags.NONE));
 
       uint32 size = 0;
       uint8[] buf;

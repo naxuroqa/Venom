@@ -39,8 +39,6 @@ namespace Venom {
     private ContactListTreeView contact_list_tree_view;
     private Gtk.ComboBox combobox_status;
 
-    private string data_filename = "data";
-    private string data_pathname = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox");
     private bool cleaned_up = false;
 
     // Signals
@@ -86,7 +84,7 @@ namespace Venom {
 
       // Save session before shutdown
       try {
-        session.save_to_file(data_pathname, data_filename);
+        session.save_to_file(ResourceFactory.instance.data_filename);
       } catch (Error e) {
         stderr.printf("Saving session file failed: %s\n", e.message);
       }
@@ -126,11 +124,11 @@ namespace Venom {
     private void init_session() {
       session = new ToxSession();
       try {
-        session.load_from_file(data_pathname, data_filename);
+        session.load_from_file(ResourceFactory.instance.data_filename);
       } catch (Error e) {
         try {
           stdout.printf("Could not load session data (%s), creating new one.\n", e.message);
-          session.save_to_file(data_pathname, data_filename);
+          session.save_to_file(ResourceFactory.instance.data_filename);
         } catch (Error e) {
           stderr.printf("Could not load messenger data and failed to create new one.\n");
         }

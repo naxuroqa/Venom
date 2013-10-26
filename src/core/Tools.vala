@@ -28,6 +28,17 @@ namespace Venom {
       // Assume that our current pwd is our data dir
       return "";
     }
+    
+    public static void create_path_for_file(File file, int mode) {
+      string pathname = file.get_path();
+      if(pathname != null) {
+        File path = File.new_for_path(pathname);
+        if(!path.query_exists()) {
+          DirUtils.create_with_parents(pathname, mode);
+          stdout.printf("created directory %s\n", pathname);
+        }
+      }
+    }
 
     // convert a hexstring to uint8[]
     public static uint8[] hexstring_to_bin(string s) {
