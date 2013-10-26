@@ -465,7 +465,7 @@ namespace Venom {
     public void save_to_file(string filename) throws IOError, Error {
       File file = File.new_for_path(filename);
       if(!file.query_exists()) {
-        Tools.create_path_for_file(file, 0755);
+        Tools.create_path_for_file(filename, 0755);
       }
       DataOutputStream os = new DataOutputStream(file.replace(null, false, FileCreateFlags.NONE));
 

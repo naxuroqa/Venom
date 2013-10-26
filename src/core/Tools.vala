@@ -29,8 +29,8 @@ namespace Venom {
       return "";
     }
     
-    public static void create_path_for_file(File file, int mode) {
-      string pathname = file.get_path();
+    public static void create_path_for_file(string filename, int mode) {
+      string pathname = Path.get_dirname(filename);
       if(pathname != null) {
         File path = File.new_for_path(pathname);
         if(!path.query_exists()) {

@@ -20,7 +20,7 @@ namespace Venom {
     private ContactListWindow contact_list;
 
     public Client(string [] args) {
-      Gtk.init (ref args);
+      Gtk.init (ref args);      
       contact_list = new ContactListWindow();
     }
     
