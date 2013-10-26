@@ -182,6 +182,7 @@ namespace Venom {
       Gtk.MenuItem menuitem_edit_info = builder.get_object("menuitem_edit_info") as Gtk.MenuItem;
       Gtk.MenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.MenuItem;
       Gtk.MenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.MenuItem;
+      Gtk.MenuItem menuitem_quit = builder.get_object("menuitem_quit") as Gtk.MenuItem;
 
       image_status.set_from_pixbuf(ResourceFactory.instance.offline);
       image_userimage.set_from_pixbuf(ResourceFactory.instance.default_contact);
@@ -215,6 +216,7 @@ namespace Venom {
       menuitem_edit_info.activate.connect( edit_user_information );
       menuitem_copy_id.activate.connect( copy_id_to_clipboard);
       menuitem_about.activate.connect( show_about_dialog );
+      menuitem_quit.activate.connect( () => {this.destroy();});
     }
 
     // Connect
