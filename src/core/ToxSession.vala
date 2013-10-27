@@ -16,6 +16,13 @@
  */
 
 namespace Venom {
+  public enum UserStatus {
+    ONLINE,
+    AWAY,
+    BUSY,
+    OFFLINE
+  }
+
   // Wrapper class for accessing tox functions threadsafe
   public class ToxSession : Object {
     private Tox.Tox handle;
@@ -43,6 +50,7 @@ namespace Venom {
     public signal void on_read_receipt(Contact c, uint32 receipt);
     public signal void on_connectionstatus(Contact c);
     public signal void on_ownconnectionstatus(bool status);
+    public signal void on_ownuserstatus(UserStatus status);
 
     // Groupchat signals
     public signal void on_group_invite(Contact c, GroupChat g);
@@ -267,12 +275,15 @@ namespace Venom {
     }
 
     // Set user status, returns true on success
-    public bool set_status(Tox.UserStatus user_status) {
+    public bool set_status(UserStatus user_status) {
       int ret = -1;
       lock(handle) {
-        ret = handle.set_userstatus(user_status);
+        ret = handle.set_userstatus((Tox.UserStatus)user_status);
       }
-      return ret == 0;
+      if(ret != 0)
+        return false;
+      on_ownuserstatus(user_status);
+      return true;
     }
 
     // Set user statusmessage, returns true on success
@@ -385,7 +396,7 @@ namespace Venom {
         }
         if(new_status && !connected) {
           connected_dht_server = dht_servers[0];
-		  Idle.add(() => { on_ownconnectionstatus(true); return false; });
+          Idle.add(() => { on_ownconnectionstatus(true); return false; });
         } else if(!new_status && connected) {
           Idle.add(() => { on_ownconnectionstatus(false); return false; });
         }
@@ -420,6 +431,7 @@ namespace Venom {
       running = false;
       bootstrapped = false;
       connected = false;
+      on_ownconnectionstatus(false);
     }
 
     // Wait for background thread to finish

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Sat Oct 26 14:41:18 2013 -->
+<!-- Generated with glade 3.16.0 on Sun Oct 27 22:41:29 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkAdjustment" id="adjustment1">
@@ -32,12 +32,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
-  </object>
-  <object class="GtkListStore" id="liststore_status">
-    <columns>
-      <!-- column-name status -->
-      <column type="gchararray"/>
-    </columns>
   </object>
   <object class="GtkBox" id="box">
     <property name="visible">True</property>
@@ -194,17 +188,10 @@
                         <property name="margin_left">8</property>
                         <property name="margin_top">5</property>
                         <property name="margin_bottom">1</property>
-                        <property name="model">liststore_status</property>
                         <property name="id_column">0</property>
                         <style>
                           <class name="statuscombo"/>
                         </style>
-                        <child>
-                          <object class="GtkCellRendererText" id="cellrenderertext1"/>
-                          <attributes>
-                            <attribute name="text">0</attribute>
-                          </attributes>
-                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>

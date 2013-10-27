@@ -17,19 +17,12 @@
 
 namespace Venom {
 
-  public enum ConnectionStatus {
-    ONLINE,
-    AWAY,
-    BUSY,
-    OFFLINE
-  }
-
   public class ContactListWindow : Gtk.Window {
     // Containers
     private Gee.AbstractMap<int, ConversationWindow> conversation_windows;
     // Tox session wrapper
     private ToxSession session;
-    private ConnectionStatus connection_status = ConnectionStatus.OFFLINE;
+    private UserStatus user_status = UserStatus.OFFLINE;
 
     // Widgets
     private Gtk.Image image_status;
@@ -45,10 +38,11 @@ namespace Venom {
     public signal void contact_added(Contact c);
     public signal void contact_changed(Contact c);
     public signal void contact_removed(Contact c);
+
     public signal void groupchat_added(GroupChat g);
     public signal void groupchat_removed(GroupChat g);
+
     public signal void incoming_message(Message m);
-    public signal void status_changed(ConnectionStatus s);
 
     // Default Constructor
     public ContactListWindow () {
@@ -160,20 +154,26 @@ namespace Venom {
       label_status = builder.get_object("label_userstatus") as Gtk.Label;
 
       combobox_status = builder.get_object("combobox_status") as Gtk.ComboBox;
+      Gtk.ListStore liststore_status = new Gtk.ListStore (2, typeof(string), typeof(UserStatus));
+      combobox_status.set_model(liststore_status);
 
-      Gtk.ListStore liststore_status = builder.get_object("liststore_status") as Gtk.ListStore;
-      
+      // Add our connection status to the treeview
       Gtk.TreeIter iter;
       liststore_status.append(out iter);
-      liststore_status.set(iter, 0, "Online" , -1);
+      liststore_status.set(iter, 0, "Online" , 1, UserStatus.ONLINE,  -1);
       liststore_status.append(out iter);
-      liststore_status.set(iter, 0, "Away"   , -1);
+      liststore_status.set(iter, 0, "Away"   , 1, UserStatus.AWAY,    -1);
       liststore_status.append(out iter);
-      liststore_status.set(iter, 0, "Busy"   , -1);
+      liststore_status.set(iter, 0, "Busy"   , 1, UserStatus.BUSY,    -1);
       liststore_status.append(out iter);
-      liststore_status.set(iter, 0, "Offline", -1);
-      combobox_status.set_active(3);
+      liststore_status.set(iter, 0, "Offline", 1, UserStatus.OFFLINE, -1);
+      // Set the last status (Offline) as active
+      combobox_status.set_active_iter(iter);
 
+      // Add cellrenderer
+      Gtk.CellRendererText cell_renderer_status = new Gtk.CellRendererText();
+      combobox_status.pack_start(cell_renderer_status, true);
+      combobox_status.add_attribute(cell_renderer_status, "text", 0);
 
       Gtk.Image image_add_contact = builder.get_object("image_add_contact") as Gtk.Image;
       Gtk.Image image_group_chat  = builder.get_object("image_group_chat") as Gtk.Image;
@@ -231,6 +231,7 @@ namespace Venom {
       session.on_read_receipt.connect(this.on_read_receipt);
       session.on_connectionstatus.connect(this.on_connectionstatus);
       session.on_ownconnectionstatus.connect(this.on_ownconnectionstatus);
+      session.on_ownuserstatus.connect(this.on_ownuserstatus);
       
       //groupmessage signals
       session.on_group_invite.connect(this.on_group_invite);
@@ -245,9 +246,7 @@ namespace Venom {
       contact_list_tree_view.key_press_event.connect(on_treeview_key_pressed);
       
       //ComboboxStatus signals
-      combobox_status.changed.connect( () => {status_changed((ConnectionStatus)combobox_status.get_active());} );
-      status_changed.connect( (s) => {combobox_status.set_active(s);});
-      status_changed.connect( update_status );
+      combobox_status.changed.connect(combobox_status_changed);
       
       // End program when window is closed
       this.destroy.connect (Gtk.main_quit);
@@ -265,37 +264,32 @@ namespace Venom {
       }
     }
     
-    private void update_status(ConnectionStatus s) {
-      if(connection_status == s)
+    private void combobox_status_changed() {
+      Gtk.TreeModel m = combobox_status.get_model();
+      //TODO error messages
+      if(m == null)
         return;
-      if(connection_status == ConnectionStatus.OFFLINE) {
+      GLib.Value value_status;
+      Gtk.TreeIter iter;
+      combobox_status.get_active_iter(out iter);
+      m.get_value(iter, 1, out value_status);
+      update_status( (UserStatus)value_status );
+    }
+    
+    private void update_status(UserStatus status) {
+      if(user_status == status)
+        return;
+      if(user_status == UserStatus.OFFLINE) {
         session.start();
       }
-        
-      switch(s) {
-        case ConnectionStatus.ONLINE:
-          session.set_status(Tox.UserStatus.NONE);
-          image_status.set_from_pixbuf(ResourceFactory.instance.online);
-          break;
-        case ConnectionStatus.AWAY:
-          session.set_status(Tox.UserStatus.AWAY);
-          image_status.set_from_pixbuf(ResourceFactory.instance.away);
-          break;
-        case ConnectionStatus.BUSY:
-          session.set_status(Tox.UserStatus.BUSY);
-          image_status.set_from_pixbuf(ResourceFactory.instance.offline_glow);
-          break;
-        case ConnectionStatus.OFFLINE:
-          session.set_status(Tox.UserStatus.NONE);
-          image_status.set_from_pixbuf(ResourceFactory.instance.offline);
-          break;
-      }
       
-      if(s == ConnectionStatus.OFFLINE) {
+      session.set_status(status);
+      
+      if(status == UserStatus.OFFLINE) {
         session.stop();
       }
       
-      connection_status = s;
+      user_status = status;
     }
     
     private void copy_id_to_clipboard() {
@@ -405,9 +399,29 @@ namespace Venom {
     private void on_ownconnectionstatus(bool status) {
       if(status) {
         image_status.set_tooltip_text("Connected to: %s".printf(session.connected_dht_server.to_string()));
+        session.set_status(user_status);
       } else {
         image_status.set_tooltip_text("Not connected.");
+        image_status.set_from_pixbuf(ResourceFactory.instance.offline);
       }
+    }
+    
+    private void on_ownuserstatus(UserStatus status) {
+      if(!session.connected || status == UserStatus.OFFLINE) {
+        image_status.set_from_pixbuf(ResourceFactory.instance.offline);
+      }
+
+     switch(status) {
+      case UserStatus.ONLINE:
+        image_status.set_from_pixbuf(ResourceFactory.instance.online);
+        break;
+      case UserStatus.AWAY:
+        image_status.set_from_pixbuf(ResourceFactory.instance.away);
+        break;
+      case UserStatus.BUSY:
+        image_status.set_from_pixbuf(ResourceFactory.instance.offline_glow);
+        break;
+     }
     }
 
     private void on_group_invite(Contact c, GroupChat g) {
