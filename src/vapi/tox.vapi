@@ -35,7 +35,7 @@ namespace Tox {
 
   /* errors for m_addfriend
    *  FAERR - Friend Add Error */
-  [CCode (cprefix = "TOX_FAERR_", cname = "int")]
+  [CCode (cprefix = "TOX_FAERR_", cname="int")]
   public enum FriendAddError {
     TOOLONG,
     NOMESSAGE,
@@ -57,7 +57,7 @@ namespace Tox {
     INVALID
   }
   
-  [CCode (cprefix="TOX_FILECONTROL_")]
+  [CCode (cprefix="TOX_FILECONTROL_", cname="int")]
   public enum FileControlStatus {
     ACCEPT,
     PAUSE,
@@ -160,20 +160,16 @@ namespace Tox {
 
     /* Send an action to an online friend.
      *
-     *  return 1 if packet was successfully put into the send queue.
+     *  return the message id if packet was successfully put into the send queue.
      *  return 0 if it was not.
-     */
-    public int sendaction(int friendnumber, [CCode(array_length_type="guint32")] uint8[] action);
-
-    /* Set friendnumber's nickname.
-     * name must be a string of maximum MAX_NAME_LENGTH length.
-     * length must be at least 1 byte.
-     * length is the length of name with the NULL terminator.
      *
-     *  return 0 if success.
-     *  return -1 if failure.
+     *  You will want to retain the return value, it will be passed to your read_receipt callback
+     *  if one is received.
+     *  m_sendaction_withid will send an action message with the id of your choosing,
+     *  however we can generate an id for you by calling plain m_sendaction.
      */
-    public int setfriendname(int friendnumber, [CCode(array_length_type="guint16")] uint8[] name);
+    public uint32 sendaction(int friendnumber, [CCode(array_length_type="guint32")] uint8[] action);
+    public uint32 sendaction_withid(int friendnumber, uint32 action_id, [CCode(array_length_type="guint32")] uint8[] action);
 
     /* Set our nickname.
      * name must be a string of maximum MAX_NAME_LENGTH length.
@@ -251,7 +247,7 @@ namespace Tox {
      * Otherwise, returns the number of elements copied.
      * If the array was too small, the contents
      * of out_list will be truncated to list_size. */
-    public uint32 copy_friendlist(int[] out_list);
+    public uint32 copy_friendlist([CCode(array_length_type="guint32")] int[] out_list);
 
     /* Set the function that will be executed when a friend request is received.
      *  Function format is function(uint8_t * public_key, uint8_t * data, uint16_t length)
@@ -383,7 +379,7 @@ namespace Tox {
      * HOW TO SEND FILES CORRECTLY:
      * 1. Use tox_new_filesender(...) to create a new file sender.
      * 2. Wait for the callback set with tox_callback_file_control(...) to be called with receive_send == 1 and control_type == TOX_FILECONTROL_ACCEPT
-     * 3. Send the data with tox_file_senddata(...)
+     * 3. Send the data with tox_file_senddata(...) with chunk size tox_filedata_size(...)
      * 4. When sending is done, send a tox_file_sendcontrol(...) with send_receive = 0 and message_id = TOX_FILECONTROL_FINISHED
      *
      * HOW TO RECEIVE FILES CORRECTLY:
@@ -394,6 +390,13 @@ namespace Tox {
      * the file is done transferring.
      *
      * tox_file_dataremaining(...) can be used to know how many bytes are left to send/receive.
+     *
+     * If the connection breaks during file sending (The other person goes offline without pausing the sending and then comes back)
+     * the reciever must send a control packet with receive_send == 0 message_id = TOX_FILECONTROL_RESUME_BROKEN and the data being
+     * a uint64_t (in host byte order) containing the number of bytes recieved.
+     *
+     * If the sender recieves this packet, he must send a control packet with receive_send == 1 and control_type == TOX_FILECONTROL_ACCEPT
+     * then he must start sending file data from the position (data , uint64_t in host byte order) recieved in the TOX_FILECONTROL_RESUME_BROKEN packet.
      *
      * More to come...
      */
@@ -448,6 +451,13 @@ namespace Tox {
      */
     public int file_senddata(int friendnumber, uint8 filenumber, [CCode(array_length_type="guint16")] uint8[] data);
 
+    /* Returns the recommended/maximum size of the filedata you send with tox_file_senddata()
+     *
+     *  return size on success
+     *  return 0 on failure (currently will never return 0)
+     */
+    public int filedata_size(int friendnumber);
+
     /* Give the number of bytes left to be sent/received.
      *
      *  send_receive is 0 if we want the sending files, 1 if we want the receiving.
@@ -458,6 +468,8 @@ namespace Tox {
     public uint64 file_dataremaining(int friendnumber, uint8 filenumber, uint8 send_receive);
 
     /***************END OF FILE SENDING FUNCTIONS******************/
+
+
     /*
      * Use these two functions to bootstrap the client.
      */
@@ -479,8 +491,10 @@ namespace Tox {
      *  returns 0 otherwise
      */
     public int bootstrap_from_address(string address, uint8 ipv6enabled, uint16 port, [CCode(array_length=false)] uint8[] public_key);
-    /* returns 0 if we are not connected to the DHT
-        returns 1 if we are */
+
+    /*  return 0 if we are not connected to the DHT.
+     *  return 1 if we are.
+     */
     public int isconnected();
 
     /* the main loop that needs to be run at least 20 times per second */
@@ -520,13 +534,13 @@ namespace Tox {
 
     /* SAVING AND LOADING FUNCTIONS: */
 
-    /* returns the size of the messenger data (for saving) */
+    /* returns the size of messenger data (for saving) */
     public uint32 size();
 
-    /* save the messenger in data (must be allocated memory of size Messenger_size()) */
+    /* Save the messenger in data (must be allocated memory of size Messenger_size()). */
     public void save([CCode(array_length=false)] uint8[] data);
 
-    /* load the messenger from data of size length */
+    /* Load the messenger from data of size length. */
     public int load([CCode(array_length_type = "guint32")] uint8[] data);
   }
 }

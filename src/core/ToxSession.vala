@@ -116,7 +116,6 @@ namespace Venom {
     }
 
     ////////////////////////////// Callbacks /////////////////////////////////////////
-    [CCode (instance_pos = -1)]
     private void on_friendrequest_callback(uint8[] public_key, uint8[] data) {
       if(public_key == null) {
         stderr.printf("Public key was null in friendrequest!\n");
@@ -128,13 +127,11 @@ namespace Venom {
       Idle.add(() => { on_friendrequest(contact, message); return false; });
     }
 
-    [CCode (instance_pos = -1)]
     private void on_friendmessage_callback(Tox.Tox tox, int friend_number, uint8[] message) {
       string message_string = ((string)message).dup();
       Idle.add(() => { on_friendmessage(_contacts.get(friend_number), message_string); return false; });
     }
 
-    [CCode (instance_pos = -1)]
     private void on_action_callback(Tox.Tox tox, int friend_number, uint8[] action) {
       string action_string = ((string)action).dup();
       Idle.add(() => { on_action(_contacts.get(friend_number), action_string); return false; });
@@ -148,7 +145,6 @@ namespace Venom {
       Idle.add(() => { on_namechange(contact, old_name); return false; });
     }
 
-    [CCode (instance_pos = -1)]
     private void on_statusmessage_callback(Tox.Tox tox, int friend_number, uint8[] status) {
       Contact contact = _contacts.get(friend_number);
       string old_status = contact.status_message;
@@ -156,7 +152,6 @@ namespace Venom {
       Idle.add(() => { on_statusmessage(contact, old_status); return false; });
     }
 
-    [CCode (instance_pos = -1)]
     private void on_userstatus_callback(Tox.Tox tox, int friend_number, Tox.UserStatus user_status) {
       Contact contact = _contacts.get(friend_number);
       int old_status = contact.user_status;
@@ -164,12 +159,11 @@ namespace Venom {
       Idle.add(() => { on_userstatus(contact, old_status); return false; });
     }
 
-    [CCode (instance_pos = -1)]
+    
     private void on_read_receipt_callback(Tox.Tox tox, int friend_number, uint32 receipt) {
       Idle.add(() => { on_read_receipt(_contacts.get(friend_number), receipt); return false; });
     }
 
-    [CCode (instance_pos = -1)]
     private void on_connectionstatus_callback(Tox.Tox tox, int friend_number, uint8 status) {
       Contact contact = _contacts.get(friend_number);
       contact.online = (status != 0);
@@ -177,29 +171,24 @@ namespace Venom {
     }
 
     // Group chat callbacks
-    [CCode (instance_pos = -1)]
     private void on_group_invite_callback(Tox.Tox tox, int friendnumber, uint8[] group_public_key) {
       uint8[] public_key_clone = Tools.clone(group_public_key, Tox.CLIENT_ID_SIZE);
       GroupChat group_contact = new GroupChat(public_key_clone);
       Idle.add(() => { on_group_invite(_contacts.get(friendnumber), group_contact); return false; });
     }
 
-    [CCode (instance_pos = -1)]
     private void on_group_message_callback(Tox.Tox tox, int groupnumber, int friendgroupnumber, uint8[] message) {
       string message_string = ((string)message).dup();
       Idle.add(() => { on_group_message(_groups.get(groupnumber), friendgroupnumber, message_string); return false; });
     }
 
     //File sending callbacks
-    [CCode (instance_pos = -1)]
     private void on_file_sendrequest_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint64 filesize, uint8[] filename) {
     }
 
-    [CCode (instance_pos = -1)]
     private void on_file_control_callback(Tox.Tox tox, int friendnumber, uint8 receive_send, uint8 filenumber, uint8 status, uint8[] data) {
     }
 
-    [CCode (instance_pos = -1)]
     private void on_file_data_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint8[] data) {
     }
 
