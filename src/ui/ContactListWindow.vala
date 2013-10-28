@@ -282,7 +282,7 @@ namespace Venom {
       if(user_status == UserStatus.OFFLINE) {
         session.start();
       }
-      session.set_userstatus(user_status);
+      session.set_userstatus(status);
       
       if(status == UserStatus.OFFLINE) {
         session.stop();
