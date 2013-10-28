@@ -396,6 +396,7 @@ namespace Venom {
     }
 
     private void on_ownconnectionstatus(bool status) {
+      stdout.printf("Connection to DHT %s.\n", status ? "established" : "lost");
       if(status) {
         image_status.set_tooltip_text("Connected to: %s".printf(session.connected_dht_server.to_string()));
         session.set_userstatus(user_status);
@@ -403,12 +404,12 @@ namespace Venom {
         image_status.set_tooltip_text("Not connected.");
         image_status.set_from_pixbuf(ResourceFactory.instance.offline);
       }
-      stdout.printf("Connection to DHT %s.\n", status ? "established" : "lost");
     }
     
     private void on_ownuserstatus(UserStatus status) {
       if(!session.connected || status == UserStatus.OFFLINE) {
         image_status.set_from_pixbuf(ResourceFactory.instance.offline);
+        return;
       }
 
      switch(status) {
