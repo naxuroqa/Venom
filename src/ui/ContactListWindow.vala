@@ -273,17 +273,16 @@ namespace Venom {
       Gtk.TreeIter iter;
       combobox_status.get_active_iter(out iter);
       m.get_value(iter, 1, out value_status);
-      update_status( (UserStatus)value_status );
+      set_userstatus( (UserStatus)value_status );
     }
     
-    private void update_status(UserStatus status) {
+    private void set_userstatus(UserStatus status) {
       if(user_status == status)
         return;
       if(user_status == UserStatus.OFFLINE) {
         session.start();
       }
-      
-      session.set_status(status);
+      session.set_userstatus(user_status);
       
       if(status == UserStatus.OFFLINE) {
         session.stop();
@@ -399,11 +398,12 @@ namespace Venom {
     private void on_ownconnectionstatus(bool status) {
       if(status) {
         image_status.set_tooltip_text("Connected to: %s".printf(session.connected_dht_server.to_string()));
-        session.set_status(user_status);
+        session.set_userstatus(user_status);
       } else {
         image_status.set_tooltip_text("Not connected.");
         image_status.set_from_pixbuf(ResourceFactory.instance.offline);
       }
+      stdout.printf("Connection to DHT %s.\n", status ? "established" : "lost");
     }
     
     private void on_ownuserstatus(UserStatus status) {

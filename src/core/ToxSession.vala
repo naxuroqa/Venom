@@ -275,7 +275,7 @@ namespace Venom {
     }
 
     // Set user status, returns true on success
-    public bool set_status(UserStatus user_status) {
+    public bool set_userstatus(UserStatus user_status) {
       int ret = -1;
       lock(handle) {
         ret = handle.set_userstatus((Tox.UserStatus)user_status);
@@ -395,9 +395,11 @@ namespace Venom {
           new_status = (handle.isconnected() != 0);
         }
         if(new_status && !connected) {
+          connected = true;
           connected_dht_server = dht_servers[0];
           Idle.add(() => { on_ownconnectionstatus(true); return false; });
         } else if(!new_status && connected) {
+          connected = false;
           Idle.add(() => { on_ownconnectionstatus(false); return false; });
         }
         lock(handle) {
