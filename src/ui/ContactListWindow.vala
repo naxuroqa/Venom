@@ -61,6 +61,7 @@ namespace Venom {
       on_ownconnectionstatus(false);
       
       stdout.printf("ID: %s\n", Tools.bin_to_hexstring(session.get_address()));
+      set_userstatus(UserStatus.ONLINE);
     }
 
     // Destructor
@@ -161,7 +162,7 @@ namespace Venom {
       // Add our connection status to the treeview
       Gtk.TreeIter iter;
       liststore_status.append(out iter);
-      liststore_status.set(iter, 0, "Online" , 1, UserStatus.ONLINE,  -1);
+      liststore_status.set(iter, 0, "Online" , -1);
       combobox_status.set_active_iter(iter);
 
       // Add cellrenderer
