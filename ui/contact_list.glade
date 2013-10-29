@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Tue Oct 29 06:40:29 2013 -->
+<!-- Generated with glade 3.16.0 on Tue Oct 29 06:50:08 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkAdjustment" id="adjustment1">
@@ -370,7 +370,7 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_status">
-        <property name="label" translatable="yes">Change Status</property>
+        <property name="label" translatable="yes">Change status</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="image">image6</property>
