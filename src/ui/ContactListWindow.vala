@@ -23,6 +23,7 @@ namespace Venom {
     // Tox session wrapper
     private ToxSession session;
     private UserStatus user_status = UserStatus.OFFLINE;
+    private Gtk.ImageMenuItem menuitem_status;
 
     // Widgets
     private Gtk.Image image_status;
@@ -154,20 +155,13 @@ namespace Venom {
       label_status = builder.get_object("label_userstatus") as Gtk.Label;
 
       combobox_status = builder.get_object("combobox_status") as Gtk.ComboBox;
-      Gtk.ListStore liststore_status = new Gtk.ListStore (2, typeof(string), typeof(UserStatus));
+      Gtk.ListStore liststore_status = new Gtk.ListStore (1, typeof(string));
       combobox_status.set_model(liststore_status);
 
       // Add our connection status to the treeview
       Gtk.TreeIter iter;
       liststore_status.append(out iter);
       liststore_status.set(iter, 0, "Online" , 1, UserStatus.ONLINE,  -1);
-      liststore_status.append(out iter);
-      liststore_status.set(iter, 0, "Away"   , 1, UserStatus.AWAY,    -1);
-      liststore_status.append(out iter);
-      liststore_status.set(iter, 0, "Busy"   , 1, UserStatus.BUSY,    -1);
-      liststore_status.append(out iter);
-      liststore_status.set(iter, 0, "Offline", 1, UserStatus.OFFLINE, -1);
-      // Set the last status (Offline) as active
       combobox_status.set_active_iter(iter);
 
       // Add cellrenderer
@@ -183,6 +177,18 @@ namespace Venom {
       Gtk.MenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.MenuItem;
       Gtk.MenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.MenuItem;
       Gtk.MenuItem menuitem_quit = builder.get_object("menuitem_quit") as Gtk.MenuItem;
+      
+      menuitem_status = builder.get_object("menuitem_status") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_status_online = builder.get_object("menuitem_status_online") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_status_away = builder.get_object("menuitem_status_away") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_status_busy = builder.get_object("menuitem_status_busy") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_status_offline = builder.get_object("menuitem_status_offline") as Gtk.ImageMenuItem;
+
+      (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
+      (menuitem_status_online.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.online);
+      (menuitem_status_away.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.away);
+      (menuitem_status_busy.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline_glow);
+      (menuitem_status_offline.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
 
       image_status.set_from_pixbuf(ResourceFactory.instance.offline);
       image_userimage.set_from_pixbuf(ResourceFactory.instance.default_contact);
@@ -217,6 +223,11 @@ namespace Venom {
       menuitem_copy_id.activate.connect( copy_id_to_clipboard);
       menuitem_about.activate.connect( show_about_dialog );
       menuitem_quit.activate.connect( () => {this.destroy();});
+      
+      menuitem_status_online.activate.connect(  () => { set_userstatus(UserStatus.ONLINE); } );
+      menuitem_status_away.activate.connect(    () => { set_userstatus(UserStatus.AWAY); } );
+      menuitem_status_busy.activate.connect(    () => { set_userstatus(UserStatus.BUSY); } );
+      menuitem_status_offline.activate.connect( () => { set_userstatus(UserStatus.OFFLINE); } );
     }
 
     // Connect
@@ -265,6 +276,8 @@ namespace Venom {
     }
     
     private void combobox_status_changed() {
+      stdout.printf("Under construction.\n");
+      /*
       Gtk.TreeModel m = combobox_status.get_model();
       //TODO error messages
       if(m == null)
@@ -274,6 +287,7 @@ namespace Venom {
       combobox_status.get_active_iter(out iter);
       m.get_value(iter, 1, out value_status);
       set_userstatus( (UserStatus)value_status );
+      */
     }
     
     private void set_userstatus(UserStatus status) {
@@ -402,25 +416,29 @@ namespace Venom {
         session.set_userstatus(user_status);
       } else {
         image_status.set_tooltip_text("Not connected.");
-        image_status.set_from_pixbuf(ResourceFactory.instance.offline);
+        on_ownuserstatus(UserStatus.OFFLINE);
       }
     }
     
     private void on_ownuserstatus(UserStatus status) {
       if(!session.connected || status == UserStatus.OFFLINE) {
         image_status.set_from_pixbuf(ResourceFactory.instance.offline);
+        (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
         return;
       }
 
      switch(status) {
       case UserStatus.ONLINE:
         image_status.set_from_pixbuf(ResourceFactory.instance.online);
+        (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.online);
         break;
       case UserStatus.AWAY:
         image_status.set_from_pixbuf(ResourceFactory.instance.away);
+        (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.away);
         break;
       case UserStatus.BUSY:
         image_status.set_from_pixbuf(ResourceFactory.instance.offline_glow);
+        (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline_glow);
         break;
      }
     }

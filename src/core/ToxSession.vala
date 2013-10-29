@@ -145,7 +145,6 @@ namespace Venom {
       Idle.add(() => { on_action(_contacts.get(friend_number), action_string); return false; });
     }
 
-    [CCode (instance_pos = -1)]
     private void on_namechange_callback(Tox.Tox tox, int friend_number, uint8[] new_name) {
       Contact contact = _contacts.get(friend_number);
       string old_name = contact.name;
@@ -167,7 +166,6 @@ namespace Venom {
       Idle.add(() => { on_userstatus(contact, old_status); return false; });
     }
 
-    
     private void on_read_receipt_callback(Tox.Tox tox, int friend_number, uint32 receipt) {
       Idle.add(() => { on_read_receipt(_contacts.get(friend_number), receipt); return false; });
     }
