@@ -4,6 +4,7 @@
     - [Linux](#linux)
     - [OS X](#osx)
     - [Windows](#windows)
+- [FAQ](#faq)
 
 <a name="installation" />
 ##Installation
@@ -134,3 +135,29 @@ cmake -G "MinGW Makefiles" ..
 # (finally) build it
 mingw32-make
 ```
+<a name="faq" />
+##FAQ
+#### Cmake complaining about missing modules
+If you are getting errors like these when running cmake
+```bash
+-- checking for module '<some_module>'
+--   package '<some_module>' not found
+CMake Error at /usr/share/cmake-2.8/Modules/FindPkgConfig.cmake:279 (message):
+  A required package was not found
+Call Stack (most recent call first):
+  /usr/share/cmake-2.8/Modules/FindPkgConfig.cmake:333 (_pkg_check_modules_internal)
+  CMakeLists.txt:30 (PKG_CHECK_MODULES)
+```
+then cmake can't find one or more dependencies needed to build Venom.
+
+Make sure, that you have all dependencies mentioned above installed.
+If you used a different prefix than ``/usr`` to install libtoxcore, you will need to tell it cmake here.
+You do this by setting ``PKG_CONFIG_PATH=/<your_prefix>/lib/pkgconfig`` and running cmake again.
+
+See also the solutions to [issue #4](https://github.com/naxuroqa/Venom/issues/4) and [issue #12](https://github.com/naxuroqa/Venom/issues/12)
+#### Empty gui window when starting Venom
+Happens when Venom can't find the required directories to load the .glade files containing the gui definitions.
+Installing Venom will most likely fix that.
+
+Venom also searches the working directory for those directories, so symlinking them to your working directory will also work.
+The needed directories are: ``pixmaps``, ``theme`` and ``ui``.
