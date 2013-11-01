@@ -16,7 +16,13 @@
 #
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
-PROJECT(venom C)
+PROJECT(Venom C)
+
+SET(VENOM_MAJOR_VERSION 0)
+SET(VENOM_MINOR_VERSION 1)
+SET(VENOM_PATCH_VERSION 3)
+SET(VENOM_VERSION
+  ${VENOM_MAJOR_VERSION}.${VENOM_MINOR_VERSION}.${VENOM_PATCH_VERSION})
 
 LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/vala)
 
@@ -46,6 +52,9 @@ LINK_DIRECTORIES( ${GTK_LIBRARY_DIRS}
                   ${GLIB_LIBRARY_DIRS}
                   ${TOX_LIBRARY_DIRS}
 )
+
+CONFIGURE_FILE ("${PROJECT_SOURCE_DIR}/src/config.h.in"
+                "${PROJECT_BINARY_DIR}/src/config.h" )
 
 vala_precompile( VALA_C
   src/core/Client.vala
@@ -77,6 +86,7 @@ OPTIONS
   --target-glib=2.32
 CUSTOM_VAPIS
   src/vapi/tox.vapi
+  src/vapi/config.vapi
 GENERATE_VAPI
 GENERATE_HEADER
 )

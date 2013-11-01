@@ -28,7 +28,7 @@ namespace Venom {
       this.program_name = "Venom";
       this.comments = "GTK+/Vala GUI for Tox";
       this.copyright = "2013 (c) naxuroqa";
-      this.version = "0.1.x";
+      this.version = Config.VENOM_VERSION;
       
       this.website = "https://github.com/naxuroqa/Venom";
       
