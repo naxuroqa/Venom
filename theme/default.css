@@ -88,6 +88,12 @@ background-clip: padding-box;
 #contact_list,
 #contact_list * {
   border-width: 0px;
+}
+
+#contact_list,
+#contact_list *,
+#conversation,
+#conversation * {
   background-color: alpha(white, 0);
 }
 
