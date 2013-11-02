@@ -207,7 +207,6 @@ namespace Venom {
 
       Gtk.ScrolledWindow scrolled_window_contact_list = builder.get_object("scrolled_window_contact_list") as Gtk.ScrolledWindow;
       scrolled_window_contact_list.add(contact_list_tree_view);
-      scrolled_window_contact_list.get_vscrollbar().hide();
       
       Gtk.Menu menu_user = builder.get_object("menu_user") as Gtk.Menu;
       Gtk.Button button_user = builder.get_object("button_user") as Gtk.Button;

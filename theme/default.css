@@ -88,6 +88,7 @@ background-clip: padding-box;
 #contact_list,
 #contact_list * {
   border-width: 0px;
+  background-color: alpha(white, 0);
 }
 
 #contact_list {
@@ -195,6 +196,11 @@ background-clip: padding-box;
 
 #contact_list GtkScrolledWindow {
   border: none;
+}
+
+#contact_list GtkScrolledWindow .scrollbar {
+  -GtkRange-slider-width: 0;
+  -GtkRange-trough-border: 0;
 }
 
 #contact_list .scrollbar {
