@@ -18,10 +18,12 @@
 FIND_PACKAGE(Vala "0.17.0" REQUIRED)
 FIND_PACKAGE(PkgConfig REQUIRED)
 
+SET(TARGET_GLIB 2.32)
+
 PKG_CHECK_MODULES(GTK  REQUIRED gtk+-3.0>=3.2)
 PKG_CHECK_MODULES(GEE  REQUIRED gee-0.8>=0.8)
-PKG_CHECK_MODULES(GIO  REQUIRED gio-2.0>=2.32)
-PKG_CHECK_MODULES(GLIB REQUIRED glib-2.0>=2.32)
+PKG_CHECK_MODULES(GIO  REQUIRED gio-2.0>=${TARGET_GLIB})
+PKG_CHECK_MODULES(GLIB REQUIRED glib-2.0>=${TARGET_GLIB})
 PKG_CHECK_MODULES(TOX  REQUIRED libtoxcore>=0.0)
 
 ADD_DEFINITIONS( ${GTK_CFLAGS} ${GTK_CFLAGS_OTHER}
@@ -34,7 +36,7 @@ ADD_DEFINITIONS( ${GTK_CFLAGS} ${GTK_CFLAGS_OTHER}
 CONFIGURE_FILE ("${PROJECT_SOURCE_DIR}/src/config.h.in"
                 "${PROJECT_BINARY_DIR}/src/config.h" )
 
-vala_precompile( VALA_C
+SET( VENOM_SRC
   core/Client.vala
   core/Contact.vala
   core/DhtServer.vala
@@ -54,52 +56,57 @@ vala_precompile( VALA_C
   ui/PreferencesWindow.vala
   ui/UserInfoWindow.vala
   Main.vala
-PACKAGES
-  gee-0.8
-  gtk+-3.0
-  glib-2.0
-  gio-2.0
-  tox-1.0
-  config
-OPTIONS
-  --target-glib=2.32
-  --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
-CUSTOM_VAPIS
-GENERATE_VAPI
-GENERATE_HEADER
 )
 
-vala_precompile( VALA_C_TEST
-  testing/ToxVapiTest.vala
-  core/Tools.vala
-PACKAGES
-  gio-2.0
-  tox-1.0
-OPTIONS
-  --debug
-  --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
-CUSTOM_VAPIS
-GENERATE_VAPI
-GENERATE_HEADER
+VALA_PRECOMPILE( VALA_C_VENOM
+    ${VENOM_SRC}
+  PACKAGES
+    gee-0.8
+    gtk+-3.0
+    glib-2.0
+    gio-2.0
+    tox-1.0
+    config
+  OPTIONS
+    --target-glib=${TARGET_GLIB}
+    --thread
+    --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
+  CUSTOM_VAPIS
+  GENERATE_VAPI
+  GENERATE_HEADER
 )
 
-vala_precompile( VALA_C_GROUPTEST
-  testing/GroupTest.vala
-  core/Tools.vala
-PACKAGES
-  gee-0.8
-  gio-2.0
-  tox-1.0
-OPTIONS
-  --debug
-  --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
-CUSTOM_VAPIS
-GENERATE_VAPI
-GENERATE_HEADER
+VALA_PRECOMPILE( VALA_C_TEST
+    testing/ToxVapiTest.vala
+    core/Tools.vala
+  PACKAGES
+    gio-2.0
+    tox-1.0
+  OPTIONS
+    --debug
+    --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
+  CUSTOM_VAPIS
+  GENERATE_VAPI
+  GENERATE_HEADER
+)
+
+VALA_PRECOMPILE( VALA_C_GROUPTEST
+    testing/GroupTest.vala
+    core/Tools.vala
+  PACKAGES
+    gee-0.8
+    gio-2.0
+    tox-1.0
+  OPTIONS
+    --debug
+    --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
+  CUSTOM_VAPIS
+  GENERATE_VAPI
+  GENERATE_HEADER
 )
 
 ADD_EXECUTABLE( venom
-  ${VALA_C}
+  ${VALA_C_VENOM}
 )
 
 ADD_EXECUTABLE( vapi_test

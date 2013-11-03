@@ -1,1 +1,10 @@
 *~
+pixmaps/CMakeFiles
+pixmaps/Makefile
+pixmaps/cmake_install.cmake
+theme/CMakeFiles
+theme/Makefile
+theme/cmake_install.cmake
+ui/CMakeFiles
+ui/Makefile
+ui/cmake_install.cmake
