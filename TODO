@@ -1,25 +1,29 @@
-[next release]
-* add option for multiaccount
+[0.2]
 * add groupchat
-* add filetransfer
-* add local nicknames for contacts
-* use textview (http://www.valadoc.org/#!api=gtk+-3.0/Gtk.TextView) for conversations
-* store userinformation locally (sqlite?)
-* add settings window
 * fix treeviewrenderer (text off center)
-* make dht servers editable / selectable
-* make nsis install script for windows
-* better source structuring (separate gui from application logic)
-* add .desktop file and icon
 
-[future]
-* unit tests
-* build & test it on mac
+[0.3]
+* add filetransfer
+
+[0.4]
 * add audiochat
 * add videochat
+* make nsis install script and .ico for windows
+* add .desktop file
+
+[0.5]
+* Local storage additionally to tox data file (sqlite, plain xml file, ...?)
+  * add local nicknames/tags for contacts (optionally)
+  * make dht servers editable / selectable
+* add settings window
+
+[future]
+* add option for multiaccount
+* unit tests
+* test it on OSX
 * add plugins
-- sound plugin
-- inotify plugin
-- logger plugin
-- anonymizer plugin (strip metadata of known media)
-- ...
+  * sound plugin
+  * inotify plugin
+  * logger plugin
+  * anonymizer plugin (strip metadata of known media)
+  * ...
