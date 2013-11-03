@@ -15,7 +15,7 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-[CCode (cprefix = "", lower_case_cprefix = "", cheader_filename = "src/config.h")]
+[CCode (cprefix = "", lower_case_cprefix = "", cheader_filename = "config.h")]
 namespace Config {
   public const int VENOM_MAJOR_VERSION;
   public const int VENOM_MINOR_VERSION;
