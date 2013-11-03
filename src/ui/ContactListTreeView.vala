@@ -37,11 +37,18 @@ namespace Venom {
       append_column(name_column);
 
       row_activated.connect(on_row_activated);
-      
+
+      query_tooltip.connect(modify_tooltip);
       set_tooltip_column(2);
+
 
       //hide headers
       set_headers_visible(false);
+    }
+
+    private bool modify_tooltip(int x, int y, bool keyboard_tooltip, Gtk.Tooltip tooltip) {
+      tooltip.set_icon_from_stock("gtk-info", Gtk.IconSize.LARGE_TOOLBAR);
+      return false;
     }
     
     private Contact get_contact_from_iter(Gtk.TreeIter iter) {
