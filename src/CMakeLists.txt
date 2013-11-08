@@ -1,4 +1,6 @@
 #
+#    Copyright (C) 2013 Venom authors and contributors
+#
 #    This file is part of Venom.
 #
 #    Venom is free software: you can redistribute it and/or modify

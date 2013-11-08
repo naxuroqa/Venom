@@ -1,4 +1,6 @@
 /*
+ *    Copyright (C) 2013 Venom authors and contributors
+ *
  *    This file is part of Venom.
  *
  *    Venom is free software: you can redistribute it and/or modify
@@ -15,7 +17,6 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Tested with Tox version e0779ed0a615002684594cd48f1e3f5f9c7639f9
 [CCode(cheader_filename="tox/tox.h", cprefix = "tox_")]
 namespace Tox {
   [CCode(cprefix = "TOX_")]
