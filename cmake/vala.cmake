@@ -17,27 +17,6 @@
 #    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-SET( VENOM_PIXMAPS
-  add.png
-  groupchat.png
-  settings.png
-
-  default_contact.png
-  default_groupchat.png
-
-  away.png
-  away_glow.png
-  offline.png
-  offline_glow.png
-  online.png
-  online_glow.png
-
-  call.png
-  call_video.png
-
-  venom.png
-  arrow.png
-)
-
-INSTALL(FILES ${VENOM_PIXMAPS} DESTINATION ${VENOM_PIXMAPS_INSTALL_DESTINATION})
-INSTALL(FILES venom.png DESTINATION ${COMMON_DATA_DIR}/icons)
+LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/vala)
+INCLUDE(FindVala)
+INCLUDE(${VALA_USE_FILE})
