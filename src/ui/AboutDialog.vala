@@ -23,12 +23,11 @@ namespace Venom {
     }
     
     private void init_widgets() {
-      this.artists = {"naxuroqa", null};
       this.authors = {"naxuroqa", null};
       
       this.program_name = "Venom";
       this.comments = "GTK+/Vala GUI for Tox";
-      this.copyright = "2013 (c) naxuroqa";
+      this.copyright = "(C) 2013 Venom authors and contributors";
       this.version = Config.VENOM_VERSION;
       
       this.website = "https://github.com/naxuroqa/Venom";
