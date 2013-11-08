@@ -17,27 +17,8 @@
 #    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-SET( VENOM_PIXMAPS
-  add.png
-  groupchat.png
-  settings.png
+CONFIGURE_FILE ("${PROJECT_SOURCE_DIR}/misc/venom.desktop.in"
+                "${PROJECT_BINARY_DIR}/misc/venom.desktop" )
 
-  default_contact.png
-  default_groupchat.png
-
-  away.png
-  away_glow.png
-  offline.png
-  offline_glow.png
-  online.png
-  online_glow.png
-
-  call.png
-  call_video.png
-
-  venom.png
-  arrow.png
- )
-
-INSTALL(FILES ${VENOM_PIXMAPS} DESTINATION ${VENOM_PIXMAPS_INSTALL_DESTINATION})
-INSTALL(FILES venom.png DESTINATION ${COMMON_DATA_DIR}/icons)
+INSTALL(FILES ${PROJECT_BINARY_DIR}/misc/venom.desktop
+        DESTINATION ${COMMON_DATA_DIR}/applications)

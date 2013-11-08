@@ -18,7 +18,7 @@
  */
 
 [CCode (cprefix = "", lower_case_cprefix = "", cheader_filename = "config.h")]
-namespace Config {
+namespace Venom.Config {
   public const int VENOM_VERSION_MAJOR;
   public const int VENOM_VERSION_MINOR;
   public const int VENOM_VERSION_PATCH;
