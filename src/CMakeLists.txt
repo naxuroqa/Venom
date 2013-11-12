@@ -60,6 +60,8 @@ SET( VENOM_SRC
   Main.vala
 )
 
+MESSAGE("${GLIB_VERSION}.${GLIB_VERSION_MINOR}")
+
 VALA_PRECOMPILE( VALA_C_VENOM
     ${VENOM_SRC}
   PACKAGES
@@ -70,7 +72,7 @@ VALA_PRECOMPILE( VALA_C_VENOM
     tox-1.0
     config
   OPTIONS
-    --target-glib=${TARGET_GLIB}
+    --target-glib=${GLIB_VERSION}
     --thread
     --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
   CUSTOM_VAPIS

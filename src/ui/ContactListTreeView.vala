@@ -43,13 +43,12 @@ namespace Venom {
       query_tooltip.connect(modify_tooltip);
       set_tooltip_column(2);
 
-
       //hide headers
       set_headers_visible(false);
     }
 
     private bool modify_tooltip(int x, int y, bool keyboard_tooltip, Gtk.Tooltip tooltip) {
-      tooltip.set_icon_from_stock("gtk-info", Gtk.IconSize.LARGE_TOOLBAR);
+      tooltip.set_icon_from_icon_name("gtk-info", Gtk.IconSize.LARGE_TOOLBAR);
       return false;
     }
     
