@@ -24,17 +24,23 @@ public class Main {
     private static void set_data_filename(string filename) {
       if(filename == null)
         return;
-      stdout.printf("Using data file at %s\n", filename);
+      stdout.printf("Using data file \"%s\"\n", filename);
       ResourceFactory.instance.data_filename = filename;
     }
     
-    private static void print_help() {
+    private static void print_usage() {
       stdout.printf(
-        "Usage:\n" +
-        "\t%s -h\n" +
-        "\t%s -n <data filename>\n"
-        , bin_name, bin_name
+        "Usage: %s [OPTION...]\n" +
+        "Options:\n" +
+        "  -n <file>            Use <file> as datafile\n" +
+        "  -?, --help           Display this help\n" +
+        "  -V, --version        Print version information\n"
+        , bin_name
         );
+    }
+
+    private static void print_version() {
+      stdout.printf("%s %s\n", bin_name, Config.VENOM_VERSION);
     }
     
     private static void print_unsupported(string arg) {
@@ -54,23 +60,29 @@ public class Main {
             return -1;
           }
           set_data_filename(args[++i]);
-        } else if(args[i] == "-h") {
-          return 0;
+        } else if(args[i] == "-?" || args[i] == "--help") {
+          print_usage();
+          return 1;
+        } else if(args[i] == "-V" || args[i] == "--version") {
+          print_version();
+          return 1;
         } else {
           print_unsupported(args[i]);
           return -2;
         }
       }
-      return 1;
+      return 0;
     }    
     
     public static int main (string[] args) {
 
       // Parse args and 
       int ret = parse_args(args);
-      if(ret < 1) {
-        print_help();
+      if(ret < 0) {
+        print_usage();
         return ret;
+      } else if(ret > 0) {
+        return 0;
       }
     
       Client client = new Client(args);
