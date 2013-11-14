@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Fri Oct 25 14:09:13 2013 -->
+<!-- Generated with glade 3.16.0 on Tue Nov 12 16:25:04 2013 -->
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+  <!-- interface-requires gtk+ 3.2 -->
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkGrid" id="grid">
     <property name="visible">True</property>
