@@ -114,6 +114,7 @@ VALA_PRECOMPILE( VALA_C_GROUPTEST
 GLIB_COMPILE_RESOURCES( GLIB_RESOURCES_VENOM
   SOURCE
     ui/venom.gresource.xml
+    pixmaps/venom_pixmaps.gresource.xml
 )
 
 ADD_EXECUTABLE( venom

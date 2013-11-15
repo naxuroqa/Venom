@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gtk/venom/pixmaps">
+    <file>add.png</file>
+    <file>arrow.png</file>
+    <file>away.png</file>
+    <file>away_glow.png</file>
+    <file>call.png</file>
+    <file>call_video.png</file>
+    <file>default_contact.png</file>
+    <file>default_groupchat.png</file>
+    <file>groupchat.png</file>
+    <file>offline.png</file>
+    <file>offline_glow.png</file>
+    <file>online.png</file>
+    <file>online_glow.png</file>
+    <file>settings.png</file>
+  </gresource>
+</gresources>

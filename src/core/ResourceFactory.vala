@@ -34,27 +34,28 @@ namespace Venom {
 
     private ResourceFactory () {
       string pixmaps_folder = Path.build_filename(Tools.find_data_dir(), "pixmaps");
+      string pixmaps_prefix = "/org/gtk/venom/pixmaps/";
       string theme_folder = Path.build_filename(Tools.find_data_dir(), "theme");
 
-      away = load_image(Path.build_filename(pixmaps_folder, "away.png"));
-      away_glow = load_image(Path.build_filename(pixmaps_folder, "away_glow.png"));
-      offline = load_image(Path.build_filename(pixmaps_folder, "offline.png"));
-      offline_glow = load_image(Path.build_filename(pixmaps_folder, "offline_glow.png"));
-      online = load_image(Path.build_filename(pixmaps_folder, "online.png"));
-      online_glow = load_image(Path.build_filename(pixmaps_folder, "online_glow.png"));
+      away = load_image_from_resource(pixmaps_prefix + "away.png");
+      away_glow = load_image_from_resource(pixmaps_prefix + "away_glow.png");
+      offline = load_image_from_resource(pixmaps_prefix + "offline.png");
+      offline_glow = load_image_from_resource(pixmaps_prefix + "offline_glow.png");
+      online = load_image_from_resource(pixmaps_prefix + "online.png");
+      online_glow = load_image_from_resource(pixmaps_prefix + "online_glow.png");
 
-      call = load_image(Path.build_filename(pixmaps_folder, "call.png"));
-      call_video = load_image(Path.build_filename(pixmaps_folder, "call_video.png"));
+      call = load_image_from_resource(pixmaps_prefix + "call.png");
+      call_video = load_image_from_resource(pixmaps_prefix + "call_video.png");
 
-      add = load_image(Path.build_filename(pixmaps_folder, "add.png"));
-      groupchat = load_image(Path.build_filename(pixmaps_folder, "groupchat.png"));
-      settings = load_image(Path.build_filename(pixmaps_folder, "settings.png"));
+      add = load_image_from_resource(pixmaps_prefix + "add.png");
+      groupchat = load_image_from_resource(pixmaps_prefix + "groupchat.png");
+      settings = load_image_from_resource(pixmaps_prefix + "settings.png");
       
-      default_contact = load_image(Path.build_filename(pixmaps_folder, "default_contact.png"));
-      default_groupchat = load_image(Path.build_filename(pixmaps_folder, "default_groupchat.png"));
+      default_contact = load_image_from_resource(pixmaps_prefix + "default_contact.png");
+      default_groupchat = load_image_from_resource(pixmaps_prefix + "default_groupchat.png");
       
       venom = load_image(Path.build_filename(pixmaps_folder, "venom.png"));
-      arrow = load_image(Path.build_filename(pixmaps_folder, "arrow.png"));
+      arrow = load_image_from_resource(pixmaps_prefix + "arrow.png");   
       
       default_theme_filename = Path.build_filename(theme_folder, "default.css");
       data_filename = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox", "data");
@@ -87,11 +88,21 @@ namespace Venom {
     public Gee.ArrayList<SettingsProvider> settings_providers {get; set;}
     
     private Gdk.Pixbuf? load_image(string filename) {
-      Gdk.Pixbuf? buf = null;
+      Gdk.Pixbuf buf = null;
       try {
         buf = new Gdk.Pixbuf.from_file( filename );
       } catch (Error e) {
         stderr.printf("Error while loading image from \"%s\":%s\n", filename, e.message );
+      }
+      return buf;
+    }
+    
+    private Gdk.Pixbuf? load_image_from_resource(string resourcename) {
+      Gdk.Pixbuf buf = null;
+      try {
+        buf = new Gdk.Pixbuf.from_resource( resourcename );
+      } catch (Error e) {
+        stderr.printf("Error while loading image from \"%s\":%s\n", resourcename, e.message );
       }
       return buf;
     }

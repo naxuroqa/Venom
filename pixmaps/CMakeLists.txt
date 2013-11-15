@@ -18,25 +18,7 @@
 #
 
 SET( VENOM_PIXMAPS
-  add.png
-  groupchat.png
-  settings.png
-
-  default_contact.png
-  default_groupchat.png
-
-  away.png
-  away_glow.png
-  offline.png
-  offline_glow.png
-  online.png
-  online_glow.png
-
-  call.png
-  call_video.png
-
   venom.png
-  arrow.png
 )
 
 INSTALL(FILES ${VENOM_PIXMAPS} DESTINATION ${VENOM_PIXMAPS_INSTALL_DESTINATION})
