@@ -33,6 +33,8 @@ FUNCTION(GLIB_COMPILE_RESOURCES output)
     GET_FILENAME_COMPONENT(WORKING_DIR ${in_file} PATH)
     STRING(REPLACE ".xml" ".c" src ${src})
     SET(out_file "${DIRECTORY}/${src}")
+    GET_FILENAME_COMPONENT(OUPUT_DIR ${out_file} PATH)
+    FILE(MAKE_DIRECTORY ${OUPUT_DIR})
     LIST(APPEND out_files "${DIRECTORY}/${src}")
     LIST(APPEND in_files ${in_file})
 
