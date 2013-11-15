@@ -56,6 +56,7 @@ namespace Venom {
       
       this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Apply", Gtk.ResponseType.APPLY, null);
       this.set_default_response(Gtk.ResponseType.APPLY);
+      this.title = "Edit user information";
     }
   }
 }
