@@ -17,6 +17,10 @@
 #    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+INCLUDE(FindVala)
+INCLUDE(${VALA_USE_FILE})
+INCLUDE(GResource)
+
 FIND_PACKAGE(Vala "0.17.0" REQUIRED)
 FIND_PACKAGE(PkgConfig REQUIRED)
 
@@ -59,8 +63,6 @@ SET( VENOM_SRC
   ui/UserInfoWindow.vala
   Main.vala
 )
-
-MESSAGE("${GLIB_VERSION}.${GLIB_VERSION_MINOR}")
 
 VALA_PRECOMPILE( VALA_C_VENOM
     ${VENOM_SRC}
@@ -109,15 +111,21 @@ VALA_PRECOMPILE( VALA_C_GROUPTEST
   GENERATE_HEADER
 )
 
-ADD_EXECUTABLE( venom
-  ${VALA_C_VENOM}
+GLIB_COMPILE_RESOURCES( GLIB_RESOURCES_VENOM
+  SOURCE
+    ui/venom.gresource.xml
 )
 
-ADD_EXECUTABLE( vapi_test
+ADD_EXECUTABLE( venom
+  ${VALA_C_VENOM}
+  ${GLIB_RESOURCES_VENOM}
+)
+
+ADD_EXECUTABLE( vapi_test EXCLUDE_FROM_ALL
   ${VALA_C_TEST}
 )
 
-ADD_EXECUTABLE( grouptest
+ADD_EXECUTABLE( grouptest EXCLUDE_FROM_ALL
   ${VALA_C_GROUPTEST}
 )
 
