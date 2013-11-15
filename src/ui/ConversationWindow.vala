@@ -75,7 +75,7 @@ namespace Venom {
     private void init_widgets() {
       Gtk.Builder builder = new Gtk.Builder();
       try {
-        builder.add_from_file(Path.build_filename(Tools.find_data_dir(), "ui", "conversation_window.glade"));
+        builder.add_from_resource("/org/gtk/venom/conversation_window.ui");
       } catch (GLib.Error e) {
         stderr.printf("Loading conversation window failed!\n");
       }

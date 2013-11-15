@@ -43,7 +43,7 @@ namespace Venom {
     private void init_widgets() {
       Gtk.Builder builder = new Gtk.Builder();
       try {
-        builder.add_from_file(Path.build_filename(Tools.find_data_dir(), "ui", "user_info_window.glade"));
+        builder.add_from_resource("/org/gtk/venom/user_info_window.ui");
       } catch (GLib.Error e) {
         stderr.printf("Loading user info window failed!\n");
       }

@@ -38,7 +38,7 @@ namespace Venom {
     private void init_widgets() {
       Gtk.Builder builder = new Gtk.Builder();
       try {
-        builder.add_from_file(Path.build_filename(Tools.find_data_dir(), "ui", "add_contact_dialog.glade"));
+        builder.add_from_resource("/org/gtk/venom/add_contact_dialog.ui");
       } catch (GLib.Error e) {
         stderr.printf("Loading add contact window failed!\n");
       }

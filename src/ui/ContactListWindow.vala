@@ -144,7 +144,7 @@ namespace Venom {
       // Load widgets from file
       Gtk.Builder builder = new Gtk.Builder();
       try {
-        builder.add_from_file(Path.build_filename(Tools.find_data_dir(), "ui", "contact_list.glade"));
+        builder.add_from_resource("/org/gtk/venom/contact_list.ui");
       } catch (GLib.Error e) {
         stderr.printf("Loading contact list failed!\n");
       }
