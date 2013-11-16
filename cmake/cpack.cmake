@@ -20,7 +20,7 @@
 IF(WIN32 AND NOT UNIX)
   # There is a bug in NSI that does not handle full unix paths properly. Make
   # sure there is at least one set of four (4) backslashes.
-  SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/pixmaps\\\\venom.png")
+  SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/icons/48x48/\\\\venom.png")
   #SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\Venom.exe")
   SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} GTK+/Vala GUI for Tox")
   #SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
