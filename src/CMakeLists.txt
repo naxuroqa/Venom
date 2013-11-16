@@ -32,15 +32,18 @@ PKG_CHECK_MODULES(GIO  REQUIRED gio-2.0>=${TARGET_GLIB})
 PKG_CHECK_MODULES(GLIB REQUIRED glib-2.0>=${TARGET_GLIB})
 PKG_CHECK_MODULES(TOX  REQUIRED libtoxcore>=0.0)
 
-ADD_DEFINITIONS( ${GTK_CFLAGS} ${GTK_CFLAGS_OTHER}
+SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GTK_CFLAGS} ${GTK_CFLAGS_OTHER}
                  ${GEE_CFLAGS} ${GEE_CFLAGS_OTHER}
                  ${GIO_CFLAGS} ${GIO_CFLAGS_OTHER}
                  ${GLIB_CFLAGS} ${GLIB_CFLAGS_OTHER}
                  ${TOX_CFLAGS} ${TOX_CFLAGS_OTHER}
 )
 
-CONFIGURE_FILE ("${PROJECT_SOURCE_DIR}/src/config.h.in"
-                "${PROJECT_BINARY_DIR}/src/config.h" )
+# since pkg_check_modules returns semicolon
+# separated *_c_flags, we have to remove those
+STRING(REPLACE ";" " " CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+
+CONFIGURE_FILE( config.h.in config.h )
 
 SET( VENOM_SRC
   core/Client.vala
@@ -74,7 +77,7 @@ VALA_PRECOMPILE( VALA_C_VENOM
     tox-1.0
     config
   OPTIONS
-    --target-glib=${GLIB_VERSION}
+    --target-glib=${TARGET_GLIB}
     --thread
     --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
   CUSTOM_VAPIS
@@ -120,6 +123,7 @@ GLIB_COMPILE_RESOURCES( GLIB_RESOURCES_VENOM
 ADD_EXECUTABLE( venom
   ${VALA_C_VENOM}
   ${GLIB_RESOURCES_VENOM}
+  ${WINDOWS_RESOURCE_FILE}
 )
 
 ADD_EXECUTABLE( vapi_test EXCLUDE_FROM_ALL

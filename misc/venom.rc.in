@@ -1,0 +1,44 @@
+/*
+ *    Copyright (C) 2013 Venom authors and contributors
+ *
+ *    This file is part of Venom.
+ *
+ *    Venom is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    Venom is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*id ICON "venom.ico"*/
+1 VERSIONINFO
+FILEVERSION     @VENOM_VERSION_MAJOR@,@VENOM_VERSION_MINOR@,@VENOM_VERSION_PATCH@,@VENOM_VERSION_TWEAK@
+PRODUCTVERSION  @VENOM_VERSION_MAJOR@,@VENOM_VERSION_MINOR@,@VENOM_VERSION_PATCH@,@VENOM_VERSION_TWEAK@
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "04091252"
+    BEGIN
+      VALUE "CompanyName", "none"
+      VALUE "FileDescription", "GTK+ GUI for TOX"
+      VALUE "FileVersion", "@VENOM_VERSION@"
+      VALUE "InternalName", "venom.exe"
+      VALUE "LegalCopyright", "Copyright (C) 2013"
+      VALUE "OriginalFilename", "venom.exe"
+      VALUE "ProductName", "Venom"
+      VALUE "ProductVersion", "@VENOM_VERSION@"
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1252
+  END
+END

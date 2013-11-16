@@ -17,8 +17,20 @@
 #    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-CONFIGURE_FILE ("${PROJECT_SOURCE_DIR}/misc/venom.desktop.in"
-                "${PROJECT_BINARY_DIR}/misc/venom.desktop" )
 
-INSTALL(FILES ${PROJECT_BINARY_DIR}/misc/venom.desktop
-        DESTINATION ${COMMON_DATA_DIR}/applications)
+
+IF(WIN32)
+  CONFIGURE_FILE (venom.rc.in venom.rc)
+  SET(WINDOWS_RESOURCE_FILE ${CMAKE_CURRENT_BINARY_DIR}/venom.rc PARENT_SCOPE)
+ELSE(WIN32)
+  CONFIGURE_FILE (venom.desktop.in venom.desktop)
+  INSTALL(
+    FILES
+      ${CMAKE_CURRENT_BINARY_DIR}/venom.desktop 
+    DESTINATION
+      ${COMMON_DATA_DIR}/applications
+  )
+ENDIF(WIN32)
+
+
+

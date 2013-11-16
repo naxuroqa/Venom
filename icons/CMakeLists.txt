@@ -37,7 +37,13 @@ IF(RSVG_CONVERT_EXECUTABLE)
     SOURCE
       ${VENOM_SVG}
   )
-  ADD_CUSTOM_TARGET( generate_pixmaps DEPENDS ${VENOM_GENERATED_PIXMAPS} )
+  ADD_CUSTOM_TARGET( generate_pixmaps
+    ALL
+    COMMENT
+      "Generating pixmaps from svg"
+    DEPENDS
+      ${VENOM_GENERATED_PIXMAPS}
+  )
 ENDIF(RSVG_CONVERT_EXECUTABLE)
 
 FOREACH(pixmap_size ${PIXMAP_SIZES})
