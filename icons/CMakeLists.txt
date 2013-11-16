@@ -48,4 +48,4 @@ FOREACH(pixmap_size ${PIXMAP_SIZES})
 ENDFOREACH(pixmap_size ${PIXMAP_SIZES})
 
 INSTALL(FILES ${VENOM_SVG} 
-  DESTINATION "${COMMON_DATA_DIR}/icons/hicolor/apps/scalable")
+  DESTINATION "${COMMON_DATA_DIR}/icons/hicolor/scalable/apps")
