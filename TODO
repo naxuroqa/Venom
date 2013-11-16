@@ -8,8 +8,6 @@
 [0.4]
 * add audiochat
 * add videochat
-* make nsis install script and .ico for windows
-* add .desktop file
 
 [0.5]
 * Local storage additionally to tox data file (sqlite, plain xml file, ...?)
