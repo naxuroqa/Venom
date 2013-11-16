@@ -33,7 +33,6 @@ namespace Venom {
     }
 
     private ResourceFactory () {
-      string pixmaps_folder = Path.build_filename(Tools.find_data_dir(), "pixmaps");
       string pixmaps_prefix = "/org/gtk/venom/pixmaps/";
       string theme_folder = Path.build_filename(Tools.find_data_dir(), "theme");
 
@@ -53,10 +52,14 @@ namespace Venom {
       
       default_contact = load_image_from_resource(pixmaps_prefix + "default_contact.png");
       default_groupchat = load_image_from_resource(pixmaps_prefix + "default_groupchat.png");
+      arrow = load_image_from_resource(pixmaps_prefix + "arrow.png");
       
-      venom = load_image(Path.build_filename(pixmaps_folder, "venom.png"));
-      arrow = load_image_from_resource(pixmaps_prefix + "arrow.png");   
-      
+      try {
+        venom = Gtk.IconTheme.get_default().load_icon("venom", 48, 0);
+      } catch (Error e) {
+        stderr.printf("Error while loading application image: %s\n", e.message );
+      }
+
       default_theme_filename = Path.build_filename(theme_folder, "default.css");
       data_filename = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox", "data");
       settings_providers = new Gee.ArrayList<SettingsProvider>();
@@ -86,17 +89,7 @@ namespace Venom {
     public string data_filename {get; set;}
     
     public Gee.ArrayList<SettingsProvider> settings_providers {get; set;}
-    
-    private Gdk.Pixbuf? load_image(string filename) {
-      Gdk.Pixbuf buf = null;
-      try {
-        buf = new Gdk.Pixbuf.from_file( filename );
-      } catch (Error e) {
-        stderr.printf("Error while loading image from \"%s\":%s\n", filename, e.message );
-      }
-      return buf;
-    }
-    
+
     private Gdk.Pixbuf? load_image_from_resource(string resourcename) {
       Gdk.Pixbuf buf = null;
       try {
