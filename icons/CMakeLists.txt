@@ -43,7 +43,7 @@ ENDIF(RSVG_CONVERT_EXECUTABLE)
 FOREACH(pixmap_size ${PIXMAP_SIZES})
   INSTALL(FILES ${pixmap_size}x${pixmap_size}/venom.png 
     DESTINATION 
-      "${COMMON_DATA_DIR}/icons/hicolor/apps/${pixmap_size}x${pixmap_size}"
+      "${COMMON_DATA_DIR}/icons/hicolor/${pixmap_size}x${pixmap_size}/apps"
   )
 ENDFOREACH(pixmap_size ${PIXMAP_SIZES})
 
