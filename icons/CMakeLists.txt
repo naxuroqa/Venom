@@ -49,3 +49,5 @@ ENDFOREACH(pixmap_size ${PIXMAP_SIZES})
 
 INSTALL(FILES ${VENOM_SVG} 
   DESTINATION "${COMMON_DATA_DIR}/icons/hicolor/scalable/apps")
+INSTALL(FILES 256x256/venom.png 
+  DESTINATION "${COMMON_DATA_DIR}/pixmaps")
