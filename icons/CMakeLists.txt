@@ -17,9 +17,35 @@
 #    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-SET( VENOM_PIXMAPS
-  venom.png
+INCLUDE(Rsvg OPTIONAL)
+
+SET(PIXMAP_SIZES
+  16
+  32
+  48
+  64
+  128
+  256
 )
 
-INSTALL(FILES ${VENOM_PIXMAPS} DESTINATION ${VENOM_PIXMAPS_INSTALL_DESTINATION})
-INSTALL(FILES venom.png DESTINATION ${COMMON_DATA_DIR}/icons)
+SET( VENOM_SVG
+  scalable/venom.svg
+)
+
+IF(RSVG_CONVERT_EXECUTABLE)
+  RSVG_CONVERT( VENOM_GENERATED_PIXMAPS
+    SOURCE
+      ${VENOM_SVG}
+  )
+  ADD_CUSTOM_TARGET( generate_pixmaps DEPENDS ${VENOM_GENERATED_PIXMAPS} )
+ENDIF(RSVG_CONVERT_EXECUTABLE)
+
+FOREACH(pixmap_size ${PIXMAP_SIZES})
+  INSTALL(FILES ${pixmap_size}x${pixmap_size}/venom.png 
+    DESTINATION 
+      "${COMMON_DATA_DIR}/icons/hicolor/apps/${pixmap_size}x${pixmap_size}"
+  )
+ENDFOREACH(pixmap_size ${PIXMAP_SIZES})
+
+INSTALL(FILES ${VENOM_SVG} 
+  DESTINATION "${COMMON_DATA_DIR}/icons/hicolor/apps/scalable")

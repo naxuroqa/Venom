@@ -25,7 +25,6 @@ INCLUDE(CMakeParseArguments)
 FUNCTION(GLIB_COMPILE_RESOURCES output)
   CMAKE_PARSE_ARGUMENTS(ARGS "" "SOURCE" ${ARGN})
   SET(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  SET(in_files "")
   SET(out_files "")
 
   FOREACH(src ${ARGS_SOURCE} ${ARGS_UNPARSED_ARGUMENTS})
@@ -36,7 +35,6 @@ FUNCTION(GLIB_COMPILE_RESOURCES output)
     GET_FILENAME_COMPONENT(OUPUT_DIR ${out_file} PATH)
     FILE(MAKE_DIRECTORY ${OUPUT_DIR})
     LIST(APPEND out_files "${DIRECTORY}/${src}")
-    LIST(APPEND in_files ${in_file})
 
     #FIXME implicit depends currently not working
     EXECUTE_PROCESS(
