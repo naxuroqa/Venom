@@ -19,8 +19,25 @@
 
 IF(WIN32)
   FILE(GLOB WIN32LIBS "${CMAKE_CURRENT_BINARY_DIR}/win32libs/*.dll")
+  IF(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/libsodium_license.txt")
+    FILE(
+      DOWNLOAD 
+        "https://raw.github.com/jedisct1/libsodium/master/LICENSE"
+        "${CMAKE_CURRENT_BINARY_DIR}/libsodium_license.txt"
+      EXPECTED_MD5
+        979a30c71c9a8d0174c10898ac3e5595
+    )
+  ENDIF()
   SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${WIN32LIBS})
   INCLUDE(InstallRequiredSystemLibraries)
+  INSTALL(
+    FILES 
+      "${CMAKE_CURRENT_BINARY_DIR}/libsodium_license.txt"
+    DESTINATION
+      "${COMMON_DATA_DIR}/licenses/libsodium"
+    RENAME
+      LICENSE
+  )
 ENDIF(WIN32)
 
 # Basic settings

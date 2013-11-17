@@ -21,18 +21,17 @@ namespace Venom {
     public AboutDialog() {
       init_widgets();
     }
-    
+
     private void init_widgets() {
       this.authors = {"naxuroqa", null};
-      
+
       this.program_name = "Venom";
       this.comments = "GTK+/Vala GUI for Tox";
       this.copyright = "(C) 2013 Venom authors and contributors";
       this.version = Config.VENOM_VERSION;
-      
+
       this.website = "https://github.com/naxuroqa/Venom";
-      
-      this.wrap_license = true;
+
       this.license = 
 """    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
