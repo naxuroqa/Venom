@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Tue Nov 12 16:23:01 2013 -->
+<!-- Generated with glade 3.16.0 on Sun Nov 17 11:31:35 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.2 -->
   <object class="GtkAdjustment" id="adjustment1">
@@ -336,31 +336,39 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkMenuItem" id="menuitem_status_online">
+              <object class="GtkRadioMenuItem" id="menuitem_status_online">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Online</property>
+                <property name="active">True</property>
+                <property name="draw_as_radio">True</property>
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="menuitem_status_away">
+              <object class="GtkRadioMenuItem" id="menuitem_status_away">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Away</property>
+                <property name="draw_as_radio">True</property>
+                <property name="group">menuitem_status_online</property>
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="menuitem_status_busy">
+              <object class="GtkRadioMenuItem" id="menuitem_status_busy">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Busy</property>
+                <property name="draw_as_radio">True</property>
+                <property name="group">menuitem_status_online</property>
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="menuitem_status_offline">
+              <object class="GtkRadioMenuItem" id="menuitem_status_offline">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Offline</property>
+                <property name="draw_as_radio">True</property>
+                <property name="group">menuitem_status_online</property>
               </object>
             </child>
           </object>
