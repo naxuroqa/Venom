@@ -139,7 +139,7 @@ namespace Venom {
       set_default_size(230, 600);
       set_property("name", "contact_list");
       set_default_icon(ResourceFactory.instance.venom);
-      set_title("Venom");
+      set_title_from_status(user_status);
 
       // Load widgets from file
       Gtk.Builder builder = new Gtk.Builder();
@@ -215,8 +215,14 @@ namespace Venom {
       Gtk.Button button_add_contact = builder.get_object("button_add_contact") as Gtk.Button;
       Gtk.Button button_group_chat = builder.get_object("button_group_chat") as Gtk.Button;
       Gtk.Button button_preferences = builder.get_object("button_preferences") as Gtk.Button;
-      
-      button_user.clicked.connect( () => {menu_user.popup(null, button_user, null, 0, 0);});
+      button_user.clicked.connect( () => { menu_user.popup(null, null, null, 0, 0); });
+      /*button_user.button_press_event.connect( (widget, event) => {
+        if(event.type == Gdk.EventType.BUTTON_PRESS) {
+          if(event.button == Gdk.BUTTON_PRIMARY)
+            menu_user.popup(null, null, null, event.button, event.time);
+        }
+        return false;
+      });*/
       button_add_contact.clicked.connect(button_add_contact_clicked);
       button_group_chat.clicked.connect(button_group_chat_clicked);
       button_preferences.clicked.connect(button_preferences_clicked);
@@ -276,7 +282,11 @@ namespace Venom {
         contact_added(c);
       }
     }
-    
+
+    private void set_title_from_status(UserStatus status) {
+      set_title("Venom (%s)".printf(status.to_string()));
+    }
+
     private void combobox_status_changed() {
       stdout.printf("Under construction.\n");
       /*
@@ -423,11 +433,14 @@ namespace Venom {
     }
     
     private void on_ownuserstatus(UserStatus status) {
+      //TODO clean up, decide what to do with deprecated GtkImageItems
       if(!session.connected || status == UserStatus.OFFLINE) {
         image_status.set_from_pixbuf(ResourceFactory.instance.offline);
         //(menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
+        set_title_from_status(UserStatus.OFFLINE);
         return;
       }
+      set_title_from_status(status);
 
      switch(status) {
       case UserStatus.ONLINE:

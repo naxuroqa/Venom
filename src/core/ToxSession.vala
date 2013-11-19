@@ -21,7 +21,21 @@ namespace Venom {
     ONLINE,
     AWAY,
     BUSY,
-    OFFLINE
+    OFFLINE;
+    public string to_string() {
+      switch (this) {
+        case ONLINE:
+          return "Online";
+        case AWAY:
+          return "Away";
+        case BUSY:
+          return "Busy";
+        case OFFLINE:
+          return "Offline";
+        default:
+          assert_not_reached();
+      }
+    }
   }
 
   // Wrapper class for accessing tox functions threadsafe
@@ -55,7 +69,7 @@ namespace Venom {
 
     // Groupchat signals
     public signal void on_group_invite(Contact c, GroupChat g);
-    public signal void on_group_message(GroupChat g, int friendgroupnumber, string message);
+    public signal void on_group_message(GroupChat g, string contact_name, string message);
 
     // File sending callbacks
     /*
