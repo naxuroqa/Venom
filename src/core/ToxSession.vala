@@ -69,7 +69,7 @@ namespace Venom {
 
     // Groupchat signals
     public signal void on_group_invite(Contact c, GroupChat g);
-    public signal void on_group_message(GroupChat g, string contact_name, string message);
+    public signal void on_group_message(GroupChat g, int friendgroupnumber, string message);
 
     // File sending callbacks
     /*
