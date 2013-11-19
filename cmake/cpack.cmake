@@ -18,7 +18,6 @@
 #
 
 IF(WIN32)
-  FILE(GLOB WIN32LIBS "${CMAKE_CURRENT_BINARY_DIR}/win32libs/*.dll")
   IF(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/libsodium_license.txt")
     FILE(
       DOWNLOAD 
@@ -28,8 +27,6 @@ IF(WIN32)
         979a30c71c9a8d0174c10898ac3e5595
     )
   ENDIF()
-  SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${WIN32LIBS})
-  INCLUDE(InstallRequiredSystemLibraries)
   INSTALL(
     FILES 
       "${CMAKE_CURRENT_BINARY_DIR}/libsodium_license.txt"
@@ -38,6 +35,9 @@ IF(WIN32)
     RENAME
       LICENSE
   )
+  FILE(GLOB WIN32LIBS "${CMAKE_CURRENT_BINARY_DIR}/win32libs/*.dll")
+  SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${WIN32LIBS})
+  INCLUDE(InstallRequiredSystemLibraries)
 ENDIF(WIN32)
 
 # Basic settings
