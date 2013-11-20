@@ -18,7 +18,7 @@
  */
 
 namespace Venom {
-  public class ConversationWindow : Gtk.Window {
+  public class ConversationWidget : Gtk.Box {
     private Gtk.Label label_contact_name;
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
@@ -38,7 +38,7 @@ namespace Venom {
     private signal void new_conversation_message(Message message);
     public signal void new_outgoing_message(string message, Contact receiver);
 
-    public ConversationWindow( Contact contact ) {
+    public ConversationWidget( Contact contact ) {
       this.contact = contact;
       init_widgets();
 
@@ -51,16 +51,6 @@ namespace Venom {
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
 
       new_conversation_message.connect(conversation_tree_view.add_message);
-      
-      set_default_size(600, 500);
-      update_title();
-    }
-    
-    private void update_title() {
-      this.set_title("Conversation with %s".printf(
-        (contact.name != null && contact.name != "") ? 
-          contact.name : 
-          "unnamed contact"));
     }
     
     public void update_contact() {
@@ -69,7 +59,6 @@ namespace Venom {
       else
         label_contact_name.set_text(contact.name);
       label_contact_statusmessage.set_text(contact.status_message);
-      update_title();
     }
     
     private void init_widgets() {
@@ -106,8 +95,6 @@ namespace Venom {
         Gtk.Adjustment adjustment = scrolled_window.get_vadjustment();
         adjustment.set_value(adjustment.upper - adjustment.page_size);
       });
-      
-      set_property("name", "conversation");
     }
 
     public void on_incoming_message(Message message) {

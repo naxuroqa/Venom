@@ -27,14 +27,16 @@
 
 * {
 engine: none;
-
 /*border-width: 0px;*/
 background-clip: padding-box;
+/*font-family: Roboto, Sans;
+font-size: 10px;
+font-weight: 300;*/
 
 -GtkArrow-arrow-scaling: 0.5;
 -GtkButton-child-displacement-x: 1;
 -GtkButton-child-displacement-y: 1;
--GtkButton-default-border: 0;
+-GtkButton-default-border: 1;
 -GtkButton-image-spacing: 0;
 -GtkButton-interior-focus: true;
 -GtkButton-inner-border: 1;
@@ -51,7 +53,7 @@ background-clip: padding-box;
 -GtkMenuItem-arrow-scaling: 0.4;
 -GtkNotebook-initial-gap: 0;
 -GtkNotebook-tab-overlap: -2;
--GtkPaned-handle-size: 1;
+-GtkPaned-handle-size: 2;
 -GtkProgressBar-min-horizontal-bar-height: 10;
 -GtkProgressBar-min-vertical-bar-width: 10;
 -GtkRange-slider-width: 13;
@@ -87,66 +89,66 @@ background-clip: padding-box;
 -WnckTasklist-fade-overlay-rect: 0;
 }
 
-#contact_list,
-#contact_list * {
+.contact_list,
+.contact_list * {
   border-width: 0px;
 }
 
-#contact_list,
-#contact_list *,
-#conversation,
-#conversation * {
+.contact_list,
+.contact_list *,
+.conversation,
+.conversation * {
   background-color: alpha(white, 0);
 }
 
-#contact_list {
+.contact_list {
   color: @foreground;
   background-color: @background;
 }
 
-#contact_list GtkLabel {
+.contact_list GtkLabel {
   color: @foreground;
 }
 
-#contact_list GtkTooltip {
+.contact_list GtkTooltip {
   color: @foreground;
 }
 
-#contact_list .arrow {
+.contact_list .arrow {
   color: @foreground;
 }
 
-#contact_list .bottombutton:active,
-#contact_list .bottombutton:hover:active,
-#contact_list .bottombutton:focus:active{
+.contact_list .bottombutton:active,
+.contact_list .bottombutton:hover:active,
+.contact_list .bottombutton:focus:active{
   background-color: lighter (@treeview-selected);
   background-image: none;
   border-style: none;
 }
 
-#contact_list .bottombutton:selected,
-#contact_list .bottombutton:hover {
+.contact_list .bottombutton:selected,
+.contact_list .bottombutton:hover {
   background-color: @treeview-selected;
   background-image: none;
   border-style: none;
 }
 
-#contact_list .bottombutton {
+.contact_list .bottombutton {
   background-color: @background;
   background-image: none;
   border-image: none;
   border-style: none;
 }
 
-#contact_list .statuscombo *:active,
-#contact_list .statuscombo *:hover,
-#contact_list .statuscombo *:focus:active{
+.contact_list .statuscombo *:active,
+.contact_list .statuscombo *:hover,
+.contact_list .statuscombo *:focus:active{
   background-color: lighter (@border-color);
   background-image: none;
   border-style: none;
 }
 
-#contact_list .statuscombo * {
+.contact_list .statuscombo * {
   font-weight: bold;
   background-color: @border-color;
   background-image: none;
@@ -155,19 +157,19 @@ background-clip: padding-box;
   border-radius: 4px;
 }
 
-#contact_list .statuscombo *{
+.contact_list .statuscombo *{
   text-shadow: none;
 }
 
-#contact_list .userbutton:active,
-#contact_list .userbutton:hover:active,
-#contact_list .userbutton:focus:active{
+.contact_list .userbutton:active,
+.contact_list .userbutton:hover:active,
+.contact_list .userbutton:focus:active{
   background-color: lighter (@treeview-background);
   background-image: none;
   border-style: none;
 }
 
-#contact_list .userbutton {
+.contact_list .userbutton {
   background-color: @treeview-background;
   background-image: none;
   border-image: none;
@@ -177,78 +179,78 @@ background-clip: padding-box;
   border-radius: 0px;
 }
 
-#contact_list .cell {
+.contact_list .cell {
   color: @foreground;
   background-color: @treeview-background;
   border: none;
 }
 
-#contact_list .contactlist-box {
+.contact_list .contactlist-box {
   background-color: @treeview-background;
 }
 
-#contact_list .frame {
+.contact_list .frame {
   border: 0px solid @border-color;
   border-top-width: 1px;
   border-bottom-width: 1px;
   padding: 0px;
 }
 
-#contact_list GtkTreeView {
+.contact_list GtkTreeView {
   background-color: @treeview-background;
 }
 
-#contact_list row:selected {
+.contact_list row:selected {
   background-color: @treeview-selected;
 }
 
-#contact_list GtkScrolledWindow {
+.contact_list GtkScrolledWindow {
   border: none;
 }
 
-#contact_list GtkScrolledWindow .scrollbar {
+.contact_list GtkScrolledWindow .scrollbar {
   -GtkRange-slider-width: 0;
   -GtkRange-trough-border: 0;
 }
 
-#contact_list .scrollbar {
+.contact_list .scrollbar {
   background-color: #1c1c1c;
   background-image: none;
   border: none;
 }
 
-#contact_list .slider:active {
+.contact_list .slider:active {
   background-color: @treeview-selected;
 }
 
-#contact_list .slider {
+.contact_list .slider {
   background-color: @treeview-background;
   background-image: none;
   border: 1px solid @background;
   border-radius: 4px;
 }
 
-#conversation,
-#conversation GtkTreeView {
+.conversation,
+.conversation GtkTreeView {
   color: black;
   background-color: @foreground;
 }
 
-#conversation .callbutton:active,
-#conversation .callbutton:hover:active,
-#conversation .callbutton:focus:active {
+.callbutton:active,
+.callbutton:hover:active,
+.callbutton:focus:active {
   background-color: lighter (@callbutton-selected);
   background-image: none;
 }
 
-#conversation .callbutton:selected,
-#conversation .callbutton:hover {
+.callbutton:selected,
+.callbutton:hover {
   background-color: @callbutton-selected;
   background-image: none;
   border-image: none;
 }
 
-#conversation .callbutton {
+.callbutton {
   background-color: @callbutton-color;
   background-image: none;
   border-image: none;

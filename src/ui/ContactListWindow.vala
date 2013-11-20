@@ -21,7 +21,7 @@ namespace Venom {
 
   public class ContactListWindow : Gtk.Window {
     // Containers
-    private Gee.AbstractMap<int, ConversationWindow> conversation_windows;
+    private Gee.AbstractMap<int, ConversationWidget> conversation_widgets;
     // Tox session wrapper
     private ToxSession session;
     private UserStatus user_status = UserStatus.OFFLINE;
@@ -34,6 +34,8 @@ namespace Venom {
     private Gtk.Label label_status;
     private ContactListTreeView contact_list_tree_view;
     private Gtk.ComboBox combobox_status;
+    private Gtk.Notebook notebook_conversations;
+    private Gtk.EventBox eventbox_conversations;
 
     private bool cleaned_up = false;
 
@@ -49,7 +51,7 @@ namespace Venom {
 
     // Default Constructor
     public ContactListWindow () {
-      this.conversation_windows = new Gee.HashMap<int, ConversationWindow>();
+      this.conversation_widgets = new Gee.HashMap<int, ConversationWidget>();
 
       init_theme();
       init_session();      
@@ -137,7 +139,6 @@ namespace Venom {
     private void init_widgets() {
       // Set up Window
       set_default_size(230, 600);
-      set_property("name", "contact_list");
       set_default_icon(ResourceFactory.instance.venom);
       set_title_from_status(user_status);
 
@@ -149,8 +150,8 @@ namespace Venom {
         stderr.printf("Loading contact list failed!\n");
       }
       
-      Gtk.Box box = builder.get_object("box") as Gtk.Box;
-      this.add(box);
+      Gtk.Paned paned = builder.get_object("paned") as Gtk.Paned;
+      this.add(paned);
       
       image_status = builder.get_object("image_status") as Gtk.Image;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
@@ -236,6 +237,9 @@ namespace Venom {
       menuitem_status_away.activate.connect(    () => { set_userstatus(UserStatus.AWAY); } );
       menuitem_status_busy.activate.connect(    () => { set_userstatus(UserStatus.BUSY); } );
       menuitem_status_offline.activate.connect( () => { set_userstatus(UserStatus.OFFLINE); } );
+      
+      notebook_conversations = builder.get_object("notebook_conversations") as Gtk.Notebook;
+      eventbox_conversations = builder.get_object("eventbox_conversations") as Gtk.EventBox;
     }
 
     // Connect
@@ -392,10 +396,7 @@ namespace Venom {
     private void on_friendmessage(Contact c, string message) {
       stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name != null ? c.name : "<%i>".printf(c.friend_id), message);
 
-      ConversationWindow w = open_conversation_with(c);
-      if(w == null)
-        return;
-      w.show_all();
+      on_contact_activated(c);
       incoming_message(new Message(c, message));
     }
     private void on_action(Contact c, string action) {
@@ -485,26 +486,28 @@ namespace Venom {
       stdout.printf("[gm] %i@%i: %s\n", friendgroupnumber, g.group_id, message);
     }
     
-    private ConversationWindow? open_conversation_with(Contact c) {
-      ConversationWindow w = conversation_windows[c.friend_id];
+    private ConversationWidget? open_conversation_with(Contact c) {
+      ConversationWidget w = conversation_widgets[c.friend_id];
       if(w == null) {
-        w = new ConversationWindow(c);
+        w = new ConversationWidget(c);
         incoming_message.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
         contact_changed.connect( (c_) => {if(c == c_) w.update_contact();} );
         contact_removed.connect( (c_) => {if(c == c_) w.destroy();} );
-        conversation_windows[c.friend_id] = w;
+        conversation_widgets[c.friend_id] = w;
+        notebook_conversations.append_page(w, null);
       }
       return w;
     }
 
     // Contact doubleclicked in treeview
     private void on_contact_activated(Contact c) {
-      ConversationWindow w = open_conversation_with(c);
+      ConversationWidget w = open_conversation_with(c);
       if(w == null)
         return;
       w.show_all();
-      w.present();
+      notebook_conversations.set_current_page(notebook_conversations.page_num(w));
+      eventbox_conversations.set_visible(true);
     }
     
     public void remove_contact(Contact c) {
