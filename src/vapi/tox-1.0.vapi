@@ -372,6 +372,20 @@ namespace Tox {
      */
     public int group_message_send(int groupnumber, [CCode(array_length_type="guint32")] uint8[] message);
 
+    /* Return the number of chats in the instance m.
+     * You should use this to determine how much memory to allocate
+     * for copy_chatlist.
+     */
+    public uint32 count_chatlist();
+
+    /* Copy a list of valid chat IDs into the array out_list.
+     * If out_list is NULL, returns 0.
+     * Otherwise, returns the number of elements copied.
+     * If the array was too small, the contents
+     * of out_list will be truncated to list_size.
+     */
+    public uint32 copy_chatlist([CCode(array_length_type="guint32")] int[] out_list);
+
     /******************END OF GROUP CHAT FUNCTIONS************************/
 
     /****************FILE SENDING FUNCTIONS*****************/
