@@ -64,6 +64,7 @@ SET( VENOM_SRC
   ui/ContactListCellRenderer.vala
   ui/PreferencesWindow.vala
   ui/UserInfoWindow.vala
+  ui/UITools.vala
   Main.vala
 )
 

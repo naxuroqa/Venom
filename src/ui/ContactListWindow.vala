@@ -264,7 +264,9 @@ namespace Venom {
       contact_added.connect(contact_list_tree_view.add_contact);
       contact_changed.connect( (c) => {
         contact_list_tree_view.update_contact(c);
-        conversation_widgets[c.friend_id].update_contact();
+        ConversationWidget w = conversation_widgets[c.friend_id];
+        if(w != null)
+          w.update_contact();
       } );
       contact_removed.connect( (c) => {
         contact_list_tree_view.remove_contact(c);
@@ -555,11 +557,19 @@ namespace Venom {
           return;
 
       // add friend
+      if(contact_id == null || contact_id.length != Tox.FRIEND_ADDRESS_SIZE) {
+        string error_message = "Could not add friend: Invalid ID\n";
+        stderr.printf(error_message);
+        UITools.ErrorDialog("Adding Friend failed", error_message, this);
+        return;
+      }
       Contact c = new Contact(contact_id);
       Tox.FriendAddError ret = session.addfriend(c, contact_message);
       if(ret < 0) {
         //TODO turn this into a message box.
-        stderr.printf("Error: %s.\n", Tools.friend_add_error_to_string(ret));
+        string error_message = "Could not add friend: %s.\n".printf(Tools.friend_add_error_to_string(ret));
+        stderr.printf(error_message);
+        UITools.ErrorDialog("Adding Friend failed", error_message, this);
         return;
       }
 
