@@ -82,7 +82,7 @@ namespace Venom {
         }
       }
       if(status != null) {
-        Gdk.Rectangle image_rect = {cell_area.x + cell_area.width - 26, cell_area.y + cell_area.height / 2 - 13, 26, 26};
+        Gdk.Rectangle image_rect = {cell_area.x + cell_area.width - 24, cell_area.y + cell_area.height / 2 - 13, 26, 26};
         Gdk.cairo_rectangle(ctx, image_rect);
         Gdk.cairo_set_source_pixbuf(ctx, status, image_rect.x, image_rect.y);
 		    ctx.fill();
@@ -105,13 +105,13 @@ namespace Venom {
         layout.set_text(Tools.bin_to_hexstring(contact.public_key), -1);
       }
       layout.set_ellipsize(Pango.EllipsizeMode.END);
-      layout.set_width((cell_area.width - 60 - 26) * Pango.SCALE);
+      layout.set_width((cell_area.width - 58 - 26) * Pango.SCALE);
       layout.get_pixel_extents(out ink_rect, out logical_rect);
       
       if (ctx != null) {
         ctx.save();
         Gdk.cairo_set_source_rgba(ctx, color);
-        ctx.move_to(cell_area.x + 60, cell_area.y + cell_area.height / 2 - ink_rect.height - 8);
+        ctx.move_to(cell_area.x + 58, cell_area.y + cell_area.height / 2 - ink_rect.height - 8);
         Pango.cairo_show_layout(ctx, layout);
         ctx.restore();
       }
@@ -133,13 +133,13 @@ namespace Venom {
         layout.set_text(contact.status_message, -1);
       }
       layout.set_ellipsize(Pango.EllipsizeMode.END);
-      layout.set_width((cell_area.width - 60 - 26) * Pango.SCALE);
+      layout.set_width((cell_area.width - 58 - 26) * Pango.SCALE);
       layout.get_pixel_extents(out ink_rect, out logical_rect);
       
       if (ctx != null) {
         ctx.save();
         Gdk.cairo_set_source_rgba(ctx, color);
-        ctx.move_to(cell_area.x + 60, cell_area.y + cell_area.height / 2 - 2);
+        ctx.move_to(cell_area.x + 58, cell_area.y + cell_area.height / 2 - 2);
         Pango.cairo_show_layout(ctx, layout);
         ctx.restore();
       }
