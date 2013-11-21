@@ -453,7 +453,7 @@ namespace Venom {
         //(menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.away);
         break;
       case UserStatus.BUSY:
-        image_status.set_from_pixbuf(ResourceFactory.instance.offline_glow);
+        image_status.set_from_pixbuf(ResourceFactory.instance.busy);
         //(menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline_glow);
         break;
      }

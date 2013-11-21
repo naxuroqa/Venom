@@ -74,7 +74,7 @@ namespace Venom {
             status = ResourceFactory.instance.away;
             break;
           case Tox.UserStatus.BUSY:
-            status = ResourceFactory.instance.offline_glow;
+            status = ResourceFactory.instance.busy;
             break;
           case Tox.UserStatus.INVALID:
             status = ResourceFactory.instance.offline;

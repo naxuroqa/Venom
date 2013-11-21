@@ -38,6 +38,8 @@ namespace Venom {
 
       away = load_image_from_resource(pixmaps_prefix + "away.png");
       away_glow = load_image_from_resource(pixmaps_prefix + "away_glow.png");
+      busy = load_image_from_resource(pixmaps_prefix + "busy.png");
+      busy_glow = load_image_from_resource(pixmaps_prefix + "busy_glow.png");
       offline = load_image_from_resource(pixmaps_prefix + "offline.png");
       offline_glow = load_image_from_resource(pixmaps_prefix + "offline_glow.png");
       online = load_image_from_resource(pixmaps_prefix + "online.png");
@@ -67,6 +69,8 @@ namespace Venom {
     
     public Gdk.Pixbuf away {get; private set;}
     public Gdk.Pixbuf away_glow {get; private set;}
+    public Gdk.Pixbuf busy {get; private set;}
+    public Gdk.Pixbuf busy_glow {get; private set;}
     public Gdk.Pixbuf offline {get; private set;}
     public Gdk.Pixbuf offline_glow {get; private set;}
     public Gdk.Pixbuf online {get; private set;}
