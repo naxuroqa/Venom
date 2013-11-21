@@ -262,8 +262,15 @@ namespace Venom {
       
       // Contact list treeview signals
       contact_added.connect(contact_list_tree_view.add_contact);
-      contact_changed.connect(contact_list_tree_view.update_contact);
-      contact_removed.connect(contact_list_tree_view.remove_contact);
+      contact_changed.connect( (c) => {
+        contact_list_tree_view.update_contact(c);
+        conversation_widgets[c.friend_id].update_contact();
+      } );
+      contact_removed.connect( (c) => {
+        contact_list_tree_view.remove_contact(c);
+        conversation_widgets[c.friend_id].destroy(); 
+        conversation_widgets.unset(c.friend_id);
+      } );
       groupchat_added.connect(contact_list_tree_view.add_groupchat);
       contact_list_tree_view.contact_activated.connect(on_contact_activated);
       contact_list_tree_view.key_press_event.connect(on_treeview_key_pressed);
@@ -492,8 +499,6 @@ namespace Venom {
         w = new ConversationWidget(c);
         incoming_message.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
-        contact_changed.connect( (c_) => {if(c == c_) w.update_contact();} );
-        contact_removed.connect( (c_) => {if(c == c_) w.destroy();} );
         conversation_widgets[c.friend_id] = w;
         notebook_conversations.append_page(w, null);
       }
