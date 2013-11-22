@@ -20,22 +20,17 @@
 namespace Venom {
   public class GroupChat : GLib.Object{
 
-    public uint8[] public_key { get; set; }
-    public int group_id { get; set; }
-    public string local_name { get; set; }
-    public Gdk.Pixbuf? image { get; set; }
+    public uint8[] public_key { get; set; default = null; }
+    public int group_id       { get; set; default = -1; }
+    public string local_name  { get; set; default = ""; }
+    public Gdk.Pixbuf? image  { get; set; default = null; }
 
     public GroupChat(uint8[] public_key, int group_id = -1) {
       this.public_key = public_key;
       this.group_id = group_id;
-      this.local_name = "";
-      this.image = null;
     }
     public GroupChat.from_id(int group_id) {
-      this.public_key = null;
       this.group_id = group_id;
-      this.local_name = "";
-      this.image = null;
     }
   }
 }
