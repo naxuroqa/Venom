@@ -21,6 +21,8 @@ namespace Venom {
   public class ContactListCellRenderer : Gtk.CellRenderer {
     public Contact contact { get; set; }
     public GroupChat groupchat { get; set; }
+    private static Gdk.RGBA unread_message_bgcolor = Gdk.RGBA() { red = 0.419607843, green = 0.760784314, blue = 0.376470588, alpha = 1.0 };
+    private static Gdk.RGBA unread_message_fgcolor = Gdk.RGBA() { red = 0, green = 0, blue = 0, alpha = 1.0 };
 
     public ContactListCellRenderer() {
       GLib.Object();
@@ -40,6 +42,7 @@ namespace Venom {
       render_status(ctx, widget, background_area, cell_area, y);
       render_image(ctx, widget, background_area, cell_area, y);
       render_userstatus(ctx, widget, background_area, cell_area);
+      render_unread_messages(ctx, widget, background_area, cell_area);
     }
     
     public void render_image(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
@@ -63,21 +66,21 @@ namespace Venom {
       Gdk.Pixbuf? status = null;
       
       if(!contact.online) {
-        status = ResourceFactory.instance.offline;
+        status = contact.unread_messages > 0 ? ResourceFactory.instance.offline_glow : ResourceFactory.instance.offline;
       }
       else {
         switch(contact.user_status) {
           case Tox.UserStatus.NONE:
-            status = ResourceFactory.instance.online;
+            status = contact.unread_messages > 0 ? ResourceFactory.instance.online_glow :ResourceFactory.instance.online;
             break;
           case Tox.UserStatus.AWAY:
-            status = ResourceFactory.instance.away;
+            status = contact.unread_messages > 0 ? ResourceFactory.instance.away_glow : ResourceFactory.instance.away;
             break;
           case Tox.UserStatus.BUSY:
-            status = ResourceFactory.instance.busy;
+            status = contact.unread_messages > 0 ? ResourceFactory.instance.busy_glow : ResourceFactory.instance.busy;
             break;
           case Tox.UserStatus.INVALID:
-            status = ResourceFactory.instance.offline;
+            status = contact.unread_messages > 0 ? ResourceFactory.instance.offline_glow : ResourceFactory.instance.offline;
             break;
         }
       }
@@ -145,5 +148,35 @@ namespace Venom {
       }
       return ink_rect;
     }
+  public void render_unread_messages(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
+      if(contact == null || contact.unread_messages == 0)
+        return;
+      Pango.Rectangle? ink_rect, logical_rect;
+      Gdk.Rectangle image_rect_border = {cell_area.x + cell_area.width - 24 , cell_area.y + cell_area.height / 2, 13, 13};
+      Gdk.Rectangle image_rect = {cell_area.x + cell_area.width - 23 , cell_area.y + cell_area.height / 2 + 1, 11, 11};
+      
+      Pango.FontDescription font = new Pango.FontDescription();
+      font.set_absolute_size(10 * Pango.SCALE);
+      Pango.Layout layout = widget.create_pango_layout(null);
+      layout.set_font_description(font);
+      if(contact.unread_messages < 10)
+        layout.set_text(contact.unread_messages.to_string(), -1);
+      else
+        layout.set_text("+", -1);
+      layout.get_pixel_extents(out ink_rect, out logical_rect);
+
+      ctx.save();
+      Gdk.cairo_rectangle(ctx, image_rect_border);
+      Gdk.cairo_set_source_rgba(ctx, unread_message_fgcolor);
+      ctx.fill();
+      Gdk.cairo_rectangle(ctx, image_rect);
+      Gdk.cairo_set_source_rgba(ctx, unread_message_bgcolor);
+	    ctx.fill();
+      Gdk.cairo_set_source_rgba(ctx, unread_message_fgcolor);
+      //FIXME correct centering, maybe fixed-size font
+      ctx.move_to(cell_area.x + cell_area.width - ink_rect.width / 2 - 18 , cell_area.y + cell_area.height / 2 - ink_rect.height / 2 + 2);
+      Pango.cairo_show_layout(ctx, layout);
+      ctx.restore();
+		}
   }
 }

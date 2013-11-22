@@ -405,10 +405,15 @@ namespace Venom {
     private void on_friendmessage(Contact c, string message) {
       stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name != null ? c.name : "<%i>".printf(c.friend_id), message);
 
-      on_contact_activated(c);
+      ConversationWidget w = open_conversation_with(c);
       incoming_message(new Message(c, message));
+      if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
+        c.unread_messages++;
+        contact_list_tree_view.update_contact(c);
+      }
     }
     private void on_action(Contact c, string action) {
+      //TODO implement this
       stdout.printf("[ac] %i:%s\n", c.friend_id, action);
     }
     private void on_namechange(Contact c, string? old_name) {
@@ -504,17 +509,20 @@ namespace Venom {
         conversation_widgets[c.friend_id] = w;
         notebook_conversations.append_page(w, null);
       }
+      w.show_all();
       return w;
     }
 
     // Contact doubleclicked in treeview
     private void on_contact_activated(Contact c) {
       ConversationWidget w = open_conversation_with(c);
-      if(w == null)
-        return;
-      w.show_all();
+      
       notebook_conversations.set_current_page(notebook_conversations.page_num(w));
       eventbox_conversations.set_visible(true);
+      if(c.unread_messages != 0) {
+        c.unread_messages = 0;
+        contact_list_tree_view.update_contact(c);
+      }
     }
     
     public void remove_contact(Contact c) {

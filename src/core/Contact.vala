@@ -29,6 +29,7 @@ namespace Venom {
     public int user_status { get; set; }
     public bool online { get; set; }
     public Gdk.Pixbuf? image { get; set; }
+    public int unread_messages { get; set; }
 
     public Contact(uint8[] public_key, int friend_id = -1) {
       this.public_key = public_key;
@@ -39,6 +40,7 @@ namespace Venom {
       this.last_seen = new DateTime.now_local();
       this.user_status = (int)Tox.UserStatus.INVALID;
       this.image = null;
+      this.unread_messages = 0;
     }
   }
 }
