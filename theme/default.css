@@ -96,8 +96,8 @@ font-weight: 300;*/
 
 .contact_list,
 .contact_list *,
-.conversation,
-.conversation * {
+.conversation_widget,
+.conversation_widget * {
   background-color: alpha(white, 0);
 }
 
@@ -230,27 +230,27 @@ font-weight: 300;*/
   border-radius: 4px;
 }
 
-.conversation,
-.conversation GtkTreeView {
+.conversation_widget,
+.conversation_widget GtkTreeView {
   color: black;
   background-color: @foreground;
 }
 
-.callbutton:active,
-.callbutton:hover:active,
-.callbutton:focus:active {
+.conversation_widget .callbutton:active,
+.conversation_widget .callbutton:hover:active,
+.conversation_widget .callbutton:focus:active {
   background-color: lighter (@callbutton-selected);
   background-image: none;
 }
 
-.callbutton:selected,
-.callbutton:hover {
+.conversation_widget .callbutton:selected,
+.conversation_widget .callbutton:hover {
   background-color: @callbutton-selected;
   background-image: none;
   border-image: none;
 }
 
-.callbutton {
+.conversation_widget .callbutton {
   background-color: @callbutton-color;
   background-image: none;
   border-image: none;

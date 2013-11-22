@@ -412,7 +412,7 @@
         <property name="can_focus">False</property>
         <property name="no_show_all">True</property>
         <style>
-          <class name="conversation_window"/>
+          <class name="conversation_widget"/>
         </style>
         <child>
           <object class="GtkNotebook" id="notebook_conversations">
