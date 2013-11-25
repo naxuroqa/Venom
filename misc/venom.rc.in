@@ -18,19 +18,19 @@
  */
 
 id ICON "venom.ico"
-1 VERSIONINFO
+VS_VERSION_INFO VERSIONINFO
 FILEVERSION     @VENOM_VERSION_MAJOR@,@VENOM_VERSION_MINOR@,@VENOM_VERSION_PATCH@,@VENOM_VERSION_TWEAK@
 PRODUCTVERSION  @VENOM_VERSION_MAJOR@,@VENOM_VERSION_MINOR@,@VENOM_VERSION_PATCH@,@VENOM_VERSION_TWEAK@
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
-    BLOCK "04091252"
+    BLOCK "040904B0"
     BEGIN
-      VALUE "CompanyName", "none"
-      VALUE "FileDescription", "GTK+ GUI for TOX"
-      VALUE "FileVersion", "@VENOM_VERSION@"
-      VALUE "InternalName", "venom.exe"
-      VALUE "LegalCopyright", "Copyright (C) 2013"
+      VALUE "CompanyName", "Venom authors and contributors"
+      VALUE "FileDescription", "Venom, a GTK+ GUI for TOX"
+      VALUE "FileVersion", "@VENOM_VERSION@.0"
+      VALUE "InternalName", "venom"
+      VALUE "LegalCopyright", "Copyright © 2013 Venom authors and contributors"
       VALUE "OriginalFilename", "venom.exe"
       VALUE "ProductName", "Venom"
       VALUE "ProductVersion", "@VENOM_VERSION@"
@@ -39,6 +39,6 @@ BEGIN
 
   BLOCK "VarFileInfo"
   BEGIN
-    VALUE "Translation", 0x409, 1252
+    VALUE "Translation", 0x409, 1200
   END
 END
