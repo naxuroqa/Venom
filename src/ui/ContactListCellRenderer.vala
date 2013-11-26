@@ -159,10 +159,12 @@ namespace Venom {
       font.set_absolute_size(10 * Pango.SCALE);
       Pango.Layout layout = widget.create_pango_layout(null);
       layout.set_font_description(font);
+      string str = "";
       if(contact.unread_messages < 10)
-        layout.set_text(contact.unread_messages.to_string(), -1);
+        str = contact.unread_messages.to_string();
       else
-        layout.set_text("+", -1);
+        str = "+";
+      layout.set_markup("<tt>%s</tt>".printf(str), -1);
       layout.get_pixel_extents(out ink_rect, out logical_rect);
 
       ctx.save();
@@ -174,7 +176,7 @@ namespace Venom {
 	    ctx.fill();
       Gdk.cairo_set_source_rgba(ctx, unread_message_fgcolor);
       //FIXME correct centering, maybe fixed-size font
-      ctx.move_to(cell_area.x + cell_area.width - ink_rect.width / 2 - 18 , cell_area.y + cell_area.height / 2 - ink_rect.height / 2 + 2);
+      ctx.move_to(image_rect.x + image_rect.width / 2 - logical_rect.width / 2, image_rect.y + image_rect.height / 2 - logical_rect.height / 2);
       Pango.cairo_show_layout(ctx, layout);
       ctx.restore();
 		}
