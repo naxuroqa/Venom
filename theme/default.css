@@ -92,6 +92,7 @@ font-weight: 300;*/
 .contact_list,
 .contact_list * {
   border-width: 0px;
+  border-radius: 0px;
 }
 
 .contact_list,

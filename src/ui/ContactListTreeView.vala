@@ -48,7 +48,17 @@ namespace Venom {
     }
 
     private bool modify_tooltip(int x, int y, bool keyboard_tooltip, Gtk.Tooltip tooltip) {
-      tooltip.set_icon_from_icon_name("gtk-info", Gtk.IconSize.LARGE_TOOLBAR);
+      //TODO add additional information about groupchat / contact
+      /*Gtk.TreeModel model;
+      Gtk.TreePath path;
+      Gtk.TreeIter iter;
+      get_tooltip_context(ref x, ref y, keyboard_tooltip, out model, out path, out iter);
+      if(model == null)
+        return false;
+      Contact c;
+      model.get(iter, 0, out c, -1);
+      if(c == null)
+        return false;*/
       return false;
     }
     
