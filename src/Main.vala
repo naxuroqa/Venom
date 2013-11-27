@@ -84,10 +84,8 @@ public class Main {
       } else if(ret > 0) {
         return 0;
       }
-    
-      Client client = new Client(args);
-      client.main();
-      return 0;
+
+      return new Client().run(args);
     }
   }
 }

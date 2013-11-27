@@ -18,23 +18,14 @@
  */
 
 namespace Venom {
-  class Client : GLib.Object{
-    private ContactListWindow contact_list;
-
-    public Client(string [] args) {
-      Gtk.init (ref args);      
-      contact_list = new ContactListWindow();
+  class Client : Gtk.Application {
+    protected override void activate() {
+      ContactListWindow contact_list = new ContactListWindow(this);
+      contact_list.show();
     }
     
-    public void main() {
-      contact_list.show_all();
-      Gtk.main();
-      
+    ~Client() {
       stdout.printf("Shutting down...\n");
-      
-      // FIXME If gtk_main_quit is called, the destructor of contact_list is not called,
-      // this is just a workaround and no clean solution.
-      contact_list.cleanup();
     }
   }
 }

@@ -19,7 +19,7 @@
 
 namespace Venom {
 
-  public class ContactListWindow : Gtk.Window {
+  public class ContactListWindow : Gtk.ApplicationWindow {
     // Containers
     private Gee.AbstractMap<int, ConversationWidget> conversation_widgets;
     // Tox session wrapper
@@ -50,7 +50,8 @@ namespace Venom {
     public signal void incoming_message(Message m);
 
     // Default Constructor
-    public ContactListWindow () {
+    public ContactListWindow (Gtk.Application application) {
+      GLib.Object(application:application);
       this.conversation_widgets = new Gee.HashMap<int, ConversationWidget>();
 
       init_theme();
@@ -95,11 +96,7 @@ namespace Venom {
     private bool on_contact_list_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
       // only for debugging!!!
       if(key.keyval == Gdk.Key.F5) {
-        // reset theme
-        Gtk.CssProvider provider = Gtk.CssProvider.get_default();        
-        Gdk.Screen screen = Gdk.Screen.get_default();
-        Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
-        
+        // TODO reset theme
         // set user theme
         init_theme();
         return true;
@@ -112,12 +109,14 @@ namespace Venom {
       try {
       provider.load_from_path(ResourceFactory.instance.default_theme_filename); 
       } catch (Error e) {
-        stderr.printf("Could not read css file \"%s\": %s\n", ResourceFactory.instance.default_theme_filename,  e.message);
+        string message = "Could not read theme from \"%s\"".printf(ResourceFactory.instance.default_theme_filename);
+        stderr.printf("%s: %s\n", message,  e.message);
+        UITools.ErrorDialog(message, e.message, this);
+        return;
       }     
       
       Gdk.Screen screen = Gdk.Screen.get_default();
-
-      Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+      Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
     // Create a new session, load/create session data
@@ -270,8 +269,11 @@ namespace Venom {
       } );
       contact_removed.connect( (c) => {
         contact_list_tree_view.remove_contact(c);
-        conversation_widgets[c.friend_id].destroy(); 
-        conversation_widgets.unset(c.friend_id);
+        ConversationWidget w = conversation_widgets[c.friend_id];
+        if(w != null) {
+          conversation_widgets[c.friend_id].destroy(); 
+          conversation_widgets.unset(c.friend_id);
+        }
       } );
       groupchat_added.connect(contact_list_tree_view.add_groupchat);
       contact_list_tree_view.contact_activated.connect(on_contact_activated);
@@ -279,9 +281,6 @@ namespace Venom {
       
       //ComboboxStatus signals
       combobox_status.changed.connect(combobox_status_changed);
-      
-      // End program when window is closed
-      this.destroy.connect (Gtk.main_quit);
       
       // FIXME remove after testing is done!
       this.key_press_event.connect(on_contact_list_key_pressed);
