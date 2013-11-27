@@ -17,7 +17,7 @@
 #    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.7)
 PROJECT(Venom C)
 
 SET(VENOM_VERSION_MAJOR 0)
