@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Wed Nov 20 13:00:05 2013 -->
+<!-- Generated with glade 3.16.0 on Wed Nov 27 22:40:46 2013 -->
 <interface>
-  <!-- interface-requires gtk+ 3.2 -->
+  <!-- interface-requires gtk+ 3.4 -->
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">100</property>
     <property name="step_increment">1</property>

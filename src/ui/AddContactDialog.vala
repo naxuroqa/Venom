@@ -30,6 +30,7 @@ namespace Venom {
     
     private Gtk.Entry entry_contact_id;
     private Gtk.TextView textview_contact_message;
+    private GLib.Regex id_regex;
     
     public AddContactDialog() {
       init_widgets();
@@ -52,12 +53,36 @@ namespace Venom {
       Gtk.Image image_default = builder.get_object("image_default") as Gtk.Image;
       image_default.set_from_pixbuf(ResourceFactory.instance.default_contact);
 
+      entry_contact_id.changed.connect(on_entry_changed);
+      on_entry_changed();
+
+      try {
+        id_regex = new GLib.Regex("^[[:xdigit:]]*$");
+      } catch (RegexError re) {
+        stderr.printf("Failed to compile regex: %s\n", re.message);
+      }
+
       this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Ok", Gtk.ResponseType.OK, null);
       this.set_default_response(Gtk.ResponseType.OK);
       this.title = "Add contact";
       this.set_default_size(400, 250);
       
       contact_message = "Please let me add you to my contactlist.";
+    }
+
+    private void on_entry_changed() {
+      if(contact_id == null || contact_id == "") {
+        entry_contact_id.secondary_icon_tooltip_text = "No ID given";
+        entry_contact_id.secondary_icon_stock = "gtk-dialog-warning";
+      } else if (contact_id.length != Tox.FRIEND_ADDRESS_SIZE*2) {
+        entry_contact_id.secondary_icon_tooltip_text = "ID of invalid size";
+        entry_contact_id.secondary_icon_stock = "gtk-dialog-warning";
+      } else if (id_regex != null && !id_regex.match(contact_id)) {
+        entry_contact_id.secondary_icon_tooltip_text = "ID contains invalid characters";
+        entry_contact_id.secondary_icon_stock = "gtk-dialog-warning";
+      } else {
+        entry_contact_id.secondary_icon_stock = "";
+      }
     }
   }
 }

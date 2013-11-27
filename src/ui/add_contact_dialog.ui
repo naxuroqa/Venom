@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Tue Nov 12 16:25:04 2013 -->
+<!-- Generated with glade 3.16.0 on Wed Nov 27 23:32:58 2013 -->
 <interface>
-  <!-- interface-requires gtk+ 3.2 -->
+  <!-- interface-requires gtk+ 3.4 -->
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkGrid" id="grid">
     <property name="visible">True</property>
@@ -13,8 +13,8 @@
       <object class="GtkLabel" id="label3">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">start</property>
-        <property name="valign">start</property>
+        <property name="xalign">0</property>
+        <property name="yalign">0</property>
         <property name="label" translatable="yes">Message:</property>
       </object>
       <packing>
@@ -63,7 +63,7 @@
       <object class="GtkLabel" id="label2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">start</property>
+        <property name="xalign">0</property>
         <property name="label" translatable="yes">ID:</property>
       </object>
       <packing>
@@ -77,7 +77,7 @@
       <object class="GtkLabel" id="label1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="valign">end</property>
+        <property name="yalign">1</property>
         <property name="label" translatable="yes">Add a new Contact</property>
         <attributes>
           <attribute name="weight" value="bold"/>

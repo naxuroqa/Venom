@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Tue Nov 12 16:25:33 2013 -->
+<!-- Generated with glade 3.16.0 on Wed Nov 27 22:41:16 2013 -->
 <interface>
-  <!-- interface-requires gtk+ 3.2 -->
+  <!-- interface-requires gtk+ 3.4 -->
   <object class="GtkBox" id="box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
