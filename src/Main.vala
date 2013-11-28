@@ -30,7 +30,7 @@ public class Main {
 
     public static int main (string[] args) {
       try {
-		    GLib.OptionContext option_context = new GLib.OptionContext();
+		    GLib.OptionContext option_context = new GLib.OptionContext("");
 		    option_context.set_help_enabled(true);
 		    option_context.add_main_entries(options, null);
 		    option_context.parse(ref args);
