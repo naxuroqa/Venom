@@ -20,70 +20,35 @@
 namespace Venom {
 
 public class Main {
-    private static string bin_name;
-    private static void set_data_filename(string filename) {
-      if(filename == null)
-        return;
-      stdout.printf("Using data file \"%s\"\n", filename);
-      ResourceFactory.instance.data_filename = filename;
-    }
-    
-    private static void print_usage() {
-      stdout.printf(
-        "Usage: %s [OPTION...]\n" +
-        "Options:\n" +
-        "  -n <file>            Use <file> as datafile\n" +
-        "  -?, --help           Display this help\n" +
-        "  -V, --version        Print version information\n"
-        , bin_name
-        );
-    }
+    private static bool version = false;
+    private static string? datafile = null;
+    private const GLib.OptionEntry[] options = {
+      { "datafile", 'n', 0, GLib.OptionArg.FILENAME, ref datafile, "Tox data file", "<file>" },
+		  { "version", 'V', 0, OptionArg.NONE, ref version, "Display version number", null },
+		  { null }
+	  };
 
-    private static void print_version() {
-      stdout.printf("%s %s\n", bin_name, Config.VENOM_VERSION);
-    }
-    
-    private static void print_unsupported(string arg) {
-      stderr.printf("Argument \"%s\" not recognized.\n", arg);
-    }
-    
-    private static void print_too_few_args(string arg) {
-      stderr.printf("Too few arguments for \"%s\".\n", arg);
-    }
-
-    private static int parse_args(string[] args) {
-      bin_name = args[0];
-      for(int i = 1; i < args.length; ++i) {
-        if(args[i] == "-n") {
-          if((i + 1) >= args.length) {
-            print_too_few_args(args[i]);
-            return -1;
-          }
-          set_data_filename(args[++i]);
-        } else if(args[i] == "-?" || args[i] == "--help") {
-          print_usage();
-          return 1;
-        } else if(args[i] == "-V" || args[i] == "--version") {
-          print_version();
-          return 1;
-        } else {
-          print_unsupported(args[i]);
-          return -2;
-        }
-      }
-      return 0;
-    }    
-    
     public static int main (string[] args) {
+      try {
+		    GLib.OptionContext option_context = new GLib.OptionContext();
+		    option_context.set_help_enabled(true);
+		    option_context.add_main_entries(options, null);
+		    option_context.parse(ref args);
+	    } catch (GLib.OptionError e) {
+		    stdout.printf("error: %s\n", e.message);
+		    stdout.printf("Run '%s --help' to see a full list of available command line options.\n", args[0]);
+		    return -1;
+	    }
 
-      // Parse args and 
-      int ret = parse_args(args);
-      if(ret < 0) {
-        print_usage();
-        return ret;
-      } else if(ret > 0) {
-        return 0;
-      }
+	    if(version) {
+	      stdout.printf("%s %s\n", args[0], Config.VENOM_VERSION);
+	      return 0;
+	    }
+
+	    if(datafile != null) {
+	      stdout.printf("Using data file \"%s\"\n", datafile);
+        ResourceFactory.instance.data_filename = datafile;
+	    }
 
       return new Client().run(args);
     }
