@@ -59,7 +59,7 @@ namespace Venom {
       try {
         venom = Gtk.IconTheme.get_default().load_icon("venom", 48, 0);
       } catch (Error e) {
-        stderr.printf("Error while loading application image: %s\n", e.message );
+        stderr.printf("Error while loading icon: %s\n", e.message );
       }
 
       default_theme_filename = Path.build_filename(theme_folder, "default.css");

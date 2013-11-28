@@ -138,7 +138,8 @@ namespace Venom {
     private void init_widgets() {
       // Set up Window
       set_default_size(230, 600);
-      set_default_icon(ResourceFactory.instance.venom);
+      if(ResourceFactory.instance.venom != null)
+        set_default_icon(ResourceFactory.instance.venom);
       set_title_from_status(user_status);
 
       // Load widgets from file
