@@ -19,13 +19,21 @@
 
 namespace Venom {
   class Client : Gtk.Application {
+	  public Client() {
+	    // call gobject base constructor
+      GLib.Object(
+        application_id: "im.tox.venom",
+	      flags: GLib.ApplicationFlags.FLAGS_NONE
+      );
+	  }
+
     protected override void activate() {
-      ContactListWindow contact_list = new ContactListWindow(this);
-      contact_list.show();
-    }
-    
-    ~Client() {
-      stdout.printf("Shutting down...\n");
+      ContactListWindow contact_list;
+      if(get_windows().length() > 0)
+        contact_list = get_windows().data as ContactListWindow;
+      else
+        contact_list = new ContactListWindow(this);
+      contact_list.present();
     }
   }
 }
