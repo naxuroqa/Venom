@@ -67,7 +67,7 @@ namespace Venom {
       this.title = "Add contact";
       this.set_default_size(400, 250);
       
-      contact_message = "Please let me add you to my contactlist.";
+      contact_message = ResourceFactory.instance.default_add_contact_message;
     }
 
     private void on_entry_changed() {

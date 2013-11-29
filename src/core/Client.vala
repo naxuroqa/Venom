@@ -23,17 +23,42 @@ namespace Venom {
 	    // call gobject base constructor
       GLib.Object(
         application_id: "im.tox.venom",
-	      flags: GLib.ApplicationFlags.FLAGS_NONE
+	      flags: GLib.ApplicationFlags.HANDLES_OPEN
       );
+	  }
+	  private ContactListWindow get_contact_list_window() {
+	    if(get_windows().length() > 0)
+        return get_windows().data as ContactListWindow;
+      else
+        return new ContactListWindow(this);
 	  }
 
     protected override void activate() {
-      ContactListWindow contact_list;
-      if(get_windows().length() > 0)
-        contact_list = get_windows().data as ContactListWindow;
-      else
-        contact_list = new ContactListWindow(this);
-      contact_list.present();
+      get_contact_list_window().present();
+    }
+
+    protected override void open(GLib.File[] files, string hint) {
+      hold();
+      ContactListWindow contact_list_window = get_contact_list_window();
+      contact_list_window.present();
+
+      Regex r = null;
+      try {
+        r = new Regex("^tox://(?P<contact_id>[[:xdigit:]]*)/?$");
+      } catch (GLib.RegexError e) {
+        stderr.printf("Can't create regex to parse uri: %s.\n", e.message);
+      }
+      string uri = files[0].get_parse_name();
+      GLib.MatchInfo info = null;
+      if(r != null && r.match(uri, 0, out info)) {
+        string contact_id_string = info.fetch_named("contact_id");
+        stdout.printf("Adding contact \"%s\".\n", contact_id_string);
+        contact_list_window.add_contact(contact_id_string);
+      } else {
+        stdout.printf("Invalid uri or contact id\n");
+      }
+
+      release();
     }
   }
 }

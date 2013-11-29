@@ -552,18 +552,15 @@ namespace Venom {
       contact_removed(c);
     }
 
-    // GUI Events
-    public void button_add_contact_clicked(Gtk.Button source) {
-      AddContactDialog dialog = new AddContactDialog();
-      
-      int response = dialog.run();
-      uint8[] contact_id = Tools.hexstring_to_bin(dialog.contact_id);
-      string contact_message = dialog.contact_message;
-      dialog.destroy();
+    public void add_contact(string contact_id_string, string contact_message = ResourceFactory.instance.default_add_contact_message) {
+      if(contact_id_string.length != Tox.FRIEND_ADDRESS_SIZE * 2) {
+        string error_message = "Could not add friend: Invalid ID\n";
+        stderr.printf(error_message);
+        UITools.ErrorDialog("Adding Friend failed", error_message, this);
+        return;
+      }
 
-      if(response != Gtk.ResponseType.OK)
-          return;
-
+      uint8[] contact_id = Tools.hexstring_to_bin(contact_id_string);
       // add friend
       if(contact_id == null || contact_id.length != Tox.FRIEND_ADDRESS_SIZE) {
         string error_message = "Could not add friend: Invalid ID\n";
@@ -583,6 +580,21 @@ namespace Venom {
 
       stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
       contact_added(c);
+    }
+
+    // GUI Events
+    public void button_add_contact_clicked(Gtk.Button source) {
+      AddContactDialog dialog = new AddContactDialog();
+      
+      int response = dialog.run();
+      string contact_id_string = dialog.contact_id;
+      string contact_message = dialog.contact_message;
+      dialog.destroy();
+
+      if(response != Gtk.ResponseType.OK)
+          return;
+      
+      add_contact(contact_id_string, contact_message);
     }
     
     public void button_group_chat_clicked(Gtk.Button source) {
