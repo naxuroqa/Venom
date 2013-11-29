@@ -16,6 +16,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 #
+#    CPACK_NSIS_EXTRA_* protocol register and unregister macros from
+#    http://hg.pidgin.im/pidgin/main/file/tip/pidgin/win32/nsis/pidgin-installer.nsi
+#      Original Author: Herman Bloggs <hermanator12002@yahoo.com>
+#      Updated By: Daniel Atallah <daniel_atallah@yahoo.com>
 
 IF(WIN32)
   IF(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/libsodium_license.txt")
@@ -57,7 +61,7 @@ SET(CPACK_RESOURCE_FILE_LICENSE  "${CMAKE_SOURCE_DIR}/COPYING")
 SET(CPACK_PACKAGE_VERSION        "${VENOM_VERSION}")
 
 # nsis
-#TODO set correct path depending on architecture
+#TODO set correct path depending on architecture (as soon as x64_64 windows builds are stable)
 #SET(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
 # There is a bug in NSI that does not handle full unix paths properly. Make
 # sure there is at least one set of four (4) backslashes.
@@ -70,7 +74,21 @@ SET(CPACK_NSIS_DISPLAY_NAME "Venom")
 #SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
 #SET(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
 SET(CPACK_NSIS_MUI_FINISHPAGE_RUN "venom.exe")
-
+SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+DetailPrint \\\"Registering tox URI Handler\\\"
+DeleteRegKey HKCR \\\"tox\\\"
+WriteRegStr HKCR \\\"tox\\\" \\\"\\\" \\\"URL:tox\\\"
+WriteRegStr HKCR \\\"tox\\\" \\\"URL Protocol\\\" \\\"\\\"
+WriteRegStr HKCR \\\"tox\\\\DefaultIcon\\\" \\\"\\\" \\\"$INSTDIR\\\\bin\\\\venom.exe\\\"
+WriteRegStr HKCR \\\"tox\\\\shell\\\" \\\"\\\" \\\"\\\"
+WriteRegStr HKCR \\\"tox\\\\shell\\\\Open\\\" \\\"\\\" \\\"\\\"
+WriteRegStr HKCR \\\"tox\\\\shell\\\\Open\\\\command\\\" \\\"\\\" \\\"$INSTDIR\\\\bin\\\\venom.exe %1\\\"
+")
+SET(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
+;Unregister the URI handler
+DetailPrint \\\"Unregistering tox URI Handler\\\"
+DeleteRegKey HKCR \\\"tox\\\"
+")
 # .deb
 SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtk-3-0 (>= 3.2), libgee-0.8-2 (>= 0.8), libtoxcore (>= 0.0)")
 INCLUDE(CPack)
