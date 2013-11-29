@@ -91,21 +91,21 @@ namespace Venom {
       dht_servers.add(new DhtServer.with_args(ip, port, pub_key));
 
       // setup callbacks
-      handle.callback_friendrequest(this.on_friendrequest_callback);
-      handle.callback_friendmessage(this.on_friendmessage_callback);
+      handle.callback_friend_request(this.on_friendrequest_callback);
+      handle.callback_friend_message(this.on_friendmessage_callback);
       handle.callback_action(this.on_action_callback);
-      handle.callback_namechange(this.on_namechange_callback);
-      handle.callback_statusmessage(this.on_statusmessage_callback);
-      handle.callback_userstatus(this.on_userstatus_callback);
+      handle.callback_name_change(this.on_namechange_callback);
+      handle.callback_status_message(this.on_statusmessage_callback);
+      handle.callback_user_status(this.on_userstatus_callback);
       handle.callback_read_receipt(this.on_read_receipt_callback);
-      handle.callback_connectionstatus(this.on_connectionstatus_callback);
+      handle.callback_connection_status(this.on_connectionstatus_callback);
 
       // Groupchat callbacks
       handle.callback_group_invite(this.on_group_invite_callback);
       handle.callback_group_message(this.on_group_message_callback);
 
       // File sending callbacks
-      handle.callback_file_sendrequest(this.on_file_sendrequest_callback);
+      handle.callback_file_send_request(this.on_file_sendrequest_callback);
       handle.callback_file_control(this.on_file_control_callback);
       handle.callback_file_data(this.on_file_data_callback);
     }
@@ -122,7 +122,7 @@ namespace Venom {
       lock(handle) {
         count_friendlist = handle.count_friendlist();
         friend_numbers = new int[count_friendlist];
-        ret = handle.copy_friendlist(friend_numbers);
+        ret = handle.get_friendlist(friend_numbers);
       }
       if(ret != count_friendlist)
         return;
@@ -225,7 +225,7 @@ namespace Venom {
       uint8[] data = Tools.string_to_nullterm_uint(message);
       
       lock(handle) {
-        ret = handle.addfriend(c.public_key, data);
+        ret = handle.add_friend(c.public_key, data);
       }
       
       if(ret < 0)
@@ -243,7 +243,7 @@ namespace Venom {
         return ret;
       
       lock(handle) {
-        ret = handle.addfriend_norequest(c.public_key);
+        ret = handle.add_friend_norequest(c.public_key);
       }
       if(ret < 0)
         return ret;
@@ -279,7 +279,7 @@ namespace Venom {
     public bool delfriend(Contact c) {
       int ret = -1;
       lock(handle) {
-        ret = handle.delfriend(c.friend_id);
+        ret = handle.del_friend(c.friend_id);
       }
       if(ret == 0) {
         _contacts.unset(c.friend_id);
@@ -304,7 +304,7 @@ namespace Venom {
       int ret = -1;
       uint8[] buf = Tools.string_to_nullterm_uint(message);
       lock(handle) {
-        ret = handle.set_statusmessage(buf);
+        ret = handle.set_status_message(buf);
       }
       return ret == 0;
     }
@@ -313,7 +313,7 @@ namespace Venom {
       uint8[] buf = new uint8[Tox.MAX_STATUSMESSAGE_LENGTH];
       int ret = 0;
       lock(handle) {
-        ret = handle.copy_self_statusmessage(buf);
+        ret = handle.get_self_status_message(buf);
       }
       return (string)buf;
     }
@@ -322,7 +322,7 @@ namespace Venom {
     public uint8[] get_address() {
       uint8[] buf = new uint8[Tox.FRIEND_ADDRESS_SIZE];
       lock(handle) {
-        handle.getaddress(buf);
+        handle.get_address(buf);
       }
       return buf;
     }
@@ -332,7 +332,7 @@ namespace Venom {
       uint8[] buf = Tools.string_to_nullterm_uint(name);
       int ret = -1;
       lock(handle) {
-        ret = handle.setname(buf);
+        ret = handle.set_name(buf);
       }
       return ret == 0;      
     }
@@ -341,7 +341,7 @@ namespace Venom {
       uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH];
       int ret = -1;
       lock(handle) {
-        ret = handle.getselfname(buf);
+        ret = handle.get_self_name(buf);
       }
       return (string)buf;
     }
@@ -350,7 +350,7 @@ namespace Venom {
       uint8[] buf = new uint8[Tox.CLIENT_ID_SIZE];
       int ret = -1;
       lock(handle) {
-        ret = handle.getclient_id(friend_id, buf);
+        ret = handle.get_client_id(friend_id, buf);
       }
       return (ret != 0) ? null : buf;
     }
@@ -359,7 +359,7 @@ namespace Venom {
       uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH];
       int ret = -1;
       lock(handle) {
-        ret = handle.getname(friend_number, buf);
+        ret = handle.get_name(friend_number, buf);
       }
       return (ret < 0) ? null: (string)buf;
     }
@@ -369,9 +369,9 @@ namespace Venom {
       int ret = 0;
       uint8 [] buf;
       lock(handle) {
-        size = handle.get_statusmessage_size(friend_number);
+        size = handle.get_status_message_size(friend_number);
         buf = new uint8[size];
-        ret = handle.copy_statusmessage(friend_number, buf);
+        ret = handle.get_status_message(friend_number, buf);
       }
       return (string)buf;
     }
@@ -380,7 +380,7 @@ namespace Venom {
       uint32 ret = 0;
       uint8[] buf = Tools.string_to_nullterm_uint(message);
       lock(handle) {
-        ret = handle.sendmessage(friend_number, buf);
+        ret = handle.send_message(friend_number, buf);
       }
       return ret;
     }

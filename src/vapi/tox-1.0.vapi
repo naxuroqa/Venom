@@ -34,8 +34,9 @@ namespace Tox {
   [CCode(cprefix = "TOX_")]
   public const int PORT_DEFAULT;
 
-  /* errors for m_addfriend
-   *  FAERR - Friend Add Error */
+  /* Errors for m_addfriend
+   * FAERR - Friend Add Error
+   */
   [CCode (cprefix = "TOX_FAERR_", cname="int")]
   public enum FriendAddError {
     TOOLONG,
@@ -48,8 +49,9 @@ namespace Tox {
     NOMEM
   }
 
-  /* USERSTATUS
-   * Represents userstatuses someone can have. */
+  /* USERSTATUS -
+   * Represents userstatuses someone can have.
+   */
   [CCode (cprefix="TOX_USERSTATUS_", cname="TOX_USERSTATUS")]
   public enum UserStatus {
     NONE,
@@ -57,7 +59,7 @@ namespace Tox {
     BUSY,
     INVALID
   }
-  
+
   [CCode (cprefix="TOX_FILECONTROL_", cname="int")]
   public enum FileControlStatus {
     ACCEPT,
@@ -65,6 +67,13 @@ namespace Tox {
     KILL,
     FINISHED,
     RESUME_BROKEN
+  }
+
+  [CCode (cprefix="TOX_CHAT_CHANGE_", cname="TOX_CHAT_CHANGE")]
+  public enum ChatChange{
+    PEER_ADD,
+    PEER_DEL,
+    PEER_NAME
   }
 
   [Compact]
@@ -86,50 +95,48 @@ namespace Tox {
     [CCode (cname = "tox_new")]
     public Tox(uint8 ipv6enabled);
 
-    /*
-     * returns a FRIEND_ADDRESS_SIZE byte address to give to others.
+    /*  return FRIEND_ADDRESS_SIZE byte address to give to others.
      * format: [client_id (32 bytes)][nospam number (4 bytes)][checksum (2 bytes)]
-     *
      */
-    public void getaddress([CCode(array_length=false)] uint8[] address);
+    public void get_address([CCode(array_length=false)] uint8[] address);
 
-    /*
-     * add a friend
-     * set the data that will be sent along with friend request
+    /* Add a friend.
+     * Set the data that will be sent along with friend request.
      * address is the address of the friend (returned by getaddress of the friend you wish to add) it must be FRIEND_ADDRESS_SIZE bytes. TODO: add checksum.
-     * data is the data and length is the length
-     * returns the friend number if success
-     * return TOX_FAERR_TOOLONG if message length is too long
-     * return TOX_FAERR_NOMESSAGE if no message (message length must be >= 1 byte)
-     * return TOX_FAERR_OWNKEY if user's own key
-     * return TOX_FAERR_ALREADYSENT if friend request already sent or already a friend
-     * return TOX_FAERR_UNKNOWN for unknown error
-     * return TOX_FAERR_BADCHECKSUM if bad checksum in address
-     * return TOX_FAERR_SETNEWNOSPAM if the friend was already there but the nospam was different
-     * (the nospam for that friend was set to the new one)
-     * return TOX_FAERR_NOMEM if increasing the friend list size fails
+     * data is the data and length is the length.
+     *
+     *  return the friend number if success.
+     *  return TOX_FA_TOOLONG if message length is too long.
+     *  return TOX_FAERR_NOMESSAGE if no message (message length must be >= 1 byte).
+     *  return TOX_FAERR_OWNKEY if user's own key.
+     *  return TOX_FAERR_ALREADYSENT if friend request already sent or already a friend.
+     *  return TOX_FAERR_UNKNOWN for unknown error.
+     *  return TOX_FAERR_BADCHECKSUM if bad checksum in address.
+     *  return TOX_FAERR_SETNEWNOSPAM if the friend was already there but the nospam was different.
+     *  (the nospam for that friend was set to the new one).
+     *  return TOX_FAERR_NOMEM if increasing the friend list size fails.
      */
-    public FriendAddError addfriend([CCode(array_length=false)] uint8[] address, [CCode(array_length_type="guint16")] uint8[] data);
+    public FriendAddError add_friend([CCode(array_length=false)] uint8[] address, [CCode(array_length_type="guint16")] uint8[] data);
 
     /* Add a friend without sending a friendrequest.
      *  return the friend number if success.
      *  return -1 if failure.
      */
-    public FriendAddError addfriend_norequest([CCode(array_length=false)] uint8[] client_id);
+    public FriendAddError add_friend_norequest([CCode(array_length=false)] uint8[] client_id);
 
     /* return the friend id associated to that client id.
         return -1 if no such friend */
-    public int getfriend_id([CCode(array_length=false)] uint8[] client_id);
+    public int get_friend_id([CCode(array_length=false)] uint8[] client_id);
 
     /* Copies the public key associated to that friend id into client_id buffer.
      * Make sure that client_id is of size CLIENT_ID_SIZE.
      *  return 0 if success.
      *  return -1 if failure.
      */
-    public int getclient_id(int friend_id, [CCode(array_length=false)] uint8[] client_id);
+    public int get_client_id(int friend_id, [CCode(array_length=false)] uint8[] client_id);
 
     /* Remove a friend. */
-    public int delfriend(int friendnumber);
+    public int del_friend(int friendnumber);
 
     /* Checks friend's connecting status.
      *
@@ -137,7 +144,7 @@ namespace Tox {
      *  return 0 if friend is not connected to us (Offline).
      *  return -1 on failure.
      */
-    public int get_friend_connectionstatus(int friendnumber);
+    public int get_friend_connection_status(int friendnumber);
 
     /* Checks if there exists a friend with given friendnumber.
      *
@@ -156,8 +163,8 @@ namespace Tox {
      * m_sendmessage_withid will send a message with the id of your choosing,
      * however we can generate an id for you by calling plain m_sendmessage.
      */
-    public uint32 sendmessage(int friendnumber, [CCode(array_length_type="guint32")] uint8[] message);
-    public uint32 sendmessage_withid(int friendnumber, uint32 id, [CCode(array_length_type="guint32")] uint8[] message);
+    public uint32 send_message(int friendnumber, [CCode(array_length_type="guint32")] uint8[] message);
+    public uint32 send_message_withid(int friendnumber, uint32 id, [CCode(array_length_type="guint32")] uint8[] message);
 
     /* Send an action to an online friend.
      *
@@ -169,8 +176,8 @@ namespace Tox {
      *  m_sendaction_withid will send an action message with the id of your choosing,
      *  however we can generate an id for you by calling plain m_sendaction.
      */
-    public uint32 sendaction(int friendnumber, [CCode(array_length_type="guint32")] uint8[] action);
-    public uint32 sendaction_withid(int friendnumber, uint32 action_id, [CCode(array_length_type="guint32")] uint8[] action);
+    public uint32 send_action(int friendnumber, [CCode(array_length_type="guint32")] uint8[] action);
+    public uint32 send_action_withid(int friendnumber, uint32 action_id, [CCode(array_length_type="guint32")] uint8[] action);
 
     /* Set our nickname.
      * name must be a string of maximum MAX_NAME_LENGTH length.
@@ -180,7 +187,7 @@ namespace Tox {
      *  return 0 if success.
      *  return -1 if failure.
      */
-    public int setname([CCode(array_length_type="guint16")] uint8[] name);
+    public int set_name([CCode(array_length_type="guint16")] uint8[] name);
 
     /*
      * Get your nickname.
@@ -191,7 +198,7 @@ namespace Tox {
      *  return length of name.
      *  return 0 on error.
      */
-    public uint16 getselfname([CCode(array_length_type="guint16")] uint8[] name);
+    public uint16 get_self_name([CCode(array_length_type="guint16")] uint8[] name);
 
      /* Get name of friendnumber and put it in name.
      * name needs to be a valid memory location with a size of at least MAX_NAME_LENGTH (128) bytes.
@@ -199,7 +206,7 @@ namespace Tox {
      *  return length of name (with the NULL terminator) if success.
      *  return -1 if failure.
      */
-    public int getname(int friendnumber, [CCode(array_length=false)] uint8[] name);
+    public int get_name(int friendnumber, [CCode(array_length=false)] uint8[] name);
 
     /* Set our user status.
      * You are responsible for freeing status after.
@@ -207,13 +214,13 @@ namespace Tox {
      *  returns 0 on success.
      *  returns -1 on failure.
      */
-    public int set_statusmessage([CCode(array_length_type="guint16")] uint8[] status);
+    public int set_status_message([CCode(array_length_type="guint16")] uint8[] status);
     public int set_userstatus(UserStatus status);
 
     /*  return the length of friendnumber's status message, including null.
      *  Pass it into malloc
      */
-    public int get_statusmessage_size(int friendnumber);
+    public int get_status_message_size(int friendnumber);
 
     /* Copy friendnumber's status message into buf, truncating if size is over maxlen.
      * Get the size you need to allocate from m_get_statusmessage_size.
@@ -222,16 +229,16 @@ namespace Tox {
      * returns the length of the copied data on success
      * retruns -1 on failure.
      */
-    public int copy_statusmessage(int friendnumber, [CCode(array_length_type="guint32")] uint8[] buf);
-    public int copy_self_statusmessage([CCode(array_length_type="guint32")] uint8[] buf);
+    public int get_status_message(int friendnumber, [CCode(array_length_type="guint32")] uint8[] buf);
+    public int get_self_status_message([CCode(array_length_type="guint32")] uint8[] buf);
 
     /*  return one of USERSTATUS values.
      *  Values unknown to your application should be represented as USERSTATUS_NONE.
      *  As above, the self variant will return our own USERSTATUS.
      *  If friendnumber is invalid, this shall return USERSTATUS_INVALID.
      */
-    public UserStatus get_userstatus(int friendnumber);
-    public UserStatus get_selfuserstatus();
+    public UserStatus get_user_status(int friendnumber);
+    public UserStatus get_self_user_status();
 
     /* Sets whether we send read receipts for friendnumber.
      * This function is not lazy, and it will fail if yesno is not (0 or 1).
@@ -248,19 +255,19 @@ namespace Tox {
      * Otherwise, returns the number of elements copied.
      * If the array was too small, the contents
      * of out_list will be truncated to list_size. */
-    public uint32 copy_friendlist([CCode(array_length_type="guint32")] int[] out_list);
+    public uint32 get_friendlist([CCode(array_length_type="guint32")] int[] out_list);
 
     /* Set the function that will be executed when a friend request is received.
      *  Function format is function(uint8_t * public_key, uint8_t * data, uint16_t length)
      */
-    public delegate void FriendrequestCallback([CCode(array_length=false)] uint8[] public_key, [CCode(array_length_type="guint16")] uint8[] data);
-    public void callback_friendrequest(FriendrequestCallback callback);
+    public delegate void FriendRequestCallback([CCode(array_length=false)] uint8[] public_key, [CCode(array_length_type="guint16")] uint8[] data);
+    public void callback_friend_request(FriendRequestCallback callback);
 
     /* Set the function that will be executed when a message from a friend is received.
      *  Function format is: function(int friendnumber, uint8_t * message, uint32_t length)
      */
-    public delegate void FriendmessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] message);
-    public void callback_friendmessage(FriendmessageCallback callback);
+    public delegate void FriendMessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] message);
+    public void callback_friend_message(FriendMessageCallback callback);
 
     /* Set the function that will be executed when an action from a friend is received.
      *  Function format is: function(int friendnumber, uint8_t * action, uint32_t length)
@@ -272,21 +279,21 @@ namespace Tox {
      *  function(int friendnumber, uint8_t *newname, uint16_t length)
      *  You are not responsible for freeing newname
      */
-    public delegate void NamechangeCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] new_name);
-    public void callback_namechange(NamechangeCallback callback);
+    public delegate void NameChangeCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] new_name);
+    public void callback_name_change(NameChangeCallback callback);
 
     /* Set the callback for status message changes.
      *  function(int friendnumber, uint8_t *newstatus, uint16_t length)
      *  You are not responsible for freeing newstatus.
      */
-    public delegate void StatusmessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] new_status);
-    public void callback_statusmessage(StatusmessageCallback callback);
+    public delegate void StatusMessageCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] new_status);
+    public void callback_status_message(StatusMessageCallback callback);
 
     /* Set the callback for status type changes.
      *  function(int friendnumber, USERSTATUS kind)
      */
-    public delegate void UserstatusCallback(Tox tox, int friend_number, UserStatus user_status);
-    public void callback_userstatus(UserstatusCallback callback);
+    public delegate void UserStatusCallback(Tox tox, int friend_number, UserStatus user_status);
+    public void callback_user_status(UserStatusCallback callback);
 
     /* Set the callback for read receipts.
      *  function(int friendnumber, uint32_t receipt)
@@ -311,8 +318,8 @@ namespace Tox {
      *  being previously online" part. it's assumed that when adding friends,
      *  their connection status is offline.
      */
-    public delegate void ConnectionstatusCallback(Tox tox, int friend_number, uint8 status);
-    public void callback_connectionstatus(ConnectionstatusCallback callback);
+    public delegate void ConnectionStatusCallback(Tox tox, int friend_number, uint8 status);
+    public void callback_connection_status(ConnectionStatusCallback callback);
 
 
     /**********GROUP CHAT FUNCTIONS: WARNING WILL BREAK A LOT************/
@@ -330,6 +337,14 @@ namespace Tox {
      */
     public delegate void GroupMessageCallback(Tox tox, int groupnumber, int friendgroupnumber, [CCode(array_length_type="guint16")] uint8[] message);
     public void callback_group_message(GroupMessageCallback callback);
+    
+    /* Set callback function for peer name list changes.
+     *
+     * It gets called every time the name list changes(new peer/name, deleted peer)
+     *  Function(Tox *tox, int groupnumber, int peernumber, TOX_CHAT_CHANGE change, void *userdata)
+     */
+    public delegate void GroupNamelistChangeCallback(Tox tox, int groupnumber, int peernumber, ChatChange change);
+    public void callback_group_namelist_change(GroupNamelistChangeCallback callback);
 
     /* Creates a new groupchat and puts it in the chats array.
      *
@@ -372,6 +387,22 @@ namespace Tox {
      */
     public int group_message_send(int groupnumber, [CCode(array_length_type="guint32")] uint8[] message);
 
+    /* Return the number of peers in the group chat on success.
+     * return -1 on failure
+     */
+    public int group_number_peers(int groupnumber);
+
+    /* List all the peers in the group chat.
+     *
+     * Copies the names of the peers to the name[length][TOX_MAX_NAME_LENGTH] array.
+     *
+     * returns the number of peers on success.
+     *
+     * return -1 on failure.
+     */
+    //FIXME
+    //int tox_group_get_names(Tox *tox, int groupnumber, uint8_t names[][TOX_MAX_NAME_LENGTH], uint16_t length);
+
     /* Return the number of chats in the instance m.
      * You should use this to determine how much memory to allocate
      * for copy_chatlist.
@@ -384,7 +415,7 @@ namespace Tox {
      * If the array was too small, the contents
      * of out_list will be truncated to list_size.
      */
-    public uint32 copy_chatlist([CCode(array_length_type="guint32")] int[] out_list);
+    public uint32 get_chatlist([CCode(array_length_type="guint32")] int[] out_list);
 
     /******************END OF GROUP CHAT FUNCTIONS************************/
 
@@ -392,19 +423,19 @@ namespace Tox {
     /* NOTE: This how to will be updated.
      *
      * HOW TO SEND FILES CORRECTLY:
-     * 1. Use tox_new_filesender(...) to create a new file sender.
+     * 1. Use tox_new_file_sender(...) to create a new file sender.
      * 2. Wait for the callback set with tox_callback_file_control(...) to be called with receive_send == 1 and control_type == TOX_FILECONTROL_ACCEPT
-     * 3. Send the data with tox_file_senddata(...) with chunk size tox_filedata_size(...)
-     * 4. When sending is done, send a tox_file_sendcontrol(...) with send_receive = 0 and message_id = TOX_FILECONTROL_FINISHED
+     * 3. Send the data with tox_file_send_data(...) with chunk size tox_file_data_size(...)
+     * 4. When sending is done, send a tox_file_send_control(...) with send_receive = 0 and message_id = TOX_FILECONTROL_FINISHED
      *
      * HOW TO RECEIVE FILES CORRECTLY:
-     * 1. wait for the callback set with tox_callback_file_sendrequest(...)
-     * 2. accept or refuse the connection with tox_file_sendcontrol(...) with send_receive = 1 and message_id = TOX_FILECONTROL_ACCEPT or TOX_FILECONTROL_KILL
+     * 1. wait for the callback set with tox_callback_file_send_request(...)
+     * 2. accept or refuse the connection with tox_file_send_control(...) with send_receive = 1 and message_id = TOX_FILECONTROL_ACCEPT or TOX_FILECONTROL_KILL
      * 3. save all the data received with the callback set with tox_callback_file_data(...) to a file.
      * 4. when the callback set with tox_callback_file_control(...) is called with receive_send == 0 and control_type == TOX_FILECONTROL_FINISHED
      * the file is done transferring.
      *
-     * tox_file_dataremaining(...) can be used to know how many bytes are left to send/receive.
+     * tox_file_data_remaining(...) can be used to know how many bytes are left to send/receive.
      *
      * If the connection breaks during file sending (The other person goes offline without pausing the sending and then comes back)
      * the reciever must send a control packet with receive_send == 0 message_id = TOX_FILECONTROL_RESUME_BROKEN and the data being
@@ -420,8 +451,8 @@ namespace Tox {
      *
      *  Function(Tox *tox, int friendnumber, uint8_t filenumber, uint64_t filesize, uint8_t *filename, uint16_t filename_length, void *userdata)
      */
-    public delegate void FileSendrequestCallback(Tox tox, int friendnumber, uint8 filenumber, uint64 filesize, [CCode(array_length_type="guint16")] uint8[] filename);
-    public void callback_file_sendrequest(FileSendrequestCallback callback);
+    public delegate void FileSendRequestCallback(Tox tox, int friendnumber, uint8 filenumber, uint64 filesize, [CCode(array_length_type="guint16")] uint8[] filename);
+    public void callback_file_send_request(FileSendRequestCallback callback);
 
     /* Set the callback for file control requests.
      *
@@ -447,31 +478,31 @@ namespace Tox {
      *  return file number on success
      *  return -1 on failure
      */
-     public int new_filesender(int friendnumber, uint64 filesize, [CCode(array_length_type="guint16")] uint8[] filename);
+     public int new_file_sender(int friendnumber, uint64 filesize, [CCode(array_length_type="guint16")] uint8[] filename);
 
     /* Send a file control request.
      *
      * send_receive is 0 if we want the control packet to target a file we are currently sending,
      * 1 if it targets a file we are currently receiving.
      *
-     *  return 1 on success
-     *  return 0 on failure
+     *  return 0 on success
+     *  return -1 on failure
      */
-    public int file_sendcontrol(int friendnumber, uint8 send_receive, uint8 filenumber, uint8 message_id, [CCode(array_length_type="guint16")] uint8[] data);
+    public int file_send_control(int friendnumber, uint8 send_receive, uint8 filenumber, uint8 message_id, [CCode(array_length_type="guint16")] uint8[] data);
 
     /* Send file data.
      *
-     *  return 1 on success
-     *  return 0 on failure
+     *  return 0 on success
+     *  return -1 on failure
      */
-    public int file_senddata(int friendnumber, uint8 filenumber, [CCode(array_length_type="guint16")] uint8[] data);
+    public int file_send_data(int friendnumber, uint8 filenumber, [CCode(array_length_type="guint16")] uint8[] data);
 
-    /* Returns the recommended/maximum size of the filedata you send with tox_file_senddata()
+    /* Returns the recommended/maximum size of the filedata you send with tox_file_send_data()
      *
      *  return size on success
      *  return 0 on failure (currently will never return 0)
      */
-    public int filedata_size(int friendnumber);
+    public int file_data_size(int friendnumber);
 
     /* Give the number of bytes left to be sent/received.
      *
@@ -480,7 +511,7 @@ namespace Tox {
      *  return number of bytes remaining to be sent/received on success
      *  return 0 on failure
      */
-    public uint64 file_dataremaining(int friendnumber, uint8 filenumber, uint8 send_receive);
+    public uint64 file_data_remaining(int friendnumber, uint8 filenumber, uint8 send_receive);
 
     /***************END OF FILE SENDING FUNCTIONS******************/
 
