@@ -220,17 +220,19 @@ namespace Venom {
       // poor man's Gtk.MenuButton
       //FIXME choose monitor to display this on
       button_user.clicked.connect( () => {
-        menu_user.popup(null,
-          null,
-          (menu, out x, out y, out push_in) => {
-            button_user.get_event_window().get_origin(out x, out y);
-            Gtk.Allocation allocation;
-            button_user.get_allocation(out allocation);
-            y += allocation.height;
-            push_in = true;
-          },
-          0,
-          0); 
+        if(button_user.active) {
+          menu_user.popup(null,
+            null,
+            (menu, out x, out y, out push_in) => {
+              button_user.get_event_window().get_origin(out x, out y);
+              Gtk.Allocation allocation;
+              button_user.get_allocation(out allocation);
+              y += allocation.height;
+              push_in = true;
+            },
+            0,
+            0);
+        }
       });
       menu_user.deactivate.connect( () => {
         button_user.set_active(false);
