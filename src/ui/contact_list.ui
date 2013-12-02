@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Mon Dec  2 12:30:55 2013 -->
+<!-- Generated with glade 3.16.0 on Mon Dec  2 16:58:12 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.4 -->
   <object class="GtkAdjustment" id="adjustment1">
@@ -159,8 +159,9 @@
                       <object class="GtkLabel" id="label_username">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="halign">start</property>
+                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">#username</property>
+                        <property name="ellipsize">end</property>
                         <attributes>
                           <attribute name="weight" value="heavy"/>
                         </attributes>
@@ -175,8 +176,9 @@
                       <object class="GtkLabel" id="label_userstatus">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="halign">start</property>
+                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">#userstatus</property>
+                        <property name="ellipsize">end</property>
                         <attributes>
                           <attribute name="foreground" value="#636364646666"/>
                         </attributes>

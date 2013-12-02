@@ -107,6 +107,11 @@ font-weight: 300;*/
   background-color: @background;
 }
 
+.contact_list .button,
+.conversation_widget .button {
+  box-shadow: none;
+}
+
 .contact_list GtkLabel {
   color: @foreground;
 }
@@ -174,8 +179,7 @@ font-weight: 300;*/
   background-color: @treeview-background;
   background-image: none;
   border-image: none;
-  padding-left: 0;
-  padding-right: 0;
+  padding: 0;
   border: none;
   border-radius: 0px;
 }
