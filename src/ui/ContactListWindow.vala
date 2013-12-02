@@ -25,7 +25,7 @@ namespace Venom {
     // Tox session wrapper
     private ToxSession session;
     private UserStatus user_status = UserStatus.OFFLINE;
-    private Gtk.MenuItem menuitem_status;
+    private Gtk.ImageMenuItem menuitem_status;
 
     // Widgets
     private Gtk.Image image_status;
@@ -177,22 +177,22 @@ namespace Venom {
       Gtk.Image image_group_chat  = builder.get_object("image_group_chat") as Gtk.Image;
       Gtk.Image image_preferences = builder.get_object("image_preferences") as Gtk.Image;
       
-      Gtk.MenuItem menuitem_edit_info = builder.get_object("menuitem_edit_info") as Gtk.MenuItem;
-      Gtk.MenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.MenuItem;
-      Gtk.MenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.MenuItem;
-      Gtk.MenuItem menuitem_quit = builder.get_object("menuitem_quit") as Gtk.MenuItem;
+      Gtk.ImageMenuItem menuitem_edit_info = builder.get_object("menuitem_edit_info") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_quit = builder.get_object("menuitem_quit") as Gtk.ImageMenuItem;
       
-      menuitem_status = builder.get_object("menuitem_status") as Gtk.MenuItem;
-      Gtk.MenuItem menuitem_status_online = builder.get_object("menuitem_status_online") as Gtk.MenuItem;
-      Gtk.MenuItem menuitem_status_away = builder.get_object("menuitem_status_away") as Gtk.MenuItem;
-      Gtk.MenuItem menuitem_status_busy = builder.get_object("menuitem_status_busy") as Gtk.MenuItem;
-      Gtk.MenuItem menuitem_status_offline = builder.get_object("menuitem_status_offline") as Gtk.MenuItem;
+      menuitem_status = builder.get_object("menuitem_status") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_status_online = builder.get_object("menuitem_status_online") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_status_away = builder.get_object("menuitem_status_away") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_status_busy = builder.get_object("menuitem_status_busy") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_status_offline = builder.get_object("menuitem_status_offline") as Gtk.ImageMenuItem;
 
-      //(menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
-      //(menuitem_status_online.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.online);
-      //(menuitem_status_away.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.away);
-      //(menuitem_status_busy.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline_glow);
-      //(menuitem_status_offline.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
+      (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
+      (menuitem_status_online.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.online);
+      (menuitem_status_away.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.away);
+      (menuitem_status_busy.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.busy);
+      (menuitem_status_offline.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
 
       image_status.set_from_pixbuf(ResourceFactory.instance.offline);
       image_userimage.set_from_pixbuf(ResourceFactory.instance.default_contact);
@@ -469,7 +469,7 @@ namespace Venom {
       //TODO clean up, decide what to do with deprecated GtkImageItems
       if(!session.connected || status == UserStatus.OFFLINE) {
         image_status.set_from_pixbuf(ResourceFactory.instance.offline);
-        //(menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
+        (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
         set_title_from_status(UserStatus.OFFLINE);
         return;
       }
@@ -478,15 +478,15 @@ namespace Venom {
      switch(status) {
       case UserStatus.ONLINE:
         image_status.set_from_pixbuf(ResourceFactory.instance.online);
-        //(menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.online);
+        (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.online);
         break;
       case UserStatus.AWAY:
         image_status.set_from_pixbuf(ResourceFactory.instance.away);
-        //(menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.away);
+        (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.away);
         break;
       case UserStatus.BUSY:
         image_status.set_from_pixbuf(ResourceFactory.instance.busy);
-        //(menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline_glow);
+        (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.busy);
         break;
      }
     }

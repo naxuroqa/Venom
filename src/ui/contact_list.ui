@@ -1,11 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Mon Dec  2 23:18:05 2013 -->
+<!-- Generated with glade 3.16.0 on Mon Dec  2 23:47:56 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.4 -->
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image4">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image5">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image6">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-copy</property>
+  </object>
+  <object class="GtkImage" id="image7">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-edit</property>
   </object>
   <object class="GtkImage" id="image_add_contact">
     <property name="visible">True</property>
@@ -31,62 +66,75 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkMenuItem" id="menuitem_edit_info">
+      <object class="GtkImageMenuItem" id="menuitem_edit_info">
+        <property name="label" translatable="yes">Edit user</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Edit user information</property>
+        <property name="image">image7</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="menuitem_copy_id">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
+      <object class="GtkImageMenuItem" id="menuitem_copy_id">
         <property name="label" translatable="yes">Copy ID to clipboard</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="image">image6</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="menuitem_status">
+      <object class="GtkImageMenuItem" id="menuitem_status">
+        <property name="label" translatable="yes">Change Status</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Change status</property>
+        <property name="image">image5</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
         <child type="submenu">
           <object class="GtkMenu" id="menu1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkRadioMenuItem" id="menuitem_status_online">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="GtkImageMenuItem" id="menuitem_status_online">
                 <property name="label" translatable="yes">Online</property>
-                <property name="active">True</property>
-                <property name="draw_as_radio">True</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="image">image4</property>
+                <property name="use_stock">False</property>
+                <property name="always_show_image">True</property>
               </object>
             </child>
             <child>
-              <object class="GtkRadioMenuItem" id="menuitem_status_away">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="GtkImageMenuItem" id="menuitem_status_away">
                 <property name="label" translatable="yes">Away</property>
-                <property name="draw_as_radio">True</property>
-                <property name="group">menuitem_status_online</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="image">image3</property>
+                <property name="use_stock">False</property>
+                <property name="always_show_image">True</property>
               </object>
             </child>
             <child>
-              <object class="GtkRadioMenuItem" id="menuitem_status_busy">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="GtkImageMenuItem" id="menuitem_status_busy">
                 <property name="label" translatable="yes">Busy</property>
-                <property name="draw_as_radio">True</property>
-                <property name="group">menuitem_status_online</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="image">image2</property>
+                <property name="use_stock">False</property>
+                <property name="always_show_image">True</property>
               </object>
             </child>
             <child>
-              <object class="GtkRadioMenuItem" id="menuitem_status_offline">
+              <object class="GtkImageMenuItem" id="menuitem_status_offline">
+                <property name="label" translatable="yes">Offline</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Offline</property>
-                <property name="draw_as_radio">True</property>
-                <property name="group">menuitem_status_online</property>
+                <property name="image">image1</property>
+                <property name="use_stock">False</property>
+                <property name="always_show_image">True</property>
               </object>
             </child>
           </object>
@@ -94,19 +142,23 @@
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="menuitem_about">
+      <object class="GtkImageMenuItem" id="menuitem_about">
+        <property name="label">gtk-about</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">About</property>
         <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <property name="always_show_image">True</property>
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="menuitem_quit">
+      <object class="GtkImageMenuItem" id="menuitem_quit">
+        <property name="label">gtk-quit</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Quit</property>
         <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <property name="always_show_image">True</property>
       </object>
     </child>
   </object>
