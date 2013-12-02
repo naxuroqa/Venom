@@ -45,6 +45,8 @@ namespace Venom {
 
       //hide headers
       set_headers_visible(false);
+      can_focus = false;
+      //sensitive = false;
     }
 
     private bool modify_tooltip(int x, int y, bool keyboard_tooltip, Gtk.Tooltip tooltip) {
@@ -72,12 +74,14 @@ namespace Venom {
       Gtk.TreeIter iter;
       list_store_contacts.append (out iter);
       list_store_contacts.set (iter, 0, contact, 2, Tools.bin_to_hexstring(contact.public_key));
+      can_focus = true;
     }
     
     public void add_groupchat(GroupChat groupchat) {
       Gtk.TreeIter iter;
       list_store_contacts.append (out iter);
       list_store_contacts.set (iter, 1, groupchat);
+      can_focus = true;
     }
 
     public void update_contact(Contact contact) {
@@ -89,6 +93,8 @@ namespace Venom {
       Gtk.TreeIter iter = find_iter(contact);
       list_store_contacts.remove(iter);
       columns_changed();
+      if(list_store_contacts.iter_n_children(null) == 0)
+        can_focus = false;
     }
     
     public Contact? get_selected_contact() {

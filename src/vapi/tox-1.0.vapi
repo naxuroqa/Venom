@@ -17,27 +17,62 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-[CCode(cheader_filename="tox/tox.h", cprefix = "tox_")]
+[CCode (cheader_filename = "tox/tox.h", cprefix = "tox_")]
 namespace Tox {
-  [CCode(cprefix = "TOX_")]
+  [CCode (cprefix = "TOX_")]
   public const int MAX_NAME_LENGTH;
-  [CCode(cprefix = "TOX_")]
+  [CCode (cprefix = "TOX_")]
   public const int MAX_STATUSMESSAGE_LENGTH;
-  [CCode(cprefix = "TOX_")]
+  [CCode (cprefix = "TOX_")]
   public const int CLIENT_ID_SIZE;
-  [CCode(cprefix = "TOX_")]
+  [CCode (cprefix = "TOX_")]
   public const int FRIEND_ADDRESS_SIZE;
-  [CCode(cprefix = "TOX_")]
+  [CCode (cprefix = "TOX_")]
   public const int PORTRANGE_FROM;
-  [CCode(cprefix = "TOX_")]
+  [CCode (cprefix = "TOX_")]
   public const int PORTRANGE_TO;
-  [CCode(cprefix = "TOX_")]
+  [CCode (cprefix = "TOX_")]
   public const int PORT_DEFAULT;
+  [CCode (cprefix = "TOX_")]
+  public const int ENABLE_IPV6_DEFAULT;
+
+  [CCode (cname = "tox_IP4", destroy_function = "", has_type_id = false)]
+  [SimpleType]
+  public struct IP4 {
+    uint8  c[4];
+    uint16 s[2];
+    uint32 i;
+  }
+
+  [CCode (destroy_function = "", has_type_id = false)]
+  [SimpleType]
+  public struct IP6 {
+    uint8  uint8[16];
+    uint16 uint16[8];
+    uint32 uint32[4];
+  }
+
+  [CCode (destroy_function = "", has_type_id = false)]
+  [SimpleType]
+  public struct IP {
+    uint family;
+    IP4 ip4;
+    IP6 ip6;
+  }
+
+  /* will replace IP_Port as soon as the complete infrastructure is in place
+   * removed the unused union and padding also */
+  [CCode (cname = "tox_IP_Port", destroy_function = "", has_type_id = false)]
+  [SimpleType]
+  public struct IPPort {
+    IP     ip;
+    uint16 port;
+  }
 
   /* Errors for m_addfriend
    * FAERR - Friend Add Error
    */
-  [CCode (cprefix = "TOX_FAERR_", cname="int")]
+  [CCode (cname = "int", cprefix = "TOX_FAERR_", has_type_id = false)]
   public enum FriendAddError {
     TOOLONG,
     NOMESSAGE,
@@ -52,7 +87,7 @@ namespace Tox {
   /* USERSTATUS -
    * Represents userstatuses someone can have.
    */
-  [CCode (cprefix="TOX_USERSTATUS_", cname="TOX_USERSTATUS")]
+  [CCode (cname = "TOX_USERSTATUS", cprefix = "TOX_USERSTATUS_", has_type_id = false)]
   public enum UserStatus {
     NONE,
     AWAY,
@@ -60,7 +95,7 @@ namespace Tox {
     INVALID
   }
 
-  [CCode (cprefix="TOX_FILECONTROL_", cname="int")]
+  [CCode (cname = "int", cprefix = "TOX_FILECONTROL_", has_type_id = false)]
   public enum FileControlStatus {
     ACCEPT,
     PAUSE,
@@ -69,15 +104,15 @@ namespace Tox {
     RESUME_BROKEN
   }
 
-  [CCode (cprefix="TOX_CHAT_CHANGE_", cname="TOX_CHAT_CHANGE")]
+  [CCode (cname = "TOX_CHAT_CHANGE", cprefix = "TOX_CHAT_CHANGE_", has_type_id = false)]
   public enum ChatChange{
     PEER_ADD,
     PEER_DEL,
     PEER_NAME
   }
 
+  [CCode (cname = "Tox", free_function = "tox_kill", cprefix = "tox_", has_type_id = false)]
   [Compact]
-  [CCode (cname="Tox", free_function="tox_kill", cprefix="tox_")]
   public class Tox {
     /*
      *  Run this function at startup.
@@ -522,8 +557,7 @@ namespace Tox {
     /* Sends a "get nodes" request to the given node with ip, port and public_key
      *   to setup connections
      */
-    // FIXME
-    //public void bootstrap_from_ip( IPAnyPort ip_port, [CCode(array_length=false)]uint8[] public_key );
+    public void bootstrap_from_ip(IPPort ip_port, [CCode(array_length=false)] uint8[] public_key);
 
     /* Resolves address into an IP address. If successful, sends a "get nodes"
      *   request to the given node with ip, port and public_key to setup connections
@@ -589,4 +623,10 @@ namespace Tox {
     /* Load the messenger from data of size length. */
     public int load([CCode(array_length_type = "guint32")] uint8[] data);
   }
+  [CCode (cheader_filename = "tox/toxrtp.h", cname = "rtp_session_t", cprefix = "rtp_", has_type_id = false)]
+  [Compact]
+  public class RTP {
+  }
 }
+
+
