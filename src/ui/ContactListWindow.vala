@@ -212,11 +212,29 @@ namespace Venom {
       scrolled_window_contact_list.add(contact_list_tree_view);
       
       Gtk.Menu menu_user = builder.get_object("menu_user") as Gtk.Menu;
-      Gtk.Button button_user = builder.get_object("button_user") as Gtk.Button;
+      Gtk.ToggleButton button_user = builder.get_object("button_user") as Gtk.ToggleButton;
       Gtk.Button button_add_contact = builder.get_object("button_add_contact") as Gtk.Button;
       Gtk.Button button_group_chat = builder.get_object("button_group_chat") as Gtk.Button;
       Gtk.Button button_preferences = builder.get_object("button_preferences") as Gtk.Button;
-      button_user.clicked.connect( () => { menu_user.popup(null, null, null, 0, 0); });
+
+      // poor man's Gtk.MenuButton
+      //FIXME choose monitor to display this on
+      button_user.clicked.connect( () => {
+        menu_user.popup(null,
+          null,
+          (menu, out x, out y, out push_in) => {
+            button_user.get_event_window().get_origin(out x, out y);
+            Gtk.Allocation allocation;
+            button_user.get_allocation(out allocation);
+            y += allocation.height;
+            push_in = true;
+          },
+          0,
+          0); 
+      });
+      menu_user.deactivate.connect( () => {
+        button_user.set_active(false);
+      });
       /*button_user.button_press_event.connect( (widget, event) => {
         if(event.type == Gdk.EventType.BUTTON_PRESS) {
           if(event.button == Gdk.BUTTON_PRIMARY)
