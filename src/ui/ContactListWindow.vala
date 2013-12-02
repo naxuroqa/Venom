@@ -36,6 +36,8 @@ namespace Venom {
     private Gtk.ComboBox combobox_status;
     private Gtk.Notebook notebook_conversations;
     private Gtk.EventBox eventbox_conversations;
+    private Gtk.Menu menu_user;
+    private Gtk.ToggleButton button_user;
 
     private bool cleaned_up = false;
 
@@ -211,8 +213,8 @@ namespace Venom {
       Gtk.ScrolledWindow scrolled_window_contact_list = builder.get_object("scrolled_window_contact_list") as Gtk.ScrolledWindow;
       scrolled_window_contact_list.add(contact_list_tree_view);
       
-      Gtk.Menu menu_user = builder.get_object("menu_user") as Gtk.Menu;
-      Gtk.ToggleButton button_user = builder.get_object("button_user") as Gtk.ToggleButton;
+      menu_user = builder.get_object("menu_user") as Gtk.Menu;
+      button_user = builder.get_object("button_user") as Gtk.ToggleButton;
       Gtk.Button button_add_contact = builder.get_object("button_add_contact") as Gtk.Button;
       Gtk.Button button_group_chat = builder.get_object("button_group_chat") as Gtk.Button;
       Gtk.Button button_preferences = builder.get_object("button_preferences") as Gtk.Button;
@@ -223,13 +225,7 @@ namespace Venom {
         if(button_user.active) {
           menu_user.popup(null,
             null,
-            (menu, out x, out y, out push_in) => {
-              button_user.get_event_window().get_origin(out x, out y);
-              Gtk.Allocation allocation;
-              button_user.get_allocation(out allocation);
-              y += allocation.height;
-              push_in = true;
-            },
+            user_button_menu_position_function,
             0,
             0);
         }
@@ -383,6 +379,14 @@ namespace Venom {
         session.set_statusmessage(w.user_status);
       }
       w.destroy();
+    }
+    
+    private void user_button_menu_position_function(Gtk.Menu menu, out int x, out int y, out bool push_in) {
+      button_user.get_event_window().get_origin(out x, out y);
+      Gtk.Allocation allocation;
+      button_user.get_allocation(out allocation);
+      y += allocation.height;
+      push_in = true;
     }
 
     private void on_outgoing_message(string message, Contact receiver) {
