@@ -35,7 +35,6 @@ namespace Venom {
     private ContactListTreeView contact_list_tree_view;
     private Gtk.ComboBox combobox_status;
     private Gtk.Notebook notebook_conversations;
-    private Gtk.EventBox eventbox_conversations;
     private Gtk.Menu menu_user;
     private Gtk.ToggleButton button_user;
 
@@ -255,7 +254,7 @@ namespace Venom {
       menuitem_status_offline.activate.connect( () => { set_userstatus(UserStatus.OFFLINE); } );
       
       notebook_conversations = builder.get_object("notebook_conversations") as Gtk.Notebook;
-      eventbox_conversations = builder.get_object("eventbox_conversations") as Gtk.EventBox;
+      notebook_conversations.set_visible(false);
     }
 
     // Connect
@@ -542,7 +541,7 @@ namespace Venom {
       ConversationWidget w = open_conversation_with(c);
       
       notebook_conversations.set_current_page(notebook_conversations.page_num(w));
-      eventbox_conversations.set_visible(true);
+      notebook_conversations.set_visible(true);
       if(c.unread_messages != 0) {
         c.unread_messages = 0;
         contact_list_tree_view.update_contact(c);

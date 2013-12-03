@@ -18,19 +18,10 @@
  */
 
 namespace Venom {
-  public class ConversationWidget : Gtk.Box {
+  public class ConversationWidget : Gtk.EventBox {
     private Gtk.Label label_contact_name;
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
-    
-    private Gtk.Image image_call;
-    private Gtk.Image image_call_video;
-    
-    private Gtk.Button button_call;
-    private Gtk.Button button_call_video;
-    
-    private Gtk.Entry entry_message;
-    private Gtk.ScrolledWindow scrolled_window;
     
     private ConversationTreeView conversation_tree_view;
     public unowned Contact contact {get; private set;}
@@ -41,24 +32,22 @@ namespace Venom {
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
       init_widgets();
-
-      delete_event.connect(() => {hide(); return true;});
-      
       update_contact();
-      
-      image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_contact);
-      image_call.set_from_pixbuf(ResourceFactory.instance.call);
-      image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
-
-      new_conversation_message.connect(conversation_tree_view.add_message);
     }
     
     public void update_contact() {
-      if(contact.name == null || contact.name == "")
+      // update contact name
+      if(contact.name == null || contact.name == "") {
         label_contact_name.set_text(Tools.bin_to_hexstring(contact.public_key));
-      else
+      } else {
         label_contact_name.set_text(contact.name);
+      }
+
+      // update contact status message
       label_contact_statusmessage.set_text(contact.status_message);
+
+      // update contact image
+      image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_contact);
     }
     
     private void init_widgets() {
@@ -70,22 +59,27 @@ namespace Venom {
       }
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.add(box);
+      this.get_style_context().add_class("conversation_widget");
 
       label_contact_name = builder.get_object("label_contact_name") as Gtk.Label;
       label_contact_statusmessage = builder.get_object("label_contact_statusmessage") as Gtk.Label;
       image_contact_image = builder.get_object("image_contact_image") as Gtk.Image;
       
-      image_call = builder.get_object("image_call") as Gtk.Image;
-      image_call_video = builder.get_object("image_call_video") as Gtk.Image;
+      Gtk.Image image_call = builder.get_object("image_call") as Gtk.Image;
+      Gtk.Image image_call_video = builder.get_object("image_call_video") as Gtk.Image;
+
+      //TODO
+      //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
+      //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
       
-      button_call = builder.get_object("button_call") as Gtk.Button;
-      button_call_video = builder.get_object("button_call_video") as Gtk.Button;
-      
-      entry_message = builder.get_object("entry_message") as Gtk.Entry;
+      Gtk.Entry entry_message = builder.get_object("entry_message") as Gtk.Entry;
       entry_message.activate.connect(entry_activate);
 
-      scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
-      
+      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
+
+      image_call.set_from_pixbuf(ResourceFactory.instance.call);
+      image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
+
       conversation_tree_view = new ConversationTreeView();
       conversation_tree_view.show_all();
       scrolled_window.add(conversation_tree_view);
@@ -95,6 +89,10 @@ namespace Venom {
         Gtk.Adjustment adjustment = scrolled_window.get_vadjustment();
         adjustment.set_value(adjustment.upper - adjustment.page_size);
       });
+
+      new_conversation_message.connect(conversation_tree_view.add_message);
+
+      delete_event.connect(() => {hide(); return true;});
     }
 
     public void on_incoming_message(Message message) {
@@ -106,6 +104,8 @@ namespace Venom {
 
     public void entry_activate(Gtk.Entry source) {
       string s = source.text;
+      if(s == "")
+        return;
       Message m = new Message(null, s);
       new_conversation_message(m);
       new_outgoing_message(s, contact);
