@@ -27,6 +27,10 @@
 
 * {
   engine: none;
+  -GtkWindow-resize-grip-default: false;
+  -GtkWindow-resize-grip-height: 0;
+  -GtkWindow-resize-grip-width: 0;
+  -GtkPaned-handle-size: 2;
 }
 
 .contact_list,
@@ -66,7 +70,6 @@
   -GtkMenuItem-arrow-scaling: 0.4;
   -GtkNotebook-initial-gap: 0;
   -GtkNotebook-tab-overlap: -2;
-  -GtkPaned-handle-size: 2;
   -GtkProgressBar-min-horizontal-bar-height: 10;
   -GtkProgressBar-min-vertical-bar-width: 10;
   -GtkRange-slider-width: 13;
@@ -96,9 +99,6 @@
   -GtkWidget-focus-line-width: 1;
   -GtkWidget-link-color: @link_color;
   -GtkWidget-visited-link-color: @link_color;
-  -GtkWindow-resize-grip-default: false;
-  -GtkWindow-resize-grip-height: 0;
-  -GtkWindow-resize-grip-width: 0;
   -WnckTasklist-fade-overlay-rect: 0;
 }
 
