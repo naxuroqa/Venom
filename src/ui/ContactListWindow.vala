@@ -56,7 +56,7 @@ namespace Venom {
       this.conversation_widgets = new Gee.HashMap<int, ConversationWidget>();
 
       init_theme();
-      init_session();      
+      init_session();
       init_widgets();
       init_signals();
       init_contacts();
@@ -65,7 +65,7 @@ namespace Venom {
       label_name.set_text(session.getselfname());
       label_status.set_text(session.get_self_statusmessage());
       on_ownconnectionstatus(false);
-      
+
       stdout.printf("ID: %s\n", Tools.bin_to_hexstring(session.get_address()));
       set_userstatus(UserStatus.ONLINE);
     }
@@ -74,7 +74,7 @@ namespace Venom {
     ~ContactListWindow() {
       cleanup();
     }
-    
+
     public void cleanup() {
       if(cleaned_up)
         return;
@@ -93,7 +93,7 @@ namespace Venom {
       stdout.printf("Session ended gracefully.\n");
       cleaned_up = true;
     }
-    
+
     private bool on_contact_list_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
       // only for debugging!!!
       if(key.keyval == Gdk.Key.F5) {
@@ -104,18 +104,18 @@ namespace Venom {
       }
       return false;
     }
-    
+
     private void init_theme() {
       Gtk.CssProvider provider = new Gtk.CssProvider();
       try {
-      provider.load_from_path(ResourceFactory.instance.default_theme_filename); 
+      provider.load_from_path(ResourceFactory.instance.default_theme_filename);
       } catch (Error e) {
         string message = "Could not read theme from \"%s\"".printf(ResourceFactory.instance.default_theme_filename);
         stderr.printf("%s: %s\n", message,  e.message);
         UITools.ErrorDialog(message, e.message, this);
         return;
-      }     
-      
+      }
+
       Gdk.Screen screen = Gdk.Screen.get_default();
       Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
@@ -150,10 +150,10 @@ namespace Venom {
       } catch (GLib.Error e) {
         stderr.printf("Loading contact list failed!\n");
       }
-      
+
       Gtk.Paned paned = builder.get_object("paned") as Gtk.Paned;
       this.add(paned);
-      
+
       image_status = builder.get_object("image_status") as Gtk.Image;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
       label_name = builder.get_object("label_username") as Gtk.Label;
@@ -177,12 +177,12 @@ namespace Venom {
       Gtk.Image image_add_contact = builder.get_object("image_add_contact") as Gtk.Image;
       Gtk.Image image_group_chat  = builder.get_object("image_group_chat") as Gtk.Image;
       Gtk.Image image_preferences = builder.get_object("image_preferences") as Gtk.Image;
-      
+
       Gtk.ImageMenuItem menuitem_edit_info = builder.get_object("menuitem_edit_info") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_quit = builder.get_object("menuitem_quit") as Gtk.ImageMenuItem;
-      
+
       menuitem_status = builder.get_object("menuitem_status") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_status_online = builder.get_object("menuitem_status_online") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_status_away = builder.get_object("menuitem_status_away") as Gtk.ImageMenuItem;
@@ -201,7 +201,7 @@ namespace Venom {
       image_add_contact.set_from_pixbuf(ResourceFactory.instance.add);
       image_group_chat.set_from_pixbuf(ResourceFactory.instance.groupchat);
       image_preferences.set_from_pixbuf(ResourceFactory.instance.settings);
-      
+
       Gtk.Image image_arrow = builder.get_object("image_arrow") as Gtk.Image;
       image_arrow.set_from_pixbuf(ResourceFactory.instance.arrow);
 
@@ -211,7 +211,7 @@ namespace Venom {
 
       Gtk.ScrolledWindow scrolled_window_contact_list = builder.get_object("scrolled_window_contact_list") as Gtk.ScrolledWindow;
       scrolled_window_contact_list.add(contact_list_tree_view);
-      
+
       menu_user = builder.get_object("menu_user") as Gtk.Menu;
       button_user = builder.get_object("button_user") as Gtk.ToggleButton;
       Gtk.Button button_add_contact = builder.get_object("button_add_contact") as Gtk.Button;
@@ -242,17 +242,17 @@ namespace Venom {
       button_add_contact.clicked.connect(button_add_contact_clicked);
       button_group_chat.clicked.connect(button_group_chat_clicked);
       button_preferences.clicked.connect(button_preferences_clicked);
-      
+
       menuitem_edit_info.activate.connect( edit_user_information );
       menuitem_copy_id.activate.connect( copy_id_to_clipboard);
       menuitem_about.activate.connect( show_about_dialog );
       menuitem_quit.activate.connect( () => {this.destroy();});
-      
+
       menuitem_status_online.activate.connect(  () => { set_userstatus(UserStatus.ONLINE); } );
       menuitem_status_away.activate.connect(    () => { set_userstatus(UserStatus.AWAY); } );
       menuitem_status_busy.activate.connect(    () => { set_userstatus(UserStatus.BUSY); } );
       menuitem_status_offline.activate.connect( () => { set_userstatus(UserStatus.OFFLINE); } );
-      
+
       notebook_conversations = builder.get_object("notebook_conversations") as Gtk.Notebook;
       notebook_conversations.set_visible(false);
     }
@@ -270,11 +270,11 @@ namespace Venom {
       session.on_connectionstatus.connect(this.on_connectionstatus);
       session.on_ownconnectionstatus.connect(this.on_ownconnectionstatus);
       session.on_ownuserstatus.connect(this.on_ownuserstatus);
-      
+
       //groupmessage signals
       session.on_group_invite.connect(this.on_group_invite);
       session.on_group_message.connect(this.on_group_message);
-      
+
       // Contact list treeview signals
       contact_added.connect(contact_list_tree_view.add_contact);
       contact_changed.connect( (c) => {
@@ -287,21 +287,21 @@ namespace Venom {
         contact_list_tree_view.remove_contact(c);
         ConversationWidget w = conversation_widgets[c.friend_id];
         if(w != null) {
-          conversation_widgets[c.friend_id].destroy(); 
+          conversation_widgets[c.friend_id].destroy();
           conversation_widgets.unset(c.friend_id);
         }
       } );
       groupchat_added.connect(contact_list_tree_view.add_groupchat);
       contact_list_tree_view.contact_activated.connect(on_contact_activated);
       contact_list_tree_view.key_press_event.connect(on_treeview_key_pressed);
-      
+
       //ComboboxStatus signals
       combobox_status.changed.connect(combobox_status_changed);
-      
+
       // FIXME remove after testing is done!
       this.key_press_event.connect(on_contact_list_key_pressed);
     }
-    
+
     // Restore friends from datafile
     private void init_contacts() {
       Gee.HashMap<int, Contact> contacts = session.get_contact_list();
@@ -329,7 +329,7 @@ namespace Venom {
       set_userstatus( (UserStatus)value_status );
       */
     }
-    
+
     private void set_userstatus(UserStatus status) {
       if(user_status == status)
         return;
@@ -337,28 +337,28 @@ namespace Venom {
         session.start();
       }
       session.set_userstatus(status);
-      
+
       if(status == UserStatus.OFFLINE) {
         session.stop();
       }
-      
+
       user_status = status;
     }
-    
+
     private void copy_id_to_clipboard() {
       string id_string = Tools.bin_to_hexstring(session.get_address());
       Gdk.Display display = get_display();
       Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD).set_text(id_string, -1);
       Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_PRIMARY).set_text(id_string, -1);
     }
-    
+
     private void show_about_dialog() {
       AboutDialog dialog = new AboutDialog();
       dialog.show_all();
       dialog.run();
       dialog.destroy();
     }
-    
+
     private void edit_user_information() {
       UserInfoWindow w = new UserInfoWindow();
       w.user_name  = label_name.get_text();
@@ -379,7 +379,7 @@ namespace Venom {
       }
       w.destroy();
     }
-    
+
     private void user_button_menu_position_function(Gtk.Menu menu, out int x, out int y, out bool push_in) {
       button_user.get_event_window().get_origin(out x, out y);
       Gtk.Allocation allocation;
@@ -391,7 +391,7 @@ namespace Venom {
     private void on_outgoing_message(string message, Contact receiver) {
       session.sendmessage(receiver.friend_id, message);
     }
-    
+
     private bool on_treeview_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
       if(key.keyval == Gdk.Key.Delete) {
         Contact c = contact_list_tree_view.get_selected_contact();
@@ -469,7 +469,7 @@ namespace Venom {
         on_ownuserstatus(UserStatus.OFFLINE);
       }
     }
-    
+
     private void on_ownuserstatus(UserStatus status) {
       //TODO clean up, decide what to do with deprecated GtkImageItems
       if(!session.connected || status == UserStatus.OFFLINE) {
@@ -522,7 +522,7 @@ namespace Venom {
     private void on_group_message(GroupChat g, int friendgroupnumber, string message) {
       stdout.printf("[gm] %i@%i: %s\n", friendgroupnumber, g.group_id, message);
     }
-    
+
     private ConversationWidget? open_conversation_with(Contact c) {
       ConversationWidget w = conversation_widgets[c.friend_id];
       if(w == null) {
@@ -539,7 +539,7 @@ namespace Venom {
     // Contact doubleclicked in treeview
     private void on_contact_activated(Contact c) {
       ConversationWidget w = open_conversation_with(c);
-      
+
       notebook_conversations.set_current_page(notebook_conversations.page_num(w));
       notebook_conversations.set_visible(true);
       if(c.unread_messages != 0) {
@@ -547,7 +547,7 @@ namespace Venom {
         contact_list_tree_view.update_contact(c);
       }
     }
-    
+
     public void remove_contact(Contact c) {
       if(c == null)
         return;
@@ -608,7 +608,7 @@ namespace Venom {
     // GUI Events
     public void button_add_contact_clicked(Gtk.Button source) {
       AddContactDialog dialog = new AddContactDialog();
-      
+
       int response = dialog.run();
       string contact_id_string = dialog.contact_id;
       string contact_message = dialog.contact_message;
@@ -616,10 +616,10 @@ namespace Venom {
 
       if(response != Gtk.ResponseType.OK)
           return;
-      
+
       add_contact(contact_id_string, contact_message);
     }
-    
+
     public void button_group_chat_clicked(Gtk.Button source) {
       GroupChat g = session.add_groupchat();
       if(g == null) {

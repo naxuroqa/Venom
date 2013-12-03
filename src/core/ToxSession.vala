@@ -114,7 +114,7 @@ namespace Venom {
     ~ToxSession() {
       running = false;
     }
-    
+
     private void init_contact_list() {
       int[] friend_numbers;
       uint ret = 0;
@@ -223,11 +223,11 @@ namespace Venom {
         return ret;
 
       uint8[] data = Tools.string_to_nullterm_uint(message);
-      
+
       lock(handle) {
         ret = handle.add_friend(c.public_key, data);
       }
-      
+
       if(ret < 0)
         return ret;
       c.public_key = Tools.clone(c.public_key, Tox.CLIENT_ID_SIZE);
@@ -241,7 +241,7 @@ namespace Venom {
 
       if(c.public_key.length != Tox.CLIENT_ID_SIZE)
         return ret;
-      
+
       lock(handle) {
         ret = handle.add_friend_norequest(c.public_key);
       }
@@ -251,7 +251,7 @@ namespace Venom {
       _contacts.set((int)ret, c);
       return ret;
     }
-    
+
     public bool join_groupchat(Contact c, GroupChat g) {
       int ret = -1;
       lock(handle) {
@@ -275,7 +275,7 @@ namespace Venom {
       _groups.set(ret, g);
       return g;
     }
-    
+
     public bool delfriend(Contact c) {
       int ret = -1;
       lock(handle) {
@@ -317,7 +317,7 @@ namespace Venom {
       }
       return (string)buf;
     }
-    
+
     // get personal id
     public uint8[] get_address() {
       uint8[] buf = new uint8[Tox.FRIEND_ADDRESS_SIZE];
@@ -334,7 +334,7 @@ namespace Venom {
       lock(handle) {
         ret = handle.set_name(buf);
       }
-      return ret == 0;      
+      return ret == 0;
     }
 
     public string getselfname() {
@@ -363,7 +363,7 @@ namespace Venom {
       }
       return (ret < 0) ? null: (string)buf;
     }
-    
+
     public string get_statusmessage(int friend_number) {
       int size = 0;
       int ret = 0;
@@ -384,7 +384,7 @@ namespace Venom {
       }
       return ret;
     }
-    
+
     public unowned Gee.HashMap<int, Contact> get_contact_list() {
       return _contacts;
     }
@@ -493,7 +493,7 @@ namespace Venom {
         buf = new uint8 [size];
         handle.save(buf);
       }
-      
+
       assert(size != 0);
 
       if(os.write(buf) != size)

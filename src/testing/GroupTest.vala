@@ -35,7 +35,7 @@ namespace Testing {
         return;
       if(!new_contacts.contains(friend_number))
         return;
-        
+
       new_contacts.remove(friend_number);
       online_contacts.add(friend_number);
     }
@@ -55,7 +55,7 @@ namespace Testing {
         stdout.printf("Friend could not be added :%i\n", friend_number);
         return;
       }
-      
+
       new_contacts.add(friend_number);
     }
 
@@ -63,23 +63,23 @@ namespace Testing {
       string ip_address = ip_string;
       uint16 ip_port_be = ((uint16)port).to_big_endian();
       uint8[] pub_key = Venom.Tools.hexstring_to_bin(pub_key_string);
-      
+
       stdout.printf("Connecting to: %s:%u\n", ip_address, uint16.from_big_endian(ip_port_be));
       stdout.printf("Public key:    %s\n", pub_key_string);
 
       tox.bootstrap_from_address(ip_address, ipv6 ? 1 : 0, ip_port_be, pub_key);
-      
+
       stdout.printf("-----------------------------------\n");
-      
+
       uint8[] buf = new uint8[Tox.FRIEND_ADDRESS_SIZE];
       tox.getaddress(buf);
       stdout.printf("Address: %s\n", Venom.Tools.bin_to_hexstring(buf));
-      
+
       tox.setname(Venom.Tools.string_to_nullterm_uint("Groupchat bot"));
-      
+
       groupchat_number = tox.add_groupchat();
       stdout.printf("Created new groupchat %i\n", groupchat_number);
-      
+
       bool connected = false;
       bool running = true;
       while( running ) {
@@ -91,15 +91,15 @@ namespace Testing {
           else
             stdout.printf("Connection to %s lost.\n", ip_address);
         }
-        
+
         foreach(int friend_number in online_contacts) {
           uint8[] name_buf = new uint8[Tox.MAX_NAME_LENGTH];
           tox.getname(friend_number, name_buf);
           string friend_name = (string)name_buf;
-          
+
           stdout.printf("Friend %s came online, inviting him to groupchat.\n", friend_name);
           tox.sendmessage(friend_number, Venom.Tools.string_to_nullterm_uint("Trying to invite you to my groupchat..."));
-          
+
           if(tox.invite_friend(friend_number, groupchat_number) == 0) {
             stdout.printf("Successfully invited friend %i to groupchat %i.\n", friend_number, groupchat_number);
             tox.sendmessage(friend_number, Venom.Tools.string_to_nullterm_uint("Success!"));

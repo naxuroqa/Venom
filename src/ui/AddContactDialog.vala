@@ -27,15 +27,15 @@ namespace Venom {
       owned get { return textview_contact_message.buffer.text; }
       set { textview_contact_message.buffer.text = value; }
     }
-    
+
     private Gtk.Entry entry_contact_id;
     private Gtk.TextView textview_contact_message;
     private GLib.Regex id_regex;
-    
+
     public AddContactDialog() {
       init_widgets();
     }
-    
+
     private void init_widgets() {
       Gtk.Builder builder = new Gtk.Builder();
       try {
@@ -43,7 +43,7 @@ namespace Venom {
       } catch (GLib.Error e) {
         stderr.printf("Loading add contact window failed!\n");
       }
-      
+
       Gtk.Grid grid = builder.get_object("grid") as Gtk.Grid;
       this.get_content_area().add(grid);
 
@@ -66,7 +66,7 @@ namespace Venom {
       this.set_default_response(Gtk.ResponseType.OK);
       this.title = "Add contact";
       this.set_default_size(400, 250);
-      
+
       contact_message = ResourceFactory.instance.default_add_contact_message;
     }
 

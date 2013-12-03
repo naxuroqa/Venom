@@ -21,7 +21,7 @@ namespace Venom {
   public class ResourceFactory : GLib.Object{
 
     private static ResourceFactory? _instance;
-    public static ResourceFactory instance { 
+    public static ResourceFactory instance {
       get {
         if( _instance == null )
           _instance = new ResourceFactory();
@@ -51,11 +51,11 @@ namespace Venom {
       add = load_image_from_resource(pixmaps_prefix + "add.png");
       groupchat = load_image_from_resource(pixmaps_prefix + "groupchat.png");
       settings = load_image_from_resource(pixmaps_prefix + "settings.png");
-      
+
       default_contact = load_image_from_resource(pixmaps_prefix + "default_contact.png");
       default_groupchat = load_image_from_resource(pixmaps_prefix + "default_groupchat.png");
       arrow = load_image_from_resource(pixmaps_prefix + "arrow.png");
-      
+
       try {
         venom = Gtk.IconTheme.get_default().load_icon("venom", 48, 0);
       } catch (Error e) {
@@ -67,7 +67,7 @@ namespace Venom {
       settings_providers = new Gee.ArrayList<SettingsProvider>();
       default_add_contact_message = "Please let me add you to my contactlist.";
     }
-    
+
     public Gdk.Pixbuf away {get; private set;}
     public Gdk.Pixbuf away_glow {get; private set;}
     public Gdk.Pixbuf busy {get; private set;}
@@ -86,14 +86,14 @@ namespace Venom {
 
     public Gdk.Pixbuf default_contact {get; private set;}
     public Gdk.Pixbuf default_groupchat {get; private set;}
-    
+
     public Gdk.Pixbuf venom {get; private set;}
     public Gdk.Pixbuf arrow {get; private set;}
-    
+
     public string default_theme_filename {get; private set;}
     public string data_filename {get; set;}
     public string default_add_contact_message {get; private set;}
-    
+
     public Gee.ArrayList<SettingsProvider> settings_providers {get; set;}
 
     private Gdk.Pixbuf? load_image_from_resource(string resourcename) {

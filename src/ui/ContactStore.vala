@@ -23,6 +23,6 @@ namespace Venom {
     public ContactStore() {
       Contacts = new List<Contact>();
     }
-    
+
   }
 }

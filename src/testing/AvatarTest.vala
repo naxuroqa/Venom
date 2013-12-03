@@ -26,7 +26,7 @@ public class Avatar {
     this.size = size;
     pixbuf = null;
   }
-  
+
   public Gdk.Pixbuf get_pixbuf() {
     if(pixbuf == null)
       update_pixbuf();
@@ -34,30 +34,30 @@ public class Avatar {
   }
 
   public void update_pixbuf() {
-  
+
     Cairo.ImageSurface surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, size, size);
     Gdk.Pixmap
     Cairo.Context cr = new Cairo.Context(surface);
-    
+
     cr.save();
     cr.rectangle(0.0, 0.0, size, size);
     cr.set_source_rgb(1.0, 1.0, 1.0);
     cr.fill();
     cr.restore();
-    
+
     cr.scale(size/200.0, size/200.0);
-    
+
     Shape[] shapes = {};
     for(int i=0; i < svg_shapes.length; ++i) {
       shapes += new Shape();
     }
-    
+
     for(int i=0; i < shapes.length; ++i) {
       cr.save();
       shapes[i].draw(cr);
       cr.restore();
     }
-    
+
     cr.get
   }
 }

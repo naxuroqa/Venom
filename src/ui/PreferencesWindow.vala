@@ -19,16 +19,16 @@
 
 namespace Venom {
   public class PreferencesWindow : Gtk.Dialog {
-    
+
     public PreferencesWindow() {
       init_widgets();
     }
-    
+
     private void init_widgets() {
       Gtk.Notebook notebook = new Gtk.Notebook();
       notebook.tab_pos = Gtk.PositionType.LEFT;
       this.get_content_area().add(notebook);
-      
+
       foreach(SettingsProvider sp in ResourceFactory.instance.settings_providers) {
         sp.reset();
         notebook.append_page(sp.get_content(), sp.get_label());

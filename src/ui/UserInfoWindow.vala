@@ -31,15 +31,15 @@ namespace Venom {
       get { return image_userimage.get_pixbuf(); }
       set { image_userimage.set_from_pixbuf(value); }
     }
-    
+
     private Gtk.Entry entry_username;
     private Gtk.Entry entry_statusmessage;
     private Gtk.Image image_userimage;
-    
+
     public UserInfoWindow() {
       init_widgets();
     }
-    
+
     private void init_widgets() {
       Gtk.Builder builder = new Gtk.Builder();
       try {
@@ -49,11 +49,11 @@ namespace Venom {
       }
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.get_content_area().add(box);
-      
+
       entry_username = builder.get_object("entry_username") as Gtk.Entry;
       entry_statusmessage = builder.get_object("entry_statusmessage") as Gtk.Entry;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
-      
+
       this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Apply", Gtk.ResponseType.APPLY, null);
       this.set_default_response(Gtk.ResponseType.APPLY);
       this.title = "Edit user information";

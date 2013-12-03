@@ -22,7 +22,7 @@ namespace Venom {
     private Gtk.Label label_contact_name;
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
-    
+
     private ConversationTreeView conversation_tree_view;
     public unowned Contact contact {get; private set;}
 
@@ -34,7 +34,7 @@ namespace Venom {
       init_widgets();
       update_contact();
     }
-    
+
     public void update_contact() {
       // update contact name
       if(contact.name == null || contact.name == "") {
@@ -49,7 +49,7 @@ namespace Venom {
       // update contact image
       image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_contact);
     }
-    
+
     private void init_widgets() {
       Gtk.Builder builder = new Gtk.Builder();
       try {
@@ -64,14 +64,14 @@ namespace Venom {
       label_contact_name = builder.get_object("label_contact_name") as Gtk.Label;
       label_contact_statusmessage = builder.get_object("label_contact_statusmessage") as Gtk.Label;
       image_contact_image = builder.get_object("image_contact_image") as Gtk.Image;
-      
+
       Gtk.Image image_call = builder.get_object("image_call") as Gtk.Image;
       Gtk.Image image_call_video = builder.get_object("image_call_video") as Gtk.Image;
 
       //TODO
       //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
       //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
-      
+
       Gtk.Entry entry_message = builder.get_object("entry_message") as Gtk.Entry;
       entry_message.activate.connect(entry_activate);
 

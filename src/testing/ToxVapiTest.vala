@@ -24,12 +24,12 @@ namespace Testing {
       string ip_address = ip_string;
       uint16 ip_port_be = ((uint16)port).to_big_endian();
       uint8[] pub_key = Venom.Tools.hexstring_to_bin(pub_key_string);
-      
+
       stdout.printf("Connecting to: %s:%u\n", ip_address, port);
       stdout.printf("Public key:    %s\n", pub_key_string);
 
       tox.bootstrap_from_address(ip_address, ipv6 ? 1 : 0, ip_port_be, pub_key);
-      
+
       bool connected = false;
       for(int i = 0; i < timeout; ++i) {
         if(connected = (tox.isconnected() != 0))

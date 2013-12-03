@@ -27,14 +27,14 @@ namespace Venom {
     public ContactListCellRenderer() {
       GLib.Object();
     }
-    
-    public override void get_size(Gtk.Widget widget, Gdk.Rectangle? cell_area, out int x_offset, out int y_offset, out int width, out int height) {     
+
+    public override void get_size(Gtk.Widget widget, Gdk.Rectangle? cell_area, out int x_offset, out int y_offset, out int width, out int height) {
       x_offset = 0;
       y_offset = 0;
       width = 50;
       height = 59;
     }
-    
+
     public override void render(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags) {
       int y = 6 + cell_area.y;
       Pango.Rectangle ink_rect = render_name(ctx, widget, background_area, cell_area, y);
@@ -44,7 +44,7 @@ namespace Venom {
       render_userstatus(ctx, widget, background_area, cell_area);
       render_unread_messages(ctx, widget, background_area, cell_area);
     }
-    
+
     public void render_image(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
       Gdk.Pixbuf? icon;
       if(contact == null) {
@@ -59,12 +59,12 @@ namespace Venom {
 			  ctx.fill();
 			}
     }
-    
+
     public void render_userstatus(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
       if(contact == null)
         return;
       Gdk.Pixbuf? status = null;
-      
+
       if(!contact.online) {
         status = contact.unread_messages > 0 ? ResourceFactory.instance.offline_glow : ResourceFactory.instance.offline;
       }
@@ -99,7 +99,7 @@ namespace Venom {
       layout.set_font_description(font);
       Gtk.StateFlags state = widget.get_state_flags();
       Gdk.RGBA color = widget.get_style_context().get_color(state);
-      
+
       if(contact == null) {
         layout.set_text("Groupchat #%i".printf(groupchat.group_id), -1);
       } else if(contact.name != null && contact.name != "") {
@@ -110,7 +110,7 @@ namespace Venom {
       layout.set_ellipsize(Pango.EllipsizeMode.END);
       layout.set_width((cell_area.width - 58 - 26) * Pango.SCALE);
       layout.get_pixel_extents(out ink_rect, out logical_rect);
-      
+
       if (ctx != null) {
         ctx.save();
         Gdk.cairo_set_source_rgba(ctx, color);
@@ -120,7 +120,7 @@ namespace Venom {
       }
       return ink_rect;
     }
-    
+
     public Pango.Rectangle render_status(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
       Pango.Rectangle? ink_rect, logical_rect;
       Pango.FontDescription font = new Pango.FontDescription();
@@ -138,7 +138,7 @@ namespace Venom {
       layout.set_ellipsize(Pango.EllipsizeMode.END);
       layout.set_width((cell_area.width - 58 - 26) * Pango.SCALE);
       layout.get_pixel_extents(out ink_rect, out logical_rect);
-      
+
       if (ctx != null) {
         ctx.save();
         Gdk.cairo_set_source_rgba(ctx, color);
@@ -154,7 +154,7 @@ namespace Venom {
       Pango.Rectangle? ink_rect, logical_rect;
       Gdk.Rectangle image_rect_border = {cell_area.x + cell_area.width - 24 , cell_area.y + cell_area.height / 2, 13, 13};
       Gdk.Rectangle image_rect = {cell_area.x + cell_area.width - 23 , cell_area.y + cell_area.height / 2 + 1, 11, 11};
-      
+
       Pango.FontDescription font = new Pango.FontDescription();
       font.set_absolute_size(10 * Pango.SCALE);
       Pango.Layout layout = widget.create_pango_layout(null);

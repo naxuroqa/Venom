@@ -30,7 +30,7 @@ namespace Venom {
       name_column = new Gtk.TreeViewColumn();
       ContactListCellRenderer name_column_cell = new ContactListCellRenderer();
       name_column.pack_start(name_column_cell, true);
-      
+
       name_column.add_attribute (name_column_cell, "contact", 0);
       name_column.add_attribute (name_column_cell, "groupchat", 1);
 
@@ -63,7 +63,7 @@ namespace Venom {
         return false;*/
       return false;
     }
-    
+
     private Contact get_contact_from_iter(Gtk.TreeIter iter) {
       GLib.Value v;
       model.get_value(iter, 0, out v);
@@ -76,7 +76,7 @@ namespace Venom {
       list_store_contacts.set (iter, 0, contact, 2, Tools.bin_to_hexstring(contact.public_key));
       can_focus = true;
     }
-    
+
     public void add_groupchat(GroupChat groupchat) {
       Gtk.TreeIter iter;
       list_store_contacts.append (out iter);
@@ -96,7 +96,7 @@ namespace Venom {
       if(list_store_contacts.iter_n_children(null) == 0)
         can_focus = false;
     }
-    
+
     public Contact? get_selected_contact() {
       Gtk.TreeSelection selection =  get_selection();
       if(selection == null)
@@ -110,17 +110,17 @@ namespace Venom {
       Contact c = val as Contact;
       return c;
     }
-    
+
     private void on_row_activated(Gtk.TreePath path, Gtk.TreeViewColumn column) {
       Gtk.TreeIter iter;
       model.get_iter(out iter, path);
       GLib.Value val;
       model.get_value(iter, 0, out val);
       Contact c = val as Contact;
-      
+
       contact_activated(c);
     }
-    
+
     private Gtk.TreeIter? find_iter(Contact contact) {
       Gtk.TreeIter iter;
       list_store_contacts.get_iter_first(out iter);
@@ -128,7 +128,7 @@ namespace Venom {
         if(get_contact_from_iter(iter) == contact)
           return iter;
       } while( list_store_contacts.iter_next(ref iter) );
-      
+
       // not found
       return null;
     }

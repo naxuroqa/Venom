@@ -30,7 +30,7 @@ namespace Venom {
       // Assume that our current pwd is our data dir
       return "";
     }
-    
+
     public static void create_path_for_file(string filename, int mode) {
       string pathname = Path.get_dirname(filename);
       if(pathname != null) {
@@ -80,7 +80,7 @@ namespace Venom {
       Memory.copy(clone, input, length * sizeof(uint8));
       return clone;
     }
-    
+
     public static string friend_add_error_to_string(Tox.FriendAddError friend_add_error) {
       switch(friend_add_error) {
         case Tox.FriendAddError.TOOLONG:

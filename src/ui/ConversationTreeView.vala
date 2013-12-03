@@ -40,7 +40,7 @@ namespace Venom {
         // change wrap width when column size changes
         //message_column.notify["width"].connect( () => {message_column_cell.wrap_width = message_column.get_width();});
         message_column.notify["width"].connect( () => {message_column_cell.wrap_width = message_column.get_width() - 8;});
-        
+
         Gtk.TreeViewColumn time_column = new Gtk.TreeViewColumn();
         Gtk.CellRendererText time_column_cell = new Gtk.CellRendererText();
         time_column_cell.yalign = 0;
@@ -59,7 +59,7 @@ namespace Venom {
         //hide headers
         set_headers_visible(false);
     }
-    
+
     private Message get_message_from_iter(Gtk.TreeIter iter) {
       GLib.Value v;
       model.get_value(iter, 0, out v);
