@@ -1,4 +1,5 @@
-#Installation
+Installation
+============
 - Building and installing
     - [Linux](#linux)
     - [OS X](#osx)
@@ -7,12 +8,14 @@
 
 
 
-#Linux:
+Linux
+=====
 
 Follow ProjectTox-Core [installation instructions](https://github.com/irungentoo/ProjectTox-Core/blob/master/INSTALL.md#linux).
 Don't forget to install it after building it.
 
-## Dependencies
+Dependencies
+------------
 
 Additionally to the tox build dependencies, you will need:
 
@@ -39,7 +42,8 @@ Arch Linux: (There is an [aur-package](https://aur.archlinux.org/packages/venom-
 
     pacman -S vala cmake gtk3 libgee
 
-## Building and installing Venom
+Building and installing Venom
+-----------------------------
 
 After you installed the dependencies, clone, build and install venom:
 
@@ -51,11 +55,13 @@ After you installed the dependencies, clone, build and install venom:
     make
     sudo make install
 
-#OS X:
+OS X
+====
 
 Follow ProjectTox-Core [installation instructions](https://github.com/irungentoo/ProjectTox-Core/blob/master/INSTALL.md#os-x).
 
-##With Homebrew:
+With Homebrew
+-------------
 
     brew install vala cmake gtk+3 libgee git
     git clone git://github.com/naxuroqa/Venom.git
@@ -66,11 +72,13 @@ Follow ProjectTox-Core [installation instructions](https://github.com/irungentoo
     make
     sudo make install
 
-#Windows:
+Windows
+=======
 
 The preferred way is to cross compile windows binaries from linux using the mingw-w64 toolchain.
 
-##Cross compile (mingw-w64)
+Cross compile (mingw-w64)
+-------------------------
 
 ###Dependencies
 * Set up a mingw-w64 toolchain
@@ -96,7 +104,8 @@ There is a package for arch linux doing exactly that: https://aur.archlinux.org/
     make
     sudo make install
 
-##On Windows (mingw-w64)
+On Windows (mingw-w64)
+----------------------
 
 * If you don't have cmake and git installed already:
  *  Download and install cmake from [here](http://www.cmake.org/cmake/resources/software.html).
@@ -141,7 +150,8 @@ After this, you can begin compiling Venom:
     # (finally) build it
     mingw32-make
 
-#FAQ
+FAQ
+===
 #### Cmake complaining about missing modules
 If you are getting errors like these when running cmake
 
