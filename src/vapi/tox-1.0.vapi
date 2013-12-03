@@ -250,7 +250,7 @@ namespace Tox {
      *  returns -1 on failure.
      */
     public int set_status_message([CCode(array_length_type="guint16")] uint8[] status);
-    public int set_userstatus(UserStatus status);
+    public int set_user_status(UserStatus status);
 
     /*  return the length of friendnumber's status message, including null.
      *  Pass it into malloc

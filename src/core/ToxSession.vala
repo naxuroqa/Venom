@@ -291,7 +291,7 @@ namespace Venom {
     public bool set_userstatus(UserStatus user_status) {
       int ret = -1;
       lock(handle) {
-        ret = handle.set_userstatus((Tox.UserStatus)user_status);
+        ret = handle.set_user_status((Tox.UserStatus)user_status);
       }
       if(ret != 0)
         return false;
