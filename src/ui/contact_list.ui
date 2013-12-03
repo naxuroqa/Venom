@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Mon Dec  2 23:47:56 2013 -->
+<!-- Generated with glade 3.16.0 on Tue Dec  3 10:35:34 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.4 -->
   <object class="GtkAdjustment" id="adjustment1">
@@ -261,25 +261,15 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEventBox" id="eventbox2">
+                  <object class="GtkToggleButton" id="button_user">
                     <property name="width_request">13</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="image">image_arrow</property>
                     <style>
-                      <class name="userbutton-box"/>
+                      <class name="userbutton"/>
                     </style>
-                    <child>
-                      <object class="GtkToggleButton" id="button_user">
-                        <property name="width_request">13</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="image">image_arrow</property>
-                        <style>
-                          <class name="userbutton"/>
-                        </style>
-                      </object>
-                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
