@@ -45,6 +45,10 @@ FUNCTION(GLIB_COMPILE_RESOURCES output)
       WORKING_DIRECTORY ${WORKING_DIR}
       OUTPUT_VARIABLE in_file_dep
     )
+    STRING(REGEX REPLACE "(\r?\n)" ";" in_file_dep "${in_file_dep}")
+    FOREACH(dep ${in_file_dep})
+      SET_PROPERTY(SOURCE ${out_file} APPEND PROPERTY OBJECT_DEPENDS "${WORKING_DIR}/${dep}")
+    ENDFOREACH(dep ${in_file_dep})
     ADD_CUSTOM_COMMAND(
       OUTPUT ${out_file}
       WORKING_DIRECTORY ${WORKING_DIR}
@@ -54,8 +58,6 @@ FUNCTION(GLIB_COMPILE_RESOURCES output)
         "--generate-source"
         "--target=${out_file}"
         ${in_file}
-      IMPLICIT_DEPENDS
-        ${in_file_dep}
       DEPENDS
         ${in_file}
     )
