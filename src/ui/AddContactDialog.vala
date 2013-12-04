@@ -73,15 +73,15 @@ namespace Venom {
     private void on_entry_changed() {
       if(contact_id == null || contact_id == "") {
         entry_contact_id.secondary_icon_tooltip_text = "No ID given";
-        entry_contact_id.secondary_icon_stock = "gtk-dialog-warning";
+        entry_contact_id.secondary_icon_name = "gtk-dialog-warning";
       } else if (contact_id.length != Tox.FRIEND_ADDRESS_SIZE*2) {
         entry_contact_id.secondary_icon_tooltip_text = "ID of invalid size";
-        entry_contact_id.secondary_icon_stock = "gtk-dialog-warning";
+        entry_contact_id.secondary_icon_name = "gtk-dialog-warning";
       } else if (id_regex != null && !id_regex.match(contact_id)) {
         entry_contact_id.secondary_icon_tooltip_text = "ID contains invalid characters";
-        entry_contact_id.secondary_icon_stock = "gtk-dialog-warning";
+        entry_contact_id.secondary_icon_name = "gtk-dialog-warning";
       } else {
-        entry_contact_id.secondary_icon_stock = "";
+        entry_contact_id.secondary_icon_pixbuf = null;
       }
     }
   }
