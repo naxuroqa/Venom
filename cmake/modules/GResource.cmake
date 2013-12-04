@@ -46,8 +46,9 @@ FUNCTION(GLIB_COMPILE_RESOURCES output)
       OUTPUT_VARIABLE in_file_dep
     )
     STRING(REGEX REPLACE "(\r?\n)" ";" in_file_dep "${in_file_dep}")
+    SET(in_file_dep_path "")
     FOREACH(dep ${in_file_dep})
-      SET_PROPERTY(SOURCE ${out_file} APPEND PROPERTY OBJECT_DEPENDS "${WORKING_DIR}/${dep}")
+      LIST(APPEND in_file_dep_path "${WORKING_DIR}/${dep}")
     ENDFOREACH(dep ${in_file_dep})
     ADD_CUSTOM_COMMAND(
       OUTPUT ${out_file}
@@ -59,7 +60,7 @@ FUNCTION(GLIB_COMPILE_RESOURCES output)
         "--target=${out_file}"
         ${in_file}
       DEPENDS
-        ${in_file}
+        ${in_file};${in_file_dep_path}
     )
   ENDFOREACH(src ${ARGS_SOURCES} ${ARGS_UNPARSED_ARGUMENTS})
   SET(${output} ${out_files} PARENT_SCOPE)
