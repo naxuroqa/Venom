@@ -41,7 +41,7 @@ namespace Venom {
   // Wrapper class for accessing tox functions threadsafe
   public class ToxSession : Object {
     private Tox.Tox handle;
-    private Gee.ArrayList<DhtServer> dht_servers = new Gee.ArrayList<DhtServer>();
+    private DhtServer[] dht_servers = {};
     private Gee.HashMap<int, Contact> _contacts = new Gee.HashMap<int, Contact>();
     private Gee.HashMap<int, GroupChat> _groups = new Gee.HashMap<int, GroupChat>();
 #if GLIB_2_32
@@ -85,10 +85,30 @@ namespace Venom {
       handle = new Tox.Tox( ipv6 ? 1 : 0);
 
       // Add one default dht server
-      string ip = "192.184.81.118";
-      uint16 port = ((uint16)33445).to_big_endian();
-      uint8[] pub_key = Tools.hexstring_to_bin("5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143");
-      dht_servers.add(new DhtServer.with_args(ip, port, pub_key));
+      dht_servers += new DhtServer.with_args(
+        "54.215.145.71",
+        "6EDDEE2188EF579303C0766B4796DCBA89C93058B6032FEA51593DCD42FB746C"
+      );
+      dht_servers += new DhtServer.with_args(
+        "66.175.223.88",
+        "B24E2FB924AE66D023FE1E42A2EE3B432010206F751A2FFD3E297383ACF1572E"
+      );
+      dht_servers += new DhtServer.with_args(
+        "192.184.81.118",
+        "5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143"
+      );
+      dht_servers += new DhtServer.with_args(
+        "198.46.136.167",
+        "F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67"
+      );
+      dht_servers += new DhtServer.with_args(
+        "198.46.136.167",
+        "728925473812C7AAC482BE7250BCCAD0B8CB9F737BF3D42ABD34459C1768F854"
+      );
+      dht_servers += new DhtServer.with_args(
+        "95.47.140.214",
+        "F4BF7C5A9D0EF4CB684090C38DE937FAE1612021F21FEA4DCBFAC6AAFEF58E68"
+      );
 
       // setup callbacks
       handle.callback_friend_request(this.on_friendrequest_callback);
@@ -396,8 +416,19 @@ namespace Venom {
       stdout.printf("Background thread started.\n");
       lock(handle) {
         if(!bootstrapped) {
-          stdout.printf("Connecting to DHT server:\n%s\n", dht_servers[0].to_string());
-          handle.bootstrap_from_address(dht_servers[0].ip, dht_servers[0].ipv6 ? 1 : 0, dht_servers[0].port, dht_servers[0].pub_key);
+          stdout.printf("Connecting to DHT servers:\n");
+          for(int i = 0; i < dht_servers.length; ++i) {
+            // skip ipv6 servers if we don't support them
+            if(dht_servers[i].ipv6 && !ipv6)
+              continue;
+            stdout.printf("  %s\n", dht_servers[i].to_string());
+            handle.bootstrap_from_address(
+              dht_servers[i].host,
+              dht_servers[i].ipv6 ? 1 : 0,
+              dht_servers[i].port.to_big_endian(),
+              dht_servers[i].pub_key
+            );
+          }
           bootstrapped = true;
         }
       }
@@ -444,7 +475,6 @@ namespace Venom {
     // Stop background thread
     public void stop() {
       running = false;
-      bootstrapped = false;
       connected = false;
       on_ownconnectionstatus(false);
     }
