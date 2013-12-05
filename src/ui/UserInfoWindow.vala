@@ -31,10 +31,16 @@ namespace Venom {
       get { return image_userimage.get_pixbuf(); }
       set { image_userimage.set_from_pixbuf(value); }
     }
+    
+    public string user_id {
+      set { label_id.set_text(value); }
+      get { return label_id.get_text(); }
+    }
 
     private Gtk.Entry entry_username;
     private Gtk.Entry entry_statusmessage;
     private Gtk.Image image_userimage;
+    private Gtk.Label label_id;
 
     public UserInfoWindow() {
       init_widgets();
@@ -53,10 +59,20 @@ namespace Venom {
       entry_username = builder.get_object("entry_username") as Gtk.Entry;
       entry_statusmessage = builder.get_object("entry_statusmessage") as Gtk.Entry;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
+      label_id = builder.get_object("label_id") as Gtk.Label;
+      
+      Gtk.Button button_copy_id = builder.get_object("button_copy_id") as Gtk.Button;
+      button_copy_id.clicked.connect(() => {
+        Gdk.Display display = get_display();
+        Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD).set_text(user_id, -1);
+        Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_PRIMARY).set_text(user_id, -1);
+      });
 
       this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Apply", Gtk.ResponseType.APPLY, null);
       this.set_default_response(Gtk.ResponseType.APPLY);
       this.title = "Edit user information";
+      // set dialog to minimal size
+      set_default_size(0, 0);
     }
   }
 }

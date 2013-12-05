@@ -354,7 +354,9 @@ namespace Venom {
 
     private void show_about_dialog() {
       AboutDialog dialog = new AboutDialog();
-      dialog.show_all();
+      dialog.set_transient_for(this);
+      dialog.set_modal(true);
+      
       dialog.run();
       dialog.destroy();
     }
@@ -364,8 +366,10 @@ namespace Venom {
       w.user_name  = label_name.get_text();
       w.user_status = label_status.get_text();
       w.user_image = image_userimage.get_pixbuf();
+      w.user_id = Tools.bin_to_hexstring(session.get_address());
 
-      w.show_all();
+      w.set_modal(true);
+      w.set_transient_for(this);
       int response = w.run();
 
       if(response == Gtk.ResponseType.APPLY) {
@@ -610,6 +614,8 @@ namespace Venom {
     // GUI Events
     public void button_add_contact_clicked(Gtk.Button source) {
       AddContactDialog dialog = new AddContactDialog();
+      dialog.set_modal(true);
+      dialog.set_transient_for(this);
 
       int response = dialog.run();
       string contact_id_string = dialog.contact_id;
