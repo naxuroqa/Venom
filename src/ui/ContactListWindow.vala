@@ -406,15 +406,16 @@ namespace Venom {
       string public_key_string = Tools.bin_to_hexstring(c.public_key);
       stdout.printf("[fr] %s:%s\n", public_key_string, message);
 
-      Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
+      Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
-                                  Gtk.ButtonsType.YES_NO,
-                                  "New friend request from %s.\n\nMessage: %s\nDo you want to accept?".printf(public_key_string, message));
-
-		  int response = messagedialog.run();
-		  messagedialog.destroy();
-      if(response != Gtk.ResponseType.YES)
+                                  Gtk.ButtonsType.NONE,
+                                  "New friend request from '%s'.\nDo you want to accept?", public_key_string);
+      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
+      message_dialog.secondary_text = message;
+		  int response = message_dialog.run();
+		  message_dialog.destroy();
+      if(response != Gtk.ResponseType.ACCEPT)
         return;
 
       Tox.FriendAddError friend_add_error = session.addfriend_norequest(c);
@@ -498,16 +499,17 @@ namespace Venom {
 
     private void on_group_invite(Contact c, GroupChat g) {
       stdout.printf("Group invite from %s with public key %s\n", c.name, Tools.bin_to_hexstring(g.public_key));
-      Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
+      Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
-                                  Gtk.ButtonsType.YES_NO,
-                                  "Groupchat invite from %s, do you want to accept?".printf(
-                                    (c.name != null && c.name != "") ? c.name : Tools.bin_to_hexstring(c.public_key)));
+                                  Gtk.ButtonsType.NONE,
+                                  "'%s' has invited you to a groupchat, do you want to accept?",
+                                    (c.name != null && c.name != "") ? c.name : Tools.bin_to_hexstring(c.public_key));
+      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
 
-		  int response = messagedialog.run();
-		  messagedialog.destroy();
-      if(response != Gtk.ResponseType.YES)
+		  int response = message_dialog.run();
+		  message_dialog.destroy();
+      if(response != Gtk.ResponseType.ACCEPT)
         return;
 
       bool ret = session.join_groupchat(c, g);
@@ -557,15 +559,15 @@ namespace Venom {
       } else {
         name = Tools.bin_to_hexstring(c.public_key);
       }
-      Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
+      Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
-                                  Gtk.MessageType.QUESTION,
-                                  Gtk.ButtonsType.YES_NO,
-                                  "Do you really want to delete %s from your contact list?".printf(name));
-
-		  int response = messagedialog.run();
-		  messagedialog.destroy();
-      if(response != Gtk.ResponseType.YES)
+                                  Gtk.MessageType.WARNING,
+                                  Gtk.ButtonsType.NONE,
+                                  "Are you sure you want to delete '%s' from your contact list?", name);
+      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Delete", Gtk.ResponseType.OK, null);
+		  int response = message_dialog.run();
+		  message_dialog.destroy();
+      if(response != Gtk.ResponseType.OK)
         return;
 
       if(!session.delfriend(c)) {
