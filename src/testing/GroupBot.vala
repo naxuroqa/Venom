@@ -48,7 +48,9 @@ namespace Testing {
 
     public void on_friend_message(Tox.Tox tox, int friend_number, uint8[] message) {
       uint8[] name_buf = new uint8[Tox.MAX_NAME_LENGTH];
-      tox.get_name(friend_number, name_buf);
+      if( tox.get_name(friend_number, name_buf) < 0) {
+        stderr.printf("[ERR] Could not get name for friend #%i\n", friend_number);
+      }
       string name = (string) name_buf;
       string message_str = (string) message;
       stdout.printf("[PM ] %s: %s\n", name, message_str);
@@ -63,20 +65,31 @@ namespace Testing {
 
     public void run(string ip_string, string pub_key_string, int port = 33445, bool ipv6 = true) {
       tox.bootstrap_from_address(ip_string,
-        ipv6 ? 1 : 0,
-        ((uint16)port).to_big_endian(),
-        Venom.Tools.hexstring_to_bin(pub_key_string)
+          ipv6 ? 1 : 0,
+          ((uint16)port).to_big_endian(),
+          Venom.Tools.hexstring_to_bin(pub_key_string)
       );
 
       uint8[] buf = new uint8[Tox.FRIEND_ADDRESS_SIZE];
       tox.get_address(buf);
       stdout.printf("[LOG] Tox ID: %s\n", Venom.Tools.bin_to_hexstring(buf));
 
-      tox.set_name(Venom.Tools.string_to_nullterm_uint("Group bot"));
-      tox.set_status_message(Venom.Tools.string_to_nullterm_uint("send me 'invite' to get invited to groupchat"));
+      if(tox.set_name(Venom.Tools.string_to_nullterm_uint("Group bot")) != 0) {
+        stderr.printf("[ERR] Setting user name failed.\n");
+      }
+      if(tox.set_status_message(
+          Venom.Tools.string_to_nullterm_uint(
+            "send me 'invite' to get invited to groupchat")
+          ) != 0) {
+        stderr.printf("[ERR] Setting status message failed.\n");
+      }
 
       groupchat_number = tox.add_groupchat();
-      stdout.printf("[LOG] Created new groupchat #%i\n", groupchat_number);
+      if(groupchat_number < 0) {
+        stderr.printf("[ERR] Creating a new groupchat failed.\n");
+      } else {
+        stdout.printf("[LOG] Created new groupchat #%i\n", groupchat_number);
+      }
 
       bool connection_status = false;
       bool running = true;
