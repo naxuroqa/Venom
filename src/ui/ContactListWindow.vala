@@ -260,16 +260,16 @@ namespace Venom {
     // Connect
     private void init_signals() {
       // Session signals
-      session.on_friendrequest.connect(this.on_friendrequest);
-      session.on_friendmessage.connect(this.on_friendmessage);
-      session.on_action.connect(this.on_action);
-      session.on_namechange.connect(this.on_namechange);
-      session.on_statusmessage.connect(this.on_statusmessage);
-      session.on_userstatus.connect(this.on_userstatus);
+      session.on_friend_request.connect(this.on_friendrequest);
+      session.on_friend_message.connect(this.on_friendmessage);
+      session.on_friend_action.connect(this.on_action);
+      session.on_name_change.connect(this.on_namechange);
+      session.on_status_message.connect(this.on_statusmessage);
+      session.on_user_status.connect(this.on_userstatus);
       session.on_read_receipt.connect(this.on_read_receipt);
-      session.on_connectionstatus.connect(this.on_connectionstatus);
-      session.on_ownconnectionstatus.connect(this.on_ownconnectionstatus);
-      session.on_ownuserstatus.connect(this.on_ownuserstatus);
+      session.on_connection_status.connect(this.on_connectionstatus);
+      session.on_own_connection_status.connect(this.on_ownconnectionstatus);
+      session.on_own_user_status.connect(this.on_ownuserstatus);
 
       //groupmessage signals
       session.on_group_invite.connect(this.on_group_invite);
