@@ -26,9 +26,10 @@ namespace Testing {
       tox.callback_friend_request(on_friend_request);
       tox.callback_friend_message(on_friend_message);
       tox.callback_group_message(on_groupchat_message);
+      tox.callback_group_namelist_change(on_group_namelist_change);
     }
 
-    public void on_groupchat_message(Tox.Tox tox, int groupnumber, int friendgroupnumber, uint8[] message) {
+    private void on_groupchat_message(Tox.Tox tox, int groupnumber, int friendgroupnumber, uint8[] message) {
       uint8[] name_buf = new uint8[Tox.MAX_NAME_LENGTH];
       if( tox.group_peername(groupnumber, friendgroupnumber, name_buf) < 0 ) {
         stderr.printf("[ERR] Could not get name for peer #%i\n", friendgroupnumber);
@@ -37,7 +38,14 @@ namespace Testing {
       stdout.printf("[GM ] %s: %s\n", friend_name, (string)message);
     }
 
-    public void on_friend_request(uint8[] key, uint8[] data) {
+    private void on_group_namelist_change(Tox.Tox tox, int groupnumber, int peernumber, Tox.ChatChange change) {
+      if(change == Tox.ChatChange.PEER_ADD || change == Tox.ChatChange.PEER_DEL) {
+        stdout.printf("[LOG] Peer connected/disconnect, updating status message\n");
+        update_status_message();
+      }
+    }
+
+    private void on_friend_request(uint8[] key, uint8[] data) {
       uint8[] public_key = Venom.Tools.clone(key, Tox.CLIENT_ID_SIZE);
       stdout.printf("[LOG] Friend request from %s received.\n", Venom.Tools.bin_to_hexstring(public_key));
       Tox.FriendAddError friend_number = tox.add_friend_norequest(public_key);
@@ -46,7 +54,7 @@ namespace Testing {
       } 
     }
 
-    public void on_friend_message(Tox.Tox tox, int friend_number, uint8[] message) {
+    private void on_friend_message(Tox.Tox tox, int friend_number, uint8[] message) {
       uint8[] name_buf = new uint8[Tox.MAX_NAME_LENGTH];
       if( tox.get_name(friend_number, name_buf) < 0) {
         stderr.printf("[ERR] Could not get name for friend #%i\n", friend_number);
@@ -60,6 +68,14 @@ namespace Testing {
         if(tox.invite_friend(friend_number, groupchat_number) != 0) {
           stderr.printf("[ERR] Failed to invite '%s' to groupchat #%i\n", name, groupchat_number);
         }
+      }
+    }
+
+    private void update_status_message() {
+      int group_number_peers = tox.group_number_peers(groupchat_number);
+      string status_message = "send me 'invite' to get invited to groupchat (%i online)".printf(group_number_peers);
+      if(group_number_peers < 0 || tox.set_status_message(Venom.Tools.string_to_nullterm_uint(status_message)) < 0) {
+        stderr.printf("[ERR] Setting status message failed.\n");
       }
     }
 
@@ -77,12 +93,6 @@ namespace Testing {
       if(tox.set_name(Venom.Tools.string_to_nullterm_uint("Group bot")) != 0) {
         stderr.printf("[ERR] Setting user name failed.\n");
       }
-      if(tox.set_status_message(
-          Venom.Tools.string_to_nullterm_uint(
-            "send me 'invite' to get invited to groupchat")
-          ) != 0) {
-        stderr.printf("[ERR] Setting status message failed.\n");
-      }
 
       groupchat_number = tox.add_groupchat();
       if(groupchat_number < 0) {
@@ -90,6 +100,8 @@ namespace Testing {
       } else {
         stdout.printf("[LOG] Created new groupchat #%i\n", groupchat_number);
       }
+
+      update_status_message();
 
       bool connection_status = false;
       bool running = true;

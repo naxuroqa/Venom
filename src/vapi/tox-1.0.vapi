@@ -104,7 +104,7 @@ namespace Tox {
     RESUME_BROKEN
   }
 
-  [CCode (cname = "TOX_CHAT_CHANGE", cprefix = "TOX_CHAT_CHANGE_", has_type_id = false)]
+  [CCode (cname = "guint8", cprefix = "TOX_CHAT_CHANGE_", has_type_id = false)]
   public enum ChatChange{
     PEER_ADD,
     PEER_DEL,
