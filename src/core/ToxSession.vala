@@ -44,6 +44,7 @@ namespace Venom {
     private Gee.ArrayList<DhtServer> dht_servers = new Gee.ArrayList<DhtServer>();
     private Gee.HashMap<int, Contact> _contacts = new Gee.HashMap<int, Contact>();
     private Gee.HashMap<int, GroupChat> _groups = new Gee.HashMap<int, GroupChat>();
+	private Gee.HashMap<uint8, FileTransfer> _file_transfers = new Gee.HashMap<uint8,FileTransfer>();
 #if GLIB_2_32
     private Thread<int> session_thread = null;
 #else
@@ -72,11 +73,11 @@ namespace Venom {
     public signal void on_group_message(GroupChat g, int friendgroupnumber, string message);
 
     // File sending callbacks
-    /*
-    public signal void on_file_sendrequest();
-    public signal void on_file_control();
-    public signal void on_file_data();
-    */
+    
+    public signal void on_file_sendrequest(int friendnumber,uint8 filenumber,uint64 filesize,string filename);
+    public signal void on_file_control(int friendnumber, uint8 filenumber,uint8 receive_send,uint8 status,uint8[] data);
+    public signal void on_file_data(int friendnumber,uint8 filenumber,uint8[] data);
+    
 
     public ToxSession( bool ipv6 = false ) {
 	  this.ipv6 = ipv6;
@@ -205,13 +206,19 @@ namespace Venom {
 
     //File sending callbacks
     private void on_file_sendrequest_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint64 filesize, uint8[] filename) {
+	  Idle.add(() => { on_file_sendrequest(friendnumber,filenumber,filesize, ((string)filename).dup()); return false; });
     }
 
     private void on_file_control_callback(Tox.Tox tox, int friendnumber, uint8 receive_send, uint8 filenumber, uint8 status, uint8[] data) {
+	  uint8[] data_clone = Tools.clone(data, data.length);
+	  Idle.add(() => { on_file_control(friendnumber,filenumber,receive_send,status,data_clone); return false; }); 
     }
 
     private void on_file_data_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint8[] data) {
-    }
+	  uint8[] data_clone = Tools.clone(data, data.length);
+	  Idle.add(() => { on_file_data(friendnumber,filenumber,data_clone); return false; });
+	  //on_file_data(friendnumber,filenumber,data_clone);
+	}
 
     ////////////////////////////// Wrapper functions ////////////////////////////////
 
@@ -389,6 +396,39 @@ namespace Venom {
       return _contacts;
     }
 
+	public unowned Gee.HashMap<uint8, FileTransfer> get_filetransfers() {
+		return _file_transfers;	
+	}
+
+	public uint8 send_file_request(int friend_number, uint64 file_size, string filename) {
+	  uint8[] buf = Tools.string_to_nullterm_uint(filename);
+	  return (uint8) handle.new_file_sender(friend_number,file_size,buf);
+	}
+
+	public void accept_file (int friendnumber, uint8 filenumber) {
+		handle.file_send_control(friendnumber,1,filenumber,Tox.FileControlStatus.ACCEPT,null);		
+	}
+
+	public void reject_file (int friendnumber, uint8 filenumber) {
+		handle.file_send_control(friendnumber,1,filenumber,Tox.FileControlStatus.KILL,null);
+	}
+	
+	public void send_filetransfer_end (int friendnumber, uint8 filenumber) {
+		handle.file_send_control(friendnumber,0,filenumber,Tox.FileControlStatus.FINISHED,null);
+	}
+
+	public int send_file_data(int friendnumber,uint8 filenumber,uint8[] filedata) {
+		return handle.file_send_data(friendnumber,filenumber,filedata);
+	}
+
+	public int get_recommended_data_size(int friendnumber) {
+		return handle.file_data_size(friendnumber);
+	}
+
+	public uint64 get_remaining_file_data(int friendnumber,uint8 filenumber,uint8 send_receive) {
+		return handle.file_data_remaining(friendnumber,filenumber,send_receive);
+    }
+	
     ////////////////////////////// Thread related operations /////////////////////////
 
     // Background thread main function

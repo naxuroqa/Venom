@@ -274,6 +274,10 @@ namespace Venom {
       //groupmessage signals
       session.on_group_invite.connect(this.on_group_invite);
       session.on_group_message.connect(this.on_group_message);
+	  //file signals
+	  session.on_file_sendrequest.connect(this.on_file_sendrequest);
+	  session.on_file_control.connect(this.on_file_control_request);
+	  session.on_file_data.connect(this.on_file_data);
 
       // Contact list treeview signals
       contact_added.connect(contact_list_tree_view.add_contact);
@@ -389,8 +393,21 @@ namespace Venom {
     }
 
     private void on_outgoing_message(string message, Contact receiver) {
-      session.sendmessage(receiver.friend_id, message);
+      uint32 ret = session.sendmessage(receiver.friend_id, message);
+	  stderr.printf("result of sending message is: " + ret.to_string());
     }
+
+	private void on_outgoing_file(string filename, string file_path, uint64 file_size, Contact receiver) {
+	  stdout.printf("sending file %s to %s\n",filename,receiver.name);
+	  uint8 filenumber = session.send_file_request(receiver.friend_id,file_size,filename);
+	  if(filenumber != -1) {
+		Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
+		FileTransfer ft = new FileTransfer(receiver.friend_id, FileTransferDirection.SEND, filenumber, filename, file_path);
+		transfers[filenumber] = ft;
+	  } else {
+		stderr.printf("failed to send %s to %s", filename, receiver.name);
+	  }
+	}
 
     private bool on_treeview_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
       if(key.keyval == Gdk.Key.Delete) {
@@ -523,12 +540,114 @@ namespace Venom {
       stdout.printf("[gm] %i@%i: %s\n", friendgroupnumber, g.group_id, message);
     }
 
+	private void on_file_sendrequest(int friendnumber, uint8 filenumber, uint64 filesize,string filename) {
+	  stdout.printf ("received file send request friend: %i filenumber: %i filename: %s \n",friendnumber,filenumber,filename );
+	  Contact c = session.get_contact_list()[friendnumber];
+	  Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
+								  Gtk.DialogFlags.MODAL,
+                                  Gtk.MessageType.QUESTION,
+                                  Gtk.ButtonsType.YES_NO,
+								  "%s is sending a file %s, do you want to accept?".printf(c.name, filename));
+
+	  int response = messagedialog.run();
+	  messagedialog.destroy();
+	  if(response == Gtk.ResponseType.YES) {
+		Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog("Save file",null,
+																				Gtk.FileChooserAction.SAVE,
+																				"Cancel", Gtk.ResponseType.CANCEL,
+																				"Save", Gtk.ResponseType.ACCEPT);
+		file_selection_dialog.do_overwrite_confirmation = true;
+		file_selection_dialog.set_current_name(filename);
+		int res = file_selection_dialog.run();
+		if(res  == Gtk.ResponseType.ACCEPT) {
+		  string path = file_selection_dialog.get_filename();
+		  file_selection_dialog.destroy();	
+		  stdout.printf("saving to: %s\n",path);
+		  session.accept_file(friendnumber,filenumber);
+		  Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
+		  FileTransfer ft = new FileTransfer(friendnumber, FileTransferDirection.RECEIVE, filenumber, filename, path);
+		  transfers[filenumber] = ft;
+		  return;
+		}
+		file_selection_dialog.destroy();
+	  }
+	  session.reject_file(friendnumber,filenumber);  
+	}
+
+	private void on_file_control_request(int friendnumber,uint8 filenumber,uint8 receive_send,uint8 status, uint8[] data) {
+	  if(status == Tox.FileControlStatus.ACCEPT && receive_send == 1) {
+		stdout.printf("contact accepted file sending request\n");	
+	 	int chunk_size =  session.get_recommended_data_size(friendnumber);
+		FileTransfer ft = session.get_filetransfers()[filenumber];
+		if(ft == null)
+		  return;
+		File file = File.new_for_path(ft.path);
+		try {
+		  var file_stream = file.read ();
+		  var file_info = file.query_info ("*", FileQueryInfoFlags.NONE);
+		  uint64 file_size = file_info.get_size();
+		  uint64 remaining_bytes_to_send = file_size;
+		  uint8[] bytes = new uint8[chunk_size];
+		  bool read_more = true;
+		  while ( remaining_bytes_to_send > 0  ) {
+			if(remaining_bytes_to_send < chunk_size) {
+			  chunk_size = (int) remaining_bytes_to_send;
+			  bytes = new uint8[chunk_size];
+			}
+			if(read_more)
+			  file_stream.read(bytes);
+			int res = session.send_file_data(friendnumber,filenumber,bytes);
+			if(res != -1) {
+			  remaining_bytes_to_send -= chunk_size;
+			  read_more = true;
+			} else {
+			  read_more = false;
+			  Thread.usleep(100);
+			}
+		  }
+		  session.send_filetransfer_end(friendnumber,filenumber);
+		  file_stream.close();
+		} catch(IOError e) {
+		  stderr.printf("I/O error while trying to read file: %s\n",e.message);
+		} catch(Error e) {
+		  stderr.printf("Unknown error while trying to read file: %s\n",e.message);	
+		} 
+		stdout.printf("ended file transfer for %s to %s\n",ft.name, (session.get_contact_list()[friendnumber]).name );
+	  }
+	  if(status == Tox.FileControlStatus.KILL && receive_send == 1) {
+		stderr.printf("file transfer was rejected for file number %u", filenumber);	  
+   	  }
+	  if(status == Tox.FileControlStatus.FINISHED && receive_send == 0) {
+		stderr.printf("file transfer finished for file number %u",filenumber);  
+	  }
+	}
+
+	private void on_file_data(int friendnumber,uint8 filenumber,uint8[] data) {
+	  FileTransfer ft = session.get_filetransfers()[filenumber];
+	  if(ft == null)
+		return;
+	  string path = ft.path;
+	  File file = File.new_for_path(path);
+	  try{
+	    if(!file.query_exists())
+			file.create(FileCreateFlags.NONE);
+		FileOutputStream fos = file.append_to(FileCreateFlags.NONE);
+		size_t bytes_written;
+		fos.write_all(data,out bytes_written);
+		fos.close();
+	  } catch (Error e){
+		stderr.printf("Error while trying to write data to file");  
+	  } 
+	}
+
+
     private ConversationWidget? open_conversation_with(Contact c) {
       ConversationWidget w = conversation_widgets[c.friend_id];
       if(w == null) {
-        w = new ConversationWidget(c);
+		w = new ConversationWidget(c);
         incoming_message.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
+		w.new_outgoing_file.connect(on_outgoing_file);
         conversation_widgets[c.friend_id] = w;
         notebook_conversations.append_page(w, null);
       }

@@ -476,12 +476,12 @@ namespace Tox {
      * the reciever must send a control packet with receive_send == 0 message_id = TOX_FILECONTROL_RESUME_BROKEN and the data being
      * a uint64_t (in host byte order) containing the number of bytes recieved.
      *
-     * If the sender recieves this packet, he must send a control packet with receive_send == 1 and control_type == TOX_FILECONTROL_ACCEPT
+     * If the sender receives this packet, he must send a control packet with receive_send == 1 and control_type == TOX_FILECONTROL_ACCEPT
      * then he must start sending file data from the position (data , uint64_t in host byte order) recieved in the TOX_FILECONTROL_RESUME_BROKEN packet.
      *
      * More to come...
      */
-
+	  
     /* Set the callback for file send requests.
      *
      *  Function(Tox *tox, int friendnumber, uint8_t filenumber, uint64_t filesize, uint8_t *filename, uint16_t filename_length, void *userdata)
@@ -523,7 +523,7 @@ namespace Tox {
      *  return 0 on success
      *  return -1 on failure
      */
-    public int file_send_control(int friendnumber, uint8 send_receive, uint8 filenumber, uint8 message_id, [CCode(array_length_type="guint16")] uint8[] data);
+    public int file_send_control(int friendnumber, uint8 send_receive, uint8 filenumber, uint8 message_id, [CCode(array_length_type="guint16")] uint8[]? data);
 
     /* Send file data.
      *
