@@ -400,8 +400,7 @@ namespace Venom {
     }
 
     private void on_outgoing_message(string message, Contact receiver) {
-      uint32 ret = session.sendmessage(receiver.friend_id, message);
-	  stderr.printf("result of sending message is: " + ret.to_string());
+      session.sendmessage(receiver.friend_id, message);
     }
 
 	private void on_outgoing_file(string filename, string file_path, uint64 file_size, Contact receiver) {
@@ -571,7 +570,7 @@ namespace Venom {
 		if(res  == Gtk.ResponseType.ACCEPT) {
 		  string path = file_selection_dialog.get_filename();
 		  file_selection_dialog.destroy();	
-		  stdout.printf("saving to: %s\n",path);
+		  stdout.printf("Saving to: %s\n",path);
 		  session.accept_file(friendnumber,filenumber);
 		  Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
 		  FileTransfer ft = new FileTransfer(friendnumber, FileTransferDirection.RECEIVE, filenumber, filename, path);
@@ -585,7 +584,7 @@ namespace Venom {
 
 	private void on_file_control_request(int friendnumber,uint8 filenumber,uint8 receive_send,uint8 status, uint8[] data) {
 	  if(status == Tox.FileControlStatus.ACCEPT && receive_send == 1) {
-		stdout.printf("contact accepted file sending request\n");	
+		stdout.printf("Contact accepted file sending request\n");	
 	 	int chunk_size =  session.get_recommended_data_size(friendnumber);
 		FileTransfer ft = session.get_filetransfers()[filenumber];
 		if(ft == null)
@@ -621,13 +620,13 @@ namespace Venom {
 		} catch(Error e) {
 		  stderr.printf("Unknown error while trying to read file: %s\n",e.message);	
 		} 
-		stdout.printf("ended file transfer for %s to %s\n",ft.name, (session.get_contact_list()[friendnumber]).name );
+		stdout.printf("Ended file transfer for %s to %s\n",ft.name, (session.get_contact_list()[friendnumber]).name );
 	  }
 	  if(status == Tox.FileControlStatus.KILL && receive_send == 1) {
-		stderr.printf("file transfer was rejected for file number %u", filenumber);	  
+		stderr.printf("File transfer was rejected for file number %u", filenumber);	  
    	  }
 	  if(status == Tox.FileControlStatus.FINISHED && receive_send == 0) {
-		stderr.printf("file transfer finished for file number %u",filenumber);  
+		stderr.printf("File transfer finished for file number %u",filenumber);  
 	  }
 	}
 

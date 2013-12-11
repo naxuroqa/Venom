@@ -135,7 +135,7 @@ namespace Venom {
 	  try {
 	     file_size = file.query_info ("*", FileQueryInfoFlags.NONE).get_size ();		  
 	  } catch (Error e) {
-		stderr.printf("error occured while getting file size: %s",e.message);
+		stderr.printf("Error occured while getting file size: %s",e.message);
 		return;
 	  }
 	  new_outgoing_file(file.get_basename(),file.get_path(),file_size,contact);	  
