@@ -51,7 +51,7 @@ namespace Testing {
       Tox.FriendAddError friend_number = tox.add_friend_norequest(public_key);
       if(friend_number < 0) {
         stderr.printf("[ERR] Friend could not be added :%s\n", Venom.Tools.friend_add_error_to_string(friend_number));
-      } 
+      }
     }
 
     private void on_friend_message(Tox.Tox tox, int friend_number, uint8[] message) {

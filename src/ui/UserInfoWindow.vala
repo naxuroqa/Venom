@@ -31,7 +31,7 @@ namespace Venom {
       get { return image_userimage.get_pixbuf(); }
       set { image_userimage.set_from_pixbuf(value); }
     }
-    
+
     public string user_id {
       set { label_id.set_text(value); }
       get { return label_id.get_text(); }
@@ -60,7 +60,7 @@ namespace Venom {
       entry_statusmessage = builder.get_object("entry_statusmessage") as Gtk.Entry;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
       label_id = builder.get_object("label_id") as Gtk.Label;
-      
+
       Gtk.Button button_copy_id = builder.get_object("button_copy_id") as Gtk.Button;
       button_copy_id.clicked.connect(() => {
         Gdk.Display display = get_display();

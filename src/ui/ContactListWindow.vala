@@ -139,8 +139,11 @@ namespace Venom {
     private void init_widgets() {
       // Set up Window
       set_default_size(230, 600);
-      if(ResourceFactory.instance.venom != null)
-        set_default_icon(ResourceFactory.instance.venom);
+      try {
+        set_default_icon(Gtk.IconTheme.get_default().load_icon("venom", 48, 0));
+      } catch (Error e) {
+        stderr.printf("Error while loading icon: %s\n", e.message );
+      }
       set_title_from_status(user_status);
 
       // Load widgets from file
@@ -356,7 +359,7 @@ namespace Venom {
       AboutDialog dialog = new AboutDialog();
       dialog.set_transient_for(this);
       dialog.set_modal(true);
-      
+
       dialog.run();
       dialog.destroy();
     }
