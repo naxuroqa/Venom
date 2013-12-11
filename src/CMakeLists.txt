@@ -104,7 +104,6 @@ VALA_PRECOMPILE( VALA_C_GROUP_BOT
     testing/GroupBot.vala
     core/Tools.vala
   PACKAGES
-    gee-0.8
     gio-2.0
     tox-1.0
   OPTIONS
@@ -150,7 +149,6 @@ TARGET_LINK_LIBRARIES( vapi_test
 )
 
 TARGET_LINK_LIBRARIES( group_bot
-                       ${GEE_LIBRARIES}
                        ${GIO_LIBRARIES}
                        ${TOX_LIBRARIES}
 )
