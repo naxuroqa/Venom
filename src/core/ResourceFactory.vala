@@ -57,17 +57,12 @@ namespace Venom {
       default_groupchat = load_image_from_resource(pixmaps_prefix + "default_groupchat.png");
       arrow = load_image_from_resource(pixmaps_prefix + "arrow.png");
 
-      try {
-        venom = Gtk.IconTheme.get_default().load_icon("venom", 48, 0);
-      } catch (Error e) {
-        stderr.printf("Error while loading icon: %s\n", e.message );
-      }
-
       default_theme_filename = Path.build_filename(theme_folder, "default.css");
       data_filename = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox", "data");
       settings_providers = new Gee.ArrayList<SettingsProvider>();
       default_add_contact_message = "Please let me add you to my contactlist.";
     }
+
 
     public Gdk.Pixbuf away {get; private set;}
     public Gdk.Pixbuf away_glow {get; private set;}
@@ -89,7 +84,6 @@ namespace Venom {
     public Gdk.Pixbuf default_contact {get; private set;}
     public Gdk.Pixbuf default_groupchat {get; private set;}
 
-    public Gdk.Pixbuf venom {get; private set;}
     public Gdk.Pixbuf arrow {get; private set;}
 
     public string default_theme_filename {get; private set;}

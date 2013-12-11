@@ -139,8 +139,11 @@ namespace Venom {
     private void init_widgets() {
       // Set up Window
       set_default_size(230, 600);
-      if(ResourceFactory.instance.venom != null)
-        set_default_icon(ResourceFactory.instance.venom);
+      try {
+        set_default_icon(Gtk.IconTheme.get_default().load_icon("venom", 48, 0));
+      } catch (Error e) {
+        stderr.printf("Error while loading icon: %s\n", e.message );
+      }
       set_title_from_status(user_status);
 
       // Load widgets from file
@@ -260,16 +263,16 @@ namespace Venom {
     // Connect
     private void init_signals() {
       // Session signals
-      session.on_friendrequest.connect(this.on_friendrequest);
-      session.on_friendmessage.connect(this.on_friendmessage);
-      session.on_action.connect(this.on_action);
-      session.on_namechange.connect(this.on_namechange);
-      session.on_statusmessage.connect(this.on_statusmessage);
-      session.on_userstatus.connect(this.on_userstatus);
+      session.on_friend_request.connect(this.on_friendrequest);
+      session.on_friend_message.connect(this.on_friendmessage);
+      session.on_friend_action.connect(this.on_action);
+      session.on_name_change.connect(this.on_namechange);
+      session.on_status_message.connect(this.on_statusmessage);
+      session.on_user_status.connect(this.on_userstatus);
       session.on_read_receipt.connect(this.on_read_receipt);
-      session.on_connectionstatus.connect(this.on_connectionstatus);
-      session.on_ownconnectionstatus.connect(this.on_ownconnectionstatus);
-      session.on_ownuserstatus.connect(this.on_ownuserstatus);
+      session.on_connection_status.connect(this.on_connectionstatus);
+      session.on_own_connection_status.connect(this.on_ownconnectionstatus);
+      session.on_own_user_status.connect(this.on_ownuserstatus);
 
       //groupmessage signals
       session.on_group_invite.connect(this.on_group_invite);
@@ -358,7 +361,9 @@ namespace Venom {
 
     private void show_about_dialog() {
       AboutDialog dialog = new AboutDialog();
-      dialog.show_all();
+      dialog.set_transient_for(this);
+      dialog.set_modal(true);
+
       dialog.run();
       dialog.destroy();
     }
@@ -368,8 +373,10 @@ namespace Venom {
       w.user_name  = label_name.get_text();
       w.user_status = label_status.get_text();
       w.user_image = image_userimage.get_pixbuf();
+      w.user_id = Tools.bin_to_hexstring(session.get_address());
 
-      w.show_all();
+      w.set_modal(true);
+      w.set_transient_for(this);
       int response = w.run();
 
       if(response == Gtk.ResponseType.APPLY) {
@@ -423,15 +430,16 @@ namespace Venom {
       string public_key_string = Tools.bin_to_hexstring(c.public_key);
       stdout.printf("[fr] %s:%s\n", public_key_string, message);
 
-      Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
+      Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
-                                  Gtk.ButtonsType.YES_NO,
-                                  "New friend request from %s.\n\nMessage: %s\nDo you want to accept?".printf(public_key_string, message));
-
-		  int response = messagedialog.run();
-		  messagedialog.destroy();
-      if(response != Gtk.ResponseType.YES)
+                                  Gtk.ButtonsType.NONE,
+                                  "New friend request from '%s'.\nDo you want to accept?", public_key_string);
+      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
+      message_dialog.secondary_text = message;
+		  int response = message_dialog.run();
+		  message_dialog.destroy();
+      if(response != Gtk.ResponseType.ACCEPT)
         return;
 
       Tox.FriendAddError friend_add_error = session.addfriend_norequest(c);
@@ -515,16 +523,17 @@ namespace Venom {
 
     private void on_group_invite(Contact c, GroupChat g) {
       stdout.printf("Group invite from %s with public key %s\n", c.name, Tools.bin_to_hexstring(g.public_key));
-      Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
+      Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
-                                  Gtk.ButtonsType.YES_NO,
-                                  "Groupchat invite from %s, do you want to accept?".printf(
-                                    (c.name != null && c.name != "") ? c.name : Tools.bin_to_hexstring(c.public_key)));
+                                  Gtk.ButtonsType.NONE,
+                                  "'%s' has invited you to a groupchat, do you want to accept?",
+                                    (c.name != null && c.name != "") ? c.name : Tools.bin_to_hexstring(c.public_key));
+      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
 
-		  int response = messagedialog.run();
-		  messagedialog.destroy();
-      if(response != Gtk.ResponseType.YES)
+		  int response = message_dialog.run();
+		  message_dialog.destroy();
+      if(response != Gtk.ResponseType.ACCEPT)
         return;
 
       bool ret = session.join_groupchat(c, g);
@@ -676,15 +685,15 @@ namespace Venom {
       } else {
         name = Tools.bin_to_hexstring(c.public_key);
       }
-      Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
+      Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
-                                  Gtk.MessageType.QUESTION,
-                                  Gtk.ButtonsType.YES_NO,
-                                  "Do you really want to delete %s from your contact list?".printf(name));
-
-		  int response = messagedialog.run();
-		  messagedialog.destroy();
-      if(response != Gtk.ResponseType.YES)
+                                  Gtk.MessageType.WARNING,
+                                  Gtk.ButtonsType.NONE,
+                                  "Are you sure you want to delete '%s' from your contact list?", name);
+      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Delete", Gtk.ResponseType.OK, null);
+		  int response = message_dialog.run();
+		  message_dialog.destroy();
+      if(response != Gtk.ResponseType.OK)
         return;
 
       if(!session.delfriend(c)) {
@@ -727,6 +736,8 @@ namespace Venom {
     // GUI Events
     public void button_add_contact_clicked(Gtk.Button source) {
       AddContactDialog dialog = new AddContactDialog();
+      dialog.set_modal(true);
+      dialog.set_transient_for(this);
 
       int response = dialog.run();
       string contact_id_string = dialog.contact_id;

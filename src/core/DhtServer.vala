@@ -20,20 +20,19 @@
 using Tox;
 namespace Venom {
   public class DhtServer {
-    public string ip {get; set;}
+    public string host {get; set;}
     public uint16 port {get; set;}
     public uint8[] pub_key {get; set;}
     public bool ipv6 {get; set;}
 
-    public DhtServer.with_args(string ip, uint16 port, uint8[] pub_key, bool ipv6 = false) {
-      assert(pub_key.length == 32);
-      this.ip = ip;
+    public DhtServer.with_args(string host, string pub_key, bool ipv6 = false, uint16 port = 33445) {
+      this.host = host;
       this.port = port;
-      this.pub_key = Tools.clone(pub_key, pub_key.length);
+      this.pub_key = Tools.hexstring_to_bin(pub_key);
       this.ipv6 = ipv6;
     }
     public string to_string() {
-      return "%s:%u%s %s".printf(ip, uint16.from_big_endian(port), ipv6 ? " (ipv6)" : "", Tools.bin_to_hexstring(pub_key));
+      return "%s:%u%s %s".printf(host, port, ipv6 ? " (ipv6)" : "", Tools.bin_to_hexstring(pub_key));
     }
   }
 }

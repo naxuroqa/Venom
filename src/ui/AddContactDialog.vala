@@ -44,14 +44,11 @@ namespace Venom {
         stderr.printf("Loading add contact window failed!\n");
       }
 
-      Gtk.Grid grid = builder.get_object("grid") as Gtk.Grid;
-      this.get_content_area().add(grid);
+      Gtk.Box box = builder.get_object("box") as Gtk.Box;
+      this.get_content_area().add(box);
 
       entry_contact_id = builder.get_object("entry_contact_id") as Gtk.Entry;
       textview_contact_message = builder.get_object("textview_contact_message") as Gtk.TextView;
-
-      Gtk.Image image_default = builder.get_object("image_default") as Gtk.Image;
-      image_default.set_from_pixbuf(ResourceFactory.instance.default_contact);
 
       entry_contact_id.changed.connect(on_entry_changed);
       on_entry_changed();

@@ -101,15 +101,15 @@ VALA_PRECOMPILE( VALA_C_TEST
   GENERATE_HEADER
 )
 
-VALA_PRECOMPILE( VALA_C_GROUPTEST
-    testing/GroupTest.vala
+VALA_PRECOMPILE( VALA_C_GROUP_BOT
+    testing/GroupBot.vala
     core/Tools.vala
   PACKAGES
-    gee-0.8
     gio-2.0
     tox-1.0
   OPTIONS
     --debug
+    --target-glib=${TARGET_GLIB}
     --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
   CUSTOM_VAPIS
   GENERATE_VAPI
@@ -132,8 +132,8 @@ ADD_EXECUTABLE( vapi_test EXCLUDE_FROM_ALL
   ${VALA_C_TEST}
 )
 
-ADD_EXECUTABLE( grouptest EXCLUDE_FROM_ALL
-  ${VALA_C_GROUPTEST}
+ADD_EXECUTABLE( group_bot EXCLUDE_FROM_ALL
+  ${VALA_C_GROUP_BOT}
 )
 
 TARGET_LINK_LIBRARIES( venom
@@ -149,8 +149,7 @@ TARGET_LINK_LIBRARIES( vapi_test
                        ${TOX_LIBRARIES}
 )
 
-TARGET_LINK_LIBRARIES( grouptest
-                       ${GEE_LIBRARIES}
+TARGET_LINK_LIBRARIES( group_bot
                        ${GIO_LIBRARIES}
                        ${TOX_LIBRARIES}
 )

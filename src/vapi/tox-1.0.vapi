@@ -104,7 +104,7 @@ namespace Tox {
     RESUME_BROKEN
   }
 
-  [CCode (cname = "TOX_CHAT_CHANGE", cprefix = "TOX_CHAT_CHANGE_", has_type_id = false)]
+  [CCode (cname = "guint8", cprefix = "TOX_CHAT_CHANGE_", has_type_id = false)]
   public enum ChatChange{
     PEER_ADD,
     PEER_DEL,
@@ -307,8 +307,8 @@ namespace Tox {
     /* Set the function that will be executed when an action from a friend is received.
      *  Function format is: function(int friendnumber, uint8_t * action, uint32_t length)
      */
-    public delegate void ActionCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] action);
-    public void callback_action(ActionCallback callback);
+    public delegate void FriendActionCallback(Tox tox, int friend_number, [CCode(array_length_type="guint16")] uint8[] action);
+    public void callback_friend_action(FriendActionCallback callback);
 
     /* Set the callback for name changes.
      *  function(int friendnumber, uint8_t *newname, uint16_t length)

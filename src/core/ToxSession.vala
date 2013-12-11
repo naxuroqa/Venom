@@ -41,7 +41,7 @@ namespace Venom {
   // Wrapper class for accessing tox functions threadsafe
   public class ToxSession : Object {
     private Tox.Tox handle;
-    private Gee.ArrayList<DhtServer> dht_servers = new Gee.ArrayList<DhtServer>();
+    private DhtServer[] dht_servers = {};
     private Gee.HashMap<int, Contact> _contacts = new Gee.HashMap<int, Contact>();
     private Gee.HashMap<int, GroupChat> _groups = new Gee.HashMap<int, GroupChat>();
 	private Gee.HashMap<uint8, FileTransfer> _file_transfers = new Gee.HashMap<uint8,FileTransfer>();
@@ -57,16 +57,16 @@ namespace Venom {
     public DhtServer connected_dht_server { get; private set; default=null; }
 
     // Core functionality signals
-    public signal void on_friendrequest(Contact c, string message);
-    public signal void on_friendmessage(Contact c, string message);
-    public signal void on_action(Contact c, string action);
-    public signal void on_namechange(Contact c, string? old_name);
-    public signal void on_statusmessage(Contact c, string? old_status);
-    public signal void on_userstatus(Contact c, int old_status);
+    public signal void on_friend_request(Contact c, string message);
+    public signal void on_friend_message(Contact c, string message);
+    public signal void on_friend_action(Contact c, string action);
+    public signal void on_name_change(Contact c, string? old_name);
+    public signal void on_status_message(Contact c, string? old_status);
+    public signal void on_user_status(Contact c, int old_status);
     public signal void on_read_receipt(Contact c, uint32 receipt);
-    public signal void on_connectionstatus(Contact c);
-    public signal void on_ownconnectionstatus(bool status);
-    public signal void on_ownuserstatus(UserStatus status);
+    public signal void on_connection_status(Contact c);
+    public signal void on_own_connection_status(bool status);
+    public signal void on_own_user_status(UserStatus status);
 
     // Groupchat signals
     public signal void on_group_invite(Contact c, GroupChat g);
@@ -86,20 +86,40 @@ namespace Venom {
       handle = new Tox.Tox( ipv6 ? 1 : 0);
 
       // Add one default dht server
-      string ip = "192.184.81.118";
-      uint16 port = ((uint16)33445).to_big_endian();
-      uint8[] pub_key = Tools.hexstring_to_bin("5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143");
-      dht_servers.add(new DhtServer.with_args(ip, port, pub_key));
+      dht_servers += new DhtServer.with_args(
+        "54.215.145.71",
+        "6EDDEE2188EF579303C0766B4796DCBA89C93058B6032FEA51593DCD42FB746C"
+      );
+      dht_servers += new DhtServer.with_args(
+        "66.175.223.88",
+        "B24E2FB924AE66D023FE1E42A2EE3B432010206F751A2FFD3E297383ACF1572E"
+      );
+      dht_servers += new DhtServer.with_args(
+        "192.184.81.118",
+        "5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143"
+      );
+      dht_servers += new DhtServer.with_args(
+        "198.46.136.167",
+        "F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67"
+      );
+      dht_servers += new DhtServer.with_args(
+        "198.46.136.167",
+        "728925473812C7AAC482BE7250BCCAD0B8CB9F737BF3D42ABD34459C1768F854"
+      );
+      dht_servers += new DhtServer.with_args(
+        "95.47.140.214",
+        "F4BF7C5A9D0EF4CB684090C38DE937FAE1612021F21FEA4DCBFAC6AAFEF58E68"
+      );
 
       // setup callbacks
-      handle.callback_friend_request(this.on_friendrequest_callback);
-      handle.callback_friend_message(this.on_friendmessage_callback);
-      handle.callback_action(this.on_action_callback);
-      handle.callback_name_change(this.on_namechange_callback);
-      handle.callback_status_message(this.on_statusmessage_callback);
-      handle.callback_user_status(this.on_userstatus_callback);
+      handle.callback_friend_request(this.on_friend_request_callback);
+      handle.callback_friend_message(this.on_friend_message_callback);
+      handle.callback_friend_action(this.on_friend_action_callback);
+      handle.callback_name_change(this.on_name_change_callback);
+      handle.callback_status_message(this.on_status_message_callback);
+      handle.callback_user_status(this.on_user_status_callback);
       handle.callback_read_receipt(this.on_read_receipt_callback);
-      handle.callback_connection_status(this.on_connectionstatus_callback);
+      handle.callback_connection_status(this.on_connection_status_callback);
 
       // Groupchat callbacks
       handle.callback_group_invite(this.on_group_invite_callback);
@@ -140,7 +160,7 @@ namespace Venom {
     }
 
     ////////////////////////////// Callbacks /////////////////////////////////////////
-    private void on_friendrequest_callback(uint8[] public_key, uint8[] data) {
+    private void on_friend_request_callback(uint8[] public_key, uint8[] data) {
       if(public_key == null) {
         stderr.printf("Public key was null in friendrequest!\n");
         return;
@@ -148,48 +168,48 @@ namespace Venom {
       string message = ((string)data).dup(); //FIXME string may be copied two times here, check
       uint8[] public_key_clone = Tools.clone(public_key, Tox.CLIENT_ID_SIZE);
       Contact contact = new Contact(public_key_clone, -1);
-      Idle.add(() => { on_friendrequest(contact, message); return false; });
+      Idle.add(() => { on_friend_request(contact, message); return false; });
     }
 
-    private void on_friendmessage_callback(Tox.Tox tox, int friend_number, uint8[] message) {
+    private void on_friend_message_callback(Tox.Tox tox, int friend_number, uint8[] message) {
       string message_string = ((string)message).dup();
-      Idle.add(() => { on_friendmessage(_contacts.get(friend_number), message_string); return false; });
+      Idle.add(() => { on_friend_message(_contacts.get(friend_number), message_string); return false; });
     }
 
-    private void on_action_callback(Tox.Tox tox, int friend_number, uint8[] action) {
+    private void on_friend_action_callback(Tox.Tox tox, int friend_number, uint8[] action) {
       string action_string = ((string)action).dup();
-      Idle.add(() => { on_action(_contacts.get(friend_number), action_string); return false; });
+      Idle.add(() => { on_friend_action(_contacts.get(friend_number), action_string); return false; });
     }
 
-    private void on_namechange_callback(Tox.Tox tox, int friend_number, uint8[] new_name) {
+    private void on_name_change_callback(Tox.Tox tox, int friend_number, uint8[] new_name) {
       Contact contact = _contacts.get(friend_number);
       string old_name = contact.name;
       contact.name = ((string)new_name).dup();
-      Idle.add(() => { on_namechange(contact, old_name); return false; });
+      Idle.add(() => { on_name_change(contact, old_name); return false; });
     }
 
-    private void on_statusmessage_callback(Tox.Tox tox, int friend_number, uint8[] status) {
+    private void on_status_message_callback(Tox.Tox tox, int friend_number, uint8[] status) {
       Contact contact = _contacts.get(friend_number);
       string old_status = contact.status_message;
       contact.status_message = ((string)status).dup();
-      Idle.add(() => { on_statusmessage(contact, old_status); return false; });
+      Idle.add(() => { on_status_message(contact, old_status); return false; });
     }
 
-    private void on_userstatus_callback(Tox.Tox tox, int friend_number, Tox.UserStatus user_status) {
+    private void on_user_status_callback(Tox.Tox tox, int friend_number, Tox.UserStatus user_status) {
       Contact contact = _contacts.get(friend_number);
       int old_status = contact.user_status;
       contact.user_status = user_status;
-      Idle.add(() => { on_userstatus(contact, old_status); return false; });
+      Idle.add(() => { on_user_status(contact, old_status); return false; });
     }
 
     private void on_read_receipt_callback(Tox.Tox tox, int friend_number, uint32 receipt) {
       Idle.add(() => { on_read_receipt(_contacts.get(friend_number), receipt); return false; });
     }
 
-    private void on_connectionstatus_callback(Tox.Tox tox, int friend_number, uint8 status) {
+    private void on_connection_status_callback(Tox.Tox tox, int friend_number, uint8 status) {
       Contact contact = _contacts.get(friend_number);
       contact.online = (status != 0);
-      Idle.add(() => { on_connectionstatus(contact); return false; });
+      Idle.add(() => { on_connection_status(contact); return false; });
     }
 
     // Group chat callbacks
@@ -302,7 +322,7 @@ namespace Venom {
       }
       if(ret != 0)
         return false;
-      on_ownuserstatus(user_status);
+      on_own_user_status(user_status);
       return true;
     }
 
@@ -436,8 +456,19 @@ namespace Venom {
       stdout.printf("Background thread started.\n");
       lock(handle) {
         if(!bootstrapped) {
-          stdout.printf("Connecting to DHT server:\n%s\n", dht_servers[0].to_string());
-          handle.bootstrap_from_address(dht_servers[0].ip, dht_servers[0].ipv6 ? 1 : 0, dht_servers[0].port, dht_servers[0].pub_key);
+          stdout.printf("Connecting to DHT servers:\n");
+          for(int i = 0; i < dht_servers.length; ++i) {
+            // skip ipv6 servers if we don't support them
+            if(dht_servers[i].ipv6 && !ipv6)
+              continue;
+            stdout.printf("  %s\n", dht_servers[i].to_string());
+            handle.bootstrap_from_address(
+              dht_servers[i].host,
+              dht_servers[i].ipv6 ? 1 : 0,
+              dht_servers[i].port.to_big_endian(),
+              dht_servers[i].pub_key
+            );
+          }
           bootstrapped = true;
         }
       }
@@ -450,10 +481,10 @@ namespace Venom {
         if(new_status && !connected) {
           connected = true;
           connected_dht_server = dht_servers[0];
-          Idle.add(() => { on_ownconnectionstatus(true); return false; });
+          Idle.add(() => { on_own_connection_status(true); return false; });
         } else if(!new_status && connected) {
           connected = false;
-          Idle.add(() => { on_ownconnectionstatus(false); return false; });
+          Idle.add(() => { on_own_connection_status(false); return false; });
         }
         lock(handle) {
           handle.do();
@@ -484,9 +515,8 @@ namespace Venom {
     // Stop background thread
     public void stop() {
       running = false;
-      bootstrapped = false;
       connected = false;
-      on_ownconnectionstatus(false);
+      on_own_connection_status(false);
     }
 
     // Wait for background thread to finish
