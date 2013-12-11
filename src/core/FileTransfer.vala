@@ -19,22 +19,22 @@
 
 namespace Venom {
   public enum FileTransferDirection {
-	SEND,
-	RECEIVE
+    SEND,
+    RECEIVE
   }
   public class FileTransfer : GLib.Object {
-	public int friendnumber { get; set; }
+    public int friendnumber { get; set; }
     public uint8 filenumber { get; set; }
     public uint8 send_receive { get; set; }
-	public string name { get; set; }
-	public string path { get; set; }
+    public string name { get; set; }
+    public string path { get; set; }
     public DateTime time_sent { get; set; }
     public FileTransfer(int friendnumber, FileTransferDirection send_receive, uint8 filenumber, string name, string? path) {
       this.friendnumber = friendnumber;
-	  this.send_receive = send_receive;
-	  this.filenumber = filenumber;
-	  this.name = name;
-	  this.path = path;
+      this.send_receive = send_receive;
+      this.filenumber = filenumber;
+      this.name = name;
+      this.path = path;
       time_sent = new DateTime.now_local();
     }
   }

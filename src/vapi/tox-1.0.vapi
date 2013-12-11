@@ -481,7 +481,7 @@ namespace Tox {
      *
      * More to come...
      */
-	  
+
     /* Set the callback for file send requests.
      *
      *  Function(Tox *tox, int friendnumber, uint8_t filenumber, uint64_t filesize, uint8_t *filename, uint16_t filename_length, void *userdata)
