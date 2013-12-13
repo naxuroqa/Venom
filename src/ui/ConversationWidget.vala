@@ -28,6 +28,7 @@ namespace Venom {
 
     private signal void new_conversation_message(Message message);
     public signal void new_outgoing_message(string message, Contact receiver);
+    public signal void new_outgoing_file(string name,string path,uint64 file_size, Contact receiver);
 
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
@@ -67,10 +68,14 @@ namespace Venom {
 
       Gtk.Image image_call = builder.get_object("image_call") as Gtk.Image;
       Gtk.Image image_call_video = builder.get_object("image_call_video") as Gtk.Image;
+      Gtk.Image image_send_file = builder.get_object("image_send_file") as Gtk.Image;
 
       //TODO
       //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
       //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
+      Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
+
+      button_send_file.clicked.connect(button_send_file_clicked);
 
       Gtk.Entry entry_message = builder.get_object("entry_message") as Gtk.Entry;
       entry_message.activate.connect(entry_activate);
@@ -79,7 +84,7 @@ namespace Venom {
 
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
-
+      image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
       conversation_tree_view = new ConversationTreeView();
       conversation_tree_view.show_all();
       scrolled_window.add(conversation_tree_view);
@@ -94,6 +99,7 @@ namespace Venom {
 
       delete_event.connect(() => {hide(); return true;});
     }
+
 
     public void on_incoming_message(Message message) {
       if(message.sender != contact)
@@ -110,6 +116,29 @@ namespace Venom {
       new_conversation_message(m);
       new_outgoing_message(s, contact);
       source.text = "";
+    }
+
+    //GUI events
+    public void button_send_file_clicked(Gtk.Button source){
+      Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog("Select a file to send",null,
+                                                                              Gtk.FileChooserAction.OPEN,
+                                                                              "Cancel", Gtk.ResponseType.CANCEL,
+                                                                              "Select", Gtk.ResponseType.ACCEPT);
+      int response = file_selection_dialog.run();
+      if(response != Gtk.ResponseType.ACCEPT){
+          file_selection_dialog.destroy();
+          return;
+      } 
+      File file = file_selection_dialog.get_file();
+      file_selection_dialog.destroy();
+      uint64 file_size;
+      try {
+         file_size = file.query_info ("*", FileQueryInfoFlags.NONE).get_size ();          
+      } catch (Error e) {
+        stderr.printf("Error occured while getting file size: %s",e.message);
+        return;
+      }
+      new_outgoing_file(file.get_basename(),file.get_path(),file_size,contact);   
     }
   }
 }

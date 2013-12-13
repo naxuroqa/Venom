@@ -51,6 +51,7 @@ SET( VENOM_SRC
   core/DhtServer.vala
   core/GroupChat.vala
   core/Message.vala
+  core/FileTransfer.vala
   core/ResourceFactory.vala
   core/SettingsProvider.vala
   core/Tools.vala
