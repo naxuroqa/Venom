@@ -582,45 +582,52 @@ namespace Venom {
       session.reject_file(friendnumber,filenumber);  
     }
 
+    private void send_file(int friendnumber, uint8 filenumber) {
+      int chunk_size =  session.get_recommended_data_size(friendnumber);
+      FileTransfer ft = session.get_filetransfers()[filenumber];
+      if(ft == null) {
+        stderr.printf("Trying to send unknown file");
+        return;
+      }
+      File file = File.new_for_path(ft.path);
+      try {
+        var file_stream = file.read ();
+        var file_info = file.query_info ("*", FileQueryInfoFlags.NONE);
+        uint64 file_size = file_info.get_size();
+        uint64 remaining_bytes_to_send = file_size;
+        uint8[] bytes = new uint8[chunk_size];
+        bool read_more = true;
+        while ( remaining_bytes_to_send > 0  ) {
+          if(remaining_bytes_to_send < chunk_size) {
+            chunk_size = (int) remaining_bytes_to_send;
+            bytes = new uint8[chunk_size];
+          }
+          if(read_more)
+            file_stream.read(bytes);
+          int res = session.send_file_data(friendnumber,filenumber,bytes);
+          //session.send_file_data(friendnumber,filenumber,bytes);
+          if(res != -1) {
+            remaining_bytes_to_send -= chunk_size;
+            read_more = true;
+          } else {
+            read_more = false;
+            Thread.usleep(25000);
+          }
+        }
+        session.send_filetransfer_end(friendnumber,filenumber);
+        file_stream.close();
+      } catch(IOError e) {
+        stderr.printf("I/O error while trying to read file: %s\n",e.message);
+      } catch(Error e) {
+        stderr.printf("Unknown error while trying to read file: %s\n",e.message); 
+      } 
+      stdout.printf("Ended file transfer for %s to %s\n",ft.name, (session.get_contact_list()[friendnumber]).name );
+    }
+
     private void on_file_control_request(int friendnumber,uint8 filenumber,uint8 receive_send,uint8 status, uint8[] data) {
       if(status == Tox.FileControlStatus.ACCEPT && receive_send == 1) {
         stdout.printf("Contact accepted file sending request\n");   
-        int chunk_size =  session.get_recommended_data_size(friendnumber);
-        FileTransfer ft = session.get_filetransfers()[filenumber];
-        if(ft == null)
-          return;
-        File file = File.new_for_path(ft.path);
-        try {
-          var file_stream = file.read ();
-          var file_info = file.query_info ("*", FileQueryInfoFlags.NONE);
-          uint64 file_size = file_info.get_size();
-          uint64 remaining_bytes_to_send = file_size;
-          uint8[] bytes = new uint8[chunk_size];
-          bool read_more = true;
-          while ( remaining_bytes_to_send > 0  ) {
-            if(remaining_bytes_to_send < chunk_size) {
-              chunk_size = (int) remaining_bytes_to_send;
-              bytes = new uint8[chunk_size];
-            }
-            if(read_more)
-              file_stream.read(bytes);
-            int res = session.send_file_data(friendnumber,filenumber,bytes);
-            if(res != -1) {
-              remaining_bytes_to_send -= chunk_size;
-              read_more = true;
-            } else {
-              read_more = false;
-              Thread.usleep(100);
-            }
-          }
-          session.send_filetransfer_end(friendnumber,filenumber);
-          file_stream.close();
-        } catch(IOError e) {
-          stderr.printf("I/O error while trying to read file: %s\n",e.message);
-        } catch(Error e) {
-          stderr.printf("Unknown error while trying to read file: %s\n",e.message); 
-        } 
-        stdout.printf("Ended file transfer for %s to %s\n",ft.name, (session.get_contact_list()[friendnumber]).name );
+        new Thread<bool>(null, () => { send_file(friendnumber,filenumber);return true;});
       }
       if(status == Tox.FileControlStatus.KILL && receive_send == 1) {
         stderr.printf("File transfer was rejected for file number %u", filenumber);   
