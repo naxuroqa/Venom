@@ -571,6 +571,14 @@ namespace Venom {
           string path = file_selection_dialog.get_filename();
           file_selection_dialog.destroy();  
           stdout.printf("Saving to: %s\n",path);
+          File file = File.new_for_path(path);
+          if(file.query_exists()){
+            try {
+              file.replace(null,false,FileCreateFlags.REPLACE_DESTINATION);
+            } catch(Error e) {
+              stderr.printf("Error while trying to create file: %s\n", e.message);
+            }            
+          }
           session.accept_file(friendnumber,filenumber);
           Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
           FileTransfer ft = new FileTransfer(friendnumber, FileTransferDirection.RECEIVE, filenumber, filename, path);
