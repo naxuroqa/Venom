@@ -33,6 +33,7 @@ namespace Venom {
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
       init_widgets();
+      setup_drag_drop();
       update_contact();
     }
 
@@ -100,6 +101,14 @@ namespace Venom {
       delete_event.connect(() => {hide(); return true;});
     }
 
+    private void setup_drag_drop() {
+      const Gtk.TargetEntry[] targets = {
+        {"text/uri-list",0,0}
+      };
+      Gtk.drag_dest_set (this,Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
+      this.drag_data_received.connect(this.on_drag_data_received);
+    }
+
 
     public void on_incoming_message(Message message) {
       if(message.sender != contact)
@@ -126,19 +135,35 @@ namespace Venom {
                                                                               "Select", Gtk.ResponseType.ACCEPT);
       int response = file_selection_dialog.run();
       if(response != Gtk.ResponseType.ACCEPT){
-          file_selection_dialog.destroy();
-          return;
+        file_selection_dialog.destroy();
+        return;
       } 
       File file = file_selection_dialog.get_file();
       file_selection_dialog.destroy();
+      prepare_send_file(file);  
+    }
+
+    private void on_drag_data_received(Gtk.Widget sender, Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData data, uint info, uint time) {
+
+      string[] uris = data.get_uris();
+
+      foreach (string uri in uris) {
+        File file = File.new_for_uri(uri);
+        prepare_send_file(file);
+      }
+      Gtk.drag_finish (drag_context, true, false, time);
+    }
+
+    private void prepare_send_file(File file) {
       uint64 file_size;
       try {
-         file_size = file.query_info ("*", FileQueryInfoFlags.NONE).get_size ();          
+        file_size = file.query_info ("*", FileQueryInfoFlags.NONE).get_size ();          
       } catch (Error e) {
         stderr.printf("Error occured while getting file size: %s",e.message);
         return;
       }
-      new_outgoing_file(file.get_basename(),file.get_path(),file_size,contact);   
+      new_outgoing_file(file.get_basename(),file.get_path(),file_size,contact); 
     }
+
   }
 }
