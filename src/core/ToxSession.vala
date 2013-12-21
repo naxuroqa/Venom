@@ -41,6 +41,7 @@ namespace Venom {
   // Wrapper class for accessing tox functions threadsafe
   public class ToxSession : Object {
     private Tox.Tox handle;
+    private LocalStorage local_storage;
     private DhtServer[] dht_servers = {};
     private Gee.HashMap<int, Contact> _contacts = new Gee.HashMap<int, Contact>();
     private Gee.HashMap<int, GroupChat> _groups = new Gee.HashMap<int, GroupChat>();
@@ -110,6 +111,9 @@ namespace Venom {
         "95.47.140.214",
         "F4BF7C5A9D0EF4CB684090C38DE937FAE1612021F21FEA4DCBFAC6AAFEF58E68"
       );
+
+      //start local storage
+      local_storage = new LocalStorage(this, true);
 
       // setup callbacks
       handle.callback_friend_request(this.on_friend_request_callback);

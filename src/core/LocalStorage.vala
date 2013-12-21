@@ -20,9 +20,60 @@
 namespace Venom {
   public class LocalStorage : Object {
 
+  	private bool logging_enabled;
+
+  	private unowned ToxSession session;
+
+  	private Sqlite.Database db;
+
+  	private Sqlite.Statement prepared_insert_statement;
+
+  	//private Sqlite.Statement prepared_select_statement;
+
+  	public LocalStorage(ToxSession session, bool log) {
+  	  this.session = session;
+  	  this.logging_enabled = log;
+  	  init_db ();
+  	  session.on_friend_message.connect(on_friend_message);
+  	}
+
+  	public void on_friend_message(Contact c, string message) {
+  	  if (!logging_enabled) {
+  	  	return;
+  	  }
+  	  int64 last_id = db.last_insert_rowid ();
+
+  	  int param_position = prepared_insert_statement.bind_parameter_index ("$UID");
+	  assert (param_position > 0);
+	  prepared_insert_statement.bind_int64 (param_position, ++last_id);
+
+  	  param_position = prepared_insert_statement.bind_parameter_index ("$USER");
+	  assert (param_position > 0);
+	  string myId = Tools.bin_to_hexstring(session.get_address());
+	  prepared_insert_statement.bind_text(param_position, myId);
+
+	  param_position = prepared_insert_statement.bind_parameter_index ("$CONTACT");
+	  assert (param_position > 0);
+	  string cId = Tools.bin_to_hexstring(c.public_key);
+	  prepared_insert_statement.bind_text(param_position, cId);
+
+	  param_position = prepared_insert_statement.bind_parameter_index ("$MESSAGE");
+	  assert (param_position > 0);
+	  prepared_insert_statement.bind_text(param_position, message);
+
+	  param_position = prepared_insert_statement.bind_parameter_index ("$TIME");
+	  assert (param_position > 0);
+	  DateTime nowTime = new DateTime.now_utc();
+	  prepared_insert_statement.bind_int64(param_position, nowTime.to_unix());
+
+	  prepared_insert_statement.step ();
+	  
+
+	  prepared_insert_statement.reset ();
+  	}
+
   	public int init_db() {
 
-  	  Sqlite.Database db;
 	  string errmsg;
 
   	  // Open/Create a database:
@@ -32,23 +83,46 @@ namespace Venom {
 	    return -1;
 	  }
 
-	  const string query = """
-		CREATE TABLE IF NOT EXISTS User (
-			id		INT		PRIMARY KEY		NOT NULL,
-			name	TEXT					NOT NULL
-		);
+	  if (logging_enabled) {
+
+	  	const string query = """
+			CREATE TABLE IF NOT EXISTS History (
+				id	INTEGER	PRIMARY KEY NOT NULL,
+				userHash	TEXT	NOT NULL,
+				contactHash	TEXT	NOT NULL,
+				message	TEXT	NOT NULL,
+				timestamp	INTEGER	NOT NULL
+			);
+			""";
+
+		// Execute our query:
+		ec = db.exec (query, null, out errmsg);
+		if (ec != Sqlite.OK) {
+		  stderr.printf ("Error: %s\n", errmsg);
+		  return -1;
+		}
+
+		const string index_query = """
+			CREATE UNIQUE INDEX IF NOT EXISTS main_index ON History (userHash, contactHash, timestamp);
 		""";
 
-	// Execute our query:
-	ec = db.exec (query, null, out errmsg);
-	if (ec != Sqlite.OK) {
-		stderr.printf ("Error: %s\n", errmsg);
-		return -1;
-	}
+		ec = db.exec (index_query, null, out errmsg);
+		if (ec != Sqlite.OK) {
+		  stderr.printf ("Error: %s\n", errmsg);
+		  return -1;
+		}
 
-	stdout.printf ("Created.\n");
+		const string prepared_insert_str = "INSERT INTO History (id, userHash, contactHash, message, timestamp) VALUES ($UID, $USER, $CONTACT, $MESSAGE, $TIME);";
+	    ec = db.prepare_v2 (prepared_insert_str, prepared_insert_str.length, out prepared_insert_statement);
+	    if (ec != Sqlite.OK) {
+		  stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
+		  return -1;
+	    }
 
-	return 0;
+		stdout.printf ("Created.\n");
+	  }
+
+	  return 0;
 
   	}
 
