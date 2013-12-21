@@ -22,7 +22,7 @@ namespace Venom {
     Gtk.ListStore list_store_messages;
 
     public ConversationTreeView() {
-        list_store_messages = new Gtk.ListStore (1, typeof (Message));
+        list_store_messages = new Gtk.ListStore (1, typeof (Object));
 
         Gtk.TreeViewColumn name_column = new Gtk.TreeViewColumn();
         Gtk.CellRendererText name_column_cell = new Gtk.CellRendererText();
@@ -60,38 +60,62 @@ namespace Venom {
         set_headers_visible(false);
     }
 
-    private Message get_message_from_iter(Gtk.TreeIter iter) {
+    private Object get_chat_entry_from_iter(Gtk.TreeIter iter) {
       GLib.Value v;
       model.get_value(iter, 0, out v);
-      return v as Message;
+      return v as Object;
     }
 
     private void render_sender_name (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
     {
       //TODO move markup into css if possible
-      Message m = get_message_from_iter(iter);
-      if(m.sender == null)
-        (cell as Gtk.CellRendererText).markup = "<span color='#939598'font_weight='bold'>Me</span>";
-      else
-        (cell as Gtk.CellRendererText).markup = "<b>%s</b>".printf(m.sender.name);
+      Object o = get_chat_entry_from_iter(iter);
+      if(o is Message) {
+        Message m = o as Message;
+        if(m.sender == null)
+          (cell as Gtk.CellRendererText).markup = "<span color='#939598'font_weight='bold'>Me</span>";
+        else
+          (cell as Gtk.CellRendererText).markup = "<b>%s</b>".printf(m.sender.name);
+      } else if (o is FileTransfer) {
+          (cell as Gtk.CellRendererText).markup = "<span>ft</span>";
+      }
     }
 
     private void render_message (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
     {
-      Message m = get_message_from_iter(iter);
-      (cell as Gtk.CellRendererText).text = "%s".printf(m.message);
+      Object o = get_chat_entry_from_iter(iter);
+      if(o is Message) {
+        Message m = o as Message;
+        (cell as Gtk.CellRendererText).text = "%s".printf(m.message);
+      } else if (o is FileTransfer) {
+        FileTransfer ft = o as FileTransfer;
+        (cell as Gtk.CellRendererText).text = "%s".printf(ft.name);
+      }
     }
 
     private void render_time (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
     {
-      Message m = get_message_from_iter(iter);
-      (cell as Gtk.CellRendererText).markup = "<span color='#939598'>%s</span>".printf(m.time_sent.format("%R"));
+      Object o = get_chat_entry_from_iter(iter);
+      if(o is Message) {
+        Message m = o as Message;
+        (cell as Gtk.CellRendererText).markup = "<span color='#939598'>%s</span>".printf(m.time_sent.format("%R"));
+      } 
+      else if(o is FileTransfer) {
+        FileTransfer ft = o as FileTransfer;
+        (cell as Gtk.CellRendererText).markup = "<span color='#939598'>%s</span>".printf(ft.time_sent.format("%R"));
+      }
     }
 
     public void add_message(Message message) {
       Gtk.TreeIter iter;
       list_store_messages.append (out iter);
       list_store_messages.set (iter, 0, message);
+    }
+
+    public void add_filetransfer(FileTransfer ft) {
+      Gtk.TreeIter iter;
+      list_store_messages.append (out iter);
+      list_store_messages.set (iter, 0, ft);
     }
 
     public void update_message(Message message) {

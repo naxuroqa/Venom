@@ -28,7 +28,7 @@ namespace Venom {
 
     private signal void new_conversation_message(Message message);
     public signal void new_outgoing_message(string message, Contact receiver);
-    public signal void new_outgoing_file(string name,string path,uint64 file_size, Contact receiver);
+    public signal void new_outgoing_file(FileTransfer ft);
 
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
@@ -162,8 +162,9 @@ namespace Venom {
         stderr.printf("Error occured while getting file size: %s",e.message);
         return;
       }
-      new_outgoing_file(file.get_basename(),file.get_path(),file_size,contact); 
+      FileTransfer ft = new FileTransfer(contact, FileTransferDirection.OUTGOING, file_size, file.get_basename(), file.get_path() );
+      new_outgoing_file(ft); 
+      conversation_tree_view.add_filetransfer(ft);
     }
-
   }
 }
