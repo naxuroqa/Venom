@@ -73,7 +73,7 @@ namespace Venom {
       prepared_insert_statement.reset ();
     }
 
-    public void retrieve_history(Contact c) {
+    public GLib.List<Message> retrieve_history(Contact c) {
 
       int param_position = prepared_select_statement.bind_parameter_index ("$USER");
       assert (param_position > 0);
@@ -91,15 +91,33 @@ namespace Venom {
       earliestTime = earliestTime.add_days (-1);
       prepared_select_statement.bind_int64(param_position, earliestTime.to_unix());
 
+      //int cols = prepared_select_statement.column_count ();
+      List<Message> messages = new List<Message>();
+
+      while (prepared_select_statement.step () == Sqlite.ROW) {
+        string message = prepared_select_statement.column_text(3);
+        int64 timestamp = prepared_select_statement.column_int64(4);
+        DateTime send_time = new DateTime.from_unix_utc (timestamp);
+
+        stdout.printf("message: %s", message);
+
+        Message mess = new Message.with_time(c, message, send_time);
+        messages.append(mess);
+
+      }
+
       prepared_select_statement.reset ();
+      return messages;
     }
 
     public int init_db() {
 
       string errmsg;
 
-        // Open/Create a database:
-      int ec = Sqlite.Database.open ("test.db", out db);
+      // Open/Create a database:
+      string filepath = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox.db");
+      int ec = Sqlite.Database.open (filepath, out db);
+      stdout.printf("filpath: %s", filepath);
       if (ec != Sqlite.OK) {
         stderr.printf ("Can't open database: %d: %s\n", db.errcode (), db.errmsg ());
         return -1;
