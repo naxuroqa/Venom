@@ -399,7 +399,8 @@ namespace Venom {
       push_in = true;
     }
 
-    private void on_outgoing_message(string message, Contact receiver) {
+    private void on_outgoing_message(Contact receiver, string message) {
+      session.on_own_message(receiver, message);
       session.sendmessage(receiver.friend_id, message);
     }
 

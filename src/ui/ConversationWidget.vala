@@ -27,7 +27,7 @@ namespace Venom {
     public unowned Contact contact {get; private set;}
 
     private signal void new_conversation_message(Message message);
-    public signal void new_outgoing_message(string message, Contact receiver);
+    public signal void new_outgoing_message(Contact receiver, string message);
     public signal void new_outgoing_file(FileTransfer ft);
 
     public ConversationWidget( Contact contact ) {
@@ -123,7 +123,7 @@ namespace Venom {
         return;
       Message m = new Message(null, s);
       new_conversation_message(m);
-      new_outgoing_message(s, contact);
+      new_outgoing_message(contact, s);
       source.text = "";
     }
 

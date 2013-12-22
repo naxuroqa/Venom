@@ -60,6 +60,7 @@ namespace Venom {
     // Core functionality signals
     public signal void on_friend_request(Contact c, string message);
     public signal void on_friend_message(Contact c, string message);
+    public signal void on_own_message(Contact c, string message);
     public signal void on_friend_action(Contact c, string action);
     public signal void on_name_change(Contact c, string? old_name);
     public signal void on_status_message(Contact c, string? old_status);
