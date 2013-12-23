@@ -88,7 +88,7 @@ namespace Venom {
       param_position = prepared_select_statement.bind_parameter_index ("$OLDEST");
       assert (param_position > 0);
       DateTime earliestTime = new DateTime.now_utc();
-      earliestTime = earliestTime.add_days (-1);
+      earliestTime = earliestTime.add_days (-2);
       prepared_select_statement.bind_int64(param_position, earliestTime.to_unix());
 
       //int cols = prepared_select_statement.column_count ();

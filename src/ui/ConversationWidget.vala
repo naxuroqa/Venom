@@ -101,6 +101,16 @@ namespace Venom {
       delete_event.connect(() => {hide(); return true;});
     }
 
+    //history
+
+    public void load_history(GLib.List<Message> messages) {
+      messages.foreach((message) => {
+        new_conversation_message(message);
+        });
+    }
+
+    //drag-and-drop
+
     private void setup_drag_drop() {
       const Gtk.TargetEntry[] targets = {
         {"text/uri-list",0,0}

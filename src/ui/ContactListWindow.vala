@@ -673,6 +673,7 @@ namespace Venom {
       ConversationWidget w = conversation_widgets[c.friend_id];
       if(w == null) {
         w = new ConversationWidget(c);
+        w.load_history(session.load_history_for_contact(c));
         incoming_message.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
         w.new_outgoing_file.connect(on_outgoing_file);
