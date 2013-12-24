@@ -136,7 +136,7 @@ namespace Venom {
         //create table and index if needed
         const string query = """
         CREATE TABLE IF NOT EXISTS History (
-          id  INTEGER PRIMARY KEY NOT NULL AUTOINCREMENT,
+          id  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           userHash  TEXT  NOT NULL,
           contactHash TEXT  NOT NULL,
           message TEXT  NOT NULL,
