@@ -34,21 +34,24 @@ namespace Venom {
       this.session = session;
       this.logging_enabled = log;
       init_db ();
-      session.on_own_message.connect(on_message);
-      session.on_friend_message.connect(on_message);
+      session.on_own_message.connect(on_outgoing_message);
+      session.on_friend_message.connect(on_incoming_message);
     }
 
-    public void on_message(Contact c, string message) {
+    private void on_incoming_message(Contact c, string message) {
+      on_message(c, message, false);
+    }
+
+    private void on_outgoing_message(Contact c, string message) {
+      on_message(c, message, true);
+    }
+
+    public void on_message(Contact c, string message, bool issender) {
       if (!logging_enabled) {
         return;
       }
-      int64 last_id = db.last_insert_rowid ();
 
-      int param_position = prepared_insert_statement.bind_parameter_index ("$UID");
-      assert (param_position > 0);
-      prepared_insert_statement.bind_int64 (param_position, ++last_id);
-
-      param_position = prepared_insert_statement.bind_parameter_index ("$USER");
+      int param_position = prepared_insert_statement.bind_parameter_index ("$USER");
       assert (param_position > 0);
       string myId = Tools.bin_to_hexstring(session.get_address());
       prepared_insert_statement.bind_text(param_position, myId);
@@ -66,6 +69,10 @@ namespace Venom {
       assert (param_position > 0);
       DateTime nowTime = new DateTime.now_utc();
       prepared_insert_statement.bind_int64(param_position, nowTime.to_unix());
+
+      param_position = prepared_insert_statement.bind_parameter_index ("$SENDER");
+      assert (param_position > 0);
+      prepared_insert_statement.bind_int(param_position, issender?1:0);
 
       prepared_insert_statement.step ();
       
@@ -97,11 +104,12 @@ namespace Venom {
       while (prepared_select_statement.step () == Sqlite.ROW) {
         string message = prepared_select_statement.column_text(3);
         int64 timestamp = prepared_select_statement.column_int64(4);
+        bool issender = prepared_select_statement.column_int(5) != 0;
         DateTime send_time = new DateTime.from_unix_utc (timestamp);
 
         stdout.printf("message: %s", message);
 
-        Message mess = new Message.with_time(c, message, send_time);
+        Message mess = new Message.with_time(issender?null:c, message, send_time);
         messages.append(mess);
 
       }
@@ -115,9 +123,9 @@ namespace Venom {
       string errmsg;
 
       // Open/Create a database:
-      string filepath = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox.db");
+      string filepath = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox", "tox.db");
       int ec = Sqlite.Database.open (filepath, out db);
-      stdout.printf("filpath: %s", filepath);
+      stdout.printf("filpath: %s\n", filepath);
       if (ec != Sqlite.OK) {
         stderr.printf ("Can't open database: %d: %s\n", db.errcode (), db.errmsg ());
         return -1;
@@ -128,11 +136,12 @@ namespace Venom {
         //create table and index if needed
         const string query = """
         CREATE TABLE IF NOT EXISTS History (
-          id  INTEGER PRIMARY KEY NOT NULL,
+          id  INTEGER PRIMARY KEY NOT NULL AUTOINCREMENT,
           userHash  TEXT  NOT NULL,
           contactHash TEXT  NOT NULL,
           message TEXT  NOT NULL,
-          timestamp INTEGER NOT NULL
+          timestamp INTEGER NOT NULL,
+          issent INTEGER NOT NULL
         );
         """;
 
@@ -153,7 +162,7 @@ namespace Venom {
         }
 
         //prepare insert statement for adding new history messages
-        const string prepared_insert_str = "INSERT INTO History (id, userHash, contactHash, message, timestamp) VALUES ($UID, $USER, $CONTACT, $MESSAGE, $TIME);";
+        const string prepared_insert_str = "INSERT INTO History (userHash, contactHash, message, timestamp, issent) VALUES ($USER, $CONTACT, $MESSAGE, $TIME, $SENDER);";
         ec = db.prepare_v2 (prepared_insert_str, prepared_insert_str.length, out prepared_insert_statement);
         if (ec != Sqlite.OK) {
           stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
