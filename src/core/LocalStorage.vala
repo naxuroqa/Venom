@@ -123,7 +123,7 @@ namespace Venom {
       string errmsg;
 
       // Open/Create a database:
-      string filepath = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox", "tox.db");
+      string filepath = ResourceFactory.instance.db_filename;
       int ec = Sqlite.Database.open (filepath, out db);
       stdout.printf("filpath: %s\n", filepath);
       if (ec != Sqlite.OK) {
