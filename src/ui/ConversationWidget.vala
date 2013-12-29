@@ -23,10 +23,9 @@ namespace Venom {
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
 
-    private ConversationTreeView conversation_tree_view;
+    private Gtk.Box conversation_list;
     public unowned Contact contact {get; private set;}
 
-    private signal void new_conversation_message(Message message);
     public signal void new_outgoing_message(string message, Contact receiver);
     public signal void new_outgoing_file(FileTransfer ft);
 
@@ -81,24 +80,33 @@ namespace Venom {
       Gtk.Entry entry_message = builder.get_object("entry_message") as Gtk.Entry;
       entry_message.activate.connect(entry_activate);
 
-      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
 
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
-      conversation_tree_view = new ConversationTreeView();
-      conversation_tree_view.show_all();
-      scrolled_window.add(conversation_tree_view);
+
+      conversation_list = new Gtk.Box(Gtk.Orientation.VERTICAL,0);
+      conversation_list.set_size_request(300,400);
+      Gtk.Viewport viewport = new Gtk.Viewport(null,null);
+      viewport.add(conversation_list);
+      viewport.set_size_request(300,400);
+      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
+      scrolled_window.vscrollbar_policy = Gtk.PolicyType.ALWAYS;
+      scrolled_window.add(viewport);
 
       //TODO: move to bottom only when wanted
-      conversation_tree_view.size_allocate.connect( () => {
+      conversation_list.size_allocate.connect( () => {
         Gtk.Adjustment adjustment = scrolled_window.get_vadjustment();
         adjustment.set_value(adjustment.upper - adjustment.page_size);
       });
 
-      new_conversation_message.connect(conversation_tree_view.add_message);
-
       delete_event.connect(() => {hide(); return true;});
+    }
+    
+    private void display_message(Message message) {
+      ChatMessage cm = new ChatMessage(message);
+      conversation_list.pack_start(cm,false,false,0);
+      cm.set_visible(true);
     }
 
     private void setup_drag_drop() {
@@ -114,7 +122,7 @@ namespace Venom {
       if(message.sender != contact)
         return;
 
-      new_conversation_message(message);
+      display_message(message);
     }
 
     public void entry_activate(Gtk.Entry source) {
@@ -122,7 +130,7 @@ namespace Venom {
       if(s == "")
         return;
       Message m = new Message(null, s);
-      new_conversation_message(m);
+      display_message(m);
       new_outgoing_message(s, contact);
       source.text = "";
     }
@@ -164,7 +172,6 @@ namespace Venom {
       }
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.OUTGOING, file_size, file.get_basename(), file.get_path() );
       new_outgoing_file(ft); 
-      conversation_tree_view.add_filetransfer(ft);
     }
   }
 }
