@@ -114,7 +114,7 @@ namespace Venom {
       );
 
       //start local storage
-      local_storage = new LocalStorage(this, true);
+      local_storage = new LocalStorage(this, VenomSettings.instance.enable_logging);
 
       // setup callbacks
       handle.callback_friend_request(this.on_friend_request_callback);

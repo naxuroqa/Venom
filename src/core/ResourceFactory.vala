@@ -58,8 +58,13 @@ namespace Venom {
       arrow = load_image_from_resource(pixmaps_prefix + "arrow.png");
 
       default_theme_filename = Path.build_filename(theme_folder, "default.css");
-      data_filename = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox", "data");
-      db_filename = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox", "tox.db");
+
+
+      tox_config_dir = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox"); 
+      data_filename = Path.build_filename(tox_config_dir, "data");
+      db_filename = Path.build_filename(tox_config_dir, "tox.db");
+      config_filename = Path.build_filename(tox_config_dir, "config.json");
+
       settings_providers = new Gee.ArrayList<SettingsProvider>();
       default_add_contact_message = "Please let me add you to my contactlist.";
     }
@@ -88,8 +93,10 @@ namespace Venom {
     public Gdk.Pixbuf arrow {get; private set;}
 
     public string default_theme_filename {get; private set;}
+    public string tox_config_dir {get; private set;}
     public string data_filename {get; set;}
     public string db_filename {get; set;}
+    public string config_filename {get; set;}
     public string default_add_contact_message {get; private set;}
 
     public Gee.ArrayList<SettingsProvider> settings_providers {get; set;}

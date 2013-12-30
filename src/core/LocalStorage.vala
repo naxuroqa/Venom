@@ -80,8 +80,11 @@ namespace Venom {
       prepared_insert_statement.reset ();
     }
 
-    public GLib.List<Message> retrieve_history(Contact c) {
+    public GLib.List<Message>? retrieve_history(Contact c) {
 
+      if (!logging_enabled) {
+        return null;
+      }
       int param_position = prepared_select_statement.bind_parameter_index ("$USER");
       assert (param_position > 0);
       string myId = Tools.bin_to_hexstring(session.get_address());
@@ -98,7 +101,6 @@ namespace Venom {
       earliestTime = earliestTime.add_days (-2);
       prepared_select_statement.bind_int64(param_position, earliestTime.to_unix());
 
-      //int cols = prepared_select_statement.column_count ();
       List<Message> messages = new List<Message>();
 
       while (prepared_select_statement.step () == Sqlite.ROW) {
