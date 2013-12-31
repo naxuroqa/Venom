@@ -174,7 +174,7 @@ namespace Venom {
       }
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.OUTGOING, file_size, file.get_basename(), file.get_path() );
       new_outgoing_file(ft); 
-      conversation_tree_view.add_filetransfer(ft);
+      //conversation_tree_view.add_filetransfer(ft);
     }
   }
 }
