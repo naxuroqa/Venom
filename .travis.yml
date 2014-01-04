@@ -6,7 +6,7 @@ compiler:
 before_install:
   - sudo apt-add-repository -y ppa:vala-team/ppa
   - sudo apt-get update -qq
-  - sudo apt-get install -qq valac cmake libgtk-3-dev libgee-0.8-dev check
+  - sudo apt-get install -qq valac cmake libgtk-3-dev libgee-0.8-dev check json-glib-1.0
 
 before_script:
 # installing libsodium
