@@ -12,6 +12,7 @@
         <property name="can_focus">False</property>
         <property name="valign">start</property>
         <property name="label" translatable="yes">label</property>
+        <property name="width_chars">1</property>
         <attributes>
           <attribute name="weight" value="bold"/>
         </attributes>
@@ -30,6 +31,9 @@
         <property name="halign">start</property>
         <property name="valign">start</property>
         <property name="label" translatable="yes">label</property>
+        <property name="justify">fill</property>
+        <property name="wrap">True</property>
+        <property name="wrap_mode">word-char</property>
         <property name="selectable">True</property>
       </object>
       <packing>

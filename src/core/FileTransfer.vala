@@ -29,27 +29,43 @@ namespace Venom {
     PAUSED,
     DONE
   }
+  
+
+
   public class FileTransfer : GLib.Object {
-    //public int friendnumber { get; set; }
+    public signal void status_changed(FileTransferStatus status, FileTransferDirection direction);
+    public signal void progress_update(uint64 processed, uint64 filesize);
+
     public Contact friend {get; set; }
-    public FileTransferStatus status { get; set;}
-    //public uint8 filenumber { get; set; }
+    public uint8 filenumber {get; set; }
+    private FileTransferStatus _status;
+    public FileTransferStatus status {
+      get { return _status; } 
+      set { _status = value; status_changed(_status, direction); }
+    }
+
     public uint8 send_receive { get; set; }
+    public FileTransferDirection direction {get; set;}
     public uint64 file_size { get; set; }
-    public uint64 bytes_sent { get; set; }
+    /* amount of bytes sent or received during transfer */
+    public uint64 _bytes_processed;
+    public uint64 bytes_processed {
+      get { return _bytes_processed; }
+      set { _bytes_processed = value; progress_update(_bytes_processed,file_size); }
+    }
     public string name { get; set; }
     public string path { get; set; }
     public DateTime time_sent { get; set; }
     public FileTransfer(Contact friend, FileTransferDirection send_receive, uint64 file_size, string name, string? path) {
       this.friend = friend;
+      this.direction = send_receive;
       this.send_receive = send_receive;
       this.file_size = file_size;
-      //this.filenumber = filenumber;
       this.name = name;
       this.path = path;
-      time_sent = new DateTime.now_local();
+      this.time_sent = new DateTime.now_local();
       this.status = FileTransferStatus.PENDING;
-      this.bytes_sent = 0;
+      this.bytes_processed = 0;
     }
   }
 }

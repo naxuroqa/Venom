@@ -43,6 +43,7 @@ namespace Venom {
       message_label.set_line_wrap(true);
       date_label = builder.get_object("date_label") as Gtk.Label;      
       date_label.set_text( message.time_sent.format("%R") );
+      this.set_visible(true);
     }
   }
 }

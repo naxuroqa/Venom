@@ -28,6 +28,8 @@ namespace Venom {
 
     public signal void new_outgoing_message(string message, Contact receiver);
     public signal void new_outgoing_file(FileTransfer ft);
+    public signal void filetransfer_accepted(FileTransfer ft);
+    public signal void filetransfer_rejected(FileTransfer ft);
 
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
@@ -106,14 +108,20 @@ namespace Venom {
     private void display_message(Message message) {
       ChatMessage cm = new ChatMessage(message);
       conversation_list.pack_start(cm,false,false,0);
-      cm.set_visible(true);
+    }
+
+    private void display_filetransfer(FileTransfer ft) {
+      FileTransferChatEntry entry = new FileTransferChatEntry(ft);
+      entry.filetransfer_accepted.connect((ft) => { filetransfer_accepted(ft); });
+      entry.filetransfer_rejected.connect((ft) => { filetransfer_rejected(ft); });
+      conversation_list.pack_start(entry,false,false,0);
     }
 
     private void setup_drag_drop() {
       const Gtk.TargetEntry[] targets = {
         {"text/uri-list",0,0}
       };
-      Gtk.drag_dest_set (this,Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
+      Gtk.drag_dest_set(this,Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
       this.drag_data_received.connect(this.on_drag_data_received);
     }
 
@@ -123,6 +131,10 @@ namespace Venom {
         return;
 
       display_message(message);
+    }
+
+    public void on_incoming_filetransfer(FileTransfer ft) {
+      display_filetransfer(ft);
     }
 
     public void entry_activate(Gtk.Entry source) {
@@ -163,15 +175,18 @@ namespace Venom {
     }
 
     private void prepare_send_file(File file) {
-      uint64 file_size;
+
+     uint64 file_size;
       try {
         file_size = file.query_info ("*", FileQueryInfoFlags.NONE).get_size ();          
       } catch (Error e) {
         stderr.printf("Error occured while getting file size: %s",e.message);
         return;
       }
+
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.OUTGOING, file_size, file.get_basename(), file.get_path() );
       new_outgoing_file(ft); 
+      display_filetransfer(ft);
     }
   }
 }

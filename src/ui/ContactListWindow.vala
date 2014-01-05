@@ -411,7 +411,7 @@ namespace Venom {
         Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
         transfers[filenumber] = ft;
       } else {
-        stderr.printf("failed to send %s to %s", ft.name, ft.friend.name);
+        stderr.printf("failed to send file %s to %s", ft.name, ft.friend.name);
       }
     }
 
@@ -551,52 +551,17 @@ namespace Venom {
     private void on_file_sendrequest(int friendnumber, uint8 filenumber, uint64 filesize,string filename) {
       stdout.printf ("received file send request friend: %i filenumber: %i filename: %s \n",friendnumber,filenumber,filename );
       Contact contact = session.get_contact_list()[friendnumber];
-      FileTransfer ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null);
+      FileTransfer ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null); 
       Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
       transfers[filenumber] = ft;
-
-      Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
-                                  Gtk.DialogFlags.MODAL,
-                                  Gtk.MessageType.QUESTION,
-                                  Gtk.ButtonsType.YES_NO,
-                                  "%s is sending a file %s, do you want to accept?".printf(contact.name, filename));
-
-      int response = messagedialog.run();
-      messagedialog.destroy();
-      if(response == Gtk.ResponseType.YES) {
-        Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog("Save file",null,
-                                                                                Gtk.FileChooserAction.SAVE,
-                                                                                "Cancel", Gtk.ResponseType.CANCEL,
-                                                                                "Save", Gtk.ResponseType.ACCEPT);
-        file_selection_dialog.do_overwrite_confirmation = true;
-        file_selection_dialog.set_current_name(filename);
-        int res = file_selection_dialog.run();
-        if(res  == Gtk.ResponseType.ACCEPT) {
-          string path = file_selection_dialog.get_filename();
-          file_selection_dialog.destroy();  
-          stdout.printf("Saving to: %s\n",path);
-          File file = File.new_for_path(path);
-          if(file.query_exists()){
-            try {
-              file.replace(null,false,FileCreateFlags.REPLACE_DESTINATION);
-            } catch(Error e) {
-              stderr.printf("Error while trying to create file: %s\n", e.message);
-            }            
-          }
-          session.accept_file(friendnumber,filenumber);
-          ft.status = FileTransferStatus.IN_PROGRESS;
-          ft.path = path;
-          return;
-        }
-        file_selection_dialog.destroy();
-      }
-      session.reject_file(friendnumber,filenumber);  
-      ft.status = FileTransferStatus.REJECTED;
+      ConversationWidget w = conversation_widgets[friendnumber];
+      w.on_incoming_filetransfer(ft);
     }
 
     private void send_file(int friendnumber, uint8 filenumber) {
       int chunk_size =  session.get_recommended_data_size(friendnumber);
       FileTransfer ft = session.get_filetransfers()[filenumber];
+      ft.status = FileTransferStatus.IN_PROGRESS;
       if(ft == null) {
         stderr.printf("Trying to send unknown file");
         return;
@@ -617,9 +582,9 @@ namespace Venom {
           if(read_more)
             file_stream.read(bytes);
           int res = session.send_file_data(friendnumber,filenumber,bytes);
-          //session.send_file_data(friendnumber,filenumber,bytes);
           if(res != -1) {
             remaining_bytes_to_send -= chunk_size;
+            ft.bytes_processed += chunk_size;
             read_more = true;
           } else {
             read_more = false;
@@ -627,6 +592,7 @@ namespace Venom {
           }
         }
         session.send_filetransfer_end(friendnumber,filenumber);
+        ft.status = FileTransferStatus.DONE;
         file_stream.close();
       } catch(IOError e) {
         stderr.printf("I/O error while trying to read file: %s\n",e.message);
@@ -637,14 +603,21 @@ namespace Venom {
     }
 
     private void on_file_control_request(int friendnumber,uint8 filenumber,uint8 receive_send,uint8 status, uint8[] data) {
+      FileTransfer ft = session.get_filetransfers()[filenumber];
+      if(ft == null)
+        return;
       if(status == Tox.FileControlStatus.ACCEPT && receive_send == 1) {
         stdout.printf("Contact accepted file sending request\n");   
-        new Thread<bool>(null, () => { send_file(friendnumber,filenumber);return true;});
+        new Thread<bool>(null, () => { 
+            send_file(friendnumber,filenumber);return true;
+          });
       }
       if(status == Tox.FileControlStatus.KILL && receive_send == 1) {
+        ft.status = FileTransferStatus.REJECTED;
         stderr.printf("File transfer was rejected for file number %u", filenumber);   
       }
       if(status == Tox.FileControlStatus.FINISHED && receive_send == 0) {
+        ft.status = FileTransferStatus.DONE;
         stderr.printf("File transfer finished for file number %u",filenumber);  
       }
     }
@@ -657,10 +630,11 @@ namespace Venom {
       File file = File.new_for_path(path);
       try{
         if(!file.query_exists())
-            file.create(FileCreateFlags.NONE);
+          file.create(FileCreateFlags.NONE);
         FileOutputStream fos = file.append_to(FileCreateFlags.NONE);
         size_t bytes_written;
         fos.write_all(data,out bytes_written);
+        ft.bytes_processed += bytes_written;
         fos.close();
       } catch (Error e){
         stderr.printf("Error while trying to write data to file");  
@@ -675,6 +649,12 @@ namespace Venom {
         incoming_message.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
         w.new_outgoing_file.connect(on_outgoing_file);
+        w.filetransfer_accepted.connect ( (ft) => {
+            session.accept_file(ft.friend.friend_id,ft.filenumber);
+          });
+        w.filetransfer_rejected.connect ( (ft) => {
+            session.reject_file(ft.friend.friend_id,ft.filenumber);
+          });
         conversation_widgets[c.friend_id] = w;
         notebook_conversations.append_page(w, null);
       }

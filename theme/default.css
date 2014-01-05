@@ -24,6 +24,7 @@
 @define-color border-color #636466;
 @define-color callbutton-color #6bc260;
 @define-color callbutton-selected lighter(@callbutton-color);
+@define-color file-errormessage-color #ff0000;
 
 * {
   engine: none;
@@ -43,7 +44,7 @@
 .contact_list *,
 .conversation_widget,
 .conversation_widget * {
-  background-color: alpha(white, 0);
+  /*background-color: alpha(white, 0); */
   /*border-width: 0px;*/
   background-clip: padding-box;
   /*font-family: Roboto, Sans;
@@ -263,3 +264,6 @@
   border: none;
 }
 
+.filetransfer-entry .errorlabel {
+  color: @file-errormessage-color;   
+}

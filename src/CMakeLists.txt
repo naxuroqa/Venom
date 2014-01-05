@@ -60,6 +60,7 @@ SET( VENOM_SRC
   ui/AboutDialog.vala
   ui/ConversationWidget.vala
   ui/ChatMessage.vala
+  ui/FileTransferChatEntry.vala
   ui/ContactListWindow.vala
   ui/ContactListTreeView.vala
   ui/ContactListCellRenderer.vala
