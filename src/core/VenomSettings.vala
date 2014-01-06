@@ -32,7 +32,7 @@ namespace Venom {
             _instance = new VenomSettings.with_settings_file(ResourceFactory.instance.config_filename);
           } else {
             _instance = new VenomSettings();
-            _instance.SaveSetting(ResourceFactory.instance.config_filename);
+            _instance.save_setting(ResourceFactory.instance.config_filename);
           }
         }
         return _instance;
@@ -42,7 +42,7 @@ namespace Venom {
       }
     }
 
-    public void SaveSetting(string path_to_file) {
+    public void save_setting(string path_to_file) {
       Json.Node root = Json.gobject_serialize (this);
 
       Json.Generator generator = new Json.Generator ();
