@@ -22,10 +22,18 @@ namespace Venom {
     public unowned Contact sender {get; set;}
     public string message {get; set;}
     public DateTime time_sent { get; set; }
+
     public Message(Contact? sender, string message) {
       this.sender = sender;
       this.message = message;
       time_sent = new DateTime.now_local();
     }
+
+    public Message.with_time(Contact? sender, string message, DateTime time) {
+      this.sender = sender;
+      this.message = message;
+      time_sent = time;
+    }
+
   }
 }

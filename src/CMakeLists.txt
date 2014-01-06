@@ -26,16 +26,20 @@ FIND_PACKAGE(PkgConfig REQUIRED)
 
 SET(TARGET_GLIB 2.32)
 
-PKG_CHECK_MODULES(GTK  REQUIRED gtk+-3.0>=3.4)
-PKG_CHECK_MODULES(GEE  REQUIRED gee-0.8>=0.8)
-PKG_CHECK_MODULES(GIO  REQUIRED gio-2.0>=${TARGET_GLIB})
-PKG_CHECK_MODULES(GLIB REQUIRED glib-2.0>=${TARGET_GLIB})
-PKG_CHECK_MODULES(TOX  REQUIRED libtoxcore>=0.0)
+PKG_CHECK_MODULES(GTK    REQUIRED gtk+-3.0>=3.4)
+PKG_CHECK_MODULES(GEE    REQUIRED gee-0.8>=0.8)
+PKG_CHECK_MODULES(GIO    REQUIRED gio-2.0>=${TARGET_GLIB})
+PKG_CHECK_MODULES(GLIB   REQUIRED glib-2.0>=${TARGET_GLIB})
+PKG_CHECK_MODULES(SQLITE REQUIRED sqlite3>=3.7)
+PKG_CHECK_MODULES(JSON   REQUIRED json-glib-1.0>=0.14)
+PKG_CHECK_MODULES(TOX    REQUIRED libtoxcore>=0.0)
 
 SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GTK_CFLAGS} ${GTK_CFLAGS_OTHER}
                  ${GEE_CFLAGS} ${GEE_CFLAGS_OTHER}
                  ${GIO_CFLAGS} ${GIO_CFLAGS_OTHER}
                  ${GLIB_CFLAGS} ${GLIB_CFLAGS_OTHER}
+                 ${SQLITE_CFLAGS} ${SQLITE_CFLAGS_OTHER}
+                 ${JSON_CFLAGS} ${JSON_CFLAGS_OTHER}
                  ${TOX_CFLAGS} ${TOX_CFLAGS_OTHER}
 )
 
@@ -56,6 +60,8 @@ SET( VENOM_SRC
   core/SettingsProvider.vala
   core/Tools.vala
   core/ToxSession.vala
+  core/LocalStorage.vala
+  core/VenomSettings.vala
   ui/AddContactDialog.vala
   ui/AboutDialog.vala
   ui/ConversationTreeView.vala
@@ -76,6 +82,8 @@ VALA_PRECOMPILE( VALA_C_VENOM
     gtk+-3.0
     glib-2.0
     gio-2.0
+    json-glib-1.0
+    sqlite3
     tox-1.0
     config
   OPTIONS
@@ -141,6 +149,8 @@ TARGET_LINK_LIBRARIES( venom
                        ${GEE_LIBRARIES}
                        ${GIO_LIBRARIES}
                        ${GLIB_LIBRARIES}
+                       ${JSON_LIBRARIES}
+                       ${SQLITE_LIBRARIES}
                        ${TOX_LIBRARIES}
 )
 

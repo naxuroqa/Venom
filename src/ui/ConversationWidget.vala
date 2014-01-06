@@ -27,12 +27,13 @@ namespace Venom {
     public unowned Contact contact {get; private set;}
 
     private signal void new_conversation_message(Message message);
-    public signal void new_outgoing_message(string message, Contact receiver);
-    public signal void new_outgoing_file(string name,string path,uint64 file_size, Contact receiver);
+    public signal void new_outgoing_message(Contact receiver, string message);
+    public signal void new_outgoing_file(FileTransfer ft);
 
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
       init_widgets();
+      setup_drag_drop();
       update_contact();
     }
 
@@ -100,6 +101,24 @@ namespace Venom {
       delete_event.connect(() => {hide(); return true;});
     }
 
+    //history
+
+    public void load_history(GLib.List<Message> messages) {
+      messages.foreach((message) => {
+        new_conversation_message(message);
+        });
+    }
+
+    //drag-and-drop
+
+    private void setup_drag_drop() {
+      const Gtk.TargetEntry[] targets = {
+        {"text/uri-list",0,0}
+      };
+      Gtk.drag_dest_set (this,Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
+      this.drag_data_received.connect(this.on_drag_data_received);
+    }
+
 
     public void on_incoming_message(Message message) {
       if(message.sender != contact)
@@ -114,7 +133,7 @@ namespace Venom {
         return;
       Message m = new Message(null, s);
       new_conversation_message(m);
-      new_outgoing_message(s, contact);
+      new_outgoing_message(contact, s);
       source.text = "";
     }
 
@@ -126,19 +145,36 @@ namespace Venom {
                                                                               "Select", Gtk.ResponseType.ACCEPT);
       int response = file_selection_dialog.run();
       if(response != Gtk.ResponseType.ACCEPT){
-          file_selection_dialog.destroy();
-          return;
+        file_selection_dialog.destroy();
+        return;
       } 
       File file = file_selection_dialog.get_file();
       file_selection_dialog.destroy();
+      prepare_send_file(file);  
+    }
+
+    private void on_drag_data_received(Gtk.Widget sender, Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData data, uint info, uint time) {
+
+      string[] uris = data.get_uris();
+
+      foreach (string uri in uris) {
+        File file = File.new_for_uri(uri);
+        prepare_send_file(file);
+      }
+      Gtk.drag_finish (drag_context, true, false, time);
+    }
+
+    private void prepare_send_file(File file) {
       uint64 file_size;
       try {
-         file_size = file.query_info ("*", FileQueryInfoFlags.NONE).get_size ();          
+        file_size = file.query_info ("*", FileQueryInfoFlags.NONE).get_size ();          
       } catch (Error e) {
         stderr.printf("Error occured while getting file size: %s",e.message);
         return;
       }
-      new_outgoing_file(file.get_basename(),file.get_path(),file_size,contact);   
+      FileTransfer ft = new FileTransfer(contact, FileTransferDirection.OUTGOING, file_size, file.get_basename(), file.get_path() );
+      new_outgoing_file(ft); 
+      //conversation_tree_view.add_filetransfer(ft);
     }
   }
 }

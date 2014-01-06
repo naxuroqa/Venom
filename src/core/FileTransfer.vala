@@ -19,23 +19,37 @@
 
 namespace Venom {
   public enum FileTransferDirection {
-    SEND,
-    RECEIVE
+    OUTGOING,
+    INCOMING
+  }
+  public enum FileTransferStatus {
+    PENDING,
+    REJECTED,
+    IN_PROGRESS,
+    PAUSED,
+    DONE
   }
   public class FileTransfer : GLib.Object {
-    public int friendnumber { get; set; }
-    public uint8 filenumber { get; set; }
+    //public int friendnumber { get; set; }
+    public Contact friend {get; set; }
+    public FileTransferStatus status { get; set;}
+    //public uint8 filenumber { get; set; }
     public uint8 send_receive { get; set; }
+    public uint64 file_size { get; set; }
+    public uint64 bytes_sent { get; set; }
     public string name { get; set; }
     public string path { get; set; }
     public DateTime time_sent { get; set; }
-    public FileTransfer(int friendnumber, FileTransferDirection send_receive, uint8 filenumber, string name, string? path) {
-      this.friendnumber = friendnumber;
+    public FileTransfer(Contact friend, FileTransferDirection send_receive, uint64 file_size, string name, string? path) {
+      this.friend = friend;
       this.send_receive = send_receive;
-      this.filenumber = filenumber;
+      this.file_size = file_size;
+      //this.filenumber = filenumber;
       this.name = name;
       this.path = path;
       time_sent = new DateTime.now_local();
+      this.status = FileTransferStatus.PENDING;
+      this.bytes_sent = 0;
     }
   }
 }

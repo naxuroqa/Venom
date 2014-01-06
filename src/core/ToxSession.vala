@@ -41,6 +41,7 @@ namespace Venom {
   // Wrapper class for accessing tox functions threadsafe
   public class ToxSession : Object {
     private Tox.Tox handle;
+    private LocalStorage local_storage;
     private DhtServer[] dht_servers = {};
     private Gee.HashMap<int, Contact> _contacts = new Gee.HashMap<int, Contact>();
     private Gee.HashMap<int, GroupChat> _groups = new Gee.HashMap<int, GroupChat>();
@@ -59,6 +60,7 @@ namespace Venom {
     // Core functionality signals
     public signal void on_friend_request(Contact c, string message);
     public signal void on_friend_message(Contact c, string message);
+    public signal void on_own_message(Contact c, string message);
     public signal void on_friend_action(Contact c, string action);
     public signal void on_name_change(Contact c, string? old_name);
     public signal void on_status_message(Contact c, string? old_status);
@@ -110,6 +112,9 @@ namespace Venom {
         "95.47.140.214",
         "F4BF7C5A9D0EF4CB684090C38DE937FAE1612021F21FEA4DCBFAC6AAFEF58E68"
       );
+
+      //start local storage
+      local_storage = new LocalStorage(this, VenomSettings.instance.enable_logging);
 
       // setup callbacks
       handle.callback_friend_request(this.on_friend_request_callback);
@@ -568,6 +573,10 @@ namespace Venom {
 
       if(os.write(buf) != size)
         throw new IOError.FAILED("Error while writing to stream.");
+    }
+
+    public GLib.List<Message> load_history_for_contact(Contact c) {
+      return local_storage.retrieve_history(c);
     }
   }
 }

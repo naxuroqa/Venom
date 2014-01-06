@@ -399,19 +399,20 @@ namespace Venom {
       push_in = true;
     }
 
-    private void on_outgoing_message(string message, Contact receiver) {
+    private void on_outgoing_message(Contact receiver, string message) {
+      session.on_own_message(receiver, message);
       session.sendmessage(receiver.friend_id, message);
     }
 
-    private void on_outgoing_file(string filename, string file_path, uint64 file_size, Contact receiver) {
-      stdout.printf("sending file %s to %s\n",filename,receiver.name);
-      uint8 filenumber = session.send_file_request(receiver.friend_id,file_size,filename);
+    private void on_outgoing_file(FileTransfer ft) {
+      stdout.printf("sending file %s to %s\n",ft.name,ft.friend.name);
+      uint8 filenumber = session.send_file_request(ft.friend.friend_id,ft.file_size,ft.name);
       if(filenumber != -1) {
+        //ft.filenumber = filenumber;
         Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
-        FileTransfer ft = new FileTransfer(receiver.friend_id, FileTransferDirection.SEND, filenumber, filename, file_path);
         transfers[filenumber] = ft;
       } else {
-        stderr.printf("failed to send %s to %s", filename, receiver.name);
+        stderr.printf("failed to send %s to %s", ft.name, ft.friend.name);
       }
     }
 
@@ -550,12 +551,16 @@ namespace Venom {
 
     private void on_file_sendrequest(int friendnumber, uint8 filenumber, uint64 filesize,string filename) {
       stdout.printf ("received file send request friend: %i filenumber: %i filename: %s \n",friendnumber,filenumber,filename );
-      Contact c = session.get_contact_list()[friendnumber];
+      Contact contact = session.get_contact_list()[friendnumber];
+      FileTransfer ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null);
+      Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
+      transfers[filenumber] = ft;
+
       Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
                                   Gtk.ButtonsType.YES_NO,
-                                  "%s is sending a file %s, do you want to accept?".printf(c.name, filename));
+                                  "%s is sending a file %s, do you want to accept?".printf(contact.name, filename));
 
       int response = messagedialog.run();
       messagedialog.destroy();
@@ -571,15 +576,23 @@ namespace Venom {
           string path = file_selection_dialog.get_filename();
           file_selection_dialog.destroy();  
           stdout.printf("Saving to: %s\n",path);
+          File file = File.new_for_path(path);
+          if(file.query_exists()){
+            try {
+              file.replace(null,false,FileCreateFlags.REPLACE_DESTINATION);
+            } catch(Error e) {
+              stderr.printf("Error while trying to create file: %s\n", e.message);
+            }            
+          }
           session.accept_file(friendnumber,filenumber);
-          Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
-          FileTransfer ft = new FileTransfer(friendnumber, FileTransferDirection.RECEIVE, filenumber, filename, path);
-          transfers[filenumber] = ft;
+          ft.status = FileTransferStatus.IN_PROGRESS;
+          ft.path = path;
           return;
         }
         file_selection_dialog.destroy();
       }
       session.reject_file(friendnumber,filenumber);  
+      ft.status = FileTransferStatus.REJECTED;
     }
 
     private void send_file(int friendnumber, uint8 filenumber) {
@@ -660,6 +673,7 @@ namespace Venom {
       ConversationWidget w = conversation_widgets[c.friend_id];
       if(w == null) {
         w = new ConversationWidget(c);
+        w.load_history(session.load_history_for_contact(c));
         incoming_message.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
         w.new_outgoing_file.connect(on_outgoing_file);
