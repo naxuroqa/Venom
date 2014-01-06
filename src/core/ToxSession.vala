@@ -46,11 +46,7 @@ namespace Venom {
     private Gee.HashMap<int, Contact> _contacts = new Gee.HashMap<int, Contact>();
     private Gee.HashMap<int, GroupChat> _groups = new Gee.HashMap<int, GroupChat>();
     private Gee.HashMap<uint8, FileTransfer> _file_transfers = new Gee.HashMap<uint8,FileTransfer>();
-#if GLIB_2_32
     private Thread<int> session_thread = null;
-#else
-    private unowned Thread<int> session_thread = null;
-#endif
     private bool bootstrapped = false;
     private bool ipv6 = false;
     public bool running {get; private set; default=false; }
@@ -506,15 +502,7 @@ namespace Venom {
       if(running)
         return;
       running = true;
-#if GLIB_2_32
       session_thread = new GLib.Thread<int>("toxbgthread", this.run);
-#else
-      try {
-        session_thread = GLib.Thread.create<int>(this.run, true);
-      } catch (Error e) {
-        stderr.printf("Could not create thread: %s\n", e.message);
-      }
-#endif
     }
 
     // Stop background thread
