@@ -98,7 +98,7 @@ namespace Venom {
       param_position = prepared_select_statement.bind_parameter_index ("$OLDEST");
       assert (param_position > 0);
       DateTime earliestTime = new DateTime.now_utc();
-      earliestTime = earliestTime.add_days (-2);
+      earliestTime = earliestTime.add_days (-VenomSettings.instance.days_to_log);
       prepared_select_statement.bind_int64(param_position, earliestTime.to_unix());
 
       List<Message> messages = new List<Message>();
@@ -127,7 +127,7 @@ namespace Venom {
       // Open/Create a database:
       string filepath = ResourceFactory.instance.db_filename;
       int ec = Sqlite.Database.open (filepath, out db);
-      stdout.printf("filpath: %s\n", filepath);
+      stdout.printf("filepath: %s\n", filepath);
       if (ec != Sqlite.OK) {
         stderr.printf ("Can't open database: %d: %s\n", db.errcode (), db.errmsg ());
         return -1;
