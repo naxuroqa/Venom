@@ -109,8 +109,6 @@ namespace Venom {
         bool issender = prepared_select_statement.column_int(5) != 0;
         DateTime send_time = new DateTime.from_unix_utc (timestamp);
 
-        stdout.printf("message: %s", message);
-
         Message mess = new Message.with_time(issender?null:c, message, send_time);
         messages.append(mess);
 
@@ -127,7 +125,6 @@ namespace Venom {
       // Open/Create a database:
       string filepath = ResourceFactory.instance.db_filename;
       int ec = Sqlite.Database.open (filepath, out db);
-      stdout.printf("filepath: %s\n", filepath);
       if (ec != Sqlite.OK) {
         stderr.printf ("Can't open database: %d: %s\n", db.errcode (), db.errmsg ());
         return -1;
@@ -179,7 +176,7 @@ namespace Venom {
           return -1;
         }
 
-        stdout.printf ("Created.\n");
+        stdout.printf ("Created db.\n");
       }
 
       return 0;
