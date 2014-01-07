@@ -71,11 +71,11 @@ namespace Venom {
     public signal void on_group_message(GroupChat g, int friendgroupnumber, string message);
 
     // File sending callbacks
-    
+
     public signal void on_file_sendrequest(int friendnumber,uint8 filenumber,uint64 filesize,string filename);
     public signal void on_file_control(int friendnumber, uint8 filenumber,uint8 receive_send,uint8 status,uint8[] data);
     public signal void on_file_data(int friendnumber,uint8 filenumber,uint8[] data);
-    
+
 
     public ToxSession( bool ipv6 = false ) {
       this.ipv6 = ipv6;
@@ -232,7 +232,7 @@ namespace Venom {
 
     private void on_file_control_callback(Tox.Tox tox, int friendnumber, uint8 receive_send, uint8 filenumber, uint8 status, uint8[] data) {
       uint8[] data_clone = Tools.clone(data, data.length);
-      Idle.add(() => { on_file_control(friendnumber,filenumber,receive_send,status,data_clone); return false; }); 
+      Idle.add(() => { on_file_control(friendnumber,filenumber,receive_send,status,data_clone); return false; });
     }
 
     private void on_file_data_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint8[] data) {
@@ -418,7 +418,7 @@ namespace Venom {
     }
 
     public unowned Gee.HashMap<uint8, FileTransfer> get_filetransfers() {
-        return _file_transfers; 
+        return _file_transfers;
     }
 
     public uint8 send_file_request(int friend_number, uint64 file_size, string filename) {
@@ -427,13 +427,13 @@ namespace Venom {
     }
 
     public void accept_file (int friendnumber, uint8 filenumber) {
-        handle.file_send_control(friendnumber,1,filenumber,Tox.FileControlStatus.ACCEPT,null);      
+        handle.file_send_control(friendnumber,1,filenumber,Tox.FileControlStatus.ACCEPT,null);
     }
 
     public void reject_file (int friendnumber, uint8 filenumber) {
         handle.file_send_control(friendnumber,1,filenumber,Tox.FileControlStatus.KILL,null);
     }
-    
+
     public void send_filetransfer_end (int friendnumber, uint8 filenumber) {
         handle.file_send_control(friendnumber,0,filenumber,Tox.FileControlStatus.FINISHED,null);
     }
@@ -449,7 +449,7 @@ namespace Venom {
     public uint64 get_remaining_file_data(int friendnumber,uint8 filenumber,uint8 send_receive) {
         return handle.file_data_remaining(friendnumber,filenumber,send_receive);
     }
-    
+
     ////////////////////////////// Thread related operations /////////////////////////
 
     // Background thread main function

@@ -99,7 +99,7 @@ namespace Venom {
       if(o is Message) {
         Message m = o as Message;
         (cell as Gtk.CellRendererText).markup = "<span color='#939598'>%s</span>".printf(m.time_sent.format("%R"));
-      } 
+      }
       else if(o is FileTransfer) {
         FileTransfer ft = o as FileTransfer;
         (cell as Gtk.CellRendererText).markup = "<span color='#939598'>%s</span>".printf(ft.time_sent.format("%R"));

@@ -147,10 +147,10 @@ namespace Venom {
       if(response != Gtk.ResponseType.ACCEPT){
         file_selection_dialog.destroy();
         return;
-      } 
+      }
       File file = file_selection_dialog.get_file();
       file_selection_dialog.destroy();
-      prepare_send_file(file);  
+      prepare_send_file(file);
     }
 
     private void on_drag_data_received(Gtk.Widget sender, Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData data, uint info, uint time) {
@@ -167,13 +167,13 @@ namespace Venom {
     private void prepare_send_file(File file) {
       uint64 file_size;
       try {
-        file_size = file.query_info ("*", FileQueryInfoFlags.NONE).get_size ();          
+        file_size = file.query_info ("*", FileQueryInfoFlags.NONE).get_size ();
       } catch (Error e) {
         stderr.printf("Error occured while getting file size: %s",e.message);
         return;
       }
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.OUTGOING, file_size, file.get_basename(), file.get_path() );
-      new_outgoing_file(ft); 
+      new_outgoing_file(ft);
       //conversation_tree_view.add_filetransfer(ft);
     }
   }

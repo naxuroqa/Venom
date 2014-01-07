@@ -75,7 +75,7 @@ namespace Venom {
       prepared_insert_statement.bind_int(param_position, issender?1:0);
 
       prepared_insert_statement.step ();
-      
+
 
       prepared_insert_statement.reset ();
     }

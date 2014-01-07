@@ -60,7 +60,7 @@ namespace Venom {
       default_theme_filename = Path.build_filename(theme_folder, "default.css");
 
 
-      tox_config_dir = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox"); 
+      tox_config_dir = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox");
       data_filename = Path.build_filename(tox_config_dir, "data");
       db_filename = Path.build_filename(tox_config_dir, "tox.db");
       config_filename = Path.build_filename(tox_config_dir, "config.json");

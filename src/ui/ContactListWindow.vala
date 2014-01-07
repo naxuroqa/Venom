@@ -409,7 +409,7 @@ namespace Venom {
       uint8 filenumber = session.send_file_request(ft.friend.friend_id,ft.file_size,ft.name);
       if(filenumber != -1) {
         //ft.filenumber = filenumber;
-        Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
+        Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers();
         transfers[filenumber] = ft;
       } else {
         stderr.printf("failed to send %s to %s", ft.name, ft.friend.name);
@@ -553,7 +553,7 @@ namespace Venom {
       stdout.printf ("received file send request friend: %i filenumber: %i filename: %s \n",friendnumber,filenumber,filename );
       Contact contact = session.get_contact_list()[friendnumber];
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null);
-      Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
+      Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers();
       transfers[filenumber] = ft;
 
       Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
@@ -574,7 +574,7 @@ namespace Venom {
         int res = file_selection_dialog.run();
         if(res  == Gtk.ResponseType.ACCEPT) {
           string path = file_selection_dialog.get_filename();
-          file_selection_dialog.destroy();  
+          file_selection_dialog.destroy();
           stdout.printf("Saving to: %s\n",path);
           File file = File.new_for_path(path);
           if(file.query_exists()){
@@ -582,7 +582,7 @@ namespace Venom {
               file.replace(null,false,FileCreateFlags.REPLACE_DESTINATION);
             } catch(Error e) {
               stderr.printf("Error while trying to create file: %s\n", e.message);
-            }            
+            }
           }
           session.accept_file(friendnumber,filenumber);
           ft.status = FileTransferStatus.IN_PROGRESS;
@@ -591,7 +591,7 @@ namespace Venom {
         }
         file_selection_dialog.destroy();
       }
-      session.reject_file(friendnumber,filenumber);  
+      session.reject_file(friendnumber,filenumber);
       ft.status = FileTransferStatus.REJECTED;
     }
 
@@ -632,21 +632,21 @@ namespace Venom {
       } catch(IOError e) {
         stderr.printf("I/O error while trying to read file: %s\n",e.message);
       } catch(Error e) {
-        stderr.printf("Unknown error while trying to read file: %s\n",e.message); 
-      } 
+        stderr.printf("Unknown error while trying to read file: %s\n",e.message);
+      }
       stdout.printf("Ended file transfer for %s to %s\n",ft.name, (session.get_contact_list()[friendnumber]).name );
     }
 
     private void on_file_control_request(int friendnumber,uint8 filenumber,uint8 receive_send,uint8 status, uint8[] data) {
       if(status == Tox.FileControlStatus.ACCEPT && receive_send == 1) {
-        stdout.printf("Contact accepted file sending request\n");   
+        stdout.printf("Contact accepted file sending request\n");
         new Thread<bool>(null, () => { send_file(friendnumber,filenumber);return true;});
       }
       if(status == Tox.FileControlStatus.KILL && receive_send == 1) {
-        stderr.printf("File transfer was rejected for file number %u", filenumber);   
+        stderr.printf("File transfer was rejected for file number %u", filenumber);
       }
       if(status == Tox.FileControlStatus.FINISHED && receive_send == 0) {
-        stderr.printf("File transfer finished for file number %u",filenumber);  
+        stderr.printf("File transfer finished for file number %u",filenumber);
       }
     }
 
@@ -664,8 +664,8 @@ namespace Venom {
         fos.write_all(data,out bytes_written);
         fos.close();
       } catch (Error e){
-        stderr.printf("Error while trying to write data to file");  
-      } 
+        stderr.printf("Error while trying to write data to file");
+      }
     }
 
 
