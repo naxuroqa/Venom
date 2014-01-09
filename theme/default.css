@@ -24,7 +24,6 @@
 @define-color border-color #636466;
 @define-color callbutton-color #6bc260;
 @define-color callbutton-selected lighter(@callbutton-color);
-@define-color file-errormessage-color #ff0000;
 
 * {
   engine: none;
@@ -91,8 +90,6 @@
   -GtkToolButton-icon-spacing: 6;
   -GtkToolItemGroup-expander-size: 11;
   -GtkToolbar-internal-padding: 0;
-  -GtkTreeView-expander-size: 11;
-  -GtkTreeView-vertical-separator: 0;
   -GtkWidget-wide-separators: true;
   -GtkWidget-separator-width: 1;
   -GtkWidget-separator-height: 1;
@@ -263,7 +260,53 @@
   border-radius: 4px;
   border: none;
 }
+/* chat list */
+@define-color cl-foreground #231f20;
+@define-color cl-background #f1f2f2;
 
-.filetransfer-entry .errorlabel {
-  color: @file-errormessage-color;   
+
+.chat_list .filetransfer_entry .frame {
+  background: #5b5a5c;
+  border-radius: 5px;
 }
+
+.chat_list .filetransfer_entry .frame GtkLabel{
+  color: #d5d5d5;
+}
+
+.conversation_widget .scrollbar {
+  background-color: @cl-background;
+}
+
+.conversation_widget .scrollbar.slider {
+  background-color: #bbb;
+}
+
+.conversation_widget .scrollbar.slider:prelight {
+  background-color: #939598;
+}
+
+.chat_list .message_frame {
+  border-width: 0px;
+}
+
+.chat_list .first {
+  border-top-style: dotted;
+  border-top-width: 1px;
+  border-top-color: #666;
+}
+
+.chat_list .filetransfer_entry GtkLabel.error {
+  color: #ff0000;
+  background: #5b5a5c;
+}
+
+.message_entry .own_name {
+  color: #939598  
+}
+
+#save_as_button, #cancel_button {
+  background: #5b5a5c;
+}
+
+

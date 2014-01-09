@@ -237,7 +237,6 @@ namespace Venom {
     private void on_file_data_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint8[] data) {
       uint8[] data_clone = Tools.clone(data, data.length);
       Idle.add(() => { on_file_data(friendnumber,filenumber,data_clone); return false; });
-      //on_file_data(friendnumber,filenumber,data_clone);
     }
 
     ////////////////////////////// Wrapper functions ////////////////////////////////

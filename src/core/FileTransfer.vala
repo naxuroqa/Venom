@@ -24,6 +24,7 @@ namespace Venom {
   }
   public enum FileTransferStatus {
     PENDING,
+    SENDING_FAILED,
     REJECTED,
     IN_PROGRESS,
     PAUSED,
@@ -49,9 +50,16 @@ namespace Venom {
     public uint64 file_size { get; set; }
     /* amount of bytes sent or received during transfer */
     public uint64 _bytes_processed;
+    private uint64 last_bytes_processed;
     public uint64 bytes_processed {
       get { return _bytes_processed; }
-      set { _bytes_processed = value; progress_update(_bytes_processed,file_size); }
+      set {
+        if( _bytes_processed == 0 ||  (double) value / last_bytes_processed > 1.0005 ){
+          progress_update(value,file_size); 
+          last_bytes_processed = value;
+        }
+        _bytes_processed = value; 
+      }
     }
     public string name { get; set; }
     public string path { get; set; }

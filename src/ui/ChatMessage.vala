@@ -19,25 +19,41 @@
 
 namespace Venom {
   public class ChatMessage : Gtk.EventBox {
+    public Message message;
+
     private Gtk.Label name_label;
     private Gtk.Label message_label;
     private Gtk.Label date_label;
 
-    public ChatMessage(Message message){
+    public ChatMessage(Message message, bool following = false){
+      this.message = message;
       Gtk.Builder builder = new Gtk.Builder();
       try {
         builder.add_from_resource("/org/gtk/venom/chat_message.ui");
       } catch (GLib.Error e) {
         stderr.printf("Loading message widget failed!\n");
       }
+      this.get_style_context().add_class("message_entry");
+
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
-      this.add(box);
+      Gtk.Frame frame = new Gtk.Frame(null);
+      frame.get_style_context().add_class("message_frame");
+      frame.set_visible(true);
+      frame.add(box);
+      this.add(frame);
       name_label = builder.get_object("name_label") as Gtk.Label;
-      if(message.sender == null) {
-        name_label.set_markup( "<span color='#939598'>Me</span>" );
+      name_label.get_style_context().add_class("name_label");
+
+      if(!following) {
+        frame.get_style_context().add_class("first");
+        if(message.sender.public_key == null) {
+          name_label.get_style_context().add_class("own_name");
+        }
+        name_label.set_text( Tools.shorten_name( message.sender.name ) );
       } else {
-        name_label.set_text( message.sender.name );
+        name_label.set_text("");
       }
+
       message_label = builder.get_object("message_label") as Gtk.Label;
       message_label.set_text( message.message );
       message_label.set_line_wrap(true);

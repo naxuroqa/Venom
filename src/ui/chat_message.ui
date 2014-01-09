@@ -8,14 +8,15 @@
     <property name="spacing">10</property>
     <child>
       <object class="GtkLabel" id="name_label">
+        <property name="width_request">40</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">end</property>
         <property name="valign">start</property>
+        <property name="margin_right">6</property>
         <property name="label" translatable="yes">label</property>
-        <property name="width_chars">1</property>
-        <attributes>
-          <attribute name="weight" value="bold"/>
-        </attributes>
+        <property name="justify">right</property>
+        <property name="ellipsize">end</property>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -55,6 +56,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
+        <property name="padding">10</property>
         <property name="position">2</property>
       </packing>
     </child>

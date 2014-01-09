@@ -19,7 +19,8 @@
 
 namespace Venom {
   public class FileTransferChatEntry : Gtk.EventBox {
-    private FileTransfer ft;
+    public unowned FileTransfer ft;
+
     private Gtk.Label name_label;
     private Gtk.Label size_or_status_label;
     private Gtk.ProgressBar progress_bar;
@@ -37,9 +38,12 @@ namespace Venom {
       } catch (GLib.Error e) {
         stderr.printf("Loading message widget failed!\n");
       }
-      this.get_style_context().add_class("filetransfer-entry");
-      Gtk.Box box = builder.get_object("box1") as Gtk.Box;
-      this.add(box);
+      this.get_style_context().add_class("filetransfer_entry");
+      //Gtk.Box box = builder.get_object("box1") as Gtk.Box;
+      Gtk.Frame frame = builder.get_object("frame1") as Gtk.Frame;
+      this.add(frame);
+      frame.get_style_context().add_class("frame");
+      
       name_label = builder.get_object("name_label") as Gtk.Label;
       name_label.set_text( ft.name );
       size_or_status_label = builder.get_object("size_label") as Gtk.Label;
@@ -48,10 +52,7 @@ namespace Venom {
       save_as_button = builder.get_object("save_as_button") as Gtk.Button;
       cancel_button = builder.get_object("cancel_button") as Gtk.Button;
       if( ft.direction == FileTransferDirection.OUTGOING ) {
-        save_as_button.visible = false;
-        save_as_button.sensitive = false;
-        cancel_button.visible = false;
-        cancel_button.sensitive = false;
+        disable_buttons();
       }
       save_as_button.clicked.connect(accept_file);
       cancel_button.clicked.connect(reject_file);
@@ -59,13 +60,16 @@ namespace Venom {
       //filetransfer signals
       ft.progress_update.connect(update_progress);
       ft.status_changed.connect(status_changed);
-      this.visible = true;
+
+      this.no_show_all = true;
     }
 
     private void update_progress(uint64 bytes_processed, uint64 file_size) {
       double progress = (double) bytes_processed / file_size;
+      //double fraction = progress_bar.get_fraction();
       progress_bar.set_fraction(progress);
     }
+
     private void disable_buttons(){
       save_as_button.visible = false;
       save_as_button.sensitive = false;
@@ -74,6 +78,7 @@ namespace Venom {
     }
     
     private void status_changed(FileTransferStatus status,FileTransferDirection direction){
+      stderr.printf("status_changed: %s",status.to_string());
       switch (status) {
         case FileTransferStatus.DONE: {
           if(direction == FileTransferDirection.INCOMING) {
@@ -81,16 +86,19 @@ namespace Venom {
           } else if (direction == FileTransferDirection.OUTGOING) {
             size_or_status_label.set_text("File sent");
           }
+          progress_bar.visible = false;
           disable_buttons();
         } break;
         case FileTransferStatus.REJECTED: {
           size_or_status_label.set_text("File was rejected");
-          size_or_status_label.get_style_context().add_class("errorlabel");
+          if (direction == FileTransferDirection.OUTGOING) {
+            size_or_status_label.get_style_context().add_class("error");
+          }
+          progress_bar.visible = false;
           disable_buttons();
         } break; 
         case FileTransferStatus.IN_PROGRESS: {
-          save_as_button.sensitive = false;
-          save_as_button.visible = false;
+          disable_buttons();
         } break;
         case FileTransferStatus.PAUSED: {
           size_or_status_label.set_text("Paused");

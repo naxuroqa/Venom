@@ -408,10 +408,11 @@ namespace Venom {
       uint8 filenumber = session.send_file_request(ft.friend.friend_id,ft.file_size,ft.name);
       if(filenumber != -1) {
         //ft.filenumber = filenumber;
-        Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
+        Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers();
         transfers[filenumber] = ft;
       } else {
         stderr.printf("failed to send file %s to %s", ft.name, ft.friend.name);
+        ft.status = FileTransferStatus.SENDING_FAILED;
       }
     }
 
@@ -552,7 +553,7 @@ namespace Venom {
       stdout.printf ("received file send request friend: %i filenumber: %i filename: %s \n",friendnumber,filenumber,filename );
       Contact contact = session.get_contact_list()[friendnumber];
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null); 
-      Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers(); 
+      Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers();
       transfers[filenumber] = ft;
       ConversationWidget w = conversation_widgets[friendnumber];
       w.on_incoming_filetransfer(ft);
@@ -587,6 +588,7 @@ namespace Venom {
             ft.bytes_processed += chunk_size;
             read_more = true;
           } else {
+            //stderr.printf("error: %llu \n",remaining_bytes_to_send);
             read_more = false;
             Thread.usleep(25000);
           }
@@ -598,7 +600,7 @@ namespace Venom {
         stderr.printf("I/O error while trying to read file: %s\n",e.message);
       } catch(Error e) {
         stderr.printf("Unknown error while trying to read file: %s\n",e.message); 
-      } 
+      }
       stdout.printf("Ended file transfer for %s to %s\n",ft.name, (session.get_contact_list()[friendnumber]).name );
     }
 
@@ -607,10 +609,10 @@ namespace Venom {
       if(ft == null)
         return;
       if(status == Tox.FileControlStatus.ACCEPT && receive_send == 1) {
-        stdout.printf("Contact accepted file sending request\n");   
-        new Thread<bool>(null, () => { 
+        stdout.printf("Contact accepted file sending request\n");
+        new Thread<bool>(null, () => {
             send_file(friendnumber,filenumber);return true;
-          });
+        });
       }
       if(status == Tox.FileControlStatus.KILL && receive_send == 1) {
         ft.status = FileTransferStatus.REJECTED;
@@ -618,7 +620,7 @@ namespace Venom {
       }
       if(status == Tox.FileControlStatus.FINISHED && receive_send == 0) {
         ft.status = FileTransferStatus.DONE;
-        stderr.printf("File transfer finished for file number %u",filenumber);  
+        stderr.printf("File transfer finished for file number %u",filenumber);
       }
     }
 
@@ -637,24 +639,25 @@ namespace Venom {
         ft.bytes_processed += bytes_written;
         fos.close();
       } catch (Error e){
-        stderr.printf("Error while trying to write data to file");  
-      } 
+        stderr.printf("Error while trying to write data to file\n");
+      }
     }
 
 
     private ConversationWidget? open_conversation_with(Contact c) {
       ConversationWidget w = conversation_widgets[c.friend_id];
       if(w == null) {
-        w = new ConversationWidget(c);
+        string my_name = session.getselfname();
+        w = new ConversationWidget(c,my_name);
         incoming_message.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
         w.new_outgoing_file.connect(on_outgoing_file);
         w.filetransfer_accepted.connect ( (ft) => {
-            session.accept_file(ft.friend.friend_id,ft.filenumber);
-          });
+          session.accept_file(ft.friend.friend_id,ft.filenumber);
+        });
         w.filetransfer_rejected.connect ( (ft) => {
-            session.reject_file(ft.friend.friend_id,ft.filenumber);
-          });
+          session.reject_file(ft.friend.friend_id,ft.filenumber);
+        });
         conversation_widgets[c.friend_id] = w;
         notebook_conversations.append_page(w, null);
       }
