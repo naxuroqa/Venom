@@ -560,6 +560,7 @@ namespace Venom {
     }
 
     private void send_file(int friendnumber, uint8 filenumber) {
+      stderr.printf("send_file\n");
       int chunk_size =  session.get_recommended_data_size(friendnumber);
       FileTransfer ft = session.get_filetransfers()[filenumber];
       ft.status = FileTransferStatus.IN_PROGRESS;
@@ -592,6 +593,7 @@ namespace Venom {
             read_more = false;
             Thread.usleep(25000);
           }
+          Thread.usleep(100);
         }
         session.send_filetransfer_end(friendnumber,filenumber);
         ft.status = FileTransferStatus.DONE;
@@ -605,6 +607,7 @@ namespace Venom {
     }
 
     private void on_file_control_request(int friendnumber,uint8 filenumber,uint8 receive_send,uint8 status, uint8[] data) {
+      stderr.printf("on_file_control_request\n");
       FileTransfer ft = session.get_filetransfers()[filenumber];
       if(ft == null)
         return;
@@ -625,6 +628,7 @@ namespace Venom {
     }
 
     private void on_file_data(int friendnumber,uint8 filenumber,uint8[] data) {
+      //stderr.printf("on_file_data\n");
       FileTransfer ft = session.get_filetransfers()[filenumber];
       if(ft == null)
         return;

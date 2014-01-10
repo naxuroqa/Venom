@@ -89,10 +89,10 @@ namespace Venom {
       uint64 petabyte = terabyte * 1024;
 
       if(size < kilobyte) return "%llu bytes".printf(size);
-      if(size < megabyte) return "%.2lf kilobytes".printf( (double) size / kilobyte );
-      if(size < gigabyte) return "%.2lf megabytes".printf( (double) size / megabyte );
-      if(size < terabyte) return "%.2lf gigabytes".printf( (double) size / gigabyte );
-      if(size < petabyte) return "%.2lf terabytes".printf( (double) size / terabyte );
+      if(size < megabyte) return "%.2lf KB".printf( (double) size / kilobyte );
+      if(size < gigabyte) return "%.2lf MB".printf( (double) size / megabyte );
+      if(size < terabyte) return "%.2lf GB".printf( (double) size / gigabyte );
+      if(size < petabyte) return "%.2lf TB".printf( (double) size / terabyte );
       return "really big file";
     }
 

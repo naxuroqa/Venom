@@ -66,7 +66,6 @@ namespace Venom {
 
     private void update_progress(uint64 bytes_processed, uint64 file_size) {
       double progress = (double) bytes_processed / file_size;
-      //double fraction = progress_bar.get_fraction();
       progress_bar.set_fraction(progress);
     }
 
