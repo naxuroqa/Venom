@@ -34,15 +34,15 @@ Ubuntu 12.04 (Precise Pangolin) needs a ppa to get a newer version of valac and 
 
     apt-add-repository ppa:vala-team/ppa
     apt-get update
-    apt-get install valac cmake libgtk-3-dev libgee-0.8-dev
+    apt-get install valac cmake libgtk-3-dev libgee-0.8-dev libjson-glib-dev libsqlite3-dev
 
 Fedora:
 
-    yum install vala cmake gtk3-devel libgee-devel
+    yum install vala cmake gtk3-devel libgee-devel json-glib-devel sqlite-devel
 
-Arch Linux: (There is an [aur-package](https://aur.archlinux.org/packages/venom-git))
+Arch Linux: (There is an [aur-package](https://aur.archlinux.org/packages/ve  nom-git))
 
-    pacman -S vala cmake gtk3 libgee
+    pacman -S vala cmake gtk3 libgee json-glib sqlite
 
 Building and installing Venom
 -----------------------------
@@ -65,7 +65,7 @@ Follow ProjectTox-Core [installation instructions](https://github.com/irungentoo
 With Homebrew
 -------------
 
-    brew install vala cmake gtk+3 libgee git
+    brew install git vala cmake gtk+3 libgee json-glib sqlite
     git clone git://github.com/naxuroqa/Venom.git
     cd Venom
     mkdir build
