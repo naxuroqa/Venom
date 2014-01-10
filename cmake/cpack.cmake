@@ -27,8 +27,6 @@ IF(WIN32)
       DOWNLOAD 
         "https://raw.github.com/jedisct1/libsodium/master/LICENSE"
         "${CMAKE_CURRENT_BINARY_DIR}/libsodium_license.txt"
-      EXPECTED_MD5
-        979a30c71c9a8d0174c10898ac3e5595
     )
   ENDIF()
   INSTALL(
@@ -46,12 +44,12 @@ ENDIF(WIN32)
 
 # Basic settings
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "GTK+/Vala GUI for Tox")
-SET(CPACK_PACKAGE_EXECUTABLES    "venom;Venom")
+SET(CPACK_PACKAGE_EXECUTABLES         "venom;Venom")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY   "Venom")
-SET(CPACK_PACKAGE_NAME           "Venom")
-SET(CPACK_PACKAGE_VERSION_MAJOR  "${VENOM_VERSION_MAJOR}")
-SET(CPACK_PACKAGE_VERSION_MINOR  "${VENOM_VERSION_MINOR}")
-SET(CPACK_PACKAGE_VERSION_PATCH  "${VENOM_VERSION_PATCH}")
+SET(CPACK_PACKAGE_NAME                "Venom")
+SET(CPACK_PACKAGE_VERSION_MAJOR       "${VENOM_VERSION_MAJOR}")
+SET(CPACK_PACKAGE_VERSION_MINOR       "${VENOM_VERSION_MINOR}")
+SET(CPACK_PACKAGE_VERSION_PATCH       "${VENOM_VERSION_PATCH}")
 SET(CPACK_SOURCE_IGNORE_FILES /build/;\\\\.gitignore;.*~;\\\\.git;CMakeFiles;Makefile;cmake_install\\\\.cmake)
 SET(CPACK_SOURCE_STRIP_FILES TRUE)
 SET(CPACK_STRIP_FILES TRUE)
@@ -65,24 +63,25 @@ SET(CPACK_PACKAGE_VERSION        "${VENOM_VERSION}")
 #SET(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
 # There is a bug in NSI that does not handle full unix paths properly. Make
 # sure there is at least one set of four (4) backslashes.
-#SET(CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}/misc/\\\\venom.ico")
-#SET(CPACK_NSIS_MUI_UNIICON "${CMAKE_SOURCE_DIR}/misc/\\\\venom.ico")
-SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/icons/48x48\\\\venom.png")
-#SET(CPACK_NSIS_INSTALLED_ICON_NAME "")
+SET(CPACK_NSIS_EXECUTABLES_DIRECTORY ${CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION})
+SET(CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}\\\\misc\\\\venom.ico")
+SET(CPACK_NSIS_MUI_UNIICON "${CMAKE_SOURCE_DIR}\\\\misc\\\\venom.ico")
+SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\\\icons\\\\48x48\\\\venom.png")
+SET(CPACK_NSIS_INSTALLED_ICON_NAME "venom.exe")
 SET(CPACK_NSIS_DISPLAY_NAME "Venom")
-#SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
-#SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
-#SET(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
+SET(CPACK_NSIS_HELP_LINK "https://github.com/naxuroqa/Venom")
+SET(CPACK_NSIS_URL_INFO_ABOUT "http://github.com/naxuroqa/Venom")
+SET(CPACK_NSIS_CONTACT "naxuroqa@gmail.com")
 SET(CPACK_NSIS_MUI_FINISHPAGE_RUN "venom.exe")
 SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
 DetailPrint \\\"Registering tox URI Handler\\\"
 DeleteRegKey HKCR \\\"tox\\\"
 WriteRegStr HKCR \\\"tox\\\" \\\"\\\" \\\"URL:tox\\\"
 WriteRegStr HKCR \\\"tox\\\" \\\"URL Protocol\\\" \\\"\\\"
-WriteRegStr HKCR \\\"tox\\\\DefaultIcon\\\" \\\"\\\" \\\"$INSTDIR\\\\bin\\\\venom.exe\\\"
+WriteRegStr HKCR \\\"tox\\\\DefaultIcon\\\" \\\"\\\" \\\"$INSTDIR\\\\venom.exe\\\"
 WriteRegStr HKCR \\\"tox\\\\shell\\\" \\\"\\\" \\\"\\\"
 WriteRegStr HKCR \\\"tox\\\\shell\\\\Open\\\" \\\"\\\" \\\"\\\"
-WriteRegStr HKCR \\\"tox\\\\shell\\\\Open\\\\command\\\" \\\"\\\" \\\"$INSTDIR\\\\bin\\\\venom.exe %1\\\"
+WriteRegStr HKCR \\\"tox\\\\shell\\\\Open\\\\command\\\" \\\"\\\" \\\"$INSTDIR\\\\venom.exe %1\\\"
 ")
 SET(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
 ;Unregister the URI handler
@@ -90,5 +89,5 @@ DetailPrint \\\"Unregistering tox URI Handler\\\"
 DeleteRegKey HKCR \\\"tox\\\"
 ")
 # .deb
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtk-3-0 (>= 3.2), libgee-0.8-2 (>= 0.8), libtoxcore (>= 0.0)")
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtk-3-0 (>= 3.4.1), libgee-0.8-2 (>= 0.8.0), libjson-glib-1.0-0 (>= 0.14.2), libsqlite3-0 (>= 3.7.9), libtoxcore (>= 0.0)")
 INCLUDE(CPack)
