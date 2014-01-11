@@ -17,10 +17,14 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-[CCode (cprefix = "", lower_case_cprefix = "", cheader_filename = "config.h")]
+[CCode (cprefix = "", lower_case_cprefix = "VENOM_", cheader_filename = "config.h")]
 namespace Venom.Config {
-  public const int VENOM_VERSION_MAJOR;
-  public const int VENOM_VERSION_MINOR;
-  public const int VENOM_VERSION_PATCH;
-  public string VENOM_VERSION;
+  public const int VERSION_MAJOR;
+  public const int VERSION_MINOR;
+  public const int VERSION_PATCH;
+  public const string VERSION;
+
+  public const string COPYRIGHT_NOTICE;
+  public const string SHORT_DESCRIPTION;
+  public const string WEBSITE;
 }

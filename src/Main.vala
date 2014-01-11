@@ -41,7 +41,7 @@ public class Main {
 	    }
 
 	    if(version) {
-	      stdout.printf("%s %s\n", args[0], Config.VENOM_VERSION);
+	      stdout.printf("%s %s\n", args[0], Config.VERSION);
 	      return 0;
 	    }
 

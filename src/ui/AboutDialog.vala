@@ -25,11 +25,11 @@ namespace Venom {
                   "Andrii Titov <concuror@gmail.com>",
                   null
                 };
-      comments = "GTK+/Vala GUI for Tox";
-      copyright = "Copyright © 2013-2014 Venom authors and contributors";
+      comments = Config.SHORT_DESCRIPTION;
+      copyright = Config.COPYRIGHT_NOTICE;
       program_name = "Venom";
-      version = Config.VENOM_VERSION;
-      website = "https://github.com/naxuroqa/Venom";
+      version = Config.VERSION;
+      website = Config.WEBSITE;
       license_type = Gtk.License.GPL_3_0;
     }
   }

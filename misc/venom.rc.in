@@ -27,10 +27,10 @@ BEGIN
     BLOCK "040904B0"
     BEGIN
       VALUE "CompanyName", "Venom authors and contributors"
-      VALUE "FileDescription", "Venom, a GTK+ GUI for TOX"
+      VALUE "FileDescription", "@VENOM_SHORT_DESCRIPTION@"
       VALUE "FileVersion", "@VENOM_VERSION@.0"
       VALUE "InternalName", "venom"
-      VALUE "LegalCopyright", "Copyright © 2013 Venom authors and contributors"
+      VALUE "LegalCopyright", "@VENOM_COPYRIGHT_NOTICE@"
       VALUE "OriginalFilename", "venom.exe"
       VALUE "ProductName", "Venom"
       VALUE "ProductVersion", "@VENOM_VERSION@"
