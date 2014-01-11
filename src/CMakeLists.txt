@@ -1,5 +1,5 @@
 #
-#    Copyright (C) 2013 Venom authors and contributors
+#    Copyright (C) 2013-2014 Venom authors and contributors
 #
 #    This file is part of Venom.
 #
@@ -66,6 +66,7 @@ SET( VENOM_SRC
   ui/AboutDialog.vala
   ui/ConversationTreeView.vala
   ui/ConversationWidget.vala
+  ui/ContactFilter.vala
   ui/ContactListWindow.vala
   ui/ContactListTreeView.vala
   ui/ContactListCellRenderer.vala

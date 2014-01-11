@@ -18,7 +18,6 @@
  */
 
 namespace Venom {
-
   public class ContactListWindow : Gtk.ApplicationWindow {
     // Containers
     private Gee.AbstractMap<int, ConversationWidget> conversation_widgets;
@@ -163,13 +162,18 @@ namespace Venom {
       label_status = builder.get_object("label_userstatus") as Gtk.Label;
 
       combobox_status = builder.get_object("combobox_status") as Gtk.ComboBox;
-      Gtk.ListStore liststore_status = new Gtk.ListStore (1, typeof(string));
+      Gtk.ListStore liststore_status = new Gtk.ListStore (2, typeof(string), typeof(ContactFilter));
       combobox_status.set_model(liststore_status);
 
+      ContactFilter filter_online = new ContactFilterOnline();
+      ContactFilter filter_all = new ContactFilterAll();
+      ContactFilter filter_default = filter_all;
       // Add our connection status to the treeview
       Gtk.TreeIter iter;
       liststore_status.append(out iter);
-      liststore_status.set(iter, 0, "Online" , -1);
+      liststore_status.set(iter, 0, "Online", 1, filter_online, -1);
+      liststore_status.append(out iter);
+      liststore_status.set(iter, 0, "All", 1, filter_all, -1);
       combobox_status.set_active_iter(iter);
 
       // Add cellrenderer
@@ -211,6 +215,11 @@ namespace Venom {
       // Create and add custom treeview
       contact_list_tree_view = new ContactListTreeView();
       contact_list_tree_view.show_all();
+      
+      Gtk.TreeModel m = contact_list_tree_view.get_model();
+      Gtk.TreeModelFilter contact_list_tree_model_filter = new Gtk.TreeModelFilter(m, null);
+      contact_list_tree_model_filter.set_visible_func(filter_default.filter_func);
+      contact_list_tree_view.set_model(contact_list_tree_model_filter);
 
       Gtk.ScrolledWindow scrolled_window_contact_list = builder.get_object("scrolled_window_contact_list") as Gtk.ScrolledWindow;
       scrolled_window_contact_list.add(contact_list_tree_view);
@@ -323,18 +332,16 @@ namespace Venom {
     }
 
     private void combobox_status_changed() {
-      stdout.printf("Under construction.\n");
-      /*
-      Gtk.TreeModel m = combobox_status.get_model();
-      //TODO error messages
-      if(m == null)
-        return;
-      GLib.Value value_status;
+      Gtk.TreeModel m = combobox_status.get_model() as Gtk.TreeModel;
       Gtk.TreeIter iter;
       combobox_status.get_active_iter(out iter);
-      m.get_value(iter, 1, out value_status);
-      set_userstatus( (UserStatus)value_status );
-      */
+      GLib.Value value_filter_function;
+      m.get_value(iter, 1, out value_filter_function);
+      ContactFilter f = value_filter_function as ContactFilter;
+      Gtk.TreeModelFilter old_filter = contact_list_tree_view.get_model() as Gtk.TreeModelFilter;
+      Gtk.TreeModelFilter new_filter = new Gtk.TreeModelFilter(old_filter.get_model(), null);
+      new_filter.set_visible_func(f.filter_func);
+      contact_list_tree_view.set_model(new_filter);
     }
 
     private void set_userstatus(UserStatus status) {
