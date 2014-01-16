@@ -40,7 +40,7 @@ ENDIF(WIN32)
 
 IF(BUILD_STATIC_EXECUTABLES)
   set(CMAKE_EXE_LINKER_FLAGS -static)
-  set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
+  set(CMAKE_FIND_LIBRARY_SUFFIXES .a .dll.a)
   set(CMAKE_EXE_LINK_DYNAMIC_C_FLAGS)       # remove -Wl,-Bdynamic
   set(CMAKE_SHARED_LIBRARY_C_FLAGS)         # remove -fPIC
   set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)    # remove -rdynamic
