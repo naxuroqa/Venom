@@ -20,27 +20,29 @@
 INCLUDE(FindVala)
 INCLUDE(${VALA_USE_FILE})
 INCLUDE(GResource)
+INCLUDE(PkgCheckModulesFullpath)
 
 FIND_PACKAGE(Vala "0.18.0" REQUIRED)
 FIND_PACKAGE(PkgConfig REQUIRED)
 
 SET(TARGET_GLIB 2.32)
 
-PKG_CHECK_MODULES(GTK    REQUIRED gtk+-3.0>=3.4)
-PKG_CHECK_MODULES(GEE    REQUIRED gee-0.8>=0.8)
-PKG_CHECK_MODULES(GIO    REQUIRED gio-2.0>=${TARGET_GLIB})
-PKG_CHECK_MODULES(GLIB   REQUIRED glib-2.0>=${TARGET_GLIB})
-PKG_CHECK_MODULES(SQLITE REQUIRED sqlite3>=3.7)
-PKG_CHECK_MODULES(JSON   REQUIRED json-glib-1.0>=0.14)
-PKG_CHECK_MODULES(TOX    REQUIRED libtoxcore>=0.0)
+PKG_CHECK_MODULES_FULLPATH(GTK    REQUIRED gtk+-3.0>=3.4)
+PKG_CHECK_MODULES_FULLPATH(GEE    REQUIRED gee-0.8>=0.8)
+PKG_CHECK_MODULES_FULLPATH(GIO    REQUIRED gio-2.0>=${TARGET_GLIB})
+PKG_CHECK_MODULES_FULLPATH(GLIB   REQUIRED glib-2.0>=${TARGET_GLIB})
+PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
+PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
+PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
 
-SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GTK_CFLAGS} ${GTK_CFLAGS_OTHER}
-                 ${GEE_CFLAGS} ${GEE_CFLAGS_OTHER}
-                 ${GIO_CFLAGS} ${GIO_CFLAGS_OTHER}
-                 ${GLIB_CFLAGS} ${GLIB_CFLAGS_OTHER}
-                 ${SQLITE_CFLAGS} ${SQLITE_CFLAGS_OTHER}
-                 ${JSON_CFLAGS} ${JSON_CFLAGS_OTHER}
-                 ${TOX_CFLAGS} ${TOX_CFLAGS_OTHER}
+SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
+                  ${GTK_CFLAGS}    ${GTK_CFLAGS_OTHER}
+                  ${GEE_CFLAGS}    ${GEE_CFLAGS_OTHER}
+                  ${GIO_CFLAGS}    ${GIO_CFLAGS_OTHER}
+                  ${GLIB_CFLAGS}   ${GLIB_CFLAGS_OTHER}
+                  ${SQLITE_CFLAGS} ${SQLITE_CFLAGS_OTHER}
+                  ${JSON_CFLAGS}   ${JSON_CFLAGS_OTHER}
+                  ${TOX_CFLAGS}    ${TOX_CFLAGS_OTHER}
 )
 
 # since pkg_check_modules returns semicolon
@@ -146,23 +148,23 @@ ADD_EXECUTABLE( group_bot EXCLUDE_FROM_ALL
 )
 
 TARGET_LINK_LIBRARIES( venom
-                       ${GTK_LIBRARIES}
-                       ${GEE_LIBRARIES}
-                       ${GIO_LIBRARIES}
-                       ${GLIB_LIBRARIES}
-                       ${JSON_LIBRARIES}
-                       ${SQLITE_LIBRARIES}
-                       ${TOX_LIBRARIES}
+                       ${GTK_LIBRARIES_FULLPATH}
+                       ${GEE_LIBRARIES_FULLPATH}
+                       ${GIO_LIBRARIES_FULLPATH}
+                       ${GLIB_LIBRARIES_FULLPATH}
+                       ${JSON_LIBRARIES_FULLPATH}
+                       ${SQLITE_LIBRARIES_FULLPATH}
+                       ${TOX_LIBRARIES_FULLPATH}
 )
 
 TARGET_LINK_LIBRARIES( vapi_test
-                       ${GIO_LIBRARIES}
-                       ${TOX_LIBRARIES}
+                       ${GIO_LIBRARIES_FULLPATH}
+                       ${TOX_LIBRARIES_FULLPATH}
 )
 
 TARGET_LINK_LIBRARIES( group_bot
-                       ${GIO_LIBRARIES}
-                       ${TOX_LIBRARIES}
+                       ${GIO_LIBRARIES_FULLPATH}
+                       ${TOX_LIBRARIES_FULLPATH}
 )
 
 INSTALL(TARGETS venom RUNTIME DESTINATION ${CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION})
