@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    ConversationWidget.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -26,8 +28,8 @@ namespace Venom {
     private ConversationTreeView conversation_tree_view;
     public unowned Contact contact {get; private set;}
 
-    private signal void new_conversation_message(Message message);
-    public signal void new_outgoing_message(Contact receiver, string message);
+    public signal void new_outgoing_message(Message message);
+    public signal void new_outgoing_action(ActionMessage action);
     public signal void new_outgoing_file(FileTransfer ft);
 
     public ConversationWidget( Contact contact ) {
@@ -96,7 +98,7 @@ namespace Venom {
         adjustment.set_value(adjustment.upper - adjustment.page_size);
       });
 
-      new_conversation_message.connect(conversation_tree_view.add_message);
+      //new_conversation_message.connect(conversation_tree_view.add_message);
 
       delete_event.connect(() => {hide(); return true;});
     }
@@ -105,7 +107,7 @@ namespace Venom {
 
     public void load_history(GLib.List<Message> messages) {
       messages.foreach((message) => {
-        new_conversation_message(message);
+        conversation_tree_view.add_message(message);
         });
     }
 
@@ -121,19 +123,28 @@ namespace Venom {
 
 
     public void on_incoming_message(Message message) {
-      if(message.sender != contact)
+      if(message.from != contact)
         return;
 
-      new_conversation_message(message);
+      conversation_tree_view.add_message(message);
     }
 
     public void entry_activate(Gtk.Entry source) {
       string s = source.text;
       if(s == "")
         return;
-      Message m = new Message(null, s);
-      new_conversation_message(m);
-      new_outgoing_message(contact, s);
+
+      GLib.MatchInfo info = null;
+      if(Tools.action_regex.match(s, 0, out info)) {
+        string action_string = info.fetch_named("action_string");
+        ActionMessage a = new ActionMessage.outgoing(contact, action_string);
+        conversation_tree_view.add_message(a);
+        new_outgoing_action(a);
+      } else {
+        Message m = new Message.outgoing(contact, s);
+        conversation_tree_view.add_message(m);
+        new_outgoing_message(m);
+      }
       source.text = "";
     }
 

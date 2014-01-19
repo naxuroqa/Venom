@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    ConversationTreeView.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -22,7 +24,7 @@ namespace Venom {
     Gtk.ListStore list_store_messages;
 
     public ConversationTreeView() {
-        list_store_messages = new Gtk.ListStore (1, typeof (Object));
+        list_store_messages = new Gtk.ListStore (1, typeof (IMessage));
 
         Gtk.TreeViewColumn name_column = new Gtk.TreeViewColumn();
         Gtk.CellRendererText name_column_cell = new Gtk.CellRendererText();
@@ -38,7 +40,6 @@ namespace Venom {
         message_column.expand = true;
 
         // change wrap width when column size changes
-        //message_column.notify["width"].connect( () => {message_column_cell.wrap_width = message_column.get_width();});
         message_column.notify["width"].connect( () => {message_column_cell.wrap_width = message_column.get_width() - 8;});
 
         Gtk.TreeViewColumn time_column = new Gtk.TreeViewColumn();
@@ -60,53 +61,31 @@ namespace Venom {
         set_headers_visible(false);
     }
 
-    private Object get_chat_entry_from_iter(Gtk.TreeIter iter) {
+    private IMessage get_chat_entry_from_iter(Gtk.TreeIter iter) {
       GLib.Value v;
       model.get_value(iter, 0, out v);
-      return v as Object;
+      return v as IMessage;
     }
 
     private void render_sender_name (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
     {
-      //TODO move markup into css if possible
-      Object o = get_chat_entry_from_iter(iter);
-      if(o is Message) {
-        Message m = o as Message;
-        if(m.sender == null)
-          (cell as Gtk.CellRendererText).markup = "<span color='#939598'font_weight='bold'>Me</span>";
-        else
-          (cell as Gtk.CellRendererText).markup = "<b>%s</b>".printf(m.sender.name);
-      } else if (o is FileTransfer) {
-          (cell as Gtk.CellRendererText).markup = "<span>ft</span>";
-      }
+      IMessage m = get_chat_entry_from_iter(iter);
+      (cell as Gtk.CellRendererText).markup = m.get_sender_markup();
     }
 
     private void render_message (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
     {
-      Object o = get_chat_entry_from_iter(iter);
-      if(o is Message) {
-        Message m = o as Message;
-        (cell as Gtk.CellRendererText).text = "%s".printf(m.message);
-      } else if (o is FileTransfer) {
-        FileTransfer ft = o as FileTransfer;
-        (cell as Gtk.CellRendererText).text = "%s".printf(ft.name);
-      }
+      IMessage m = get_chat_entry_from_iter(iter);
+      (cell as Gtk.CellRendererText).markup = m.get_message_markup();
     }
 
     private void render_time (Gtk.CellLayout cell_layout, Gtk.CellRenderer cell, Gtk.TreeModel tree_model, Gtk.TreeIter iter)
     {
-      Object o = get_chat_entry_from_iter(iter);
-      if(o is Message) {
-        Message m = o as Message;
-        (cell as Gtk.CellRendererText).markup = "<span color='#939598'>%s</span>".printf(m.time_sent.format("%R"));
-      }
-      else if(o is FileTransfer) {
-        FileTransfer ft = o as FileTransfer;
-        (cell as Gtk.CellRendererText).markup = "<span color='#939598'>%s</span>".printf(ft.time_sent.format("%R"));
-      }
+      IMessage m = get_chat_entry_from_iter(iter);
+      (cell as Gtk.CellRendererText).markup = m.get_time_markup();
     }
 
-    public void add_message(Message message) {
+    public void add_message(IMessage message) {
       Gtk.TreeIter iter;
       list_store_messages.append (out iter);
       list_store_messages.set (iter, 0, message);
@@ -115,7 +94,7 @@ namespace Venom {
     public void add_filetransfer(FileTransfer ft) {
       Gtk.TreeIter iter;
       list_store_messages.append (out iter);
-      list_store_messages.set (iter, 0, ft);
+      list_store_messages.set (iter, 0, new FileTransferMessage(ft));
     }
 
     public void update_message(Message message) {

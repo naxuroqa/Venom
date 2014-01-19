@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    ToxSession.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -16,6 +18,7 @@
  *    You should have received a copy of the GNU General Public License
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace Venom {
   public enum UserStatus {
     ONLINE,
@@ -57,6 +60,7 @@ namespace Venom {
     public signal void on_friend_request(Contact c, string message);
     public signal void on_friend_message(Contact c, string message);
     public signal void on_own_message(Contact c, string message);
+    public signal void on_own_action(Contact c, string action);
     public signal void on_friend_action(Contact c, string action);
     public signal void on_name_change(Contact c, string? old_name);
     public signal void on_status_message(Contact c, string? old_status);
@@ -68,7 +72,9 @@ namespace Venom {
 
     // Groupchat signals
     public signal void on_group_invite(Contact c, GroupChat g);
-    public signal void on_group_message(GroupChat g, int friendgroupnumber, string message);
+    public signal void on_group_message(GroupChat g, int peernumber, string message);
+    public signal void on_group_action(GroupChat g, int peernumber, string action);
+    public signal void on_group_peer_changed(GroupChat g, int peernumber, Tox.ChatChange change);
 
     // File sending callbacks
 
@@ -82,8 +88,19 @@ namespace Venom {
 
       // create handle
       handle = new Tox.Tox( ipv6 ? 1 : 0);
+      //start local storage
+      local_storage = new LocalStorage(this, VenomSettings.instance.enable_logging);
 
-      // Add one default dht server
+      init_dht_servers();
+      init_callbacks();
+    }
+
+    // destructor
+    ~ToxSession() {
+      running = false;
+    }
+
+    private void init_dht_servers() {
       dht_servers += new DhtServer.with_args(
         "54.215.145.71",
         "6EDDEE2188EF579303C0766B4796DCBA89C93058B6032FEA51593DCD42FB746C"
@@ -108,10 +125,9 @@ namespace Venom {
         "95.47.140.214",
         "F4BF7C5A9D0EF4CB684090C38DE937FAE1612021F21FEA4DCBFAC6AAFEF58E68"
       );
+    }
 
-      //start local storage
-      local_storage = new LocalStorage(this, VenomSettings.instance.enable_logging);
-
+    private void init_callbacks() {
       // setup callbacks
       handle.callback_friend_request(this.on_friend_request_callback);
       handle.callback_friend_message(this.on_friend_message_callback);
@@ -125,16 +141,13 @@ namespace Venom {
       // Groupchat callbacks
       handle.callback_group_invite(this.on_group_invite_callback);
       handle.callback_group_message(this.on_group_message_callback);
+      handle.callback_group_action(this.on_group_action_callback);
+      handle.callback_group_namelist_change(this.on_group_namelist_change_callback);
 
       // File sending callbacks
       handle.callback_file_send_request(this.on_file_sendrequest_callback);
       handle.callback_file_control(this.on_file_control_callback);
       handle.callback_file_data(this.on_file_data_callback);
-    }
-
-    // destructor
-    ~ToxSession() {
-      running = false;
     }
 
     private void init_contact_list() {
@@ -225,6 +238,20 @@ namespace Venom {
       Idle.add(() => { on_group_message(_groups.get(groupnumber), friendgroupnumber, message_string); return false; });
     }
 
+    private void on_group_action_callback(Tox.Tox tox, int groupnumber, int friendgroupnumber, uint8[] action) {
+      string action_string = ((string)action).dup();
+      Idle.add(() => { on_group_action(_groups.get(groupnumber), friendgroupnumber, action_string); return false; });
+    }
+
+    private void on_group_namelist_change_callback(Tox.Tox tox, int groupnumber, int peernumber, Tox.ChatChange change) {
+      Idle.add(() => {
+        GroupChat g = _groups.get(groupnumber);
+        g.peer_count = group_number_peers(g);
+        on_group_peer_changed(g, peernumber, change);
+        return false;
+      });
+    }
+
     //File sending callbacks
     private void on_file_sendrequest_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint64 filesize, uint8[] filename) {
       Idle.add(() => { on_file_sendrequest(friendnumber,filenumber,filesize, ((string)filename).dup()); return false; });
@@ -304,7 +331,7 @@ namespace Venom {
       return g;
     }
 
-    public bool delfriend(Contact c) {
+    public bool del_friend(Contact c) {
       int ret = -1;
       lock(handle) {
         ret = handle.del_friend(c.friend_id);
@@ -313,6 +340,30 @@ namespace Venom {
         _contacts.unset(c.friend_id);
       }
       return ret == 0;
+    }
+
+    public bool del_groupchat(GroupChat g) {
+      int ret = -1;
+      lock(handle) {
+        ret = handle.del_groupchat(g.group_id);
+      }
+      if(ret == 0) {
+        _groups.unset(g.group_id);
+      }
+      return ret == 0;
+    }
+
+    public string group_peername(GroupChat g, int peernumber) {
+      uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH];
+      lock(handle) {
+        handle.group_peername(g.group_id, peernumber, buf);
+      }
+      return (string)buf;
+    }
+    public int group_number_peers(GroupChat g) {
+      lock(handle) {
+        return handle.group_number_peers(g.group_id);
+      }
     }
 
     // Set user status, returns true on success
@@ -404,13 +455,32 @@ namespace Venom {
       return (string)buf;
     }
 
-    public uint32 sendmessage(int friend_number, string message) {
-      uint32 ret = 0;
+    public uint32 send_message(int friend_number, string message) {
       uint8[] buf = Tools.string_to_nullterm_uint(message);
       lock(handle) {
-        ret = handle.send_message(friend_number, buf);
+        return handle.send_message(friend_number, buf);
       }
-      return ret;
+    }
+
+    public uint32 send_action(int friend_number, string action) {
+      uint8[] buf = Tools.string_to_nullterm_uint(action);
+      lock(handle) {
+        return handle.send_action(friend_number, buf);
+      }
+    }
+
+    public uint32 group_message_send(int groupnumber, string message) {
+      uint8[] buf = Tools.string_to_nullterm_uint(message);
+      lock(handle) {
+        return handle.group_message_send(groupnumber, buf);
+      }
+    }
+
+    public uint32 group_action_send(int groupnumber, string action) {
+      uint8[] buf = Tools.string_to_nullterm_uint(action);
+      lock(handle) {
+        return handle.group_action_send(groupnumber, buf);
+      }
     }
 
     public unowned Gee.HashMap<int, Contact> get_contact_list() {

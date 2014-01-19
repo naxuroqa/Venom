@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    Tools.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -96,12 +98,27 @@ namespace Venom {
         case Tox.FriendAddError.BADCHECKSUM:
           return "Bad checksum";
         case Tox.FriendAddError.SETNEWNOSPAM:
-          //FIXME wat?
           return "Set new nospam";
         case Tox.FriendAddError.NOMEM:
           return "Out of memory";
         default:
           return "Friend request successfully sent";
+      }
+    }
+    private static GLib.Regex _action_regex;
+    public static GLib.Regex action_regex {
+      get {
+        if(_action_regex == null) {
+          try {
+            _action_regex = new GLib.Regex("^/(?P<action_name>\\S+) (?P<action_string>.+)$");
+          } catch (GLib.RegexError e) {
+            stderr.printf("Can't create action regex: %s.\n", e.message);
+          }
+        }
+        return _action_regex;
+      }
+      private set {
+        _action_regex = value;
       }
     }
   }

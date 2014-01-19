@@ -72,6 +72,7 @@ SET( VENOM_SRC
   ui/ContactListWindow.vala
   ui/ContactListTreeView.vala
   ui/ContactListCellRenderer.vala
+  ui/GroupConversationWidget.vala
   ui/PreferencesWindow.vala
   ui/UserInfoWindow.vala
   ui/UITools.vala

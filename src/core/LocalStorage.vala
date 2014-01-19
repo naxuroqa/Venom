@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    LocalStorage.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -108,8 +110,12 @@ namespace Venom {
         int64 timestamp = prepared_select_statement.column_int64(4);
         bool issender = prepared_select_statement.column_int(5) != 0;
         DateTime send_time = new DateTime.from_unix_utc (timestamp);
-
-        Message mess = new Message.with_time(issender?null:c, message, send_time);
+        Message mess;
+        if(issender) {
+          mess = new Message.outgoing(c, message, send_time);
+        } else {
+          mess = new Message.incoming(c, message, send_time);
+        }
         messages.append(mess);
 
       }

@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    ContactListWindow.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -21,6 +23,7 @@ namespace Venom {
   public class ContactListWindow : Gtk.ApplicationWindow {
     // Containers
     private Gee.AbstractMap<int, ConversationWidget> conversation_widgets;
+    private Gee.AbstractMap<int, GroupConversationWidget> group_conversation_widgets;
     // Tox session wrapper
     private ToxSession session;
     private UserStatus user_status = UserStatus.OFFLINE;
@@ -45,14 +48,19 @@ namespace Venom {
     public signal void contact_removed(Contact c);
 
     public signal void groupchat_added(GroupChat g);
+    public signal void groupchat_changed(GroupChat g);
     public signal void groupchat_removed(GroupChat g);
 
     public signal void incoming_message(Message m);
+    public signal void incoming_action(ActionMessage m);
+    public signal void incoming_group_message(GroupMessage m);
+    public signal void incoming_group_action(GroupActionMessage m);
 
     // Default Constructor
     public ContactListWindow (Gtk.Application application) {
       GLib.Object(application:application);
       this.conversation_widgets = new Gee.HashMap<int, ConversationWidget>();
+      this.group_conversation_widgets = new Gee.HashMap<int, GroupConversationWidget>();
 
       init_theme();
       init_session();
@@ -91,17 +99,6 @@ namespace Venom {
       }
       stdout.printf("Session ended gracefully.\n");
       cleaned_up = true;
-    }
-
-    private bool on_contact_list_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
-      // only for debugging!!!
-      if(key.keyval == Gdk.Key.F5) {
-        // TODO reset theme
-        // set user theme
-        init_theme();
-        return true;
-      }
-      return false;
     }
 
     private void init_theme() {
@@ -215,7 +212,7 @@ namespace Venom {
       // Create and add custom treeview
       contact_list_tree_view = new ContactListTreeView();
       contact_list_tree_view.show_all();
-      
+
       Gtk.TreeModel m = contact_list_tree_view.get_model();
       Gtk.TreeModelFilter contact_list_tree_model_filter = new Gtk.TreeModelFilter(m, null);
       contact_list_tree_model_filter.set_visible_func(filter_default.filter_func);
@@ -286,36 +283,53 @@ namespace Venom {
       //groupmessage signals
       session.on_group_invite.connect(this.on_group_invite);
       session.on_group_message.connect(this.on_group_message);
+      session.on_group_action.connect(this.on_group_action);
+      session.on_group_peer_changed.connect(this.on_group_peer_changed);
+
       //file signals
       session.on_file_sendrequest.connect(this.on_file_sendrequest);
       session.on_file_control.connect(this.on_file_control_request);
       session.on_file_data.connect(this.on_file_data);
 
       // Contact list treeview signals
-      contact_added.connect(contact_list_tree_view.add_contact);
+      contact_added.connect(contact_list_tree_view.add_entry);
+      groupchat_added.connect(contact_list_tree_view.add_entry);
+
       contact_changed.connect( (c) => {
-        contact_list_tree_view.update_contact(c);
+        contact_list_tree_view.update_entry(c);
         ConversationWidget w = conversation_widgets[c.friend_id];
         if(w != null)
           w.update_contact();
       } );
+      groupchat_changed.connect( (g) => {
+        contact_list_tree_view.update_entry(g);
+        GroupConversationWidget w = group_conversation_widgets[g.group_id];
+        if(w != null)
+          w.update_contact();
+      } );
+
       contact_removed.connect( (c) => {
-        contact_list_tree_view.remove_contact(c);
+        contact_list_tree_view.remove_entry(c);
         ConversationWidget w = conversation_widgets[c.friend_id];
         if(w != null) {
           conversation_widgets[c.friend_id].destroy();
           conversation_widgets.unset(c.friend_id);
         }
       } );
-      groupchat_added.connect(contact_list_tree_view.add_groupchat);
-      contact_list_tree_view.contact_activated.connect(on_contact_activated);
+      groupchat_removed.connect( (g) => {
+        contact_list_tree_view.remove_entry(g);
+        GroupConversationWidget w = group_conversation_widgets[g.group_id];
+        if(w != null) {
+          group_conversation_widgets[g.group_id].destroy();
+          group_conversation_widgets.unset(g.group_id);
+        }
+      } );
+
+      contact_list_tree_view.entry_activated.connect(on_entry_activated);
       contact_list_tree_view.key_press_event.connect(on_treeview_key_pressed);
 
       //ComboboxStatus signals
       combobox_status.changed.connect(combobox_status_changed);
-
-      // FIXME remove after testing is done!
-      this.key_press_event.connect(on_contact_list_key_pressed);
     }
 
     // Restore friends from datafile
@@ -406,9 +420,21 @@ namespace Venom {
       push_in = true;
     }
 
-    private void on_outgoing_message(Contact receiver, string message) {
-      session.on_own_message(receiver, message);
-      session.sendmessage(receiver.friend_id, message);
+    private void on_outgoing_message(Message message) {
+      session.on_own_message(message.to, message.message);
+      session.send_message(message.to.friend_id, message.message);
+    }
+
+    private void on_outgoing_action(ActionMessage action) {
+      session.on_own_action(action.to, action.message);
+      session.send_action(action.to.friend_id, action.message);
+    }
+
+    private void on_outgoing_group_message(GroupMessage message) {
+      session.group_message_send(message.to.group_id, message.message);
+    }
+    private void on_outgoing_group_action(GroupActionMessage action) {
+      session.group_action_send(action.to.group_id, action.message);
     }
 
     private void on_outgoing_file(FileTransfer ft) {
@@ -425,9 +451,14 @@ namespace Venom {
 
     private bool on_treeview_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
       if(key.keyval == Gdk.Key.Delete) {
-        Contact c = contact_list_tree_view.get_selected_contact();
-        remove_contact(c);
-        return true;
+        GLib.Object o = contact_list_tree_view.get_selected_entry();
+        if(o is Contact) {
+          remove_contact(o as Contact);
+          return true;
+        } else if(o is GroupChat) {
+          remove_groupchat(o as GroupChat);
+          return true;
+        }
       }
       return false;
     }
@@ -461,15 +492,20 @@ namespace Venom {
       stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name != null ? c.name : "<%i>".printf(c.friend_id), message);
 
       ConversationWidget w = open_conversation_with(c);
-      incoming_message(new Message(c, message));
+      incoming_message(new Message.incoming(c, message));
       if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
         c.unread_messages++;
-        contact_list_tree_view.update_contact(c);
+        contact_list_tree_view.update_entry(c);
       }
     }
     private void on_action(Contact c, string action) {
-      //TODO implement this
       stdout.printf("[ac] %i:%s\n", c.friend_id, action);
+      ConversationWidget w = open_conversation_with(c);
+      incoming_action(new ActionMessage.incoming(c, action));
+      if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
+        c.unread_messages++;
+        contact_list_tree_view.update_entry(c);
+      }
     }
     private void on_namechange(Contact c, string? old_name) {
       stdout.printf("%s changed his name to %s\n", old_name, c.name);
@@ -553,7 +589,24 @@ namespace Venom {
     }
 
     private void on_group_message(GroupChat g, int friendgroupnumber, string message) {
-      stdout.printf("[gm] %i@%i: %s\n", friendgroupnumber, g.group_id, message);
+      string from_name = session.group_peername(g, friendgroupnumber);
+      stdout.printf("[gm] %s [%i]@%i: %s\n", from_name, friendgroupnumber, g.group_id, message);
+
+      open_group_conversation_with(g);
+      incoming_group_message(new GroupMessage.incoming(g, from_name, message));
+    }
+
+    private void on_group_action(GroupChat g, int friendgroupnumber, string message) {
+      string from_name = session.group_peername(g, friendgroupnumber);
+      stdout.printf("[ga] %s [%i]@%i: %s\n", from_name, friendgroupnumber, g.group_id, message);
+
+      open_group_conversation_with(g);
+      incoming_group_action(new GroupActionMessage.incoming(g, from_name, message));
+    }
+
+    private void on_group_peer_changed(GroupChat g, int peernumber, Tox.ChatChange change) {
+      GroupConversationWidget w = open_group_conversation_with(g);
+      w.update_contact();
     }
 
     private void on_file_sendrequest(int friendnumber, uint8 filenumber, uint64 filesize,string filename) {
@@ -682,7 +735,9 @@ namespace Venom {
         w = new ConversationWidget(c);
         w.load_history(session.load_history_for_contact(c));
         incoming_message.connect(w.on_incoming_message);
+        incoming_action.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
+        w.new_outgoing_action.connect(on_outgoing_action);
         w.new_outgoing_file.connect(on_outgoing_file);
         conversation_widgets[c.friend_id] = w;
         notebook_conversations.append_page(w, null);
@@ -690,16 +745,40 @@ namespace Venom {
       w.show_all();
       return w;
     }
+    private GroupConversationWidget? open_group_conversation_with(GroupChat g) {
+      GroupConversationWidget w = group_conversation_widgets[g.group_id];
+      if(w == null) {
+        w = new GroupConversationWidget(g);
+        //w.load_history(session.load_history_for_contact(c));
+        incoming_group_message.connect(w.on_incoming_message);
+        incoming_group_action.connect(w.on_incoming_message);
+        w.new_outgoing_message.connect(on_outgoing_group_message);
+        w.new_outgoing_action.connect(on_outgoing_group_action);
+        group_conversation_widgets[g.group_id] = w;
+        notebook_conversations.append_page(w, null);
+      }
+      w.show_all();
+      return w;
+    }
 
     // Contact doubleclicked in treeview
-    private void on_contact_activated(Contact c) {
-      ConversationWidget w = open_conversation_with(c);
+    private void on_entry_activated(GLib.Object o) {
+      if(o is Contact) {
+        Contact c = o as Contact;
+        ConversationWidget w = open_conversation_with(c);
 
-      notebook_conversations.set_current_page(notebook_conversations.page_num(w));
-      notebook_conversations.set_visible(true);
-      if(c.unread_messages != 0) {
-        c.unread_messages = 0;
-        contact_list_tree_view.update_contact(c);
+        notebook_conversations.set_current_page(notebook_conversations.page_num(w));
+        notebook_conversations.set_visible(true);
+        if(c.unread_messages != 0) {
+          c.unread_messages = 0;
+          contact_list_tree_view.update_entry(c);
+        }
+      } else if(o is GroupChat) {
+        GroupChat g = o as GroupChat;
+        GroupConversationWidget w = open_group_conversation_with(g);
+
+        notebook_conversations.set_current_page(notebook_conversations.page_num(w));
+        notebook_conversations.set_visible(true);
       }
     }
 
@@ -723,11 +802,33 @@ namespace Venom {
       if(response != Gtk.ResponseType.OK)
         return;
 
-      if(!session.delfriend(c)) {
+      if(!session.del_friend(c)) {
         stderr.printf("Could not remove contact %i.\n", c.friend_id);
         return;
       }
       contact_removed(c);
+    }
+
+    public void remove_groupchat(GroupChat g) {
+      if(g == null)
+        return;
+      string name = "groupchat #%i".printf(g.group_id);
+      Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
+                                  Gtk.DialogFlags.MODAL,
+                                  Gtk.MessageType.WARNING,
+                                  Gtk.ButtonsType.NONE,
+                                  "Are you sure you want to delete '%s' from your contact list?", name);
+      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Delete", Gtk.ResponseType.OK, null);
+      int response = message_dialog.run();
+      message_dialog.destroy();
+      if(response != Gtk.ResponseType.OK)
+        return;
+
+      if(!session.del_groupchat(g)) {
+        stderr.printf("Could not remove %s.\n", name);
+        return;
+      }
+      groupchat_removed(g);
     }
 
     public void add_contact(string contact_id_string, string contact_message = ResourceFactory.instance.default_add_contact_message) {
@@ -749,7 +850,6 @@ namespace Venom {
       Contact c = new Contact(contact_id);
       Tox.FriendAddError ret = session.addfriend(c, contact_message);
       if(ret < 0) {
-        //TODO turn this into a message box.
         string error_message = "Could not add friend: %s.\n".printf(Tools.friend_add_error_to_string(ret));
         stderr.printf(error_message);
         UITools.ErrorDialog("Adding Friend failed", error_message, this);
@@ -783,7 +883,6 @@ namespace Venom {
         stderr.printf("Could not create a new groupchat.\n");
         return;
       }
-      stdout.printf("New Groupchat #%i created.\n", g.group_id);
       groupchat_added(g);
     }
 
