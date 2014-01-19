@@ -64,28 +64,36 @@ namespace Venom {
     }
 
     public void render_userstatus(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
-      if(!(entry is Contact))
-        return;
-      Contact contact = entry as Contact;
       Gdk.Pixbuf? status = null;
+      
+      if(entry is Contact) {
+        Contact contact = entry as Contact;
 
-      if(!contact.online) {
-        status = contact.unread_messages > 0 ? ResourceFactory.instance.offline_glow : ResourceFactory.instance.offline;
-      }
-      else {
-        switch(contact.user_status) {
-          case Tox.UserStatus.NONE:
-            status = contact.unread_messages > 0 ? ResourceFactory.instance.online_glow :ResourceFactory.instance.online;
-            break;
-          case Tox.UserStatus.AWAY:
-            status = contact.unread_messages > 0 ? ResourceFactory.instance.away_glow : ResourceFactory.instance.away;
-            break;
-          case Tox.UserStatus.BUSY:
-            status = contact.unread_messages > 0 ? ResourceFactory.instance.busy_glow : ResourceFactory.instance.busy;
-            break;
-          case Tox.UserStatus.INVALID:
-            status = contact.unread_messages > 0 ? ResourceFactory.instance.offline_glow : ResourceFactory.instance.offline;
-            break;
+        if(!contact.online) {
+          status = contact.unread_messages > 0 ? ResourceFactory.instance.offline_glow : ResourceFactory.instance.offline;
+        }
+        else {
+          switch(contact.user_status) {
+            case Tox.UserStatus.NONE:
+              status = contact.unread_messages > 0 ? ResourceFactory.instance.online_glow : ResourceFactory.instance.online;
+              break;
+            case Tox.UserStatus.AWAY:
+              status = contact.unread_messages > 0 ? ResourceFactory.instance.away_glow : ResourceFactory.instance.away;
+              break;
+            case Tox.UserStatus.BUSY:
+              status = contact.unread_messages > 0 ? ResourceFactory.instance.busy_glow : ResourceFactory.instance.busy;
+              break;
+            case Tox.UserStatus.INVALID:
+              status = contact.unread_messages > 0 ? ResourceFactory.instance.offline_glow : ResourceFactory.instance.offline;
+              break;
+          }
+        }
+      } else if(entry is GroupChat) {
+        GroupChat groupchat = entry as GroupChat;
+        if(groupchat.peer_count > 0) {
+          status = ResourceFactory.instance.online;
+        } else {
+          status = ResourceFactory.instance.offline;
         }
       }
       if(status != null) {
@@ -142,8 +150,17 @@ namespace Venom {
       color.blue -= 0.4;
       if(entry is Contact) {
         Contact contact = entry as Contact;
-        if(contact.status_message != null && contact.status_message != "") {
+        if(!contact.online) {
+          layout.set_text("Offline", -1);
+        } else if(contact.status_message != null && contact.status_message != "") {
           layout.set_text(contact.status_message, -1);
+        }
+      } else if(entry is GroupChat) {
+        GroupChat g = entry as GroupChat;
+        if(g.peer_count > 0) {
+          layout.set_text("%i peer%s connected".printf(g.peer_count, g.peer_count > 1 ? "s" : ""), -1);
+        } else{
+          layout.set_text("Offline", -1);
         }
       }
       layout.set_ellipsize(Pango.EllipsizeMode.END);
@@ -163,9 +180,14 @@ namespace Venom {
       if(!(entry is Contact)) {
         return;
       }
+      string str = "";
       Contact contact = entry as Contact;
       if(contact.unread_messages == 0) {
         return;
+      } else if(contact.unread_messages < 10) {
+          str = contact.unread_messages.to_string();
+      } else {
+          str = "+";
       }
 
       Pango.Rectangle? ink_rect, logical_rect;
@@ -176,11 +198,6 @@ namespace Venom {
       font.set_absolute_size(10 * Pango.SCALE);
       Pango.Layout layout = widget.create_pango_layout(null);
       layout.set_font_description(font);
-      string str = "";
-      if(contact.unread_messages < 10)
-        str = contact.unread_messages.to_string();
-      else
-        str = "+";
       layout.set_markup("<tt>%s</tt>".printf(str), -1);
       layout.get_pixel_extents(out ink_rect, out logical_rect);
 

@@ -2,7 +2,6 @@
 * save actions in db
 * display own name instead of "me" in outgoing actions
 * update treeview entry for groupchat changes
-* display online/offline marker for groupchats
 * testing
 
 [0.3]
