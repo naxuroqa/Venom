@@ -109,6 +109,10 @@ namespace Venom {
         "66.175.223.88",
         "B24E2FB924AE66D023FE1E42A2EE3B432010206F751A2FFD3E297383ACF1572E"
       );
+      dht_servers += new DhtServer.with_args(
+        "192.210.149.121",
+        "F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67"
+      );
     }
 
     private void init_callbacks() {
