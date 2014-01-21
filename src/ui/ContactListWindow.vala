@@ -70,7 +70,12 @@ namespace Venom {
 
       // initialize session specific gui stuff
       label_name.set_text(session.getselfname());
-      label_status.set_text(session.get_self_statusmessage());
+      string user_status = "Toxing on Venom v.%s".printf(Config.VERSION);
+      if(session.set_statusmessage(user_status)) {
+        label_status.set_text(user_status);
+      } else {
+        label_status.set_text(session.get_self_statusmessage());
+      }
       on_ownconnectionstatus(false);
 
       stdout.printf("ID: %s\n", Tools.bin_to_hexstring(session.get_address()));
