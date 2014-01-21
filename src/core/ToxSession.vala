@@ -101,15 +101,19 @@ namespace Venom {
     }
 
     private void init_dht_servers() {
-      dht_servers += new DhtServer.with_args(
-        "54.215.145.71",
-        "6EDDEE2188EF579303C0766B4796DCBA89C93058B6032FEA51593DCD42FB746C"
+      dht_servers += new DhtServer.ipv4(
+        "192.254.75.98",
+        "FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"
       );
-      dht_servers += new DhtServer.with_args(
+      dht_servers += new DhtServer.ipv6(
+        "2607:5600:284::2",
+        "FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"
+      );
+      dht_servers += new DhtServer.ipv4(
         "66.175.223.88",
         "B24E2FB924AE66D023FE1E42A2EE3B432010206F751A2FFD3E297383ACF1572E"
       );
-      dht_servers += new DhtServer.with_args(
+      dht_servers += new DhtServer.ipv4(
         "192.210.149.121",
         "F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67"
       );
@@ -518,12 +522,12 @@ namespace Venom {
           stdout.printf("Connecting to DHT servers:\n");
           for(int i = 0; i < dht_servers.length; ++i) {
             // skip ipv6 servers if we don't support them
-            if(dht_servers[i].ipv6 && !ipv6)
+            if(dht_servers[i].is_ipv6 && !ipv6)
               continue;
             stdout.printf("  %s\n", dht_servers[i].to_string());
             handle.bootstrap_from_address(
               dht_servers[i].host,
-              dht_servers[i].ipv6 ? 1 : 0,
+              dht_servers[i].is_ipv6 ? 1 : 0,
               dht_servers[i].port.to_big_endian(),
               dht_servers[i].pub_key
             );
