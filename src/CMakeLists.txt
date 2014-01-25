@@ -35,6 +35,12 @@ PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
 PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
 PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
 
+#link against libm. Workaround for libsodium not providing proper static
+#libraries in it's .pc file. May or may not work on windows
+IF(LINK_TOX_STATIC)
+  SET(TOX_LIBRARIES ${TOX_LIBRARIES} m.a )
+ENDIF(LINK_TOX_STATIC)
+
 SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
                   ${GTK_CFLAGS}    ${GTK_CFLAGS_OTHER}
                   ${GEE_CFLAGS}    ${GEE_CFLAGS_OTHER}
@@ -149,23 +155,23 @@ ADD_EXECUTABLE( group_bot EXCLUDE_FROM_ALL
 )
 
 TARGET_LINK_LIBRARIES( venom
-                       ${GTK_LIBRARIES_FULLPATH}
-                       ${GEE_LIBRARIES_FULLPATH}
-                       ${GIO_LIBRARIES_FULLPATH}
-                       ${GLIB_LIBRARIES_FULLPATH}
-                       ${JSON_LIBRARIES_FULLPATH}
-                       ${SQLITE_LIBRARIES_FULLPATH}
-                       ${TOX_LIBRARIES_FULLPATH}
+                       ${GTK_LIBRARIES}
+                       ${GEE_LIBRARIES}
+                       ${GIO_LIBRARIES}
+                       ${GLIB_LIBRARIES}
+                       ${JSON_LIBRARIES}
+                       ${SQLITE_LIBRARIES}
+                       ${TOX_LIBRARIES}
 )
 
 TARGET_LINK_LIBRARIES( vapi_test
-                       ${GIO_LIBRARIES_FULLPATH}
-                       ${TOX_LIBRARIES_FULLPATH}
+                       ${GIO_LIBRARIES}
+                       ${TOX_LIBRARIES}
 )
 
 TARGET_LINK_LIBRARIES( group_bot
-                       ${GIO_LIBRARIES_FULLPATH}
-                       ${TOX_LIBRARIES_FULLPATH}
+                       ${GIO_LIBRARIES}
+                       ${TOX_LIBRARIES}
 )
 
 INSTALL(TARGETS venom RUNTIME DESTINATION ${CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION})
