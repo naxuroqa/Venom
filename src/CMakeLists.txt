@@ -35,10 +35,14 @@ PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
 PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
 PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
 
-#link against libm. Workaround for libsodium not providing proper static
-#libraries in it's .pc file. May or may not work on windows
+# Workaround for libtoxcore and libsodium not providing info on
+# all needed static libraries in their pkg-config files
+# see https://github.com/irungentoo/ProjectTox-Core/issues/705
 IF(LINK_TOX_STATIC)
-  SET(TOX_LIBRARIES ${TOX_LIBRARIES} m.a )
+  SET(TOX_LIBRARIES ${TOX_LIBRARIES} m.a)
+  IF(WIN32)
+    SET(TOX_LIBRARIES ${TOX_LIBRARIES} ws2_32.a)
+  ENDIF(WIN32)
 ENDIF(LINK_TOX_STATIC)
 
 SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
