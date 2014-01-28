@@ -21,7 +21,7 @@
 
 namespace Venom {
 
-public class Main {
+public class Main : GLib.Object {
     private static bool version = false;
     private static string? datafile = null;
     private const GLib.OptionEntry[] options = {

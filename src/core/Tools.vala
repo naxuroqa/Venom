@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class Tools {
+  public class Tools : GLib.Object{
     // find our data dir (on linux most likely /usr/share or /usr/local/share)
     public static string find_data_dir() {
       foreach (string s in GLib.Environment.get_system_data_dirs()) {

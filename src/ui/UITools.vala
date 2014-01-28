@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class UITools {
+  public class UITools : GLib.Object {
     public static void ErrorDialog(string message, string? secondary_text, Gtk.Window? parent) {
       Gtk.MessageDialog dialog = new Gtk.MessageDialog(
         parent,

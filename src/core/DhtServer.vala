@@ -21,7 +21,7 @@
 
 using Tox;
 namespace Venom {
-  public class DhtServer {
+  public class DhtServer : GLib.Object {
     public string host {get; set;}
     public uint16 port {get; set;}
     public uint8[] pub_key {get; set;}

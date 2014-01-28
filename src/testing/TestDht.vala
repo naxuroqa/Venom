@@ -1,5 +1,5 @@
 /*
- *    ToxVapiTest.vala
+ *    ToxTestDht.vala
  *
  *    Copyright (C) 2013-2014  Venom authors and contributors
  *
@@ -20,8 +20,8 @@
  */
 
 namespace Testing {
-  public class ToxTest {
-    public void run_connection_test(string ip_string, string pub_key_string, int port = 33445, int timeout = 2000, bool ipv6 = false) {
+  public class TestDht : GLib.Object {
+    public void run_connection_test(string ip_string, string pub_key_string, int port = 33445, int timeout = 100, bool ipv6 = false) {
       Tox.Tox tox = new Tox.Tox(ipv6 ? 1 : 0);
       string ip_address = ip_string;
       uint16 ip_port_be = ((uint16)port).to_big_endian();
@@ -37,18 +37,19 @@ namespace Testing {
         if(connected = (tox.isconnected() != 0))
           break;
         tox.do();
-        Thread.usleep(1000);
+        Thread.usleep(25000);
       }
       if(connected) {
         stdout.printf("[x] Connection successfully established.\n");
       } else {
         stdout.printf("[ ] Could not establish connection!\n");
       }
+      stdout.printf("----------------------------------------\n");
       stdout.flush();
     }
 
     public static void main(string[] args) {
-      ToxTest test = new ToxTest();
+      TestDht test = new TestDht();
       test.run_connection_test("192.81.133.111", "8CD5A9BF0A6CE358BA36F7A653F99FA6B258FF756E490F52C1F98CC420F78858");
       test.run_connection_test("66.175.223.88",  "B24E2FB924AE66D023FE1E42A2EE3B432010206F751A2FFD3E297383ACF1572E");
       test.run_connection_test("192.184.81.118", "5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143");
@@ -61,7 +62,9 @@ namespace Testing {
       test.run_connection_test("69.42.220.58",   "9430A83211A7AD1C294711D069D587028CA0B4782FA43CB9B30008247A43C944");
       test.run_connection_test("31.192.105.19",  "D59F99384592DE4C8AB9D534D5197DB90F4755CC9E975ED0C565E18468A1445B");
       test.run_connection_test("5.39.218.35",    "CC2B02636A2ADBC2871D6EC57C5E9589D4FD5E6F98A14743A4B949914CF26D39");
-      stdout.printf("Testing done.\n");
+      stdout.printf("Testing done, press any key to close.\n");
+      char c;
+      stdin.scanf("%c", out c);
     }
   }
 }

@@ -20,7 +20,7 @@
  */
 
 namespace Testing {
-  public class GroupBot {
+  public class GroupBot : GLib.Object {
     private Tox.Tox tox;
     private int groupchat_number = 0;
     public GroupBot( bool ipv6 = false ) {
@@ -124,7 +124,7 @@ namespace Testing {
 
     public static void main(string[] args) {
       GroupBot bot = new GroupBot();
-      bot.run("54.215.145.71",  "6EDDEE2188EF579303C0766B4796DCBA89C93058B6032FEA51593DCD42FB746C");
+      bot.run("192.254.75.98", "FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B");
     }
   }
 }

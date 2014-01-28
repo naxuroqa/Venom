@@ -44,6 +44,16 @@ IF(LINK_TOX_STATIC)
     SET(TOX_LIBRARIES ${TOX_LIBRARIES} ws2_32.a)
   ENDIF(WIN32)
 ENDIF(LINK_TOX_STATIC)
+IF(LINK_GTK_STATIC)
+  IF(WIN32)
+    SET(GTK_LIBRARIES ${GTK_LIBRARIES} usp10.a iphlpapi.a)
+  ENDIF(WIN32)
+ENDIF(LINK_GTK_STATIC)
+IF(LINK_GIO_STATIC)
+  IF(WIN32)
+    SET(GIO_LIBRARIES ${GIO_LIBRARIES} dnsapi.a iconv.a)
+  ENDIF(WIN32)
+ENDIF(LINK_GIO_STATIC)
 
 SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
                   ${GTK_CFLAGS}    ${GTK_CFLAGS_OTHER}
@@ -109,8 +119,8 @@ VALA_PRECOMPILE( VALA_C_VENOM
   GENERATE_HEADER
 )
 
-VALA_PRECOMPILE( VALA_C_TEST
-    testing/ToxVapiTest.vala
+VALA_PRECOMPILE( VALA_C_TEST_DHT
+    testing/TestDht.vala
     core/Tools.vala
   PACKAGES
     gio-2.0
@@ -147,11 +157,11 @@ GLIB_COMPILE_RESOURCES( GLIB_RESOURCES_VENOM
 ADD_EXECUTABLE( venom
   ${VALA_C_VENOM}
   ${GLIB_RESOURCES_VENOM}
-  ${WINDOWS_RESOURCE_FILE}
+  ${VENOM_RESOURCE_FILE}
 )
 
-ADD_EXECUTABLE( vapi_test EXCLUDE_FROM_ALL
-  ${VALA_C_TEST}
+ADD_EXECUTABLE( test_dht EXCLUDE_FROM_ALL
+  ${VALA_C_TEST_DHT}
 )
 
 ADD_EXECUTABLE( group_bot EXCLUDE_FROM_ALL
@@ -159,23 +169,23 @@ ADD_EXECUTABLE( group_bot EXCLUDE_FROM_ALL
 )
 
 TARGET_LINK_LIBRARIES( venom
-                       ${GTK_LIBRARIES}
-                       ${GEE_LIBRARIES}
+                       ${TOX_LIBRARIES}
+                       ${SQLITE_LIBRARIES}
                        ${GIO_LIBRARIES}
                        ${GLIB_LIBRARIES}
+                       ${GTK_LIBRARIES}
+                       ${GEE_LIBRARIES}
                        ${JSON_LIBRARIES}
-                       ${SQLITE_LIBRARIES}
-                       ${TOX_LIBRARIES}
 )
 
-TARGET_LINK_LIBRARIES( vapi_test
-                       ${GIO_LIBRARIES}
+TARGET_LINK_LIBRARIES( test_dht
                        ${TOX_LIBRARIES}
+                       ${GIO_LIBRARIES}
 )
 
 TARGET_LINK_LIBRARIES( group_bot
-                       ${GIO_LIBRARIES}
                        ${TOX_LIBRARIES}
+                       ${GIO_LIBRARIES}
 )
 
 INSTALL(TARGETS venom RUNTIME DESTINATION ${CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION})
