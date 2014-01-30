@@ -1,12 +1,9 @@
 Installation
 ============
-- Building and installing
-    - [Linux](#linux)
-    - [OS X](#osx)
-    - [Windows](#windows)
+- [Linux](#linux)
+- [OS X](#os-x)
+- [Windows](#windows)
 - [FAQ](#faq)
-
-
 
 Linux
 =====
@@ -19,18 +16,21 @@ Dependencies
 
 Additionally to the tox build dependencies, you will need:
 
-    valac (>=0.18)
-    cmake (>=2.8.7)
-    libgtk-3-dev (>=3.4)
-    libgee-0.8-dev (>=0.8)
-    libjson-glib-dev (>=0.14)
-    libsqlite3-dev (>=3.7)
+| Package name     | Version |
+|------------------|---------|
+| valac            | >= 0.18 |
+| cmake            | >=2.8.7 |
+| libgtk-3-dev     | >=3.4   |
+| libgee-0.8-dev   | >=0.8   |
+| libjson-glib-dev | >=0.14  |
+| libsqlite3-dev   | >=3.7   |
 
-Ubuntu >= 12.10 (Quantal Quetzal) / Linux Mint / Debian:
+
+Ubuntu >= 12.10 (Quantal Quetzal) / Linux Mint / Debian: (with [apturl](https://help.ubuntu.com/community/AptURL): [link](apt://valac,cmake,libgtk-3-dev,libgee-0.8-dev,libjson-glib-dev,libsqlite3-dev))
 
     apt-get install valac cmake libgtk-3-dev libgee-0.8-dev libjson-glib-dev libsqlite3-dev
 
-Ubuntu 12.04 (Precise Pangolin) needs a ppa to get a newer version of valac and libgee-0.8
+Ubuntu 12.04 (Precise Pangolin): (needs a ppa to get a newer version of valac and libgee-0.8)
 
     apt-add-repository ppa:vala-team/ppa
     apt-get update
