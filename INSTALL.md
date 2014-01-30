@@ -26,7 +26,7 @@ Additionally to the tox build dependencies, you will need:
 | libsqlite3-dev   | >=3.7   |
 
 
-Ubuntu >= 12.10 (Quantal Quetzal) / Linux Mint / Debian: (with [apturl](https://help.ubuntu.com/community/AptURL): [link](apt://valac,cmake,libgtk-3-dev,libgee-0.8-dev,libjson-glib-dev,libsqlite3-dev))
+Ubuntu >= 12.10 (Quantal Quetzal) / Linux Mint / Debian:
 
     apt-get install valac cmake libgtk-3-dev libgee-0.8-dev libjson-glib-dev libsqlite3-dev
 
