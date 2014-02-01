@@ -55,8 +55,12 @@ SET(CPACK_SOURCE_STRIP_FILES TRUE)
 SET(CPACK_STRIP_FILES TRUE)
 
 # Advanced
-SET(CPACK_RESOURCE_FILE_LICENSE  "${CMAKE_SOURCE_DIR}/COPYING")
-SET(CPACK_PACKAGE_VERSION        "${VENOM_VERSION}")
+SET(CPACK_RESOURCE_FILE_LICENSE    "${CMAKE_SOURCE_DIR}/COPYING")
+SET(CPACK_RESOURCE_FILE_README     "${CMAKE_SOURCE_DIR}/README")
+SET(CPACK_PACKAGE_VERSION          "${VENOM_VERSION}")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/misc/pkgdesc.txt")
+# default: "Humanity", overwrite if needed
+#SET(CPACK_PACKAGE_VENDOR           "")
 
 # nsis
 #TODO set correct path depending on architecture (as soon as x64_64 windows builds are stable)
@@ -74,6 +78,7 @@ SET(CPACK_NSIS_URL_INFO_ABOUT "${VENOM_WEBSITE}")
 SET(CPACK_NSIS_CONTACT "naxuroqa@gmail.com")
 SET(CPACK_NSIS_MUI_FINISHPAGE_RUN "venom.exe")
 SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+;Register the URI handler
 DetailPrint \\\"Registering tox URI Handler\\\"
 DeleteRegKey HKCR \\\"tox\\\"
 WriteRegStr HKCR \\\"tox\\\" \\\"\\\" \\\"URL:tox\\\"
@@ -89,5 +94,19 @@ DetailPrint \\\"Unregistering tox URI Handler\\\"
 DeleteRegKey HKCR \\\"tox\\\"
 ")
 # .deb
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtk-3-0 (>= 3.4.1), libgee-0.8-2 (>= 0.8.0), libjson-glib-1.0-0 (>= 0.14.2), libsqlite3-0 (>= 3.7.9), libtoxcore (>= 0.0)")
+# libtoxcore ommitted, since we are most likely linking it statically
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS  "libgtk-3-0 (>= 3.4.1), libgee-0.8-2 (>= 0.8.0), libjson-glib-1.0-0 (>= 0.14.2), libsqlite3-0 (>= 3.7.9)")
+SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+SET(CPACK_DEBIAN_PACKAGE_SECTION  "web")
+SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${VENOM_WEBSITE}")
+
+# .rpm
+SET(CPACK_RPM_PACKAGE_LICENSE  "GPLv3")
+SET(CPACK_RPM_PACKAGE_GROUP    "Applications/Internet")
+SET(CPACK_RPM_PACKAGE_REQUIRES "gtk3 >= 3.4.1, libgee >= 0.8.0, json-glib >= 0.14.2, sqlite >= 3.7.9")
+# Default: some cpack comment, overwrite if needed
+#SET(CPACK_RPM_CHANGELOG_FILE   "")
+SET(CPACK_RPM_PACKAGE_RELEASE  1)
+SET(CPACK_RPM_PACKAGE_URL      "${VENOM_WEBSITE}")
+
 INCLUDE(CPack)
