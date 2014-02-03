@@ -411,7 +411,7 @@ namespace Venom {
         label_name.set_text(w.user_name);
         label_status.set_text(w.user_status);
 
-        session.setname(w.user_name);
+        session.set_name(w.user_name);
         session.set_statusmessage(w.user_status);
       }
       w.destroy();

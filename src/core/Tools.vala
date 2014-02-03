@@ -35,12 +35,10 @@ namespace Venom {
 
     public static void create_path_for_file(string filename, int mode) {
       string pathname = Path.get_dirname(filename);
-      if(pathname != null) {
-        File path = File.new_for_path(pathname);
-        if(!path.query_exists()) {
-          DirUtils.create_with_parents(pathname, mode);
-          stdout.printf("created directory %s\n", pathname);
-        }
+      File path = File.new_for_path(pathname);
+      if(!path.query_exists()) {
+        DirUtils.create_with_parents(pathname, mode);
+        stdout.printf("created directory %s\n", pathname);
       }
     }
 
@@ -56,9 +54,9 @@ namespace Venom {
     }
 
     // convert a uint8[] to string
-    public static string bin_to_hexstring(uint8[] bin) {
-      if(bin == null || bin.length == 0)
-        return "";
+    public static string bin_to_hexstring(uint8[] bin)
+      requires(bin.length != 0)
+    {
       StringBuilder b = new StringBuilder();
       for(int i = 0; i < bin.length; ++i) {
         b.append("%02X".printf(bin[i]));
@@ -67,9 +65,9 @@ namespace Venom {
     }
 
     // convert a string to a nullterminated uint8[]
-    public static uint8[] string_to_nullterm_uint (string input){
-      if(input == null || input.length <= 0)
-        return {'\0'};
+    public static uint8[] string_to_nullterm_uint (string input)
+      requires(input.length > 0)
+    {
       uint8[] clone = new uint8[input.data.length + 1];
       Memory.copy(clone, input.data, input.data.length * sizeof(uint8));
       clone[clone.length - 1] = '\0';
