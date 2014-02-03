@@ -65,14 +65,9 @@ Follow ProjectTox-Core [installation instructions](https://github.com/irungentoo
 With Homebrew
 -------------
 
-    brew install vala cmake gtk+3 libgee json-glib sqlite
-    git clone git://github.com/naxuroqa/Venom.git
-    cd Venom
-    mkdir build
-    cd build
-    cmake ..
-    make
-    sudo make install
+    brew tap Tox/tox
+    brew install --HEAD libtoxcore
+    brew install --HEAD venom
 
 Windows
 =======
