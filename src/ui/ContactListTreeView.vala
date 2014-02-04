@@ -92,7 +92,8 @@ namespace Venom {
         can_focus = false;
     }
 
-    public Object? get_selected_entry( Gtk.TreeSelection selection = get_selection() ) {
+    public Object? get_selected_entry() {
+      Gtk.TreeSelection selection = get_selection();
       if(selection == null)
         return null;
       Gtk.TreeModel model;
