@@ -37,14 +37,24 @@ namespace Venom {
 
       append_column(name_column);
 
-      row_activated.connect(on_row_activated);
-
+      Gtk.TreeSelection s = get_selection();
+      s.set_mode(Gtk.SelectionMode.SINGLE);
+      s.set_select_function(on_row_selected);
+      
       query_tooltip.connect(modify_tooltip);
       //set_tooltip_column(1);
 
       //hide headers
       set_headers_visible(false);
       can_focus = false;
+    }
+    private bool on_row_selected( Gtk.TreeSelection selection, Gtk.TreeModel model, Gtk.TreePath path, bool path_currently_selected ) {
+      Gtk.TreeIter iter;
+      model.get_iter(out iter, path);
+      GLib.Value val;
+      model.get_value(iter, 0, out val);
+      entry_activated(val as GLib.Object);
+      return true;
     }
 
     private bool modify_tooltip(int x, int y, bool keyboard_tooltip, Gtk.Tooltip tooltip) {
@@ -82,8 +92,7 @@ namespace Venom {
         can_focus = false;
     }
 
-    public Object? get_selected_entry() {
-      Gtk.TreeSelection selection = get_selection();
+    public Object? get_selected_entry( Gtk.TreeSelection selection = get_selection() ) {
       if(selection == null)
         return null;
       Gtk.TreeModel model;
@@ -93,14 +102,6 @@ namespace Venom {
       GLib.Value val;
       model.get_value(iter, 0, out val);
       return val as GLib.Object;
-    }
-
-    private void on_row_activated(Gtk.TreePath path, Gtk.TreeViewColumn column) {
-      Gtk.TreeIter iter;
-      model.get_iter(out iter, path);
-      GLib.Value val;
-      model.get_value(iter, 0, out val);
-      entry_activated(val as GLib.Object);
     }
 
     private Gtk.TreeIter? find_iter(GLib.Object o) {
