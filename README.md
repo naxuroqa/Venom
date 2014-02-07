@@ -6,7 +6,7 @@ a cross-platform graphical user interface for [Tox](https://github.com/irungento
 Installing
 ----------
 
-- Grab a [stable](https://github.com/naxuroqa/Venom/releases) or [nightly](http://jenkins.tox.im/job/venom_win32/lastSuccessfulBuild/artifact/prefix/Venom.zip) binary for Windows
+- Grab a [stable](https://github.com/naxuroqa/Venom/releases) or [nightly](http://download.tox.im) binary for Windows
 - Build it from source (Read [INSTALL.md](INSTALL.md) for instructions)
 
 Contributing
