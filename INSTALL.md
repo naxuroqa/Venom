@@ -16,14 +16,14 @@ Dependencies
 
 Additionally to the tox build dependencies, you will need:
 
-| Package name     | Version |
-|------------------|---------|
-| valac            | >= 0.18 |
-| cmake            | >=2.8.7 |
-| libgtk-3-dev     | >=3.4   |
-| libgee-0.8-dev   | >=0.8   |
-| libjson-glib-dev | >=0.14  |
-| libsqlite3-dev   | >=3.7   |
+| Package name     | Version   |
+|------------------|-----------|
+| valac            | >= 0.18.1 |
+| cmake            | >=2.8.7   |
+| libgtk-3-dev     | >=3.4     |
+| libgee-0.8-dev   | >=0.8     |
+| libjson-glib-dev | >=0.14    |
+| libsqlite3-dev   | >=3.7     |
 
 
 Ubuntu >= 12.10 (Quantal Quetzal) / Linux Mint / Debian:
