@@ -261,20 +261,20 @@ namespace Venom {
     private void on_file_sendrequest_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint64 filesize, uint8[] filename)
       requires(filename != null)
     {
-      Idle.add(() => { on_file_sendrequest(friendnumber,filenumber,filesize, ((string)filename).dup()); return false; });
+      string filename_str = ((string)filename).dup();
+      Idle.add(() => { on_file_sendrequest(friendnumber, filenumber, filesize, filename_str); return false; });
     }
 
     private void on_file_control_callback(Tox.Tox tox, int friendnumber, uint8 receive_send, uint8 filenumber, uint8 status, uint8[] data) {
       uint8[] data_clone = Tools.clone(data, data.length);
-      Idle.add(() => { on_file_control(friendnumber,filenumber,receive_send,status,data_clone); return false; });
+      Idle.add(() => { on_file_control(friendnumber, filenumber, receive_send, status, data_clone); return false; });
     }
 
     private void on_file_data_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint8[] data)
       requires(data != null)
     {
       uint8[] data_clone = Tools.clone(data, data.length);
-      Idle.add(() => { on_file_data(friendnumber,filenumber,data_clone); return false; });
-      //on_file_data(friendnumber,filenumber,data_clone);
+      Idle.add(() => { on_file_data(friendnumber, filenumber, data_clone); return false; });
     }
 
     ////////////////////////////// Wrapper functions ////////////////////////////////
@@ -523,38 +523,52 @@ namespace Venom {
     }
 
     public unowned Gee.HashMap<uint8, FileTransfer> get_filetransfers() {
-        return _file_transfers;
+      return _file_transfers;
     }
 
     public uint8 send_file_request(int friend_number, uint64 file_size, string filename)
       requires(filename != null)
     {
       uint8[] buf = Tools.string_to_nullterm_uint(filename);
-      return (uint8) handle.new_file_sender(friend_number,file_size,buf);
+      lock(handle) {
+        return (uint8) handle.new_file_sender(friend_number, file_size,buf);
+      }
     }
 
     public void accept_file (int friendnumber, uint8 filenumber) {
-        handle.file_send_control(friendnumber,1,filenumber,Tox.FileControlStatus.ACCEPT,null);
+      lock(handle) {
+        handle.file_send_control(friendnumber, 1, filenumber, Tox.FileControlStatus.ACCEPT, null);
+      }
     }
 
     public void reject_file (int friendnumber, uint8 filenumber) {
-        handle.file_send_control(friendnumber,1,filenumber,Tox.FileControlStatus.KILL,null);
+      lock(handle) {
+        handle.file_send_control(friendnumber, 1, filenumber, Tox.FileControlStatus.KILL, null);
+      }
     }
 
     public void send_filetransfer_end (int friendnumber, uint8 filenumber) {
-        handle.file_send_control(friendnumber,0,filenumber,Tox.FileControlStatus.FINISHED,null);
+      lock(handle) {    
+        handle.file_send_control(friendnumber, 0, filenumber, Tox.FileControlStatus.FINISHED, null);
+      }
     }
 
-    public int send_file_data(int friendnumber,uint8 filenumber,uint8[] filedata) {
-        return handle.file_send_data(friendnumber,filenumber,filedata);
+    public int send_file_data(int friendnumber, uint8 filenumber, uint8[] filedata) {
+      lock(handle) {
+        return handle.file_send_data(friendnumber, filenumber, filedata);
+      }
     }
 
     public int get_recommended_data_size(int friendnumber) {
+      lock(handle) {
         return handle.file_data_size(friendnumber);
+      }
     }
 
     public uint64 get_remaining_file_data(int friendnumber,uint8 filenumber,uint8 send_receive) {
-        return handle.file_data_remaining(friendnumber,filenumber,send_receive);
+      lock(handle) {
+        return handle.file_data_remaining(friendnumber, filenumber, send_receive);
+      }
     }
 
     ////////////////////////////// Thread related operations /////////////////////////
