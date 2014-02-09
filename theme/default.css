@@ -37,13 +37,13 @@
 .contact_list * {
   border-width: 0px;
   border-radius: 0px;
+  background-color: alpha(white, 0);
 }
 
 .contact_list,
 .contact_list *,
 .conversation_widget,
 .conversation_widget * {
-  background-color: alpha(white, 0);
   /*border-width: 0px;*/
   background-clip: padding-box;
   /*font-family: Roboto, Sans;
