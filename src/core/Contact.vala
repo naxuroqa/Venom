@@ -32,7 +32,7 @@ namespace Venom {
     public Gdk.Pixbuf? image     { get; set; default = null; }
     public int unread_messages   { get; set; default = 0; }
 
-    public Contact(uint8[] public_key, int friend_id = -1) {
+    public Contact(uint8[]? public_key, int friend_id = -1) {
       this.public_key = public_key;
       this.friend_id = friend_id;
     }
