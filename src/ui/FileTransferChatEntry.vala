@@ -77,7 +77,6 @@ namespace Venom {
     }
     
     private void status_changed(FileTransferStatus status,FileTransferDirection direction){
-      stderr.printf("status_changed: %s",status.to_string());
       switch (status) {
         case FileTransferStatus.DONE: {
           if(direction == FileTransferDirection.INCOMING) {
@@ -101,7 +100,19 @@ namespace Venom {
         } break;
         case FileTransferStatus.PAUSED: {
           size_or_status_label.set_text("Paused");
-        } break; 
+        } break;
+        case FileTransferStatus.SENDING_FAILED: {
+          size_or_status_label.set_text("Sending failed");
+          size_or_status_label.get_style_context().add_class("error");
+          progress_bar.visible = false;
+          disable_buttons();
+        } break;
+        case FileTransferStatus.RECEIVING_FAILED: {
+          size_or_status_label.set_text("Receiving failed");
+          size_or_status_label.get_style_context().add_class("error");
+          progress_bar.visible = false;
+          disable_buttons();
+        } break;
       }
     }
 

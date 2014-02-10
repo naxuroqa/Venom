@@ -25,13 +25,12 @@ namespace Venom {
   public enum FileTransferStatus {
     PENDING,
     SENDING_FAILED,
+    RECEIVING_FAILED,
     REJECTED,
     IN_PROGRESS,
     PAUSED,
     DONE
   }
-  
-
 
   public class FileTransfer : GLib.Object {
     public signal void status_changed(FileTransferStatus status, FileTransferDirection direction);
@@ -41,8 +40,11 @@ namespace Venom {
     public uint8 filenumber {get; set; }
     private FileTransferStatus _status;
     public FileTransferStatus status {
-      get { return _status; } 
-      set { _status = value; status_changed(_status, direction); }
+      get { return _status; }
+      set {
+        _status = value;
+        status_changed(_status, direction);
+      }
     }
 
     public uint8 send_receive { get; set; }
@@ -50,15 +52,11 @@ namespace Venom {
     public uint64 file_size { get; set; }
     /* amount of bytes sent or received during transfer */
     public uint64 _bytes_processed;
-    private uint64 last_bytes_processed;
     public uint64 bytes_processed {
       get { return _bytes_processed; }
       set {
-        if( _bytes_processed == 0 ||  (double) value / last_bytes_processed > 1.0005 ){
-          progress_update(value,file_size); 
-          last_bytes_processed = value;
-        }
-        _bytes_processed = value; 
+        progress_update(value,file_size);
+        _bytes_processed = value;
       }
     }
     public string name { get; set; }

@@ -560,7 +560,6 @@ namespace Venom {
     }
 
     private void send_file(int friendnumber, uint8 filenumber) {
-      stderr.printf("send_file\n");
       int chunk_size =  session.get_recommended_data_size(friendnumber);
       FileTransfer ft = session.get_filetransfers()[filenumber];
       ft.status = FileTransferStatus.IN_PROGRESS;
@@ -569,14 +568,23 @@ namespace Venom {
         return;
       }
       File file = File.new_for_path(ft.path);
+      GLib.FileInputStream file_stream = null;
       try {
-        var file_stream = file.read ();
+        file_stream = file.read();
         var file_info = file.query_info ("*", FileQueryInfoFlags.NONE);
         uint64 file_size = file_info.get_size();
         uint64 remaining_bytes_to_send = file_size;
         uint8[] bytes = new uint8[chunk_size];
         bool read_more = true;
         while ( remaining_bytes_to_send > 0  ) {
+          if(ft.status == FileTransferStatus.SENDING_FAILED) {
+            return;
+          }
+          if(ft.status == FileTransferStatus.PAUSED) {
+            Thread.usleep(2500);
+            continue;
+          }
+
           if(remaining_bytes_to_send < chunk_size) {
             chunk_size = (int) remaining_bytes_to_send;
             bytes = new uint8[chunk_size];
@@ -589,25 +597,28 @@ namespace Venom {
             ft.bytes_processed += chunk_size;
             read_more = true;
           } else {
-            //stderr.printf("error: %llu \n",remaining_bytes_to_send);
             read_more = false;
             Thread.usleep(25000);
           }
-          Thread.usleep(100);
         }
         session.send_filetransfer_end(friendnumber,filenumber);
         ft.status = FileTransferStatus.DONE;
-        file_stream.close();
       } catch(IOError e) {
         stderr.printf("I/O error while trying to read file: %s\n",e.message);
       } catch(Error e) {
         stderr.printf("Unknown error while trying to read file: %s\n",e.message); 
+      } finally {
+        try{
+          if(file_stream != null)
+            file_stream.close();
+        } catch(IOError e) {
+          stderr.printf("I/O error while trying to close file stream: %s\n",e.message);
+        }
       }
       stdout.printf("Ended file transfer for %s to %s\n",ft.name, (session.get_contact_list()[friendnumber]).name );
     }
 
     private void on_file_control_request(int friendnumber,uint8 filenumber,uint8 receive_send,uint8 status, uint8[] data) {
-      stderr.printf("on_file_control_request\n");
       FileTransfer ft = session.get_filetransfers()[filenumber];
       if(ft == null)
         return;
@@ -618,7 +629,13 @@ namespace Venom {
         });
       }
       if(status == Tox.FileControlStatus.KILL && receive_send == 1) {
-        ft.status = FileTransferStatus.REJECTED;
+        if(ft.status == FileTransferStatus.PENDING) {
+          ft.status = FileTransferStatus.REJECTED;
+        } else if(ft.direction == FileTransferDirection.OUTGOING) {
+          ft.status = FileTransferStatus.SENDING_FAILED;
+        } else if(ft.direction == FileTransferDirection.INCOMING) {
+          ft.status = FileTransferStatus.RECEIVING_FAILED;
+        }
         stderr.printf("File transfer was rejected for file number %u", filenumber);   
       }
       if(status == Tox.FileControlStatus.FINISHED && receive_send == 0) {
@@ -630,8 +647,10 @@ namespace Venom {
     private void on_file_data(int friendnumber,uint8 filenumber,uint8[] data) {
       //stderr.printf("on_file_data\n");
       FileTransfer ft = session.get_filetransfers()[filenumber];
-      if(ft == null)
+      if(ft == null) {
+        session.reject_file(friendnumber,filenumber);
         return;
+      }
       string path = ft.path;
       File file = File.new_for_path(path);
       try{
@@ -644,6 +663,7 @@ namespace Venom {
         fos.close();
       } catch (Error e){
         stderr.printf("Error while trying to write data to file\n");
+        ft.status = FileTransferStatus.RECEIVING_FAILED;
       }
     }
 
