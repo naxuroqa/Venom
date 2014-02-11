@@ -597,21 +597,32 @@ namespace Venom {
       string from_name = session.group_peername(g, friendgroupnumber);
       stdout.printf("[gm] %s [%i]@%i: %s\n", from_name, friendgroupnumber, g.group_id, message);
 
-      open_group_conversation_with(g);
+      GroupConversationWidget w = open_group_conversation_with(g);
       incoming_group_message(new GroupMessage.incoming(g, from_name, message));
+      
+      if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
+        g.unread_messages++;
+        contact_list_tree_view.update_entry(g);
+      }
     }
 
     private void on_group_action(GroupChat g, int friendgroupnumber, string message) {
       string from_name = session.group_peername(g, friendgroupnumber);
       stdout.printf("[ga] %s [%i]@%i: %s\n", from_name, friendgroupnumber, g.group_id, message);
 
-      open_group_conversation_with(g);
+      GroupConversationWidget w = open_group_conversation_with(g);
       incoming_group_action(new GroupActionMessage.incoming(g, from_name, message));
+      
+      if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
+        g.unread_messages++;
+        contact_list_tree_view.update_entry(g);
+      }
     }
 
     private void on_group_peer_changed(GroupChat g, int peernumber, Tox.ChatChange change) {
       GroupConversationWidget w = open_group_conversation_with(g);
       w.update_contact();
+      groupchat_changed(g);
     }
 
     private void on_file_sendrequest(int friendnumber, uint8 filenumber, uint64 filesize,string filename) {
@@ -784,6 +795,10 @@ namespace Venom {
 
         notebook_conversations.set_current_page(notebook_conversations.page_num(w));
         notebook_conversations.set_visible(true);
+        if(g.unread_messages != 0) {
+          g.unread_messages = 0;
+          contact_list_tree_view.update_entry(g);
+        }
       }
     }
 
