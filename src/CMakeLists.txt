@@ -86,7 +86,7 @@ SET( VENOM_SRC
   core/VenomSettings.vala
   ui/AddContactDialog.vala
   ui/AboutDialog.vala
-  ui/ConversationTreeView.vala
+  ui/ConversationView.vala
   ui/ConversationWidget.vala
   ui/ContactFilter.vala
   ui/ContactListWindow.vala

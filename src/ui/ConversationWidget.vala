@@ -25,7 +25,7 @@ namespace Venom {
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
 
-    private ConversationTreeView conversation_tree_view;
+    private ConversationView conversation_view;
     public unowned Contact contact {get; private set;}
 
     public signal void new_outgoing_message(Message message);
@@ -88,17 +88,17 @@ namespace Venom {
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
-      conversation_tree_view = new ConversationTreeView();
-      conversation_tree_view.show_all();
-      scrolled_window.add(conversation_tree_view);
+      conversation_view = new ConversationView();
+      conversation_view.show_all();
+      scrolled_window.add(conversation_view);
 
       //TODO: move to bottom only when wanted
-      conversation_tree_view.size_allocate.connect( () => {
+      conversation_view.size_allocate.connect( () => {
         Gtk.Adjustment adjustment = scrolled_window.get_vadjustment();
         adjustment.set_value(adjustment.upper - adjustment.page_size);
       });
 
-      //new_conversation_message.connect(conversation_tree_view.add_message);
+      //new_conversation_message.connect(conversation_view.add_message);
 
       delete_event.connect(() => {hide(); return true;});
     }
@@ -107,7 +107,7 @@ namespace Venom {
 
     public void load_history(GLib.List<Message> messages) {
       messages.foreach((message) => {
-        conversation_tree_view.add_message(message);
+        conversation_view.add_message(message);
         });
     }
 
@@ -126,7 +126,7 @@ namespace Venom {
       if(message.from != contact)
         return;
 
-      conversation_tree_view.add_message(message);
+      conversation_view.add_message(message);
     }
 
     public void entry_activate(Gtk.Entry source) {
@@ -138,11 +138,11 @@ namespace Venom {
       if(Tools.action_regex.match(s, 0, out info)) {
         string action_string = info.fetch_named("action_string");
         ActionMessage a = new ActionMessage.outgoing(contact, action_string);
-        conversation_tree_view.add_message(a);
+        conversation_view.add_message(a);
         new_outgoing_action(a);
       } else {
         Message m = new Message.outgoing(contact, s);
-        conversation_tree_view.add_message(m);
+        conversation_view.add_message(m);
         new_outgoing_message(m);
       }
       source.text = "";
@@ -185,7 +185,7 @@ namespace Venom {
       }
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.OUTGOING, file_size, file.get_basename(), file.get_path() );
       new_outgoing_file(ft);
-      //conversation_tree_view.add_filetransfer(ft);
+      //conversation_view.add_filetransfer(ft);
     }
   }
 }

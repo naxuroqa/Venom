@@ -25,7 +25,7 @@ namespace Venom {
     private Gtk.Label label_groupchat_statusmessage;
     private Gtk.Image image_groupchat_image;
 
-    private ConversationTreeView conversation_tree_view;
+    private ConversationView conversation_view;
     private unowned GroupChat groupchat {get; private set;}
 
     public signal void new_outgoing_message(GroupMessage message);
@@ -76,12 +76,12 @@ namespace Venom {
 
       Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
 
-      conversation_tree_view = new ConversationTreeView();
-      conversation_tree_view.show_all();
-      scrolled_window.add(conversation_tree_view);
+      conversation_view = new ConversationView();
+      conversation_view.show_all();
+      scrolled_window.add(conversation_view);
 
       //TODO: move to bottom only when wanted
-      conversation_tree_view.size_allocate.connect( () => {
+      conversation_view.size_allocate.connect( () => {
         Gtk.Adjustment adjustment = scrolled_window.get_vadjustment();
         adjustment.set_value(adjustment.upper - adjustment.page_size);
       });
@@ -92,7 +92,7 @@ namespace Venom {
     //history
     public void load_history(GLib.List<Message> messages) {
       messages.foreach((message) => {
-        conversation_tree_view.add_message(message);
+        conversation_view.add_message(message);
         });
     }*/
 
@@ -100,7 +100,7 @@ namespace Venom {
       if(message.from != groupchat)
         return;
 
-      conversation_tree_view.add_message(message);
+      conversation_view.add_message(message);
     }
 
     public void entry_activate(Gtk.Entry source) {
