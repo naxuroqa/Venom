@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Mon Dec  2 17:17:09 2013 -->
+<!-- Generated with glade 3.16.1 -->
 <interface>
-  <!-- interface-requires gtk+ 3.4 -->
+  <requires lib="gtk+" version="3.4"/>
   <object class="GtkImage" id="image_call">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -80,9 +80,9 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="button1">
-                        <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="no_show_all">True</property>
                         <property name="relief">none</property>
                         <child>
                           <object class="GtkArrow" id="arrow1">
@@ -167,9 +167,9 @@
               <object class="GtkButton" id="button_call">
                 <property name="width_request">51</property>
                 <property name="height_request">32</property>
-                <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="no_show_all">True</property>
                 <property name="tooltip_text" translatable="yes">Call contact</property>
                 <property name="valign">center</property>
                 <property name="image">image_call</property>
@@ -187,9 +187,9 @@
               <object class="GtkButton" id="button_call_video">
                 <property name="width_request">51</property>
                 <property name="height_request">32</property>
-                <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="no_show_all">True</property>
                 <property name="tooltip_text" translatable="yes">Call contact with video</property>
                 <property name="valign">center</property>
                 <property name="image">image_call_video</property>
