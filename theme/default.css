@@ -156,21 +156,18 @@
 
 .contact_list .statuscombo * {
   font-weight: bold;
+  text-shadow: none;
   background-color: @border-color;
   background-image: none;
   border-image: none;
   border-style: none;
-  border-radius: 4px;
-}
-
-.contact_list .statuscombo *{
-  text-shadow: none;
+  border-radius: 0px;
 }
 
 .contact_list .userbutton:active,
-.contact_list .userbutton:hover:active,
+.contact_list .userbutton:hover,
 .contact_list .userbutton:focus:active{
-  background-color: lighter (@treeview-background);
+  background-color: @treeview-selected;
   background-image: none;
   border-style: none;
 }
@@ -224,6 +221,7 @@
   border: none;
 }
 
+.contact_list .slider:hover,
 .contact_list .slider:active {
   background-color: @treeview-selected;
 }
@@ -232,7 +230,7 @@
   background-color: @treeview-background;
   background-image: none;
   border: 1px solid @background;
-  border-radius: 4px;
+  border-radius: 0px;
 }
 
 .conversation_widget,
@@ -259,7 +257,7 @@
   background-color: @callbutton-color;
   background-image: none;
   border-image: none;
-  border-radius: 4px;
+  border-radius: 0px;
   border: none;
 }
 
