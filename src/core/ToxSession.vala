@@ -261,7 +261,7 @@ namespace Venom {
     private void on_file_sendrequest_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint64 filesize, uint8[] filename)
       requires(filename != null)
     {
-      string filename_str = ((string)filename).dup();
+      string filename_str = File.new_for_path((string)filename).get_basename();
       Idle.add(() => { on_file_sendrequest(friendnumber, filenumber, filesize, filename_str); return false; });
     }
 
