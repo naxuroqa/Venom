@@ -837,14 +837,21 @@ namespace Venom {
     }
 
     public void add_contact(string contact_id_string, string contact_message = ResourceFactory.instance.default_add_contact_message) {
-      if(contact_id_string.length != Tox.FRIEND_ADDRESS_SIZE * 2) {
+      string trimmed_id = contact_id_string.dup();
+      try {
+			var regex = new GLib.Regex ("\\s");
+			  trimmed_id = regex.replace(trimmed_id, -1, 0, "");
+		  } catch (GLib.RegexError e) {
+			  GLib.assert_not_reached ();
+		  }
+      if(trimmed_id.length != Tox.FRIEND_ADDRESS_SIZE * 2) {
         string error_message = "Could not add friend: Invalid ID\n";
         stderr.printf(error_message);
         UITools.ErrorDialog("Adding Friend failed", error_message, this);
         return;
       }
 
-      uint8[] contact_id = Tools.hexstring_to_bin(contact_id_string);
+      uint8[] contact_id = Tools.hexstring_to_bin(trimmed_id);
       // add friend
       if(contact_id == null || contact_id.length != Tox.FRIEND_ADDRESS_SIZE) {
         string error_message = "Could not add friend: Invalid ID\n";
