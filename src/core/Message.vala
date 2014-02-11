@@ -37,20 +37,20 @@ namespace Venom {
     public Message.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
       this.from = null;
       this.to = receiver;
-      this.message = message;
+      this.message = Markup.escape_text(message);
       this.timestamp = timestamp;
     }
     public Message.incoming(Contact sender, string message, DateTime timestamp = new DateTime.now_local()) {
       this.from = sender;
       this.to = null;
-      this.message = message;
+      this.message = Markup.escape_text(message);
       this.timestamp = timestamp;
     }
     public virtual string get_sender_markup() {
       if(from == null) {
         return "<span color='#939598'font_weight='bold'>Me</span>";
       } else {
-        return "<b>%s</b>".printf(from.name);
+        return "<b>%s</b>".printf(Markup.escape_text(from.name));
       }
     }
     public virtual string get_message_markup() {
@@ -61,20 +61,20 @@ namespace Venom {
     public ActionMessage.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
       this.from = null;
       this.to = receiver;
-      this.message = message;
+      this.message = Markup.escape_text(message);
       this.timestamp = timestamp;
     }
     public ActionMessage.incoming(Contact sender, string message, DateTime timestamp = new DateTime.now_local()) {
       this.from = sender;
       this.to = null;
-      this.message = message;
+      this.message = Markup.escape_text(message);
       this.timestamp = timestamp;
     }
     public override string get_sender_markup() {
       return "*";
     }
     public override string get_message_markup() {
-      return "<b>%s</b> %s".printf(from != null ? from.name : "me", message);
+      return "<b>%s</b> %s".printf(from != null ? Markup.escape_text(from.name) : "me", message);
     }
   }
   public class GroupMessage : IMessage, GLib.Object {
@@ -88,21 +88,21 @@ namespace Venom {
       this.from = null;
       this.to = receiver;
       this.from_name = null;
-      this.message = message;
+      this.message = Markup.escape_text(message);
       this.timestamp = timestamp;
     }
     public GroupMessage.incoming(GroupChat sender, string from_name, string message, DateTime timestamp = new DateTime.now_local()) {
       this.from = sender;
       this.to = null;
       this.from_name = from_name;
-      this.message = message;
+      this.message = Markup.escape_text(message);
       this.timestamp = timestamp;
     }
     public virtual string get_sender_markup() {
       if(from == null) {
         return "<span color='#939598'font_weight='bold'>Me</span>";
       } else {
-        return "<b>%s</b>".printf(from_name);
+        return "<b>%s</b>".printf(Markup.escape_text(from_name));
       }
     }
     public virtual string get_message_markup() {
@@ -114,21 +114,21 @@ namespace Venom {
       this.from = null;
       this.to = receiver;
       this.from_name = null;
-      this.message = message;
+      this.message = Markup.escape_text(message);
       this.timestamp = timestamp;
     }
     public GroupActionMessage.incoming(GroupChat sender, string from_name, string message, DateTime timestamp = new DateTime.now_local()) {
       this.from = sender;
       this.to = null;
       this.from_name = from_name;
-      this.message = message;
+      this.message = Markup.escape_text(message);
       this.timestamp = timestamp;
     }
     public override string get_sender_markup() {
       return "*";
     }
     public override string get_message_markup() {
-      return "<b>%s</b> %s".printf(from != null ? from_name : "me", message);
+      return "<b>%s</b> %s".printf(from != null ? Markup.escape_text(from_name) : "me", message);
     }
   }
   public class FileTransferMessage : IMessage, GLib.Object {
@@ -143,7 +143,7 @@ namespace Venom {
       return "ft";
     }
     public string get_message_markup() {
-      return file_transfer.name;
+      return Markup.escape_text(file_transfer.name);
     }
   }
 }
