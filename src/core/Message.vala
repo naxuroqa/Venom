@@ -37,13 +37,13 @@ namespace Venom {
     public Message.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
       this.from = null;
       this.to = receiver;
-      this.message = Markup.escape_text(message);
+      this.message = message;
       this.timestamp = timestamp;
     }
     public Message.incoming(Contact sender, string message, DateTime timestamp = new DateTime.now_local()) {
       this.from = sender;
       this.to = null;
-      this.message = Markup.escape_text(message);
+      this.message = message;
       this.timestamp = timestamp;
     }
     public virtual string get_sender_markup() {
@@ -54,20 +54,20 @@ namespace Venom {
       }
     }
     public virtual string get_message_markup() {
-      return message;
+      return Markup.escape_text(message);
     }
   }
   public class ActionMessage : Message {
     public ActionMessage.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
       this.from = null;
       this.to = receiver;
-      this.message = Markup.escape_text(message);
+      this.message = message;
       this.timestamp = timestamp;
     }
     public ActionMessage.incoming(Contact sender, string message, DateTime timestamp = new DateTime.now_local()) {
       this.from = sender;
       this.to = null;
-      this.message = Markup.escape_text(message);
+      this.message = message;
       this.timestamp = timestamp;
     }
     public override string get_sender_markup() {
@@ -88,14 +88,14 @@ namespace Venom {
       this.from = null;
       this.to = receiver;
       this.from_name = null;
-      this.message = Markup.escape_text(message);
+      this.message = message;
       this.timestamp = timestamp;
     }
     public GroupMessage.incoming(GroupChat sender, string from_name, string message, DateTime timestamp = new DateTime.now_local()) {
       this.from = sender;
       this.to = null;
       this.from_name = from_name;
-      this.message = Markup.escape_text(message);
+      this.message = message;
       this.timestamp = timestamp;
     }
     public virtual string get_sender_markup() {
@@ -106,7 +106,7 @@ namespace Venom {
       }
     }
     public virtual string get_message_markup() {
-      return message;
+      return Markup.escape_text(message);
     }
   }
   public class GroupActionMessage : GroupMessage {
@@ -114,14 +114,14 @@ namespace Venom {
       this.from = null;
       this.to = receiver;
       this.from_name = null;
-      this.message = Markup.escape_text(message);
+      this.message = message;
       this.timestamp = timestamp;
     }
     public GroupActionMessage.incoming(GroupChat sender, string from_name, string message, DateTime timestamp = new DateTime.now_local()) {
       this.from = sender;
       this.to = null;
       this.from_name = from_name;
-      this.message = Markup.escape_text(message);
+      this.message = message;
       this.timestamp = timestamp;
     }
     public override string get_sender_markup() {
