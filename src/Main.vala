@@ -22,11 +22,13 @@
 namespace Venom {
 
 public class Main : GLib.Object {
-    private static bool version = false;
     private static string? datafile = null;
+    private static bool version = false;
+    private static bool offline = false;
     private const GLib.OptionEntry[] options = {
       { "datafile", 'n', 0, GLib.OptionArg.FILENAME, ref datafile, "Tox data file", "<file>" },
-		  { "version", 'V', 0, OptionArg.NONE, ref version, "Display version number", null },
+		  { "version", 'V', 0, GLib.OptionArg.NONE, ref version, "Display version number", null },
+		  { "offline", '\0', 0, GLib.OptionArg.NONE, ref offline, "Start in offline mode", null },
 		  { null }
 	  };
 
@@ -50,6 +52,11 @@ public class Main : GLib.Object {
 	    if(datafile != null) {
 	      stdout.printf("Using data file \"%s\"\n", datafile);
         ResourceFactory.instance.data_filename = datafile;
+	    }
+	    
+	    if(offline) {
+	      stdout.printf("Starting in offline mode\n");
+	      ResourceFactory.instance.offline_mode = true;
 	    }
 
       return new Client().run(args);

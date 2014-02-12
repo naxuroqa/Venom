@@ -101,6 +101,8 @@ namespace Venom {
     public string config_filename {get; set;}
     public string default_add_contact_message {get; private set;}
 
+    public bool offline_mode {get; set; default = false;}
+
     public Gee.ArrayList<SettingsProvider> settings_providers {get; set;}
 
     private Gdk.Pixbuf? load_image_from_resource(string resourcename) {

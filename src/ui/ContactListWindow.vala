@@ -79,7 +79,11 @@ namespace Venom {
       on_ownconnectionstatus(false);
 
       stdout.printf("ID: %s\n", Tools.bin_to_hexstring(session.get_address()));
-      set_userstatus(UserStatus.ONLINE);
+      if(ResourceFactory.instance.offline_mode) {
+        set_userstatus(UserStatus.OFFLINE);
+      } else {
+        set_userstatus(UserStatus.ONLINE);
+      }
     }
 
     // Destructor

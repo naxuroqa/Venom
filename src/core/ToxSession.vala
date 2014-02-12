@@ -576,14 +576,15 @@ namespace Venom {
     // Background thread main function
     private int run() {
       stdout.printf("Background thread started.\n");
-      lock(handle) {
-        if(!bootstrapped) {
-          stdout.printf("Connecting to DHT servers:\n");
-          for(int i = 0; i < dht_servers.length; ++i) {
-            // skip ipv6 servers if we don't support them
-            if(dht_servers[i].is_ipv6 && !ipv6)
-              continue;
-            stdout.printf("  %s\n", dht_servers[i].to_string());
+
+      if(!bootstrapped) {
+        stdout.printf("Connecting to DHT servers:\n");
+        for(int i = 0; i < dht_servers.length; ++i) {
+          // skip ipv6 servers if we don't support them
+          if(dht_servers[i].is_ipv6 && !ipv6)
+            continue;
+          stdout.printf("  %s\n", dht_servers[i].to_string());
+          lock(handle) {
             handle.bootstrap_from_address(
               dht_servers[i].host,
               dht_servers[i].is_ipv6 ? 1 : 0,
@@ -591,8 +592,8 @@ namespace Venom {
               dht_servers[i].pub_key
             );
           }
-          bootstrapped = true;
         }
+        bootstrapped = true;
       }
 
       bool new_status = false;
