@@ -1,5 +1,5 @@
 #
-#    Copyright (C) 2013 Venom authors and contributors
+#    Copyright (C) 2013-2014 Venom authors and contributors
 #
 #    This file is part of Venom.
 #
@@ -20,27 +20,49 @@
 INCLUDE(FindVala)
 INCLUDE(${VALA_USE_FILE})
 INCLUDE(GResource)
+INCLUDE(PkgCheckModulesFullpath)
 
-FIND_PACKAGE(Vala "0.18.0" REQUIRED)
+FIND_PACKAGE(Vala "0.18.1" REQUIRED)
 FIND_PACKAGE(PkgConfig REQUIRED)
 
 SET(TARGET_GLIB 2.32)
 
-PKG_CHECK_MODULES(GTK    REQUIRED gtk+-3.0>=3.4)
-PKG_CHECK_MODULES(GEE    REQUIRED gee-0.8>=0.8)
-PKG_CHECK_MODULES(GIO    REQUIRED gio-2.0>=${TARGET_GLIB})
-PKG_CHECK_MODULES(GLIB   REQUIRED glib-2.0>=${TARGET_GLIB})
-PKG_CHECK_MODULES(SQLITE REQUIRED sqlite3>=3.7)
-PKG_CHECK_MODULES(JSON   REQUIRED json-glib-1.0>=0.14)
-PKG_CHECK_MODULES(TOX    REQUIRED libtoxcore>=0.0)
+PKG_CHECK_MODULES_FULLPATH(GTK    REQUIRED gtk+-3.0>=3.4)
+PKG_CHECK_MODULES_FULLPATH(GEE    REQUIRED gee-0.8>=0.8)
+PKG_CHECK_MODULES_FULLPATH(GIO    REQUIRED gio-2.0>=${TARGET_GLIB})
+PKG_CHECK_MODULES_FULLPATH(GLIB   REQUIRED glib-2.0>=${TARGET_GLIB})
+PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
+PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
+PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
 
-SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GTK_CFLAGS} ${GTK_CFLAGS_OTHER}
-                 ${GEE_CFLAGS} ${GEE_CFLAGS_OTHER}
-                 ${GIO_CFLAGS} ${GIO_CFLAGS_OTHER}
-                 ${GLIB_CFLAGS} ${GLIB_CFLAGS_OTHER}
-                 ${SQLITE_CFLAGS} ${SQLITE_CFLAGS_OTHER}
-                 ${JSON_CFLAGS} ${JSON_CFLAGS_OTHER}
-                 ${TOX_CFLAGS} ${TOX_CFLAGS_OTHER}
+# Workaround for libtoxcore and libsodium not providing info on
+# all needed static libraries in their pkg-config files
+# see https://github.com/irungentoo/ProjectTox-Core/issues/705
+IF(LINK_TOX_STATIC)
+  SET(TOX_LIBRARIES ${TOX_LIBRARIES} m.a)
+  IF(WIN32)
+    SET(TOX_LIBRARIES ${TOX_LIBRARIES} ws2_32.a)
+  ENDIF(WIN32)
+ENDIF(LINK_TOX_STATIC)
+IF(LINK_GTK_STATIC)
+  IF(WIN32)
+    SET(GTK_LIBRARIES ${GTK_LIBRARIES} usp10.a iphlpapi.a)
+  ENDIF(WIN32)
+ENDIF(LINK_GTK_STATIC)
+IF(LINK_GIO_STATIC)
+  IF(WIN32)
+    SET(GIO_LIBRARIES ${GIO_LIBRARIES} dnsapi.a iconv.a)
+  ENDIF(WIN32)
+ENDIF(LINK_GIO_STATIC)
+
+SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
+                  ${GTK_CFLAGS}    ${GTK_CFLAGS_OTHER}
+                  ${GEE_CFLAGS}    ${GEE_CFLAGS_OTHER}
+                  ${GIO_CFLAGS}    ${GIO_CFLAGS_OTHER}
+                  ${GLIB_CFLAGS}   ${GLIB_CFLAGS_OTHER}
+                  ${SQLITE_CFLAGS} ${SQLITE_CFLAGS_OTHER}
+                  ${JSON_CFLAGS}   ${JSON_CFLAGS_OTHER}
+                  ${TOX_CFLAGS}    ${TOX_CFLAGS_OTHER}
 )
 
 # since pkg_check_modules returns semicolon
@@ -67,9 +89,11 @@ SET( VENOM_SRC
   ui/ConversationWidget.vala
   ui/ChatMessage.vala
   ui/FileTransferChatEntry.vala
+  ui/ContactFilter.vala
   ui/ContactListWindow.vala
   ui/ContactListTreeView.vala
   ui/ContactListCellRenderer.vala
+  ui/GroupConversationWidget.vala
   ui/PreferencesWindow.vala
   ui/UserInfoWindow.vala
   ui/UITools.vala
@@ -96,8 +120,8 @@ VALA_PRECOMPILE( VALA_C_VENOM
   GENERATE_HEADER
 )
 
-VALA_PRECOMPILE( VALA_C_TEST
-    testing/ToxVapiTest.vala
+VALA_PRECOMPILE( VALA_C_TEST_DHT
+    testing/TestDht.vala
     core/Tools.vala
   PACKAGES
     gio-2.0
@@ -134,11 +158,11 @@ GLIB_COMPILE_RESOURCES( GLIB_RESOURCES_VENOM
 ADD_EXECUTABLE( venom
   ${VALA_C_VENOM}
   ${GLIB_RESOURCES_VENOM}
-  ${WINDOWS_RESOURCE_FILE}
+  ${VENOM_RESOURCE_FILE}
 )
 
-ADD_EXECUTABLE( vapi_test EXCLUDE_FROM_ALL
-  ${VALA_C_TEST}
+ADD_EXECUTABLE( test_dht EXCLUDE_FROM_ALL
+  ${VALA_C_TEST_DHT}
 )
 
 ADD_EXECUTABLE( group_bot EXCLUDE_FROM_ALL
@@ -146,25 +170,25 @@ ADD_EXECUTABLE( group_bot EXCLUDE_FROM_ALL
 )
 
 TARGET_LINK_LIBRARIES( venom
-                       ${GTK_LIBRARIES}
-                       ${GEE_LIBRARIES}
+                       ${TOX_LIBRARIES}
+                       ${SQLITE_LIBRARIES}
                        ${GIO_LIBRARIES}
                        ${GLIB_LIBRARIES}
+                       ${GTK_LIBRARIES}
+                       ${GEE_LIBRARIES}
                        ${JSON_LIBRARIES}
-                       ${SQLITE_LIBRARIES}
-                       ${TOX_LIBRARIES}
 )
 
-TARGET_LINK_LIBRARIES( vapi_test
-                       ${GIO_LIBRARIES}
+TARGET_LINK_LIBRARIES( test_dht
                        ${TOX_LIBRARIES}
+                       ${GIO_LIBRARIES}
 )
 
 TARGET_LINK_LIBRARIES( group_bot
-                       ${GIO_LIBRARIES}
                        ${TOX_LIBRARIES}
+                       ${GIO_LIBRARIES}
 )
 
-INSTALL(TARGETS venom RUNTIME DESTINATION bin)
+INSTALL(TARGETS venom RUNTIME DESTINATION ${CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION})
 
 # vim:set ts=2 sw=2 et:

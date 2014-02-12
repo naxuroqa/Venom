@@ -1,5 +1,5 @@
 /*
- *    AboutDialog.vala
+ *    ContactFilter.vala
  *
  *    Copyright (C) 2013-2014  Venom authors and contributors
  *
@@ -20,20 +20,24 @@
  */
 
 namespace Venom {
-  public class AboutDialog : Gtk.AboutDialog {
-    public AboutDialog() {
-      authors = {
-                  "naxuroqa <naxuroqa@gmail.com>",
-                  "Denys Han <h.denys@gmail.com>",
-                  "Andrii Titov <concuror@gmail.com>",
-                  null
-                };
-      comments = Config.SHORT_DESCRIPTION;
-      copyright = Config.COPYRIGHT_NOTICE;
-      program_name = "Venom";
-      version = Config.VERSION;
-      website = Config.WEBSITE;
-      license_type = Gtk.License.GPL_3_0;
+  interface ContactFilter : GLib.Object {
+    public abstract bool filter_func(Gtk.TreeModel model, Gtk.TreeIter iter);
+  }
+  class ContactFilterAll : GLib.Object, ContactFilter {
+    public bool filter_func(Gtk.TreeModel model, Gtk.TreeIter iter) {
+      return true;
+    }
+  }
+  class ContactFilterOnline : GLib.Object, ContactFilter {
+    public bool filter_func(Gtk.TreeModel model, Gtk.TreeIter iter) {
+      GLib.Value val;
+      model.get_value(iter, 0, out val);
+      if(val.get_object() is Contact) {
+        return (val as Contact).online;
+      } else if (val.get_object() is GroupChat) {
+        return (val as GroupChat).peer_count > 0;
+      }
+      return true;
     }
   }
 }

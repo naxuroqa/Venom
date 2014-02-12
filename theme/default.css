@@ -37,13 +37,13 @@
 .contact_list * {
   border-width: 0px;
   border-radius: 0px;
+  background-color: alpha(white, 0);
 }
 
 .contact_list,
 .contact_list *,
 .conversation_widget,
 .conversation_widget * {
-  /*background-color: alpha(white, 0); */
   /*border-width: 0px;*/
   background-clip: padding-box;
   /*font-family: Roboto, Sans;
@@ -300,13 +300,18 @@
   color: #ff0000;
   background: #5b5a5c;
 }
+.filetransfer_entry GtkProgressBar {
+  /*color: #f00;*/
+  background: #222;
+}
 
 .message_entry .own_name {
   color: #939598  
 }
 
-#save_as_button, #cancel_button {
+.filetransfer_entry GtkButton {
   background: #5b5a5c;
+  border-color: #222;
 }
 
 

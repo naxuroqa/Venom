@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    Message.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -18,22 +20,130 @@
  */
 
 namespace Venom {
-  public class Message : GLib.Object {
-    public unowned Contact sender {get; set;}
-    public string message {get; set;}
-    public DateTime time_sent { get; set; }
-
-    public Message(Contact? sender, string message) {
-      this.sender = sender;
-      this.message = message;
-      time_sent = new DateTime.now_local();
+  public interface IMessage : GLib.Object {
+    public abstract DateTime timestamp {get; protected set;}
+    public abstract string get_sender_markup();
+    public abstract string get_message_markup();
+    public virtual string get_time_markup() {
+      return "<span color='#939598'>%s</span>".printf(timestamp.format("%R"));
     }
+  }
+  public class Message : IMessage, GLib.Object {
+    public unowned Contact from {get; protected set;}
+    public unowned Contact to {get; protected set;}
+    public string message {get; protected set;}
+    public DateTime timestamp {get; protected set;}
 
-    public Message.with_time(Contact? sender, string message, DateTime time) {
-      this.sender = sender;
+    public Message.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
+      this.from = null;
+      this.to = receiver;
       this.message = message;
-      time_sent = time;
+      this.timestamp = timestamp;
     }
+    public Message.incoming(Contact sender, string message, DateTime timestamp = new DateTime.now_local()) {
+      this.from = sender;
+      this.to = null;
+      this.message = message;
+      this.timestamp = timestamp;
+    }
+    public virtual string get_sender_markup() {
+      if(from == null) {
+        return "<span color='#939598'font_weight='bold'>Me</span>";
+      } else {
+        return "<b>%s</b>".printf(from.name);
+      }
+    }
+    public virtual string get_message_markup() {
+      return message;
+    }
+  }
+  public class ActionMessage : Message {
+    public ActionMessage.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
+      this.from = null;
+      this.to = receiver;
+      this.message = message;
+      this.timestamp = timestamp;
+    }
+    public ActionMessage.incoming(Contact sender, string message, DateTime timestamp = new DateTime.now_local()) {
+      this.from = sender;
+      this.to = null;
+      this.message = message;
+      this.timestamp = timestamp;
+    }
+    public override string get_sender_markup() {
+      return "*";
+    }
+    public override string get_message_markup() {
+      return "<b>%s</b> %s".printf(from != null ? from.name : "me", message);
+    }
+  }
+  public class GroupMessage : IMessage, GLib.Object {
+    public unowned GroupChat from {get; protected set;}
+    public unowned GroupChat to {get; protected set;}
+    public string from_name {get; protected set;}
+    public string message {get; protected set;}
+    public DateTime timestamp {get; protected set;}
 
+    public GroupMessage.outgoing(GroupChat receiver, string message, DateTime timestamp = new DateTime.now_local()) {
+      this.from = null;
+      this.to = receiver;
+      this.from_name = null;
+      this.message = message;
+      this.timestamp = timestamp;
+    }
+    public GroupMessage.incoming(GroupChat sender, string from_name, string message, DateTime timestamp = new DateTime.now_local()) {
+      this.from = sender;
+      this.to = null;
+      this.from_name = from_name;
+      this.message = message;
+      this.timestamp = timestamp;
+    }
+    public virtual string get_sender_markup() {
+      if(from == null) {
+        return "<span color='#939598'font_weight='bold'>Me</span>";
+      } else {
+        return "<b>%s</b>".printf(from_name);
+      }
+    }
+    public virtual string get_message_markup() {
+      return message;
+    }
+  }
+  public class GroupActionMessage : GroupMessage {
+    public GroupActionMessage.outgoing(GroupChat receiver, string message, DateTime timestamp = new DateTime.now_local()) {
+      this.from = null;
+      this.to = receiver;
+      this.from_name = null;
+      this.message = message;
+      this.timestamp = timestamp;
+    }
+    public GroupActionMessage.incoming(GroupChat sender, string from_name, string message, DateTime timestamp = new DateTime.now_local()) {
+      this.from = sender;
+      this.to = null;
+      this.from_name = from_name;
+      this.message = message;
+      this.timestamp = timestamp;
+    }
+    public override string get_sender_markup() {
+      return "*";
+    }
+    public override string get_message_markup() {
+      return "<b>%s</b> %s".printf(from != null ? from_name : "me", message);
+    }
+  }
+  public class FileTransferMessage : IMessage, GLib.Object {
+    public FileTransfer file_transfer {get; private set;}
+    public DateTime timestamp {get; protected set;}
+
+    public FileTransferMessage(FileTransfer file_transfer) {
+      this.file_transfer = file_transfer;
+      this.timestamp = file_transfer.time_sent;
+    }
+    public string get_sender_markup() {
+      return "ft";
+    }
+    public string get_message_markup() {
+      return file_transfer.name;
+    }
   }
 }

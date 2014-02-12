@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    Main.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -19,7 +21,7 @@
 
 namespace Venom {
 
-public class Main {
+public class Main : GLib.Object {
     private static bool version = false;
     private static string? datafile = null;
     private const GLib.OptionEntry[] options = {
@@ -41,7 +43,7 @@ public class Main {
 	    }
 
 	    if(version) {
-	      stdout.printf("%s %s\n", args[0], Config.VENOM_VERSION);
+	      stdout.printf("%s %s\n", args[0], Config.VERSION);
 	      return 0;
 	    }
 

@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    UITools.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -18,7 +20,7 @@
  */
 
 namespace Venom {
-  public class UITools {
+  public class UITools : GLib.Object {
     public static void ErrorDialog(string message, string? secondary_text, Gtk.Window? parent) {
       Gtk.MessageDialog dialog = new Gtk.MessageDialog(
         parent,

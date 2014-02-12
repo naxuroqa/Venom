@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    ConversationWidget.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -28,7 +30,8 @@ namespace Venom {
     private string self_name;
     public unowned Contact contact {get; private set;}
 
-    public signal void new_outgoing_message(Contact receiver, string message);
+    public signal void new_outgoing_message(Message message);
+    public signal void new_outgoing_action(ActionMessage action);
     public signal void new_outgoing_file(FileTransfer ft);
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
@@ -107,29 +110,27 @@ namespace Venom {
     }
 
     private void display_message(Message message) {
+      stderr.printf("from: %s to: %s\n",message.from.name,message.to.name);
       bool following = false;
       if(conversation_list.get_children().length() > 0) {
-        if( (message.sender == null) && ( last_sender == null )) {
+        if( (message.from == null) && ( last_sender == null )) {
           following = true;
-        } else if ( (message.sender != null ) && ( last_sender != null ) ) {
-          following = message.sender.friend_id == last_sender.friend_id;
+        } else if ( (message.from != null ) && ( last_sender != null ) ) {
+          following = message.from.friend_id == last_sender.friend_id;
         }
       }
-
-      Contact c = new Contact(null);
       ChatMessage cm;
-      if(message.sender == null) {
-        //TODO: there should be more elegant way of showing own name in chat
-        c.name = self_name;
-        message.sender = c;
-        cm = new ChatMessage(message,following);
-        message.sender = null;
+      if(message.from == null) {
+        cm = new ChatMessage.own(message,self_name,following);
       } else {
-        cm = new ChatMessage(message,following);
+        cm = new ChatMessage.private(message,following);        
       }
 
+
+
+
       conversation_list.pack_start(cm,false,false,0);
-      last_sender = message.sender;
+      last_sender = message.from;
     }
 
     private void display_filetransfer(FileTransfer ft) {
@@ -160,9 +161,8 @@ namespace Venom {
 
 
     public void on_incoming_message(Message message) {
-      if(message.sender != contact)
+      if(message.from != contact)
         return;
-
       display_message(message);
     }
 
@@ -174,9 +174,18 @@ namespace Venom {
       string s = source.text;
       if(s == "")
         return;
-      Message m = new Message(null, s);
-      display_message(m);
-      new_outgoing_message(contact, s);
+
+      GLib.MatchInfo info = null;
+      if(Tools.action_regex.match(s, 0, out info)) {
+        string action_string = info.fetch_named("action_string");
+        ActionMessage a = new ActionMessage.outgoing(contact, action_string);
+        display_message(a);
+        new_outgoing_action(a);
+      } else {
+        Message m = new Message.outgoing(contact, s);
+        display_message(m);
+        new_outgoing_message(m);
+      }
       source.text = "";
     }
 

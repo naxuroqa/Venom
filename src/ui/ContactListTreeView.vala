@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    Copyright (C) 2013-2014 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -22,31 +22,39 @@ namespace Venom {
     Gtk.ListStore list_store_contacts;
     Gtk.TreeViewColumn name_column;
 
-    public signal void contact_activated(Contact contact);
+    public signal void entry_activated(GLib.Object o);
 
     public ContactListTreeView() {
-      list_store_contacts = new Gtk.ListStore (3, typeof(Contact), typeof(GroupChat), typeof(string));
+      list_store_contacts = new Gtk.ListStore (1, typeof(GLib.Object));
 
       name_column = new Gtk.TreeViewColumn();
       ContactListCellRenderer name_column_cell = new ContactListCellRenderer();
       name_column.pack_start(name_column_cell, true);
 
-      name_column.add_attribute (name_column_cell, "contact", 0);
-      name_column.add_attribute (name_column_cell, "groupchat", 1);
+      name_column.add_attribute (name_column_cell, "entry", 0);
 
       set_model (list_store_contacts);
 
       append_column(name_column);
 
-      row_activated.connect(on_row_activated);
-
+      Gtk.TreeSelection s = get_selection();
+      s.set_mode(Gtk.SelectionMode.SINGLE);
+      s.set_select_function(on_row_selected);
+      
       query_tooltip.connect(modify_tooltip);
-      set_tooltip_column(2);
+      //set_tooltip_column(1);
 
       //hide headers
       set_headers_visible(false);
       can_focus = false;
-      //sensitive = false;
+    }
+    private bool on_row_selected( Gtk.TreeSelection selection, Gtk.TreeModel model, Gtk.TreePath path, bool path_currently_selected ) {
+      Gtk.TreeIter iter;
+      model.get_iter(out iter, path);
+      GLib.Value val;
+      model.get_value(iter, 0, out val);
+      entry_activated(val as GLib.Object);
+      return true;
     }
 
     private bool modify_tooltip(int x, int y, bool keyboard_tooltip, Gtk.Tooltip tooltip) {
@@ -64,41 +72,28 @@ namespace Venom {
       return false;
     }
 
-    private Contact get_contact_from_iter(Gtk.TreeIter iter) {
-      GLib.Value v;
-      model.get_value(iter, 0, out v);
-      return v as Contact;
-    }
-
-    public void add_contact(Contact contact) {
+    public void add_entry(GLib.Object o) {
       Gtk.TreeIter iter;
-      list_store_contacts.append (out iter);
-      list_store_contacts.set (iter, 0, contact, 2, Tools.bin_to_hexstring(contact.public_key));
+      list_store_contacts.append(out iter);
+      list_store_contacts.set(iter, 0, o);
       can_focus = true;
     }
 
-    public void add_groupchat(GroupChat groupchat) {
-      Gtk.TreeIter iter;
-      list_store_contacts.append (out iter);
-      list_store_contacts.set (iter, 1, groupchat);
-      can_focus = true;
+    public void update_entry(GLib.Object o) {
+      Gtk.TreeIter? iter = find_iter(o);
+      list_store_contacts.row_changed(list_store_contacts.get_path(iter), iter);
     }
 
-    public void update_contact(Contact contact) {
-      Gtk.TreeIter? iter = find_iter(contact);
-      list_store_contacts.row_changed(model.get_path(iter), iter);
-    }
-
-    public void remove_contact(Contact contact) {
-      Gtk.TreeIter iter = find_iter(contact);
+    public void remove_entry(GLib.Object o) {
+      Gtk.TreeIter iter = find_iter(o);
       list_store_contacts.remove(iter);
       columns_changed();
       if(list_store_contacts.iter_n_children(null) == 0)
         can_focus = false;
     }
 
-    public Contact? get_selected_contact() {
-      Gtk.TreeSelection selection =  get_selection();
+    public Object? get_selected_entry() {
+      Gtk.TreeSelection selection = get_selection();
       if(selection == null)
         return null;
       Gtk.TreeModel model;
@@ -107,25 +102,16 @@ namespace Venom {
         return null;
       GLib.Value val;
       model.get_value(iter, 0, out val);
-      Contact c = val as Contact;
-      return c;
+      return val as GLib.Object;
     }
 
-    private void on_row_activated(Gtk.TreePath path, Gtk.TreeViewColumn column) {
-      Gtk.TreeIter iter;
-      model.get_iter(out iter, path);
-      GLib.Value val;
-      model.get_value(iter, 0, out val);
-      Contact c = val as Contact;
-
-      contact_activated(c);
-    }
-
-    private Gtk.TreeIter? find_iter(Contact contact) {
+    private Gtk.TreeIter? find_iter(GLib.Object o) {
       Gtk.TreeIter iter;
       list_store_contacts.get_iter_first(out iter);
       do {
-        if(get_contact_from_iter(iter) == contact)
+        GLib.Value val;
+        list_store_contacts.get_value(iter, 0, out val);
+        if(val.get_object() == o)
           return iter;
       } while( list_store_contacts.iter_next(ref iter) );
 

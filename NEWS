@@ -1,0 +1,16 @@
+Venom: A GTK+ GUI for Tox written in Vala
+
+v0.2.0  WIP
+  * Filetransfer support
+  * Config file
+  * Chat log (turned off by default)
+  * NSIS installer available for windows (needed for handling uris)
+  * Single instance (needed for handling uris)
+  * tox:// URI support
+  * Filter online contacts/groupchats
+  * Groupchat support
+  * Action support
+
+v0.1.2  06.10.2013
+v0.1.1  02.10.2013
+v0.1.0  01.10.2013

@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    tox-1.0.vapi
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -372,7 +374,14 @@ namespace Tox {
      */
     public delegate void GroupMessageCallback(Tox tox, int groupnumber, int friendgroupnumber, [CCode(array_length_type="guint16")] uint8[] message);
     public void callback_group_message(GroupMessageCallback callback);
-    
+
+    /* Set the callback for group actions.
+     *
+     *  Function(Tox *tox, int groupnumber, int friendgroupnumber, uint8_t * action, uint16_t length, void *userdata)
+     */
+     public delegate void GroupActionCallback(Tox tox, int groupnumer, int friendgroupnumber, [CCode(array_length_type="guint16")] uint8[] action);
+     public void callback_group_action(GroupActionCallback callback);
+
     /* Set callback function for peer name list changes.
      *
      * It gets called every time the name list changes(new peer/name, deleted peer)
@@ -421,6 +430,12 @@ namespace Tox {
      * return -1 on failure
      */
     public int group_message_send(int groupnumber, [CCode(array_length_type="guint32")] uint8[] message);
+    
+    /* send a group action
+     * return 0 on success
+     * return -1 on failure
+     */
+    public int group_action_send(int groupnumber, [CCode(array_length_type="guint32")] uint8[] action);
 
     /* Return the number of peers in the group chat on success.
      * return -1 on failure

@@ -1,15 +1,14 @@
 [0.2]
-* add groupchat
-* fix treeviewrenderer (text off center)
+* save actions in db
+* display own name instead of "me" in outgoing actions
+* update treeview entry for groupchat changes
+* testing
 
 [0.3]
-* add filetransfer
-
-[0.4]
 * add audiochat
 * add videochat
 
-[0.5]
+[0.4]
 * Local storage additionally to tox data file (sqlite, plain xml file, ...?)
   * add local nicknames/tags for contacts (optionally)
   * make dht servers editable / selectable

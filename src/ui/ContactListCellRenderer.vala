@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    ContactListCellRenderer.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -19,8 +21,7 @@
 
 namespace Venom {
   public class ContactListCellRenderer : Gtk.CellRenderer {
-    public Contact contact { get; set; }
-    public GroupChat groupchat { get; set; }
+    public GLib.Object entry { get; set; }
     private static Gdk.RGBA unread_message_bgcolor = Gdk.RGBA() { red = 0.419607843, green = 0.760784314, blue = 0.376470588, alpha = 1.0 };
     private static Gdk.RGBA unread_message_fgcolor = Gdk.RGBA() { red = 0, green = 0, blue = 0, alpha = 1.0 };
 
@@ -47,10 +48,12 @@ namespace Venom {
 
     public void render_image(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
       Gdk.Pixbuf? icon;
-      if(contact == null) {
-        icon = groupchat.image != null ? groupchat.image : ResourceFactory.instance.default_groupchat;
-      } else {
+      if(entry is Contact) {
+        Contact contact = entry as Contact;
         icon = contact.image != null ? contact.image : ResourceFactory.instance.default_contact;
+      } else {
+        GroupChat groupchat = entry as GroupChat;
+        icon = groupchat.image != null ? groupchat.image : ResourceFactory.instance.default_groupchat;
       }
       Gdk.Rectangle image_rect = {8, 9 + background_area.y, 44, 41};
       if(icon != null) {
@@ -61,27 +64,36 @@ namespace Venom {
     }
 
     public void render_userstatus(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
-      if(contact == null)
-        return;
       Gdk.Pixbuf? status = null;
+      
+      if(entry is Contact) {
+        Contact contact = entry as Contact;
 
-      if(!contact.online) {
-        status = contact.unread_messages > 0 ? ResourceFactory.instance.offline_glow : ResourceFactory.instance.offline;
-      }
-      else {
-        switch(contact.user_status) {
-          case Tox.UserStatus.NONE:
-            status = contact.unread_messages > 0 ? ResourceFactory.instance.online_glow :ResourceFactory.instance.online;
-            break;
-          case Tox.UserStatus.AWAY:
-            status = contact.unread_messages > 0 ? ResourceFactory.instance.away_glow : ResourceFactory.instance.away;
-            break;
-          case Tox.UserStatus.BUSY:
-            status = contact.unread_messages > 0 ? ResourceFactory.instance.busy_glow : ResourceFactory.instance.busy;
-            break;
-          case Tox.UserStatus.INVALID:
-            status = contact.unread_messages > 0 ? ResourceFactory.instance.offline_glow : ResourceFactory.instance.offline;
-            break;
+        if(!contact.online) {
+          status = contact.unread_messages > 0 ? ResourceFactory.instance.offline_glow : ResourceFactory.instance.offline;
+        }
+        else {
+          switch(contact.user_status) {
+            case Tox.UserStatus.NONE:
+              status = contact.unread_messages > 0 ? ResourceFactory.instance.online_glow : ResourceFactory.instance.online;
+              break;
+            case Tox.UserStatus.AWAY:
+              status = contact.unread_messages > 0 ? ResourceFactory.instance.away_glow : ResourceFactory.instance.away;
+              break;
+            case Tox.UserStatus.BUSY:
+              status = contact.unread_messages > 0 ? ResourceFactory.instance.busy_glow : ResourceFactory.instance.busy;
+              break;
+            case Tox.UserStatus.INVALID:
+              status = contact.unread_messages > 0 ? ResourceFactory.instance.offline_glow : ResourceFactory.instance.offline;
+              break;
+          }
+        }
+      } else if(entry is GroupChat) {
+        GroupChat groupchat = entry as GroupChat;
+        if(groupchat.peer_count > 0) {
+          status = ResourceFactory.instance.online;
+        } else {
+          status = ResourceFactory.instance.offline;
         }
       }
       if(status != null) {
@@ -100,12 +112,16 @@ namespace Venom {
       Gtk.StateFlags state = widget.get_state_flags();
       Gdk.RGBA color = widget.get_style_context().get_color(state);
 
-      if(contact == null) {
-        layout.set_text("Groupchat #%i".printf(groupchat.group_id), -1);
-      } else if(contact.name != null && contact.name != "") {
-        layout.set_text(contact.name, -1);
+      if(entry is Contact) {
+        Contact contact = entry as Contact;
+        if(contact.name != null && contact.name != "") {
+          layout.set_text(contact.name, -1);
+        } else {
+          layout.set_text(Tools.bin_to_hexstring(contact.public_key), -1);
+        }
       } else {
-        layout.set_text(Tools.bin_to_hexstring(contact.public_key), -1);
+        GroupChat groupchat = entry as GroupChat;
+        layout.set_text("Groupchat #%i".printf(groupchat.group_id), -1);
       }
       layout.set_ellipsize(Pango.EllipsizeMode.END);
       layout.set_width((cell_area.width - 58 - 26) * Pango.SCALE);
@@ -132,8 +148,20 @@ namespace Venom {
       color.red -= 0.4;
       color.green -= 0.4;
       color.blue -= 0.4;
-      if(contact != null && contact.status_message != null && contact.status_message != "") {
-        layout.set_text(contact.status_message, -1);
+      if(entry is Contact) {
+        Contact contact = entry as Contact;
+        if(!contact.online) {
+          layout.set_text("Offline", -1);
+        } else if(contact.status_message != null && contact.status_message != "") {
+          layout.set_text(contact.status_message, -1);
+        }
+      } else if(entry is GroupChat) {
+        GroupChat g = entry as GroupChat;
+        if(g.peer_count > 0) {
+          layout.set_text("%i peer%s connected".printf(g.peer_count, g.peer_count > 1 ? "s" : ""), -1);
+        } else{
+          layout.set_text("Offline", -1);
+        }
       }
       layout.set_ellipsize(Pango.EllipsizeMode.END);
       layout.set_width((cell_area.width - 58 - 26) * Pango.SCALE);
@@ -149,8 +177,19 @@ namespace Venom {
       return ink_rect;
     }
   public void render_unread_messages(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
-      if(contact == null || contact.unread_messages == 0)
+      if(!(entry is Contact)) {
         return;
+      }
+      string str = "";
+      Contact contact = entry as Contact;
+      if(contact.unread_messages == 0) {
+        return;
+      } else if(contact.unread_messages < 10) {
+          str = contact.unread_messages.to_string();
+      } else {
+          str = "+";
+      }
+
       Pango.Rectangle? ink_rect, logical_rect;
       Gdk.Rectangle image_rect_border = {cell_area.x + cell_area.width - 24 , cell_area.y + cell_area.height / 2, 13, 13};
       Gdk.Rectangle image_rect = {cell_area.x + cell_area.width - 23 , cell_area.y + cell_area.height / 2 + 1, 11, 11};
@@ -159,11 +198,6 @@ namespace Venom {
       font.set_absolute_size(10 * Pango.SCALE);
       Pango.Layout layout = widget.create_pango_layout(null);
       layout.set_font_description(font);
-      string str = "";
-      if(contact.unread_messages < 10)
-        str = contact.unread_messages.to_string();
-      else
-        str = "+";
       layout.set_markup("<tt>%s</tt>".printf(str), -1);
       layout.get_pixel_extents(out ink_rect, out logical_rect);
 

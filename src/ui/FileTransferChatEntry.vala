@@ -89,9 +89,9 @@ namespace Venom {
         } break;
         case FileTransferStatus.REJECTED: {
           size_or_status_label.set_text("File was rejected");
-          if (direction == FileTransferDirection.OUTGOING) {
+          /*if (direction == FileTransferDirection.OUTGOING) {
             size_or_status_label.get_style_context().add_class("error");
-          }
+            }*/
           progress_bar.visible = false;
           disable_buttons();
         } break; 

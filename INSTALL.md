@@ -1,12 +1,9 @@
 Installation
 ============
-- Building and installing
-    - [Linux](#linux)
-    - [OS X](#osx)
-    - [Windows](#windows)
+- [Linux](#linux)
+- [OS X](#os-x)
+- [Windows](#windows)
 - [FAQ](#faq)
-
-
 
 Linux
 =====
@@ -19,28 +16,33 @@ Dependencies
 
 Additionally to the tox build dependencies, you will need:
 
-    valac (>=0.18)
-    cmake (>=2.8.7)
-    libgtk-3-dev (>=3.4)
-    libgee-0.8-dev (>=0.8)
+| Package name     | Version   |
+|------------------|-----------|
+| valac            | >= 0.18.1 |
+| cmake            | >=2.8.7   |
+| libgtk-3-dev     | >=3.4     |
+| libgee-0.8-dev   | >=0.8     |
+| libjson-glib-dev | >=0.14    |
+| libsqlite3-dev   | >=3.7     |
+
 
 Ubuntu >= 12.10 (Quantal Quetzal) / Linux Mint / Debian:
 
-    apt-get install valac cmake libgtk-3-dev libgee-0.8-dev
+    apt-get install valac cmake libgtk-3-dev libgee-0.8-dev libjson-glib-dev libsqlite3-dev
 
-Ubuntu 12.04 (Precise Pangolin) needs a ppa to get a newer version of valac and libgee-0.8
+Ubuntu 12.04 (Precise Pangolin): (needs a ppa to get a newer version of valac and libgee-0.8)
 
     apt-add-repository ppa:vala-team/ppa
     apt-get update
-    apt-get install valac cmake libgtk-3-dev libgee-0.8-dev
+    apt-get install valac cmake libgtk-3-dev libgee-0.8-dev libjson-glib-dev libsqlite3-dev
 
 Fedora:
 
-    yum install vala cmake gtk3-devel libgee-devel
+    yum install vala cmake gtk3-devel libgee-devel json-glib-devel sqlite-devel
 
 Arch Linux: (There is an [aur-package](https://aur.archlinux.org/packages/venom-git))
 
-    pacman -S vala cmake gtk3 libgee
+    pacman -S vala cmake gtk3 libgee json-glib sqlite
 
 Building and installing Venom
 -----------------------------
@@ -63,14 +65,9 @@ Follow ProjectTox-Core [installation instructions](https://github.com/irungentoo
 With Homebrew
 -------------
 
-    brew install vala cmake gtk+3 libgee git
-    git clone git://github.com/naxuroqa/Venom.git
-    cd Venom
-    mkdir build
-    cd build
-    cmake ..
-    make
-    sudo make install
+    brew tap Tox/tox
+    brew install --HEAD libtoxcore
+    brew install --HEAD venom
 
 Windows
 =======
@@ -85,10 +82,12 @@ Cross compile (mingw-w64)
 * build ffmpeg (optionally for now)
 * build libsodium
 * build libtoxcore
-* build gtk+ 3.x
+* build gtk+-3.x
 * build libgee
+* build libjson-glib
+* build libsqlite3
 
-There is a package for arch linux doing exactly that: https://aur.archlinux.org/packages/mingw-w64-venom-git
+There is an [aur-package](https://aur.archlinux.org/packages/mingw-w64-venom-git) for arch linux, which automates the build process.
 
 ###Compiling Venom
 
@@ -97,58 +96,13 @@ There is a package for arch linux doing exactly that: https://aur.archlinux.org/
     mkdir build
     cd build
     PKG_CONFIG_PATH=/usr/<yourcrosscompilerprefix>/lib/pkgconfig
+    # you may have to adapt the mingw-toolchain.cmake file for your cross compiler prefix
     cmake -DCMAKE_C_FLAGS="-mwindows" \
           -DCOMPILER_PREFIX=<yourcrosscompilerprefix> \
           -DCMAKE_TOOLCHAIN_FILE=../cmake/mingw-toolchain.cmake \
           -DCMAKE_BUILD_TYPE="Release" ..
     make
     sudo make install
-
-On Windows (mingw-w64)
-----------------------
-
-* If you don't have cmake and git installed already:
- *  Download and install cmake from [here](http://www.cmake.org/cmake/resources/software.html).
- *  Download and install Git from [here](http://git-scm.com/download/win).
-
-###Dependencies
-
-* Follow ProjectTox-Core [installation instructions](https://github.com/irungentoo/ProjectTox-Core/blob/master/INSTALL.md#windows).
-* Either grab a gtk+ 3.x bundle from [here](http://www.gtk.org/download/win32.php) (32-bit only) or compile it from source.
-* Download libgee-0.8 from [here](http://ftp.gnome.org/pub/GNOME/sources/libgee/0.12).
-
-Compile libgee:
-
-    cd libgee-0.12.0
-    ./configure --prefix=/<yourprefix>
-    # if you have mingw mounted on /mingw, it should look like this:
-    # ./configure --prefix=/mingw
-    make
-    make install
-
-###Compiling Venom
-
-After this, you can begin compiling Venom:
-
-    git clone git://github.com/naxuroqa/Venom.git
-    cd Venom
-    mkdir build
-    cd build
-    cmake -G "MinGW Makefiles" ..
-    # Ignore cmake complaining about sh.exe being in PATH for now,
-    # just run it again and it will work
-    # 
-    # you can hide the console window by passing this to the c-compiler
-    # cmake -G "MinGW Makefiles" -DCMAKE_C_FLAGS="-mwindows" ..
-    # 
-    # If you are getting pkg-config errors, provide pkg-config with the correct path
-    # and run cmake again
-    # PKG_CONFIG_PATH=/<yourprefix>/lib/pkgconfig cmake ..
-    # so if you installed tox to /mingw, use
-    # PKG_CONFIG_PATH=/mingw/lib/pkgconfig cmake ..
-    # 
-    # (finally) build it
-    mingw32-make
 
 FAQ
 ===

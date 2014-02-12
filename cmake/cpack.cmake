@@ -27,8 +27,6 @@ IF(WIN32)
       DOWNLOAD 
         "https://raw.github.com/jedisct1/libsodium/master/LICENSE"
         "${CMAKE_CURRENT_BINARY_DIR}/libsodium_license.txt"
-      EXPECTED_MD5
-        979a30c71c9a8d0174c10898ac3e5595
     )
   ENDIF()
   INSTALL(
@@ -44,45 +42,60 @@ IF(WIN32)
   INCLUDE(InstallRequiredSystemLibraries)
 ENDIF(WIN32)
 
+# architecure specific stuff
+IF(ARCHITECTURE EQUAL 32)
+  SET(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
+  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
+  SET(CPACK_RPM_PACKAGE_ARCHITECTURE i686)
+ELSE(ARCHITECTURE EQUAL 32)
+  SET(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
+  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE amd64)
+  SET(CPACK_RPM_PACKAGE_ARCHITECTURE x86_64)
+ENDIF(ARCHITECTURE EQUAL 32)
+
 # Basic settings
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "GTK+/Vala GUI for Tox")
-SET(CPACK_PACKAGE_EXECUTABLES    "venom;Venom")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${VENOM_SHORT_DESCRIPTION}")
+SET(CPACK_PACKAGE_EXECUTABLES         "venom;Venom")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY   "Venom")
-SET(CPACK_PACKAGE_NAME           "Venom")
-SET(CPACK_PACKAGE_VERSION_MAJOR  "${VENOM_VERSION_MAJOR}")
-SET(CPACK_PACKAGE_VERSION_MINOR  "${VENOM_VERSION_MINOR}")
-SET(CPACK_PACKAGE_VERSION_PATCH  "${VENOM_VERSION_PATCH}")
+SET(CPACK_PACKAGE_NAME                "Venom")
+SET(CPACK_PACKAGE_VERSION_MAJOR       "${VENOM_VERSION_MAJOR}")
+SET(CPACK_PACKAGE_VERSION_MINOR       "${VENOM_VERSION_MINOR}")
+SET(CPACK_PACKAGE_VERSION_PATCH       "${VENOM_VERSION_PATCH}")
 SET(CPACK_SOURCE_IGNORE_FILES /build/;\\\\.gitignore;.*~;\\\\.git;CMakeFiles;Makefile;cmake_install\\\\.cmake)
 SET(CPACK_SOURCE_STRIP_FILES TRUE)
 SET(CPACK_STRIP_FILES TRUE)
 
 # Advanced
-SET(CPACK_RESOURCE_FILE_LICENSE  "${CMAKE_SOURCE_DIR}/COPYING")
-SET(CPACK_PACKAGE_VERSION        "${VENOM_VERSION}")
+SET(CPACK_RESOURCE_FILE_LICENSE    "${CMAKE_SOURCE_DIR}/COPYING")
+SET(CPACK_RESOURCE_FILE_README     "${CMAKE_SOURCE_DIR}/README")
+SET(CPACK_PACKAGE_VERSION          "${VENOM_VERSION}")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/misc/pkgdesc.txt")
+# default: "Humanity", overwrite if needed
+#SET(CPACK_PACKAGE_VENDOR           "")
 
 # nsis
-#TODO set correct path depending on architecture (as soon as x64_64 windows builds are stable)
-#SET(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
 # There is a bug in NSI that does not handle full unix paths properly. Make
 # sure there is at least one set of four (4) backslashes.
-#SET(CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}/misc/\\\\venom.ico")
-#SET(CPACK_NSIS_MUI_UNIICON "${CMAKE_SOURCE_DIR}/misc/\\\\venom.ico")
-SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/icons/48x48\\\\venom.png")
-#SET(CPACK_NSIS_INSTALLED_ICON_NAME "")
+SET(CPACK_NSIS_EXECUTABLES_DIRECTORY ${CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION})
+SET(CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}\\\\misc\\\\venom.ico")
+SET(CPACK_NSIS_MUI_UNIICON "${CMAKE_SOURCE_DIR}\\\\misc\\\\venom.ico")
+SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\\\icons\\\\48x48\\\\venom.png")
+SET(CPACK_NSIS_INSTALLED_ICON_NAME "venom.exe")
 SET(CPACK_NSIS_DISPLAY_NAME "Venom")
-#SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
-#SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
-#SET(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
+SET(CPACK_NSIS_HELP_LINK "${VENOM_WEBSITE}")
+SET(CPACK_NSIS_URL_INFO_ABOUT "${VENOM_WEBSITE}")
+SET(CPACK_NSIS_CONTACT "naxuroqa@gmail.com")
 SET(CPACK_NSIS_MUI_FINISHPAGE_RUN "venom.exe")
 SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+;Register the URI handler
 DetailPrint \\\"Registering tox URI Handler\\\"
 DeleteRegKey HKCR \\\"tox\\\"
 WriteRegStr HKCR \\\"tox\\\" \\\"\\\" \\\"URL:tox\\\"
 WriteRegStr HKCR \\\"tox\\\" \\\"URL Protocol\\\" \\\"\\\"
-WriteRegStr HKCR \\\"tox\\\\DefaultIcon\\\" \\\"\\\" \\\"$INSTDIR\\\\bin\\\\venom.exe\\\"
+WriteRegStr HKCR \\\"tox\\\\DefaultIcon\\\" \\\"\\\" \\\"$INSTDIR\\\\venom.exe\\\"
 WriteRegStr HKCR \\\"tox\\\\shell\\\" \\\"\\\" \\\"\\\"
 WriteRegStr HKCR \\\"tox\\\\shell\\\\Open\\\" \\\"\\\" \\\"\\\"
-WriteRegStr HKCR \\\"tox\\\\shell\\\\Open\\\\command\\\" \\\"\\\" \\\"$INSTDIR\\\\bin\\\\venom.exe %1\\\"
+WriteRegStr HKCR \\\"tox\\\\shell\\\\Open\\\\command\\\" \\\"\\\" \\\"$INSTDIR\\\\venom.exe %1\\\"
 ")
 SET(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
 ;Unregister the URI handler
@@ -90,5 +103,19 @@ DetailPrint \\\"Unregistering tox URI Handler\\\"
 DeleteRegKey HKCR \\\"tox\\\"
 ")
 # .deb
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtk-3-0 (>= 3.2), libgee-0.8-2 (>= 0.8), libtoxcore (>= 0.0)")
+# libtoxcore ommitted, since we are most likely linking it statically
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS  "libgtk-3-0 (>= 3.4.1), libgee-0.8-2 (>= 0.8.0), libjson-glib-1.0-0 (>= 0.14.2), libsqlite3-0 (>= 3.7.9)")
+SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+SET(CPACK_DEBIAN_PACKAGE_SECTION  "web")
+SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${VENOM_WEBSITE}")
+
+# .rpm
+SET(CPACK_RPM_PACKAGE_LICENSE  "GPLv3")
+SET(CPACK_RPM_PACKAGE_GROUP    "Applications/Internet")
+SET(CPACK_RPM_PACKAGE_REQUIRES "gtk3 >= 3.4.1, libgee >= 0.8.0, json-glib >= 0.14.2, sqlite >= 3.7.9")
+# Default: some cpack comment, overwrite if needed
+#SET(CPACK_RPM_CHANGELOG_FILE   "")
+SET(CPACK_RPM_PACKAGE_RELEASE  1)
+SET(CPACK_RPM_PACKAGE_URL      "${VENOM_WEBSITE}")
+
 INCLUDE(CPack)

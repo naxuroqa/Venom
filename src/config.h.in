@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    config.h.in
+ *
+ *    Copyright (C) 2013-2014 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -20,9 +22,13 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define VENOM_VERSION_MAJOR @VENOM_VERSION_MAJOR@;
-#define VENOM_VERSION_MINOR @VENOM_VERSION_MINOR@;
-#define VENOM_VERSION_PATCH @VENOM_VERSION_PATCH@;
-#define VENOM_VERSION "@VENOM_VERSION@";
+#define VENOM_VERSION_MAJOR @VENOM_VERSION_MAJOR@
+#define VENOM_VERSION_MINOR @VENOM_VERSION_MINOR@
+#define VENOM_VERSION_PATCH @VENOM_VERSION_PATCH@
+#define VENOM_VERSION "@VENOM_VERSION@"
+
+#define VENOM_COPYRIGHT_NOTICE "@VENOM_COPYRIGHT_NOTICE@"
+#define VENOM_SHORT_DESCRIPTION "@VENOM_SHORT_DESCRIPTION@"
+#define VENOM_WEBSITE "@VENOM_WEBSITE@"
 
 #endif
