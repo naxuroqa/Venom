@@ -31,6 +31,7 @@ namespace Venom {
 
     // Widgets
     private Gtk.Image image_status;
+    private Gtk.Spinner spinner_status;
     private Gtk.Image image_userimage;
     private Gtk.Label label_name;
     private Gtk.Label label_status;
@@ -171,6 +172,7 @@ namespace Venom {
       this.add(paned);
 
       image_status = builder.get_object("image_status") as Gtk.Image;
+      spinner_status = builder.get_object("spinner_status") as Gtk.Spinner;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
       label_name = builder.get_object("label_username") as Gtk.Label;
       label_status = builder.get_object("label_userstatus") as Gtk.Label;
@@ -388,11 +390,17 @@ namespace Venom {
         return;
       if(user_status == UserStatus.OFFLINE) {
         session.start();
+        image_status.hide();
+        spinner_status.show();
+        spinner_status.start();
       }
       session.set_userstatus(status);
 
       if(status == UserStatus.OFFLINE) {
         session.stop();
+        image_status.show();
+        spinner_status.hide();
+        spinner_status.stop();
       }
 
       user_status = status;
@@ -555,12 +563,15 @@ namespace Venom {
     private void on_ownconnectionstatus(bool status) {
       stdout.printf("Connection to DHT %s.\n", status ? "established" : "lost");
       if(status) {
-        image_status.set_tooltip_text("Connected to: %s".printf(session.connected_dht_server.to_string()));
+        image_status.set_tooltip_text("Connected to network");
         session.set_userstatus(user_status);
       } else {
-        image_status.set_tooltip_text("Not connected.");
+        image_status.set_tooltip_text("Disconnected from network");
         on_ownuserstatus(UserStatus.OFFLINE);
       }
+      image_status.show();
+      spinner_status.hide();
+      spinner_status.stop();
     }
 
     private void on_ownuserstatus(UserStatus status) {
