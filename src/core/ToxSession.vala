@@ -44,7 +44,7 @@ namespace Venom {
   // Wrapper class for accessing tox functions threadsafe
   public class ToxSession : Object {
     private Tox.Tox handle;
-    private LocalStorage local_storage;
+    private ILocalStorage local_storage;
     private DhtServer[] dht_servers = {};
     private Gee.HashMap<int, Contact> _contacts = new Gee.HashMap<int, Contact>();
     private Gee.HashMap<int, GroupChat> _groups = new Gee.HashMap<int, GroupChat>();
@@ -88,8 +88,14 @@ namespace Venom {
 
       // create handle
       handle = new Tox.Tox( ipv6 ? 1 : 0);
+
       //start local storage
-      local_storage = new LocalStorage(this, VenomSettings.instance.enable_logging);
+      if(VenomSettings.instance.enable_logging) {
+        local_storage = new LocalStorage();
+        local_storage.connect_to(this);
+      } else {
+        local_storage = new DummyStorage();
+      }
 
       init_dht_servers();
       init_callbacks();

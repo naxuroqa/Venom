@@ -20,10 +20,23 @@
  */
 
 namespace Venom {
-  public class LocalStorage : Object {
+  public interface ILocalStorage : GLib.Object {
+    public abstract void on_message(Contact c, string message, bool issender);
+    public abstract GLib.List<Message>? retrieve_history(Contact c);
+    public abstract void delete_history(Contact c);
+    public abstract void connect_to(ToxSession session);
+    public abstract void disconnect_from(ToxSession session);
+  }
 
-    private bool logging_enabled;
+  public class DummyStorage : ILocalStorage, GLib.Object {
+    public void on_message(Contact c, string message, bool issender) {}
+    public GLib.List<Message>? retrieve_history(Contact c) { return null; }
+    public void delete_history(Contact c) {}
+    public void connect_to(ToxSession session) {}
+    public void disconnect_from(ToxSession session) {}
+  }
 
+  public class LocalStorage : ILocalStorage, GLib.Object {
     private unowned ToxSession session;
 
     private Sqlite.Database db;
@@ -32,12 +45,19 @@ namespace Venom {
 
     private Sqlite.Statement prepared_select_statement;
 
-    public LocalStorage(ToxSession session, bool log) {
-      this.session = session;
-      this.logging_enabled = log;
+    public LocalStorage() {
       init_db ();
+    }
+
+    public void connect_to(ToxSession session) {
+      this.session = session;
       session.on_own_message.connect(on_outgoing_message);
       session.on_friend_message.connect(on_incoming_message);
+    }
+
+    public void disconnect_from(ToxSession session) {
+      session.on_own_message.disconnect(on_outgoing_message);
+      session.on_friend_message.disconnect(on_incoming_message);
     }
 
     private void on_incoming_message(Contact c, string message) {
@@ -49,9 +69,6 @@ namespace Venom {
     }
 
     public void on_message(Contact c, string message, bool issender) {
-      if (!logging_enabled) {
-        return;
-      }
 
       int param_position = prepared_insert_statement.bind_parameter_index ("$USER");
       assert (param_position > 0);
@@ -78,15 +95,10 @@ namespace Venom {
 
       prepared_insert_statement.step ();
 
-
       prepared_insert_statement.reset ();
     }
 
     public GLib.List<Message>? retrieve_history(Contact c) {
-
-      if (!logging_enabled) {
-        return null;
-      }
       int param_position = prepared_select_statement.bind_parameter_index ("$USER");
       assert (param_position > 0);
       string myId = Tools.bin_to_hexstring(session.get_address());
@@ -117,14 +129,17 @@ namespace Venom {
           mess = new Message.incoming(c, message, send_time);
         }
         messages.append(mess);
-
       }
 
       prepared_select_statement.reset ();
       return messages;
     }
 
-    public int init_db() {
+    public void delete_history(Contact c) {
+      //TODO
+    }
+
+    private int init_db() {
 
       string errmsg;
 
@@ -136,54 +151,51 @@ namespace Venom {
         return -1;
       }
 
-      if (logging_enabled) {
+      //create table and index if needed
+      const string query = """
+      CREATE TABLE IF NOT EXISTS History (
+        id  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        userHash  TEXT  NOT NULL,
+        contactHash TEXT  NOT NULL,
+        message TEXT  NOT NULL,
+        timestamp INTEGER NOT NULL,
+        issent INTEGER NOT NULL
+      );
+      """;
 
-        //create table and index if needed
-        const string query = """
-        CREATE TABLE IF NOT EXISTS History (
-          id  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-          userHash  TEXT  NOT NULL,
-          contactHash TEXT  NOT NULL,
-          message TEXT  NOT NULL,
-          timestamp INTEGER NOT NULL,
-          issent INTEGER NOT NULL
-        );
-        """;
-
-        ec = db.exec (query, null, out errmsg);
-        if (ec != Sqlite.OK) {
-          stderr.printf ("Error: %s\n", errmsg);
-          return -1;
-        }
-
-        const string index_query = """
-          CREATE UNIQUE INDEX IF NOT EXISTS main_index ON History (userHash, contactHash, timestamp);
-        """;
-
-        ec = db.exec (index_query, null, out errmsg);
-        if (ec != Sqlite.OK) {
-          stderr.printf ("Error: %s\n", errmsg);
-          return -1;
-        }
-
-        //prepare insert statement for adding new history messages
-        const string prepared_insert_str = "INSERT INTO History (userHash, contactHash, message, timestamp, issent) VALUES ($USER, $CONTACT, $MESSAGE, $TIME, $SENDER);";
-        ec = db.prepare_v2 (prepared_insert_str, prepared_insert_str.length, out prepared_insert_statement);
-        if (ec != Sqlite.OK) {
-          stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
-          return -1;
-        }
-
-        //prepare select statement to get history. Will execute on indexed data
-        const string prepared_select_str = "SELECT * FROM History WHERE userHash = $USER AND contactHash = $CONTACT AND timestamp > $OLDEST;";
-        ec = db.prepare_v2 (prepared_select_str, prepared_select_str.length, out prepared_select_statement);
-        if (ec != Sqlite.OK) {
-          stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
-          return -1;
-        }
-
-        stdout.printf ("Created db.\n");
+      ec = db.exec (query, null, out errmsg);
+      if (ec != Sqlite.OK) {
+        stderr.printf ("Error: %s\n", errmsg);
+        return -1;
       }
+
+      const string index_query = """
+        CREATE UNIQUE INDEX IF NOT EXISTS main_index ON History (userHash, contactHash, timestamp);
+      """;
+
+      ec = db.exec (index_query, null, out errmsg);
+      if (ec != Sqlite.OK) {
+        stderr.printf ("Error: %s\n", errmsg);
+        return -1;
+      }
+
+      //prepare insert statement for adding new history messages
+      const string prepared_insert_str = "INSERT INTO History (userHash, contactHash, message, timestamp, issent) VALUES ($USER, $CONTACT, $MESSAGE, $TIME, $SENDER);";
+      ec = db.prepare_v2 (prepared_insert_str, prepared_insert_str.length, out prepared_insert_statement);
+      if (ec != Sqlite.OK) {
+        stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
+        return -1;
+      }
+
+      //prepare select statement to get history. Will execute on indexed data
+      const string prepared_select_str = "SELECT * FROM History WHERE userHash = $USER AND contactHash = $CONTACT AND timestamp > $OLDEST;";
+      ec = db.prepare_v2 (prepared_select_str, prepared_select_str.length, out prepared_select_statement);
+      if (ec != Sqlite.OK) {
+        stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
+        return -1;
+      }
+
+      stdout.printf ("Created db.\n");
 
       return 0;
     }
