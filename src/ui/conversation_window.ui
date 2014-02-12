@@ -245,12 +245,12 @@
     </child>
     <child>
       <object class="GtkEntry" id="entry_message">
-        <property name="height_request">48</property>
+        <property name="height_request">49</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="margin_left">2</property>
-        <property name="margin_right">2</property>
-        <property name="margin_bottom">2</property>
+        <property name="margin_left">1</property>
+        <property name="margin_right">3</property>
+        <property name="margin_bottom">3</property>
         <property name="invisible_char">●</property>
         <property name="placeholder_text">Type your message here...</property>
       </object>

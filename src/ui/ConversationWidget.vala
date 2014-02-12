@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class ConversationWidget : Gtk.Box {
+  public class ConversationWidget : Gtk.EventBox {
     private Gtk.Label label_contact_name;
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;

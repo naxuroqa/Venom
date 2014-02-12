@@ -24,6 +24,7 @@
 @define-color border-color #636466;
 @define-color callbutton-color #6bc260;
 @define-color callbutton-selected lighter(@callbutton-color);
+@define-color separator-color #c1c1c1;
 
 * {
   engine: none;
@@ -239,6 +240,21 @@
   background-color: @foreground;
 }
 
+.conversation_widget GtkSeparator {
+  border-width: 1px;
+  border-color: @separator-color;
+  border-style: dotted;
+}
+
+.conversation_widget .entry {
+  border-radius: 0px;
+  border-width: 1px 1px 1px 1px;
+  border-image: none;
+  border-style: solid;
+  border-color: @separator-color;
+  box-shadow: none;
+}
+
 .conversation_widget .callbutton:active,
 .conversation_widget .callbutton:hover:active,
 .conversation_widget .callbutton:focus:active {
@@ -260,4 +276,3 @@
   border-radius: 0px;
   border: none;
 }
-
