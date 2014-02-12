@@ -67,6 +67,7 @@ namespace Venom {
       init_widgets();
       init_signals();
       init_contacts();
+      init_save_session_hooks();
 
       // initialize session specific gui stuff
       label_name.set_text(session.getselfname());
@@ -101,13 +102,20 @@ namespace Venom {
       session.join();
 
       // Save session before shutdown
+      save_session();
+
+      stdout.printf("Session ended gracefully.\n");
+      cleaned_up = true;
+    }
+
+    private void save_session() {
+      stdout.printf("Saving tox session data\n");
       try {
         session.save_to_file(ResourceFactory.instance.data_filename);
       } catch (Error e) {
         stderr.printf("Saving session file failed: %s\n", e.message);
       }
-      stdout.printf("Session ended gracefully.\n");
-      cleaned_up = true;
+
     }
 
     private void init_theme() {
@@ -339,6 +347,14 @@ namespace Venom {
 
       //ComboboxStatus signals
       combobox_status.changed.connect(combobox_status_changed);
+    }
+
+    private void init_save_session_hooks() {
+      // Groupchats currently commented out, since tox does not save them
+      contact_added.connect(    () => {save_session();});
+      //groupchat_added.connect(  () => {save_session();});
+      contact_removed.connect(  () => {save_session();});
+      //groupchat_removed.connect(() => {save_session();});
     }
 
     // Restore friends from datafile
@@ -769,7 +785,6 @@ namespace Venom {
       GroupConversationWidget w = group_conversation_widgets[g.group_id];
       if(w == null) {
         w = new GroupConversationWidget(g);
-        //w.load_history(session.load_history_for_contact(c));
         incoming_group_message.connect(w.on_incoming_message);
         incoming_group_action.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_group_message);
