@@ -352,6 +352,11 @@ namespace Venom {
 
       //ComboboxStatus signals
       combobox_status.changed.connect(combobox_status_changed);
+      
+      //FIXME possibly bind this to click on contact list
+      this.set_focus.connect((e) => {
+        this.set_urgency_hint(false);
+      });
     }
 
     private void init_save_session_hooks() {
@@ -485,6 +490,10 @@ namespace Venom {
       }
     }
 
+    public void set_urgency () {
+      this.set_urgency_hint(true);
+    }
+
     private bool on_treeview_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
       if(key.keyval == Gdk.Key.Delete) {
         GLib.Object o = contact_list_tree_view.get_selected_entry();
@@ -523,6 +532,7 @@ namespace Venom {
       }
       stdout.printf("Added new friend #%i\n", c.friend_id);
       contact_added(c);
+      this.set_urgency();
     }
     private void on_friendmessage(Contact c, string message) {
       stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name != null ? c.name : "<%i>".printf(c.friend_id), message);
@@ -533,6 +543,7 @@ namespace Venom {
         c.unread_messages++;
         contact_list_tree_view.update_entry(c);
       }
+      this.set_urgency();
     }
     private void on_action(Contact c, string action) {
       stdout.printf("[ac] %i:%s\n", c.friend_id, action);
@@ -605,6 +616,7 @@ namespace Venom {
 
     private void on_group_invite(Contact c, GroupChat g) {
       stdout.printf("Group invite from %s with public key %s\n", c.name, Tools.bin_to_hexstring(g.public_key));
+      this.set_urgency();
       Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
@@ -665,6 +677,7 @@ namespace Venom {
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null);
       Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers();
       transfers[filenumber] = ft;
+      this.set_urgency();
 
       Gtk.MessageDialog messagedialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
