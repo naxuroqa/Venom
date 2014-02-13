@@ -112,8 +112,11 @@ namespace Venom {
       if(s == "")
         return;
       GLib.MatchInfo info = null;
-      if(Tools.action_regex.match(s, 0, out info)) {
+      if(Tools.action_regex.match(s, 0, out info) && info.fetch_named("action_name") == "me") {
         string action_string = info.fetch_named("action_string");
+        if(action_string == null) {
+          action_string = "";
+        }
         GroupActionMessage a = new GroupActionMessage.outgoing(groupchat, action_string);
         new_outgoing_action(a);
       } else {

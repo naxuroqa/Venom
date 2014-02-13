@@ -119,7 +119,7 @@ namespace Venom {
       get {
         if(_action_regex == null) {
           try {
-            _action_regex = new GLib.Regex("^/(?P<action_name>\\S+) (?P<action_string>.+)$");
+            _action_regex = new GLib.Regex("^/(?P<action_name>\\S+)(\\s+(?P<action_string>.+))?$");
           } catch (GLib.RegexError e) {
             stderr.printf("Can't create action regex: %s.\n", e.message);
           }

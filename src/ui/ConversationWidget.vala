@@ -140,8 +140,11 @@ namespace Venom {
         return;
 
       GLib.MatchInfo info = null;
-      if(Tools.action_regex.match(s, 0, out info)) {
+      if(Tools.action_regex.match(s, 0, out info) && info.fetch_named("action_name") == "me") {
         string action_string = info.fetch_named("action_string");
+        if(action_string == null) {
+          action_string = "";
+        }
         ActionMessage a = new ActionMessage.outgoing(contact, action_string);
         conversation_view.add_message(a);
         new_outgoing_action(a);
