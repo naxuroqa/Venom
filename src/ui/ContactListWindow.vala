@@ -154,6 +154,9 @@ namespace Venom {
       // Set up Window
       set_default_size(230, 600);
       try {
+        Gtk.IconTheme theme = Gtk.IconTheme.get_default();
+        theme.append_search_path(Path.build_filename("share", "pixmaps"));
+        theme.append_search_path(Path.build_filename("..", "share", "pixmaps"));
         set_default_icon(Gtk.IconTheme.get_default().load_icon("venom", 48, 0));
       } catch (Error e) {
         stderr.printf("Error while loading icon: %s\n", e.message );

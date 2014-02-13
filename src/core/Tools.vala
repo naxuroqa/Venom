@@ -29,6 +29,17 @@ namespace Venom {
         if(f.query_exists())
           return dir;
       }
+      // Check for common directories on portable versions
+      string[] portable_directories = {
+        Path.build_filename("share", "venom"),
+        Path.build_filename("..", "share", "venom")
+      };
+      for (int i = 0; i < portable_directories.length; ++i) {
+        File f = File.new_for_path(portable_directories[i]);
+        if(f.query_exists())
+          return portable_directories[i];
+      }
+      
       // Assume that our current pwd is our data dir
       return "";
     }
