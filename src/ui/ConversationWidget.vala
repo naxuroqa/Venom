@@ -95,7 +95,7 @@ namespace Venom {
         conversation_view = new ConversationView();
       }
       conversation_view.show_all();
-      scrolled_window.add(conversation_view);
+      scrolled_window.add_with_viewport(conversation_view);
 
       //TODO: move to bottom only when wanted
       conversation_view.size_allocate.connect( () => {

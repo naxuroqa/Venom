@@ -24,7 +24,7 @@ namespace Venom {
     public abstract void add_message(IMessage message);
   }
 
-  public class ConversationView : IConversationView, Gtk.Bin {
+  public class ConversationView : IConversationView, Gtk.EventBox {
     private static GLib.Regex regex_uri = null;
     private const int h_margin = 6;
     private const int v_margin = 6;

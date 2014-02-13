@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class TextConversationView : IConversationView, Gtk.Bin {
+  public class TextConversationView : IConversationView, Gtk.EventBox {
     private Gtk.TextView   text_view;
     private Gtk.TextBuffer text_buffer;
 
