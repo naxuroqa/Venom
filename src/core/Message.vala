@@ -22,6 +22,12 @@
 namespace Venom {
   public interface IMessage : GLib.Object {
     public abstract DateTime timestamp {get; protected set;}
+    public abstract string get_sender_plain();
+    public abstract string get_message_plain();
+    public virtual string get_time_plain() {
+      return timestamp.format("%R");
+    }
+
     public abstract string get_sender_markup();
     public abstract string get_message_markup();
     public virtual string get_time_markup() {
@@ -46,6 +52,16 @@ namespace Venom {
       this.message = message;
       this.timestamp = timestamp;
     }
+    public virtual string get_sender_plain() {
+      if(from == null) {
+        return "Me";
+      } else {
+        return from.name;
+      }
+    }
+    public virtual string get_message_plain() {
+      return message;
+    }
     public virtual string get_sender_markup() {
       if(from == null) {
         return "<span color='#939598'font_weight='bold'>Me</span>";
@@ -69,6 +85,12 @@ namespace Venom {
       this.to = null;
       this.message = message;
       this.timestamp = timestamp;
+    }
+    public override string get_sender_plain() {
+      return "*";
+    }
+    public override string get_message_plain() {
+      return "%s %s".printf(from != null ? from.name : "me", message);
     }
     public override string get_sender_markup() {
       return "*";
@@ -98,6 +120,16 @@ namespace Venom {
       this.message = message;
       this.timestamp = timestamp;
     }
+    public virtual string get_sender_plain() {
+      if(from == null) {
+        return "Me";
+      } else {
+        return from_name;
+      }
+    }
+    public virtual string get_message_plain() {
+      return message;
+    }
     public virtual string get_sender_markup() {
       if(from == null) {
         return "<span color='#939598'font_weight='bold'>Me</span>";
@@ -124,6 +156,12 @@ namespace Venom {
       this.message = message;
       this.timestamp = timestamp;
     }
+    public override string get_sender_plain() {
+      return "*";
+    }
+    public override string get_message_plain() {
+      return "%s %s".printf(from != null ? from_name : "me", message);
+    }
     public override string get_sender_markup() {
       return "*";
     }
@@ -138,6 +176,12 @@ namespace Venom {
     public FileTransferMessage(FileTransfer file_transfer) {
       this.file_transfer = file_transfer;
       this.timestamp = file_transfer.time_sent;
+    }
+    public string get_sender_plain() {
+       return "ft";
+    }
+    public string get_message_plain() {
+      return file_transfer.name;
     }
     public string get_sender_markup() {
       return "ft";

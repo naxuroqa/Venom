@@ -102,6 +102,7 @@ namespace Venom {
     public string default_add_contact_message {get; private set;}
 
     public bool offline_mode {get; set; default = false;}
+    public bool textview_mode {get; set; default = false;}
 
     public Gee.ArrayList<SettingsProvider> settings_providers {get; set;}
 

@@ -25,7 +25,7 @@ namespace Venom {
     private Gtk.Label label_groupchat_statusmessage;
     private Gtk.Image image_groupchat_image;
 
-    private ConversationView conversation_view;
+    private IConversationView conversation_view;
     private unowned GroupChat groupchat {get; private set;}
 
     public signal void new_outgoing_message(GroupMessage message);
@@ -76,7 +76,11 @@ namespace Venom {
 
       Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
 
-      conversation_view = new ConversationView();
+      if( ResourceFactory.instance.textview_mode ) {
+        conversation_view = new TextConversationView();
+      } else {
+        conversation_view = new ConversationView();
+      }
       conversation_view.show_all();
       scrolled_window.add(conversation_view);
 

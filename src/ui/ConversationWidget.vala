@@ -25,7 +25,7 @@ namespace Venom {
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
 
-    private ConversationView conversation_view;
+    private IConversationView conversation_view;
     public unowned Contact contact {get; private set;}
 
     public signal void new_outgoing_message(Message message);
@@ -88,7 +88,12 @@ namespace Venom {
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
-      conversation_view = new ConversationView();
+
+      if( ResourceFactory.instance.textview_mode ) {
+        conversation_view = new TextConversationView();
+      } else {
+        conversation_view = new ConversationView();
+      }
       conversation_view.show_all();
       scrolled_window.add(conversation_view);
 
