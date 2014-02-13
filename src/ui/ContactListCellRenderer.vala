@@ -91,9 +91,9 @@ namespace Venom {
       } else if(entry is GroupChat) {
         GroupChat groupchat = entry as GroupChat;
         if(groupchat.peer_count > 0) {
-          status = ResourceFactory.instance.online;
+          status = groupchat.unread_messages > 0 ? ResourceFactory.instance.online_glow : ResourceFactory.instance.online;
         } else {
-          status = ResourceFactory.instance.offline;
+          status = groupchat.unread_messages > 0 ? ResourceFactory.instance.offline_glow :ResourceFactory.instance.offline;
         }
       }
       if(status != null) {
