@@ -74,7 +74,7 @@ namespace Venom {
       return "*";
     }
     public override string get_message_markup() {
-      return "<b>%s</b> %s".printf(from != null ? Markup.escape_text(from.name) : "me", message);
+      return "<b>%s</b> %s".printf(from != null ? Markup.escape_text(from.name) : "me", Markup.escape_text(message));
     }
   }
   public class GroupMessage : IMessage, GLib.Object {
@@ -128,7 +128,7 @@ namespace Venom {
       return "*";
     }
     public override string get_message_markup() {
-      return "<b>%s</b> %s".printf(from != null ? Markup.escape_text(from_name) : "me", message);
+      return "<b>%s</b> %s".printf(from != null ? Markup.escape_text(from_name) : "me", Markup.escape_text(message));
     }
   }
   public class FileTransferMessage : IMessage, GLib.Object {
