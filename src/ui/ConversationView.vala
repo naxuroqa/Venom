@@ -21,6 +21,7 @@
 
 namespace Venom {
   public class ConversationView : Gtk.EventBox {
+    private static GLib.Regex regex_uri = null;
     private const int h_margin = 6;
     private const int v_margin = 6;
     private Gtk.Grid grid;
@@ -32,12 +33,14 @@ namespace Venom {
       grid.set_column_spacing(h_margin);
       this.add(grid);
     }
+
     private string markup_uris(string text) {
       string ret;
-      //TODO use one static instance to save some cpu time
       try {
-        GLib.Regex uri = new GLib.Regex("(?<u>[a-z]\\S*://\\S*)");
-        ret = uri.replace(text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
+        if(regex_uri == null) {
+          regex_uri = new GLib.Regex("(?<u>[a-z]\\S*://\\S*)");
+        }
+        ret = regex_uri.replace(text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
 		  } catch (GLib.RegexError e) {
 			  stderr.printf("Error when doing uri markup: %s", e.message);
 			  return text;
