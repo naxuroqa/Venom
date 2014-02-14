@@ -353,9 +353,9 @@ namespace Venom {
       //ComboboxStatus signals
       combobox_status.changed.connect(combobox_status_changed);
       
-      //FIXME possibly bind this to click on contact list
-      this.set_focus.connect((e) => {
+      this.focus_in_event.connect((e)  => {
         this.set_urgency_hint(false);
+        return false;
       });
     }
 
@@ -553,6 +553,7 @@ namespace Venom {
         c.unread_messages++;
         contact_list_tree_view.update_entry(c);
       }
+      this.set_urgency();
     }
     private void on_namechange(Contact c, string? old_name) {
       stdout.printf("%s changed his name to %s\n", old_name, c.name);
@@ -650,6 +651,7 @@ namespace Venom {
         g.unread_messages++;
         contact_list_tree_view.update_entry(g);
       }
+      this.set_urgency();
     }
 
     private void on_group_action(GroupChat g, int friendgroupnumber, string message) {
@@ -663,6 +665,7 @@ namespace Venom {
         g.unread_messages++;
         contact_list_tree_view.update_entry(g);
       }
+      this.set_urgency();
     }
 
     private void on_group_peer_changed(GroupChat g, int peernumber, Tox.ChatChange change) {
