@@ -22,6 +22,12 @@
 namespace Venom {
   public interface IMessage : GLib.Object {
     public abstract DateTime timestamp {get; protected set;}
+    public abstract string get_sender_plain();
+    public abstract string get_message_plain();
+    public virtual string get_time_plain() {
+      return timestamp.format("%R");
+    }
+
     public abstract string get_sender_markup();
     public abstract string get_message_markup();
     public virtual string get_time_markup() {
@@ -46,15 +52,25 @@ namespace Venom {
       this.message = message;
       this.timestamp = timestamp;
     }
+    public virtual string get_sender_plain() {
+      if(from == null) {
+        return "Me";
+      } else {
+        return from.name;
+      }
+    }
+    public virtual string get_message_plain() {
+      return message;
+    }
     public virtual string get_sender_markup() {
       if(from == null) {
         return "<span color='#939598'font_weight='bold'>Me</span>";
       } else {
-        return "<b>%s</b>".printf(from.name);
+        return "<b>%s</b>".printf(Markup.escape_text(from.name));
       }
     }
     public virtual string get_message_markup() {
-      return message;
+      return Markup.escape_text(message);
     }
   }
   public class ActionMessage : Message {
@@ -70,11 +86,17 @@ namespace Venom {
       this.message = message;
       this.timestamp = timestamp;
     }
+    public override string get_sender_plain() {
+      return "*";
+    }
+    public override string get_message_plain() {
+      return "%s %s".printf(from != null ? from.name : "me", message);
+    }
     public override string get_sender_markup() {
       return "*";
     }
     public override string get_message_markup() {
-      return "<b>%s</b> %s".printf(from != null ? from.name : "me", message);
+      return "<b>%s</b> %s".printf(from != null ? Markup.escape_text(from.name) : "me", Markup.escape_text(message));
     }
   }
   public class GroupMessage : IMessage, GLib.Object {
@@ -98,15 +120,25 @@ namespace Venom {
       this.message = message;
       this.timestamp = timestamp;
     }
+    public virtual string get_sender_plain() {
+      if(from == null) {
+        return "Me";
+      } else {
+        return from_name;
+      }
+    }
+    public virtual string get_message_plain() {
+      return message;
+    }
     public virtual string get_sender_markup() {
       if(from == null) {
         return "<span color='#939598'font_weight='bold'>Me</span>";
       } else {
-        return "<b>%s</b>".printf(from_name);
+        return "<b>%s</b>".printf(Markup.escape_text(from_name));
       }
     }
     public virtual string get_message_markup() {
-      return message;
+      return Markup.escape_text(message);
     }
   }
   public class GroupActionMessage : GroupMessage {
@@ -124,11 +156,17 @@ namespace Venom {
       this.message = message;
       this.timestamp = timestamp;
     }
+    public override string get_sender_plain() {
+      return "*";
+    }
+    public override string get_message_plain() {
+      return "%s %s".printf(from != null ? from_name : "me", message);
+    }
     public override string get_sender_markup() {
       return "*";
     }
     public override string get_message_markup() {
-      return "<b>%s</b> %s".printf(from != null ? from_name : "me", message);
+      return "<b>%s</b> %s".printf(from != null ? Markup.escape_text(from_name) : "me", Markup.escape_text(message));
     }
   }
   public class FileTransferMessage : IMessage, GLib.Object {
@@ -139,11 +177,17 @@ namespace Venom {
       this.file_transfer = file_transfer;
       this.timestamp = file_transfer.time_sent;
     }
+    public string get_sender_plain() {
+       return "ft";
+    }
+    public string get_message_plain() {
+      return file_transfer.name;
+    }
     public string get_sender_markup() {
       return "ft";
     }
     public string get_message_markup() {
-      return file_transfer.name;
+      return Markup.escape_text(file_transfer.name);
     }
   }
 }

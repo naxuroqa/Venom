@@ -103,7 +103,7 @@ namespace Venom {
     //history
     public void load_history(GLib.List<Message> messages) {
       messages.foreach((message) => {
-        conversation_tree_view.add_message(message);
+        conversation_view.add_message(message);
         });
     }*/
 
@@ -118,6 +118,7 @@ namespace Venom {
     public void on_incoming_message(GroupMessage message) {
       if(message.from != groupchat)
         return;
+
       display_message(message);
     }
 
@@ -126,8 +127,11 @@ namespace Venom {
       if(s == "")
         return;
       GLib.MatchInfo info = null;
-      if(Tools.action_regex.match(s, 0, out info)) {
+      if(Tools.action_regex.match(s, 0, out info) && info.fetch_named("action_name") == "me") {
         string action_string = info.fetch_named("action_string");
+        if(action_string == null) {
+          action_string = "";
+        }
         GroupActionMessage a = new GroupActionMessage.outgoing(groupchat, action_string);
         new_outgoing_action(a);
       } else {

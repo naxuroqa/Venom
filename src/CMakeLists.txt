@@ -86,6 +86,7 @@ SET( VENOM_SRC
   core/VenomSettings.vala
   ui/AddContactDialog.vala
   ui/AboutDialog.vala
+  ui/ConversationView.vala
   ui/ConversationWidget.vala
   ui/ChatMessage.vala
   ui/FileTransferChatEntry.vala
@@ -95,6 +96,7 @@ SET( VENOM_SRC
   ui/ContactListCellRenderer.vala
   ui/GroupConversationWidget.vala
   ui/PreferencesWindow.vala
+  ui/TextConversationView.vala
   ui/UserInfoWindow.vala
   ui/UITools.vala
   Main.vala

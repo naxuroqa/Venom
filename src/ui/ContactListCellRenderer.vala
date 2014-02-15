@@ -91,9 +91,9 @@ namespace Venom {
       } else if(entry is GroupChat) {
         GroupChat groupchat = entry as GroupChat;
         if(groupchat.peer_count > 0) {
-          status = ResourceFactory.instance.online;
+          status = groupchat.unread_messages > 0 ? ResourceFactory.instance.online_glow : ResourceFactory.instance.online;
         } else {
-          status = ResourceFactory.instance.offline;
+          status = groupchat.unread_messages > 0 ? ResourceFactory.instance.offline_glow :ResourceFactory.instance.offline;
         }
       }
       if(status != null) {
@@ -177,18 +177,16 @@ namespace Venom {
       return ink_rect;
     }
   public void render_unread_messages(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
-      if(!(entry is Contact)) {
+      int unread_messages = 0;
+      if(entry is Contact) {
+        unread_messages = (entry as Contact).unread_messages;
+      } else if(entry is GroupChat) {
+        unread_messages = (entry as GroupChat).unread_messages;
+      }
+      if(unread_messages == 0) {
         return;
       }
-      string str = "";
-      Contact contact = entry as Contact;
-      if(contact.unread_messages == 0) {
-        return;
-      } else if(contact.unread_messages < 10) {
-          str = contact.unread_messages.to_string();
-      } else {
-          str = "+";
-      }
+      string str = unread_messages < 10 ? unread_messages.to_string() : "+";
 
       Pango.Rectangle? ink_rect, logical_rect;
       Gdk.Rectangle image_rect_border = {cell_area.x + cell_area.width - 24 , cell_area.y + cell_area.height / 2, 13, 13};

@@ -29,6 +29,17 @@ namespace Venom {
         if(f.query_exists())
           return dir;
       }
+      // Check for common directories on portable versions
+      string[] portable_directories = {
+        Path.build_filename("share", "venom"),
+        Path.build_filename("..", "share", "venom")
+      };
+      for (int i = 0; i < portable_directories.length; ++i) {
+        File f = File.new_for_path(portable_directories[i]);
+        if(f.query_exists())
+          return portable_directories[i];
+      }
+      
       // Assume that our current pwd is our data dir
       return "";
     }
@@ -129,7 +140,7 @@ namespace Venom {
       get {
         if(_action_regex == null) {
           try {
-            _action_regex = new GLib.Regex("^/(?P<action_name>\\S+) (?P<action_string>.+)$");
+            _action_regex = new GLib.Regex("^/(?P<action_name>\\S+)(\\s+(?P<action_string>.+))?$");
           } catch (GLib.RegexError e) {
             stderr.printf("Can't create action regex: %s.\n", e.message);
           }

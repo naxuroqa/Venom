@@ -44,7 +44,7 @@ namespace Venom {
   // Wrapper class for accessing tox functions threadsafe
   public class ToxSession : Object {
     private Tox.Tox handle;
-    private LocalStorage local_storage;
+    private ILocalStorage local_storage;
     private DhtServer[] dht_servers = {};
     private Gee.HashMap<int, Contact> _contacts = new Gee.HashMap<int, Contact>();
     private Gee.HashMap<int, GroupChat> _groups = new Gee.HashMap<int, GroupChat>();
@@ -88,8 +88,14 @@ namespace Venom {
 
       // create handle
       handle = new Tox.Tox( ipv6 ? 1 : 0);
+
       //start local storage
-      local_storage = new LocalStorage(this, VenomSettings.instance.enable_logging);
+      if(VenomSettings.instance.enable_logging) {
+        local_storage = new LocalStorage();
+        local_storage.connect_to(this);
+      } else {
+        local_storage = new DummyStorage();
+      }
 
       init_dht_servers();
       init_callbacks();
@@ -261,7 +267,7 @@ namespace Venom {
     private void on_file_sendrequest_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint64 filesize, uint8[] filename)
       requires(filename != null)
     {
-      string filename_str = ((string)filename).dup();
+      string filename_str = File.new_for_path((string)filename).get_basename();
       Idle.add(() => { on_file_sendrequest(friendnumber, filenumber, filesize, filename_str); return false; });
     }
 
@@ -582,14 +588,15 @@ namespace Venom {
     // Background thread main function
     private int run() {
       stdout.printf("Background thread started.\n");
-      lock(handle) {
-        if(!bootstrapped) {
-          stdout.printf("Connecting to DHT servers:\n");
-          for(int i = 0; i < dht_servers.length; ++i) {
-            // skip ipv6 servers if we don't support them
-            if(dht_servers[i].is_ipv6 && !ipv6)
-              continue;
-            stdout.printf("  %s\n", dht_servers[i].to_string());
+
+      if(!bootstrapped) {
+        stdout.printf("Connecting to DHT servers:\n");
+        for(int i = 0; i < dht_servers.length; ++i) {
+          // skip ipv6 servers if we don't support them
+          if(dht_servers[i].is_ipv6 && !ipv6)
+            continue;
+          stdout.printf("  %s\n", dht_servers[i].to_string());
+          lock(handle) {
             handle.bootstrap_from_address(
               dht_servers[i].host,
               dht_servers[i].is_ipv6 ? 1 : 0,
@@ -597,8 +604,8 @@ namespace Venom {
               dht_servers[i].pub_key
             );
           }
-          bootstrapped = true;
         }
+        bootstrapped = true;
       }
 
       bool new_status = false;

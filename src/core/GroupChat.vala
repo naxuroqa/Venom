@@ -22,11 +22,12 @@
 namespace Venom {
   public class GroupChat : GLib.Object{
 
-    public uint8[] public_key { get; set; default = null; }
-    public int group_id       { get; set; default = -1; }
-    public string local_name  { get; set; default = ""; }
-    public Gdk.Pixbuf? image  { get; set; default = null; }
-    public int peer_count     { get; set; default = 0;}
+    public uint8[] public_key  { get; set; default = null; }
+    public int group_id        { get; set; default = -1; }
+    public string local_name   { get; set; default = ""; }
+    public Gdk.Pixbuf? image   { get; set; default = null; }
+    public int peer_count      { get; set; default = 0;}
+    public int unread_messages { get; set; default = 0; }
 
     public GroupChat(uint8[] public_key, int group_id = -1) {
       this.public_key = public_key;

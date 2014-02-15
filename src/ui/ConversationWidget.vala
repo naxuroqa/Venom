@@ -28,6 +28,7 @@ namespace Venom {
     private Gtk.Box conversation_list;
     private Contact last_sender;
     private string self_name;
+
     public unowned Contact contact {get; private set;}
 
     public signal void new_outgoing_message(Message message);
@@ -176,8 +177,11 @@ namespace Venom {
         return;
 
       GLib.MatchInfo info = null;
-      if(Tools.action_regex.match(s, 0, out info)) {
+      if(Tools.action_regex.match(s, 0, out info) && info.fetch_named("action_name") == "me") {
         string action_string = info.fetch_named("action_string");
+        if(action_string == null) {
+          action_string = "";
+        }
         ActionMessage a = new ActionMessage.outgoing(contact, action_string);
         display_message(a);
         new_outgoing_action(a);

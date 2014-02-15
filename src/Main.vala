@@ -22,11 +22,15 @@
 namespace Venom {
 
 public class Main : GLib.Object {
-    private static bool version = false;
     private static string? datafile = null;
+    private static bool offline = false;
+    private static bool textview = false;
+    private static bool version = false;
     private const GLib.OptionEntry[] options = {
-      { "datafile", 'n', 0, GLib.OptionArg.FILENAME, ref datafile, "Tox data file", "<file>" },
-		  { "version", 'V', 0, OptionArg.NONE, ref version, "Display version number", null },
+      { "datafile", 'n', 0, GLib.OptionArg.FILENAME, ref datafile, "Set the location of the tox data file", "<file>" },
+      { "offline",  0,   0, GLib.OptionArg.NONE,     ref offline,  "Start in offline mode", null },
+		  { "textview", 0,   0, GLib.OptionArg.NONE,     ref textview, "Use textview to display messages", null },
+		  { "version",  'V', 0, GLib.OptionArg.NONE,     ref version,  "Display version number", null },
 		  { null }
 	  };
 
@@ -50,6 +54,16 @@ public class Main : GLib.Object {
 	    if(datafile != null) {
 	      stdout.printf("Using data file \"%s\"\n", datafile);
         ResourceFactory.instance.data_filename = datafile;
+	    }
+
+	    if(textview) {
+	      stdout.printf("Using Gtk.TextView to display messages\n");
+	      ResourceFactory.instance.textview_mode = true;
+	    }
+
+	    if(offline) {
+	      stdout.printf("Starting in offline mode\n");
+	      ResourceFactory.instance.offline_mode = true;
 	    }
 
       return new Client().run(args);
