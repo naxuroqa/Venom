@@ -650,13 +650,16 @@ namespace Venom {
             Thread.usleep(2500);
             continue;
           }
-
           if(remaining_bytes_to_send < chunk_size) {
             chunk_size = (int) remaining_bytes_to_send;
             bytes = new uint8[chunk_size];
           }
-          if(read_more)
-            file_stream.read(bytes);
+          if(read_more) {
+            size_t res = file_stream.read(bytes);
+            if(res != chunk_size) {
+              stderr.printf("Read incorrect number of bytes from file\n");
+            }
+          }
           int res = session.send_file_data(friendnumber,filenumber,bytes);
           if(res != -1) {
             remaining_bytes_to_send -= chunk_size;
@@ -674,7 +677,7 @@ namespace Venom {
       } catch(Error e) {
         stderr.printf("Unknown error while trying to read file: %s\n",e.message); 
       } finally {
-        try{
+        try {
           if(file_stream != null)
             file_stream.close();
         } catch(IOError e) {

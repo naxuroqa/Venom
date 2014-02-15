@@ -371,6 +371,12 @@ namespace Venom {
       return ret == 0;
     }
 
+    public int invite_friend(int group_id,int friendnumber) {
+      lock(handle){
+        return handle.invite_friend(friendnumber,group_id);
+      }
+    }
+
     public string group_peername(GroupChat g, int peernumber)
       requires(g != null)
     {

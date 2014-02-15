@@ -260,6 +260,7 @@
   border-radius: 4px;
   border: none;
 }
+
 /* chat list */
 @define-color cl-foreground #231f20;
 @define-color cl-background #f1f2f2;
@@ -290,28 +291,32 @@
   border-width: 0px;
 }
 
-.chat_list .first {
-  border-top-style: dotted;
-  border-top-width: 1px;
-  border-top-color: #666;
+.message_entry .own_name {
+  color: #939598;
 }
 
-.chat_list .filetransfer_entry GtkLabel.error {
+/*.filetransfer_entry *{
+  -GtkButton-default-border: 0;
+}*/
+
+.filetransfer_entry GtkLabel.error {
   color: #ff0000;
   background: #5b5a5c;
 }
-.filetransfer_entry GtkProgressBar {
-  /*color: #f00;*/
+
+.filetransfer_entry GtkProgressBar.trough {
   background: #222;
+  border-color: #111;
 }
 
-.message_entry .own_name {
-  color: #939598  
-}
-
-.filetransfer_entry GtkButton {
+/*.filetransfer_entry GtkButton {
+  background-image: none;
   background: #5b5a5c;
   border-color: #222;
+}*/
+
+.filetransfer_entry GtkButton GtkLabel {
+  color: #222;
 }
 
 

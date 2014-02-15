@@ -25,7 +25,7 @@ namespace Venom {
     private Gtk.Label label_groupchat_statusmessage;
     private Gtk.Image image_groupchat_image;
 
-    private GroupChat last_sender;
+    private string last_sender_name;
     private Gtk.Box conversation_list;
 
     private unowned GroupChat groupchat {get; private set;}
@@ -99,7 +99,7 @@ namespace Venom {
 
       delete_event.connect(hide_on_delete);
     }
-/*
+    /*
     //history
     public void load_history(GLib.List<Message> messages) {
       messages.foreach((message) => {
@@ -108,18 +108,10 @@ namespace Venom {
     }*/
 
     private void display_message(GroupMessage message) {
-      bool following = false;
-      if(conversation_list.get_children().length() > 0) {
-        if( (message.from == null) && ( last_sender == null )) {
-          following = true;
-        } else if ( (message.from != null ) && ( last_sender != null ) ) {
-          following = message.from.group_id == last_sender.group_id;
-        }
-      }
-
+      bool following = message.from_name == last_sender_name;
       ChatMessage cm = new ChatMessage.group(message,following);
       conversation_list.pack_start(cm,false,false,0);
-      last_sender = message.from;
+      last_sender_name = message.from_name;
     }
 
 

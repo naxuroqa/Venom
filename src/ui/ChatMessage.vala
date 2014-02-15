@@ -124,7 +124,7 @@ namespace Venom {
         if(message.from.public_key == null) {
           name_label.get_style_context().add_class("own_name");
         }
-        name_label.set_text( Tools.shorten_name( message.from.local_name ) );
+        name_label.set_text( Tools.shorten_name( message.from_name ) );
       } else {
         name_label.set_text("");
       }
