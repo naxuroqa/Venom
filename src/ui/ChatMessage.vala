@@ -25,6 +25,7 @@ namespace Venom {
     private Gtk.Label name_label;
     private Gtk.Label message_label;
     private Gtk.Label date_label;
+    private Gtk.Frame frame;
 
     private void init_widgets() {
       Gtk.Builder builder = new Gtk.Builder();
@@ -36,7 +37,7 @@ namespace Venom {
       this.get_style_context().add_class("message_entry");
 
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
-      Gtk.Frame frame = new Gtk.Frame(null);
+      frame = new Gtk.Frame(null);
       frame.get_style_context().add_class("message_frame");
       frame.set_visible(true);
       frame.add(box);
@@ -52,7 +53,8 @@ namespace Venom {
 
     public ChatMessage.private(Message message, bool following = false){
       this.message = message;
-      
+      init_widgets();
+
       if(!following) {
         frame.get_style_context().add_class("first");
         if(message.from.public_key == null) {
@@ -68,6 +70,8 @@ namespace Venom {
     
     public ChatMessage.own(Message message, string own_name, bool following = false){
       this.message = message;
+
+      init_widgets();
       if(!following) {
         frame.get_style_context().add_class("first");
         if(message.from == null) {
@@ -78,17 +82,14 @@ namespace Venom {
         name_label.set_text("");
       }
 
-      message_label = builder.get_object("message_label") as Gtk.Label;
       message_label.set_text( message.message );
-      message_label.set_line_wrap(true);
-      date_label = builder.get_object("date_label") as Gtk.Label;      
       date_label.set_text( message.timestamp.format("%R") );
-      this.set_visible(true);
     }
 
     public ChatMessage.group(GroupMessage message, bool following = false){
       this.groupmessage = message;
     
+      init_widgets();
       if(!following) {
         frame.get_style_context().add_class("first");
         if(message.from.public_key == null) {
@@ -99,12 +100,8 @@ namespace Venom {
         name_label.set_text("");
       }
     
-      message_label = builder.get_object("message_label") as Gtk.Label;
       message_label.set_text( message.message );
-      message_label.set_line_wrap(true);
-      date_label = builder.get_object("date_label") as Gtk.Label;      
       date_label.set_text( message.timestamp.format("%R") );
-      this.set_visible(true);
     }
   }
 }

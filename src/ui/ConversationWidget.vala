@@ -111,7 +111,6 @@ namespace Venom {
     }
 
     private void display_message(Message message) {
-      stderr.printf("from: %s to: %s\n",message.from.name,message.to.name);
       bool following = false;
       if(conversation_list.get_children().length() > 0) {
         if( (message.from == null) && ( last_sender == null )) {
