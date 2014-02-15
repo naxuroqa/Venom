@@ -678,7 +678,7 @@ namespace Venom {
     private void on_file_sendrequest(int friendnumber, uint8 filenumber, uint64 filesize,string filename) {
       stdout.printf ("received file send request friend: %i filenumber: %i filename: %s \n",friendnumber,filenumber,filename );
       Contact contact = session.get_contact_list()[friendnumber];
-      FileTransfer ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null); 
+      FileTransfer ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null);
       Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers();
       transfers[filenumber] = ft;
       ConversationWidget w = conversation_widgets[friendnumber];
@@ -775,7 +775,6 @@ namespace Venom {
     }
 
     private void on_file_data(int friendnumber,uint8 filenumber,uint8[] data) {
-      //stderr.printf("on_file_data\n");
       FileTransfer ft = session.get_filetransfers()[filenumber];
       if(ft == null) {
         session.reject_file(friendnumber,filenumber);

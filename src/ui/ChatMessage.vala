@@ -26,8 +26,7 @@ namespace Venom {
     private Gtk.Label message_label;
     private Gtk.Label date_label;
 
-    public ChatMessage.private(Message message, bool following = false){
-      this.message = message;
+    private void init_widgets() {
       Gtk.Builder builder = new Gtk.Builder();
       try {
         builder.add_from_resource("/org/gtk/venom/chat_message.ui");
@@ -44,7 +43,16 @@ namespace Venom {
       this.add(frame);
       name_label = builder.get_object("name_label") as Gtk.Label;
       name_label.get_style_context().add_class("name_label");
+      message_label = builder.get_object("message_label") as Gtk.Label;
+      message_label.set_line_wrap(true);
+      date_label = builder.get_object("date_label") as Gtk.Label;      
+      this.set_visible(true);
 
+    }
+
+    public ChatMessage.private(Message message, bool following = false){
+      this.message = message;
+      
       if(!following) {
         frame.get_style_context().add_class("first");
         if(message.from.public_key == null) {
@@ -54,34 +62,12 @@ namespace Venom {
       } else {
         name_label.set_text("");
       }
-
-      message_label = builder.get_object("message_label") as Gtk.Label;
       message_label.set_text( message.message );
-      message_label.set_line_wrap(true);
-      date_label = builder.get_object("date_label") as Gtk.Label;      
       date_label.set_text( message.timestamp.format("%R") );
-      this.set_visible(true);
     }
     
     public ChatMessage.own(Message message, string own_name, bool following = false){
       this.message = message;
-      Gtk.Builder builder = new Gtk.Builder();
-      try {
-        builder.add_from_resource("/org/gtk/venom/chat_message.ui");
-      } catch (GLib.Error e) {
-        stderr.printf("Loading message widget failed!\n");
-      }
-      this.get_style_context().add_class("message_entry");
-
-      Gtk.Box box = builder.get_object("box") as Gtk.Box;
-      Gtk.Frame frame = new Gtk.Frame(null);
-      frame.get_style_context().add_class("message_frame");
-      frame.set_visible(true);
-      frame.add(box);
-      this.add(frame);
-      name_label = builder.get_object("name_label") as Gtk.Label;
-      name_label.get_style_context().add_class("name_label");
-
       if(!following) {
         frame.get_style_context().add_class("first");
         if(message.from == null) {
@@ -102,22 +88,6 @@ namespace Venom {
 
     public ChatMessage.group(GroupMessage message, bool following = false){
       this.groupmessage = message;
-      Gtk.Builder builder = new Gtk.Builder();
-      try {
-        builder.add_from_resource("/org/gtk/venom/chat_message.ui");
-      } catch (GLib.Error e) {
-        stderr.printf("Loading message widget failed!\n");
-      }
-      this.get_style_context().add_class("message_entry");
-
-      Gtk.Box box = builder.get_object("box") as Gtk.Box;
-      Gtk.Frame frame = new Gtk.Frame(null);
-      frame.get_style_context().add_class("message_frame");
-      frame.set_visible(true);
-      frame.add(box);
-      this.add(frame);
-      name_label = builder.get_object("name_label") as Gtk.Label;
-      name_label.get_style_context().add_class("name_label");
     
       if(!following) {
         frame.get_style_context().add_class("first");
