@@ -26,6 +26,8 @@ namespace Venom {
     private Gtk.ProgressBar progress_bar;
     private Gtk.Button save_as_button;
     private Gtk.Button cancel_button;
+    //container for save_as and cancel_buttons
+    private Gtk.Box button_box;
 
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
@@ -44,6 +46,8 @@ namespace Venom {
       this.add(frame);
       frame.get_style_context().add_class("frame");
       
+      button_box = builder.get_object("box3") as Gtk.Box;
+
       name_label = builder.get_object("name_label") as Gtk.Label;
       size_or_status_label = builder.get_object("size_label") as Gtk.Label;
       progress_bar = builder.get_object("progress_bar") as Gtk.ProgressBar;
@@ -73,6 +77,7 @@ namespace Venom {
     }
 
     private void disable_buttons(){
+      button_box.visible = false;
       save_as_button.visible = false;
       save_as_button.sensitive = false;
       cancel_button.visible = false;
