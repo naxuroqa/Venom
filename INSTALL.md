@@ -24,17 +24,18 @@ Additionally to the tox build dependencies, you will need:
 | libgee-0.8-dev   | >=0.8     |
 | libjson-glib-dev | >=0.14    |
 | libsqlite3-dev   | >=3.7     |
+| libpcre3-dev     |           |
 
 
 Ubuntu >= 12.10 (Quantal Quetzal) / Linux Mint / Debian:
 
-    apt-get install valac cmake libgtk-3-dev libgee-0.8-dev libjson-glib-dev libsqlite3-dev
+    apt-get install valac cmake libgtk-3-dev libgee-0.8-dev libjson-glib-dev libsqlite3-dev libpcre3-dev
 
 Ubuntu 12.04 (Precise Pangolin): (needs a ppa to get a newer version of valac and libgee-0.8)
 
     apt-add-repository ppa:vala-team/ppa
     apt-get update
-    apt-get install valac cmake libgtk-3-dev libgee-0.8-dev libjson-glib-dev libsqlite3-dev
+    apt-get install valac cmake libgtk-3-dev libgee-0.8-dev libjson-glib-dev libsqlite3-dev libpcre3-dev
 
 Fedora:
 
