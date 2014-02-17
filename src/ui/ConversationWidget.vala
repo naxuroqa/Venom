@@ -25,7 +25,7 @@ namespace Venom {
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
 
-    private Gtk.Box conversation_list;
+    private Gtk.ListBox conversation_list;
     private Contact last_sender;
     private string self_name;
 
@@ -92,9 +92,10 @@ namespace Venom {
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
 
-      conversation_list = new Gtk.Box(Gtk.Orientation.VERTICAL,0);
+      conversation_list = new Gtk.ListBox();
       conversation_list.set_size_request(300,400);
       conversation_list.get_style_context().add_class("chat_list");
+      conversation_list.selection_mode = Gtk.SelectionMode.MULTIPLE;
       Gtk.Viewport viewport = new Gtk.Viewport(null,null);
       viewport.add(conversation_list);
       viewport.set_size_request(300,400);
@@ -126,10 +127,7 @@ namespace Venom {
         cm = new ChatMessage.private(message,following);        
       }
 
-
-
-
-      conversation_list.pack_start(cm,false,false,0);
+      conversation_list.add(cm);
       last_sender = message.from;
     }
 
@@ -137,7 +135,7 @@ namespace Venom {
       FileTransferChatEntry entry = new FileTransferChatEntry(ft);
       entry.filetransfer_accepted.connect((ft) => { filetransfer_accepted(ft); });
       entry.filetransfer_rejected.connect((ft) => { filetransfer_rejected(ft); });
-      conversation_list.pack_start(entry,false,false,0);
+      conversation_list.add(entry);
       entry.set_visible(true);
     }
 
