@@ -491,7 +491,7 @@ namespace Venom {
     }
 
     public void set_urgency () {
-      if(VenomSettings.instance.enable_urgency_notification) {
+      if(!has_focus && VenomSettings.instance.enable_urgency_notification) {
         this.set_urgency_hint(true);
       }
     }
