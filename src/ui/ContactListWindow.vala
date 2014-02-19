@@ -54,6 +54,7 @@ namespace Venom {
 
     public signal void incoming_message(Message m);
     public signal void incoming_action(ActionMessage m);
+    public signal void incoming_name_change(NameChangeMessage m);
     public signal void incoming_group_message(GroupMessage m);
     public signal void incoming_group_action(GroupActionMessage m);
 
@@ -556,8 +557,11 @@ namespace Venom {
       this.set_urgency();
     }
     private void on_namechange(Contact c, string? old_name) {
-      stdout.printf("%s changed his name to %s\n", old_name, c.name);
-      contact_changed(c);
+      if (old_name != c.name) {
+        stdout.printf("%s changed his name to %s\n", old_name, c.name);
+        contact_changed(c);
+        incoming_name_change(new NameChangeMessage.incoming(c, old_name));
+      }
     }
     private void on_statusmessage(Contact c, string? old_status) {
       stdout.printf("%s changed his status to %s\n", c.name, c.status_message);
@@ -802,6 +806,7 @@ namespace Venom {
         w.load_history(session.load_history_for_contact(c));
         incoming_message.connect(w.on_incoming_message);
         incoming_action.connect(w.on_incoming_message);
+        incoming_name_change.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
         w.new_outgoing_action.connect(on_outgoing_action);
         w.new_outgoing_file.connect(on_outgoing_file);
