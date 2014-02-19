@@ -25,6 +25,7 @@ namespace Venom {
     private Gtk.TextBuffer text_buffer;
     private Gtk.TextTag bold_tag;
     private Gtk.TextTag grey_tag;
+    private Gtk.TextTag implication_tag;
 
     public TextConversationView() {
       text_view = new Gtk.TextView();
@@ -36,6 +37,7 @@ namespace Venom {
       
       bold_tag = text_buffer.create_tag(null, "weight", 600);
       grey_tag = text_buffer.create_tag(null, "foreground", "grey");
+      implication_tag = text_buffer.create_tag(null, "foreground", "green");
     }
 
     public void add_message(IMessage message) {
@@ -48,7 +50,7 @@ namespace Venom {
       text_buffer.insert_with_tags(text_end, text, text.length, grey_tag);
 
       text_buffer.get_end_iter(out text_end);
-      text = "<%s> ".printf(
+      text = "%s: ".printf(
         message.get_sender_plain()
       );
       text_buffer.insert_with_tags(text_end, text, text.length, bold_tag);
@@ -57,7 +59,11 @@ namespace Venom {
       text = "%s ".printf(
         message.get_message_plain()
       );
-      text_buffer.insert(ref text_end, text, text.length);
+      if (text[0] == '>') {
+        text_buffer.insert_with_tags(text_end, text, text.length, implication_tag);
+      } else {
+        text_buffer.insert(ref text_end, text, text.length);
+      }
 
       text_buffer.get_end_iter(out text_end);
       text_buffer.insert(ref text_end, "\n", 1);
