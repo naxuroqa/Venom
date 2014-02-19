@@ -660,4 +660,257 @@ namespace Tox {
   }
 }
 
+[CCode (cheader_filename = "tox/toxav.h", cprefix = "")]
+namespace ToxAV {
 
+  /* Number of audio channels. */
+  [CCode (cprefix = "")]
+  public const int AUDIO_CHANNELS;
+
+  /* The amount of samples in one audio frame */
+  [CCode (cprefix = "")]
+  public const int AUDIO_FRAME_SIZE;
+
+  /**
+   * @brief Callbacks ids that handle the call states.
+   */
+  [CCode (cname = "ToxAvCallbackID", cprefix = "", has_type_id = false)]
+  public enum CallbackID {
+    /* Requests */
+    OnInvite,
+    OnStart,
+    OnCancel,
+    OnReject,
+    OnEnd,
+
+    /* Responses */
+    OnRinging,
+    OnStarting,
+    OnEnding,
+
+    /* Protocol */
+    OnError,
+    OnRequestTimeout
+  }
+
+  /**
+   * @brief Call type identifier.
+   */
+  [CCode (cname = "ToxAvCallType", cprefix = "Type", has_type_id = false)]
+  public enum CallType {
+    Audio,
+    Video
+  }
+
+  /**
+   * @brief Error indicators.
+   *
+   */
+  [CCode (cname = "ToxAvError", cprefix = "Error", has_type_id = false)]
+  public enum AV_Error {
+    None,
+    Internal,
+    AlreadyInCall,
+    NoCall,
+    InvalidState,
+    NoRtpSession,
+    AudioPacketLost,
+    StartingAudioRtp,
+    StartingVideoRtp,
+    NoTransmission,
+    TerminatingAudioRtp,
+    TerminatingVideoRtp
+  }
+
+  [CCode (cname = "ToxAv", free_function = "toxav_kill", cprefix = "toxav_", has_type_id = false)]
+  [Compact]
+  public class ToxAV {
+    /**
+     * @brief Start new A/V session. There can only be one session at the time. If you register more
+     *        it will result in undefined behaviour.
+     *
+     * @param messenger The messenger handle.
+     * @param useragent The agent handling A/V session (i.e. phone).
+     * @param ua_name Useragent name.
+     * @param video_width Width of video frame.
+     * @param video_height Height of video frame.
+     * @return ToxAv*
+     * @retval NULL On error.
+     */
+    //FIXME what do about userdata/useragent
+    //public ToxAV(Tox.Tox messenger, void *useragent, const char *ua_name, uint16_t video_width, uint16_t video_height);
+
+    //only here for completeness
+    /**
+     * @brief Remove A/V session.
+     *
+     * @param av Handler.
+     * @return void
+     */
+    //void toxav_kill(ToxAv *av);
+    
+    //[CCode(has_target = false)]
+    //public delegate void ToxAVCallback( void *arg );
+    /**
+     * @brief Register callback for call state.
+     *
+     * @param callback The callback
+     * @param id One of the ToxAvCallbackID values
+     * @return void
+     */
+    //public void register_callstate_callback (ToxAVCallback callback, ToxAvCallbackID id);
+    
+    /**
+     * @brief Call user. Use its friend_id.
+     *
+     * @param av Handler.
+     * @param user The user.
+     * @param call_type Call type.
+     * @param ringing_seconds Ringing timeout.
+     * @return int
+     * @retval 0 Success.
+     * @retval ToxAvError On error.
+     */
+    public AV_Error call(int user, CallType call_type, int ringing_seconds);
+
+    /**
+     * @brief Hangup active call.
+     *
+     * @param av Handler.
+     * @return int
+     * @retval 0 Success.
+     * @retval ToxAvError On error.
+     */
+    public AV_Error hangup();
+
+    /**
+     * @brief Answer incomming call.
+     *
+     * @param av Handler.
+     * @param call_type Answer with...
+     * @return int
+     * @retval 0 Success.
+     * @retval ToxAvError On error.
+     */
+    public AV_Error answer(CallType call_type );
+
+    /**
+     * @brief Reject incomming call.
+     *
+     * @param av Handler.
+     * @param reason Optional reason. Set NULL if none.
+     * @return int
+     * @retval 0 Success.
+     * @retval ToxAvError On error.
+     */
+    public AV_Error reject(string reason);
+
+    /**
+     * @brief Cancel outgoing request.
+     *
+     * @param av Handler.
+     * @param reason Optional reason.
+     * @return int
+     * @retval 0 Success.
+     * @retval ToxAvError On error.
+     */
+    public AV_Error cancel(string reason);
+
+    /**
+     * @brief Terminate transmission. Note that transmission will be terminated without informing remote peer.
+     *
+     * @param av Handler.
+     * @return int
+     * @retval 0 Success.
+     * @retval ToxAvError On error.
+     */
+    public AV_Error stop_call();
+
+    /**
+     * @brief Must be call before any RTP transmission occurs.
+     *
+     * @param av Handler.
+     * @return int
+     * @retval 0 Success.
+     * @retval ToxAvError On error.
+     */
+    public AV_Error prepare_transmission();
+
+    /**
+     * @brief Call this at the end of the transmission.
+     *
+     * @param av Handler.
+     * @return int
+     * @retval 0 Success.
+     * @retval ToxAvError On error.
+     */
+    public AV_Error kill_transmission();
+
+    /**
+     * @brief Receive decoded video packet.
+     *
+     * @param av Handler.
+     * @param output Storage.
+     * @return int
+     * @retval 0 Success.
+     * @retval ToxAvError On Error.
+     */
+    //public AV_Error recv_video ( vpx_image_t **output);
+
+    /**
+     * @brief Receive decoded audio frame.
+     *
+     * @param av Handler.
+     * @param frame_size ...
+     * @param dest Destination of the packet. Make sure it has enough space for
+     *             RTP_PAYLOAD_SIZE bytes.
+     * @return int
+     * @retval >=0 Size of received packet.
+     * @retval ToxAvError On error.
+     */
+    public AV_Error recv_audio( int frame_size, [CCode(array_length=false)] int16[] dest );
+
+    /**
+     * @brief Encode and send video packet.
+     *
+     * @param av Handler.
+     * @param input The packet.
+     * @return int
+     * @retval 0 Success.
+     * @retval ToxAvError On error.
+     */
+    //public AV_Error send_video ( vpx_image_t *input);
+
+    /**
+     * @brief Encode and send audio frame.
+     *
+     * @param av Handler.
+     * @param frame The frame.
+     * @param frame_size It's size.
+     * @return int
+     * @retval 0 Success.
+     * @retval ToxAvError On error.
+     */
+    public AV_Error send_audio ( [CCode(array_length_type="int")] int16[] frame);
+
+    /**
+     * @brief Get peer transmission type. It can either be audio or video.
+     *
+     * @param av Handler.
+     * @param peer The peer
+     * @return int
+     * @retval ToxAvCallType On success.
+     * @retval ToxAvError On error.
+     */
+    public AV_Error get_peer_transmission_type ( int peer );
+
+    /**
+     * @brief Get reference to an object that is handling av session.
+     *
+     * @param av Handler.
+     * @return void*
+     */
+    //void *toxav_get_agent_handler ( ToxAv *av );
+  }
+
+}
