@@ -74,6 +74,7 @@ namespace Venom {
     public signal void on_group_invite(Contact c, GroupChat g);
     public signal void on_group_message(GroupChat g, int peernumber, string message);
     public signal void on_group_action(GroupChat g, int peernumber, string action);
+    public signal void on_group_peer_namechanged(GroupChat g, int peernumber, string old_name);
     public signal void on_group_peer_changed(GroupChat g, int peernumber, Tox.ChatChange change);
 
     // File sending callbacks
@@ -252,6 +253,19 @@ namespace Venom {
     {
       string action_string = ((string)action).dup();
       Idle.add(() => { on_group_action(_groups.get(groupnumber), friendgroupnumber, action_string); return false; });
+    }
+
+    private void on_group_name_change_callback(Tox.Tox tox, int groupnumber, int peernumber, Tox.ChatChange change) {
+      if (change == Tox.ChatChange.PEER_NAME) {
+        GroupChat g = _groups.get(groupnumber);
+        string old_name = group_peername(g, peernumber);
+        Idle.add(() => {
+          g = _groups.get(groupnumber);
+          g.peer_count = group_number_peers(g);
+          on_group_peer_namechanged(g, peernumber, old_name);
+          return false;
+        });
+      }
     }
 
     private void on_group_namelist_change_callback(Tox.Tox tox, int groupnumber, int peernumber, Tox.ChatChange change) {

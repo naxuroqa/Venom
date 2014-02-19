@@ -99,6 +99,32 @@ namespace Venom {
       return "<b>%s</b> %s".printf(from != null ? Markup.escape_text(from.name) : "me", Markup.escape_text(message));
     }
   }
+  public class NameChangeMessage : Message {
+    public NameChangeMessage.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
+      this.from = null;
+      this.to = receiver;
+      this.message = message;
+      this.timestamp = timestamp;
+    }
+    public NameChangeMessage.incoming(Contact sender, string message, DateTime timestamp = new DateTime.now_local()) {
+      this.from = sender;
+      this.to = null;
+      this.message = message;
+      this.timestamp = timestamp;
+    }
+    public override string get_sender_plain() {
+      return "*";
+    }
+    public override string get_message_plain() {
+      return "%s is now known as %s".printf(message, from != null ? from.name : "me");
+    }
+    public override string get_sender_markup() {
+      return "*";
+    }
+    public override string get_message_markup() {
+      return "<b>%s</b> is now known as <b>%s</b>".printf(from != null ? Markup.escape_text(from.name) : "me", Markup.escape_text(message));
+    }
+  }
   public class GroupMessage : IMessage, GLib.Object {
     public unowned GroupChat from {get; protected set;}
     public unowned GroupChat to {get; protected set;}
@@ -167,6 +193,34 @@ namespace Venom {
     }
     public override string get_message_markup() {
       return "<b>%s</b> %s".printf(from != null ? Markup.escape_text(from_name) : "me", Markup.escape_text(message));
+    }
+  }
+  public class NameChangeGroupMessage : GroupMessage {
+    public NameChangeGroupMessage.outgoing(GroupChat receiver, string message, DateTime timestamp = new DateTime.now_local()) {
+      this.from = null;
+      this.to = receiver;
+      this.from_name = null;
+      this.message = message;
+      this.timestamp = timestamp;
+    }
+    public NameChangeGroupMessage.incoming(GroupChat sender, string from_name, string message, DateTime timestamp = new DateTime.now_local()) {
+      this.from = sender;
+      this.to = null;
+      this.from_name = from_name;
+      this.message = message;
+      this.timestamp = timestamp;
+    }
+    public override string get_sender_plain() {
+      return "*";
+    }
+    public override string get_message_plain() {
+      return "%s is now known as %s".printf(from != null ? from_name : "me", message);
+    }
+    public override string get_sender_markup() {
+      return "*";
+    }
+    public override string get_message_markup() {
+      return "<b>%s</b> is now known as <b>%s</b>".printf(from != null ? Markup.escape_text(from_name) : "me", Markup.escape_text(message));
     }
   }
   public class FileTransferMessage : IMessage, GLib.Object {

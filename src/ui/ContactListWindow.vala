@@ -54,8 +54,10 @@ namespace Venom {
 
     public signal void incoming_message(Message m);
     public signal void incoming_action(ActionMessage m);
+    public signal void incoming_name_change(NameChangeMessage m);
     public signal void incoming_group_message(GroupMessage m);
     public signal void incoming_group_action(GroupActionMessage m);
+    public signal void incoming_group_name_change(NameChangeGroupMessage m);
 
     // Default Constructor
     public ContactListWindow (Gtk.Application application) {
@@ -307,6 +309,7 @@ namespace Venom {
       session.on_group_message.connect(this.on_group_message);
       session.on_group_action.connect(this.on_group_action);
       session.on_group_peer_changed.connect(this.on_group_peer_changed);
+      session.on_group_peer_namechanged.connect(this.on_group_peer_namechanged);
 
       //file signals
       session.on_file_sendrequest.connect(this.on_file_sendrequest);
@@ -558,8 +561,11 @@ namespace Venom {
       this.set_urgency();
     }
     private void on_namechange(Contact c, string? old_name) {
-      stdout.printf("%s changed his name to %s\n", old_name, c.name);
-      contact_changed(c);
+      if (old_name != c.name) {
+        stdout.printf("%s changed his name to %s\n", old_name, c.name);
+        contact_changed(c);
+        incoming_name_change(new NameChangeMessage.incoming(c, old_name));
+      }
     }
     private void on_statusmessage(Contact c, string? old_status) {
       stdout.printf("%s changed his status to %s\n", c.name, c.status_message);
@@ -670,9 +676,21 @@ namespace Venom {
       this.set_urgency();
     }
 
-    private void on_group_peer_changed(GroupChat g, int peernumber, Tox.ChatChange change) {
+    private void on_group_peer_namechanged(GroupChat g, int peernumber, string old_name) {
       GroupConversationWidget w = open_group_conversation_with(g);
       w.update_contact();
+      string to_name = session.group_peername(g, peernumber);
+      stdout.printf("[gnc] [%i]@%i: %s to %s\n", peernumber, g.group_id, old_name, to_name);
+      incoming_group_name_change(new NameChangeGroupMessage.incoming(g, old_name, to_name));
+      groupchat_changed(g);
+    }
+
+    private void on_group_peer_changed(GroupChat g, int peernumber, Tox.ChatChange change) {
+      GroupConversationWidget w = open_group_conversation_with(g);
+      stdout.printf("[gnc] [%i]@%i: %i\n", peernumber, g.group_id, change.PEER_NAME);
+      w.update_contact();
+      string from_name = session.group_peername(g, peernumber);
+      incoming_group_name_change(new NameChangeGroupMessage.incoming(g, from_name, from_name));
       groupchat_changed(g);
     }
 
@@ -804,6 +822,7 @@ namespace Venom {
         w.load_history(session.load_history_for_contact(c));
         incoming_message.connect(w.on_incoming_message);
         incoming_action.connect(w.on_incoming_message);
+        incoming_name_change.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_message);
         w.new_outgoing_action.connect(on_outgoing_action);
         w.new_outgoing_file.connect(on_outgoing_file);
@@ -819,6 +838,7 @@ namespace Venom {
         w = new GroupConversationWidget(g);
         incoming_group_message.connect(w.on_incoming_message);
         incoming_group_action.connect(w.on_incoming_message);
+        incoming_group_name_change.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_group_message);
         w.new_outgoing_action.connect(on_outgoing_group_action);
         group_conversation_widgets[g.group_id] = w;
