@@ -23,6 +23,7 @@ namespace Venom {
   public class VenomSettings : Object {
 
     public bool enable_logging{get;set;}
+    public bool enable_urgency_notification{get;set;}
     public int days_to_log{get;set;}
 
     private static VenomSettings? _instance;
@@ -60,11 +61,13 @@ namespace Venom {
     }
 
     private VenomSettings() {
+      enable_urgency_notification = true;
       enable_logging = false;
       this.days_to_log = 180;
     }
 
     private VenomSettings.with_settings(VenomSettings other) {
+      this.enable_urgency_notification = other.enable_urgency_notification;
       this.enable_logging = other.enable_logging;
       this.days_to_log = other.days_to_log;
     }

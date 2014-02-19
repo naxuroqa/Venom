@@ -491,7 +491,9 @@ namespace Venom {
     }
 
     public void set_urgency () {
-      this.set_urgency_hint(true);
+      if(VenomSettings.instance.enable_urgency_notification) {
+        this.set_urgency_hint(true);
+      }
     }
 
     private bool on_treeview_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
