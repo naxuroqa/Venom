@@ -232,6 +232,7 @@
       <object class="GtkScrolledWindow" id="scrolled_window">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="hscrollbar_policy">automatic</property>
         <child>
           <placeholder/>
         </child>

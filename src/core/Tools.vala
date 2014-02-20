@@ -92,6 +92,27 @@ namespace Venom {
       return clone;
     }
 
+    public static string format_filesize(uint64 size) {
+      uint64 kilobyte = 1024;
+      uint64 megabyte = kilobyte * 1024;
+      uint64 gigabyte = megabyte * 1024;
+      uint64 terabyte = gigabyte * 1024;
+      uint64 petabyte = terabyte * 1024;
+
+      if(size < kilobyte) return "%llu bytes".printf(size);
+      if(size < megabyte) return "%.2lf KB".printf( (double) size / kilobyte );
+      if(size < gigabyte) return "%.2lf MB".printf( (double) size / megabyte );
+      if(size < terabyte) return "%.2lf GB".printf( (double) size / gigabyte );
+      if(size < petabyte) return "%.2lf TB".printf( (double) size / terabyte );
+      return "really big file";
+    }
+
+    public static string shorten_name(string name) {
+      string[] parts = Regex.split_simple("\\s",name);
+      if(parts.length < 2) return name;
+      return parts[0];
+    }
+
     public static string friend_add_error_to_string(Tox.FriendAddError friend_add_error) {
       switch(friend_add_error) {
         case Tox.FriendAddError.TOOLONG:

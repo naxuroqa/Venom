@@ -89,6 +89,8 @@ SET( VENOM_SRC
   ui/AboutDialog.vala
   ui/ConversationView.vala
   ui/ConversationWidget.vala
+  ui/ChatMessage.vala
+  ui/FileTransferChatEntry.vala
   ui/ContactFilter.vala
   ui/ContactListWindow.vala
   ui/ContactListTreeView.vala
