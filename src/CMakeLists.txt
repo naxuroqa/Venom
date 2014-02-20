@@ -39,9 +39,10 @@ PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
 # all needed static libraries in their pkg-config files
 # see https://github.com/irungentoo/ProjectTox-Core/issues/705
 IF(LINK_TOX_STATIC)
-  SET(TOX_LIBRARIES ${TOX_LIBRARIES} m.a)
   IF(WIN32)
-    SET(TOX_LIBRARIES ${TOX_LIBRARIES} ws2_32.a)
+    SET(TOX_LIBRARIES ${TOX_LIBRARIES} m.a ws2_32.a)
+  ELSE(WIN32)
+    SET(TOX_LIBRARIES ${TOX_LIBRARIES} m.so)
   ENDIF(WIN32)
 ENDIF(LINK_TOX_STATIC)
 IF(LINK_GTK_STATIC)
