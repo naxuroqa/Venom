@@ -27,7 +27,7 @@ namespace Venom {
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
 
-    private Gtk.TextTag empty_message_tag; 
+    private Gtk.TextTag empty_message_tag;
 
     private IConversationView conversation_view;
     public unowned Contact contact {get; private set;}

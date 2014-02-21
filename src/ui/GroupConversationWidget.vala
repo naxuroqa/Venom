@@ -21,9 +21,13 @@
 
 namespace Venom {
   public class GroupConversationWidget : Gtk.EventBox {
+    private static string empty_message = "Type your message here...";
+    private bool textview_message_empty = true;
     private Gtk.Label label_groupchat_name;
     private Gtk.Label label_groupchat_statusmessage;
     private Gtk.Image image_groupchat_image;
+
+    private Gtk.TextTag empty_message_tag;
 
     private IConversationView conversation_view;
 
@@ -74,8 +78,35 @@ namespace Venom {
 
       //button_send_file.clicked.connect(button_send_file_clicked);
 
-      Gtk.Entry entry_message = builder.get_object("entry_message") as Gtk.Entry;
-      entry_message.activate.connect(entry_activate);
+      Gtk.TextView textview_message = builder.get_object("textview_message") as Gtk.TextView;
+      empty_message_tag = textview_message.buffer.create_tag(null, "foreground", "grey");
+      append_tagged_text_to_buffer(textview_message.buffer, empty_message, empty_message_tag);
+
+      textview_message.key_press_event.connect((k) => {
+        // only catch return if shift or control keys are not pressed
+        if(k.keyval == Gdk.Key.Return && (k.state & (Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK)) == 0) {
+          textview_activate(textview_message);
+          return true;
+        }
+        return false;
+      });
+
+      textview_message.focus_in_event.connect(() => {
+        if(textview_message_empty == true) {
+          textview_message.buffer.text = "";
+        }
+        return false;
+      });
+
+      textview_message.focus_out_event.connect(() => {
+        if(textview_message.buffer.text == "") {
+          append_tagged_text_to_buffer(textview_message.buffer, empty_message, empty_message_tag);
+          textview_message_empty = true;
+        } else {
+          textview_message_empty = false;
+        }
+        return false;
+      });
 
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
@@ -98,6 +129,14 @@ namespace Venom {
 
       delete_event.connect(hide_on_delete);
     }
+
+    private void append_tagged_text_to_buffer(Gtk.TextBuffer buffer, string text, Gtk.TextTag tag) {
+      Gtk.TextIter text_end;
+      buffer.get_end_iter(out text_end);
+      buffer.insert_with_tags(text_end, text, text.length, tag);
+    }
+
+
     /*
     //history
     public void load_history(GLib.List<Message> messages) {
@@ -113,8 +152,8 @@ namespace Venom {
       conversation_view.add_message(message);
     }
 
-    public void entry_activate(Gtk.Entry source) {
-      string s = source.text;
+    public void textview_activate(Gtk.TextView source) {
+      string s = source.buffer.text;
       if(s == "")
         return;
       GLib.MatchInfo info = null;
@@ -129,7 +168,7 @@ namespace Venom {
         GroupMessage m = new GroupMessage.outgoing(groupchat, s);
         new_outgoing_message(m);
       }
-      source.text = "";
+      source.buffer.text = "";
     }
   }
 }
