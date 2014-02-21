@@ -22,71 +22,32 @@
 namespace Venom {
   public interface IConversationView : Gtk.Widget {
     public abstract void add_message(IMessage message);
+    public abstract void add_filetransfer(FileTransferChatEntry entry);
   }
 
   public class ConversationView : IConversationView, Gtk.EventBox {
-    private static GLib.Regex regex_uri = null;
-    private const int h_margin = 6;
-    private const int v_margin = 6;
-    private Gtk.Grid grid;
-    private int bottom_row = 1;
+    private Gtk.Box conversation_list;
+    private IMessage last_message = null;
 
     public ConversationView() {
-      grid = new Gtk.Grid();
-      grid.set_row_spacing(v_margin);
-      grid.set_column_spacing(h_margin);
-      this.add(grid);
+      conversation_list = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+      this.add(conversation_list);
     }
 
-    private string markup_uris(string text) {
-      string ret;
-      try {
-        if(regex_uri == null) {
-          regex_uri = new GLib.Regex("(?<u>[a-z]\\S*://\\S*)");
-        }
-        ret = regex_uri.replace(text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
-		  } catch (GLib.RegexError e) {
-			  stderr.printf("Error when doing uri markup: %s", e.message);
-			  return text;
-		  }
-		  return ret;
+    public void add_filetransfer(FileTransferChatEntry entry) {
+      conversation_list.pack_start(entry,false,false,0);
+      entry.set_visible(true);
     }
 
     public void add_message(IMessage message) {
-      Gtk.Label label_name = new Gtk.Label( null );
-      Gtk.Label label_message = new Gtk.Label( null );
-      Gtk.Label label_time = new Gtk.Label( null );
-
-      label_name.set_markup(message.get_sender_markup());
-      label_message.set_markup(markup_uris(message.get_message_markup()));
-      label_time.set_markup(message.get_time_markup());
-
-      label_name.xalign = 0;
-      label_message.xalign = 0;
-      label_time.xalign = 1;
-
-      label_name.yalign = 0;
-      label_message.yalign = 0;
-      label_time.yalign = 0;
-
-      label_name.margin_left = h_margin;
-      label_time.margin_right = h_margin;
-
-      label_message.selectable = true;
-      label_message.set_ellipsize(Pango.EllipsizeMode.NONE);
-      label_message.set_line_wrap(true);
-      label_message.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR);
-
-      //FIXME have the same cursor for the whole ConversationView if possible
-      label_message.hexpand = true;
-
-      grid.attach(label_name, 0, bottom_row++, 1, 1);
-      grid.attach_next_to(label_message, label_name, Gtk.PositionType.RIGHT, 1, 1);
-      grid.attach_next_to(label_time, label_message, Gtk.PositionType.RIGHT, 1, 1);
-
-      label_name.show();
-      label_message.show();
-      label_time.show();
+      ChatMessage cm;
+      if(last_message != null && last_message.compare_sender(message)) {
+        cm = new ChatMessage(message, true);
+      } else {
+        cm = new ChatMessage(message, false);
+      }
+      conversation_list.pack_start(cm,false,false,0);
+      last_message = message;
     }
   }
 }

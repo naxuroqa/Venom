@@ -68,5 +68,15 @@ namespace Venom {
       text_buffer.get_end_iter(out text_end);
       text_buffer.insert(ref text_end, "\n", 1);
     }
+    public void add_filetransfer(FileTransferChatEntry entry) {
+      Gtk.TextIter iter;
+      text_buffer.get_end_iter(out iter);
+      Gtk.TextChildAnchor child_anchor = text_buffer.create_child_anchor(iter);
+      text_view.add_child_at_anchor(entry, child_anchor);
+      entry.show();
+
+      text_buffer.get_end_iter(out iter);
+      text_buffer.insert(ref iter, "\n", 1);
+    }
   }
 }

@@ -25,8 +25,7 @@ namespace Venom {
     private Gtk.Label label_groupchat_statusmessage;
     private Gtk.Image image_groupchat_image;
 
-    private string last_sender_name;
-    private Gtk.Box conversation_list;
+    private IConversationView conversation_view;
 
     private unowned GroupChat groupchat {get; private set;}
 
@@ -82,17 +81,17 @@ namespace Venom {
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
 
-      conversation_list = new Gtk.Box(Gtk.Orientation.VERTICAL,0);
-      conversation_list.set_size_request(300,400);
-      conversation_list.get_style_context().add_class("chat_list");
-      Gtk.Viewport viewport = new Gtk.Viewport(null,null);
-      viewport.add(conversation_list);
-      viewport.set_size_request(300,400);
+      if(ResourceFactory.instance.textview_mode) {
+        conversation_view = new TextConversationView();
+      } else {
+        conversation_view = new ConversationView();
+      }
+      conversation_view.get_style_context().add_class("chat_list");
       Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
-      scrolled_window.add(viewport);
+      scrolled_window.add_with_viewport(conversation_view);
 
       //TODO: move to bottom only when wanted
-      conversation_list.size_allocate.connect( () => {
+      conversation_view.size_allocate.connect( () => {
         Gtk.Adjustment adjustment = scrolled_window.get_vadjustment();
         adjustment.set_value(adjustment.upper - adjustment.page_size);
       });
@@ -107,19 +106,11 @@ namespace Venom {
         });
     }*/
 
-    private void display_message(GroupMessage message) {
-      bool following = message.from_name == last_sender_name;
-      ChatMessage cm = new ChatMessage.group(message,following);
-      conversation_list.pack_start(cm,false,false,0);
-      last_sender_name = message.from_name;
-    }
-
-
     public void on_incoming_message(GroupMessage message) {
       if(message.from != groupchat)
         return;
 
-      display_message(message);
+      conversation_view.add_message(message);
     }
 
     public void entry_activate(Gtk.Entry source) {

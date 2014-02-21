@@ -19,20 +19,35 @@
 
 namespace Venom {
   public class ChatMessage : Gtk.EventBox {
-    public Message message;
-    public GroupMessage groupmessage;
-
     private Gtk.Label name_label;
     private Gtk.Label message_label;
     private Gtk.Label date_label;
     private Gtk.Frame frame;
+    private static GLib.Regex regex_uri = null;
+
+    public ChatMessage(IMessage message, bool following = false){
+      init_widgets();
+
+      if(!following) {
+        frame.get_style_context().add_class("first");
+        if(message.message_direction == MessageDirection.OUTGOING) {
+          name_label.get_style_context().add_class("own_name");
+        }
+        name_label.set_text( Tools.shorten_name( message.get_sender_plain() ) );
+      } else {
+        name_label.set_text("");
+      }
+      string markup_message_text = markup_uris(Markup.escape_text(message.get_message_plain()));
+      message_label.set_markup( markup_message_text );
+      date_label.set_text( message.timestamp.format("%R") );
+    }
 
     private void init_widgets() {
       Gtk.Builder builder = new Gtk.Builder();
       try {
         builder.add_from_resource("/org/gtk/venom/chat_message.ui");
       } catch (GLib.Error e) {
-        stderr.printf("Loading message widget failed!\n");
+        stderr.printf("Loading message widget failed: %s\n", e.message);
       }
       this.get_style_context().add_class("message_entry");
 
@@ -51,57 +66,19 @@ namespace Venom {
 
     }
 
-    public ChatMessage.private(Message message, bool following = false){
-      this.message = message;
-      init_widgets();
-
-      if(!following) {
-        frame.get_style_context().add_class("first");
-        if(message.from.public_key == null) {
-          name_label.get_style_context().add_class("own_name");
+    private string markup_uris(string text) {
+      string ret;
+      try {
+        if(regex_uri == null) {
+          regex_uri = new GLib.Regex("(?<u>[a-z]\\S*://\\S*)");
         }
-        name_label.set_text( Tools.shorten_name( message.from.name ) );
-      } else {
-        name_label.set_text("");
-      }
-      message_label.set_text( message.message );
-      date_label.set_text( message.timestamp.format("%R") );
-    }
-    
-    public ChatMessage.own(Message message, string own_name, bool following = false){
-      this.message = message;
-
-      init_widgets();
-      if(!following) {
-        frame.get_style_context().add_class("first");
-        if(message.from == null) {
-          name_label.get_style_context().add_class("own_name");
-        }
-        name_label.set_text( Tools.shorten_name( own_name ) );
-      } else {
-        name_label.set_text("");
-      }
-
-      message_label.set_text( message.message );
-      date_label.set_text( message.timestamp.format("%R") );
+        ret = regex_uri.replace(text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
+		  } catch (GLib.RegexError e) {
+			  stderr.printf("Error when doing uri markup: %s", e.message);
+			  return text;
+		  }
+		  return ret;
     }
 
-    public ChatMessage.group(GroupMessage message, bool following = false){
-      this.groupmessage = message;
-    
-      init_widgets();
-      if(!following) {
-        frame.get_style_context().add_class("first");
-        if(message.from.public_key == null) {
-          name_label.get_style_context().add_class("own_name");
-        }
-        name_label.set_text( Tools.shorten_name( message.from_name ) );
-      } else {
-        name_label.set_text("");
-      }
-    
-      message_label.set_text( message.message );
-      date_label.set_text( message.timestamp.format("%R") );
-    }
   }
 }

@@ -25,8 +25,7 @@ namespace Venom {
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
 
-    private Gtk.Box conversation_list;
-    private Contact last_sender;
+    private IConversationView conversation_view;
     private string self_name;
 
     public unowned Contact contact {get; private set;}
@@ -92,17 +91,17 @@ namespace Venom {
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
 
-      conversation_list = new Gtk.Box(Gtk.Orientation.VERTICAL,0);
-      conversation_list.set_size_request(300,400);
-      conversation_list.get_style_context().add_class("chat_list");
-      Gtk.Viewport viewport = new Gtk.Viewport(null,null);
-      viewport.add(conversation_list);
-      viewport.set_size_request(300,400);
+      if(ResourceFactory.instance.textview_mode) {
+        conversation_view = new TextConversationView();
+      } else {
+        conversation_view = new ConversationView();
+      }
+      conversation_view.get_style_context().add_class("chat_list");
       Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
-      scrolled_window.add(viewport);
+      scrolled_window.add_with_viewport(conversation_view);
 
       //TODO: move to bottom only when wanted
-      conversation_list.size_allocate.connect( () => {
+      conversation_view.size_allocate.connect( () => {
         Gtk.Adjustment adjustment = scrolled_window.get_vadjustment();
         adjustment.set_value(adjustment.upper - adjustment.page_size);
       });
@@ -110,42 +109,18 @@ namespace Venom {
       delete_event.connect(hide_on_delete);
     }
 
-    private void display_message(Message message) {
-      bool following = false;
-      if(conversation_list.get_children().length() > 0) {
-        if( (message.from == null) && ( last_sender == null )) {
-          following = true;
-        } else if ( (message.from != null ) && ( last_sender != null ) ) {
-          following = message.from.friend_id == last_sender.friend_id;
-        }
-      }
-      ChatMessage cm;
-      if(message.from == null) {
-        cm = new ChatMessage.own(message,self_name,following);
-      } else {
-        cm = new ChatMessage.private(message,following);        
-      }
-
-
-
-
-      conversation_list.pack_start(cm,false,false,0);
-      last_sender = message.from;
-    }
-
-    private void display_filetransfer(FileTransfer ft) {
+    private void add_filetransfer(FileTransfer ft) {
       FileTransferChatEntry entry = new FileTransferChatEntry(ft);
       entry.filetransfer_accepted.connect((ft) => { filetransfer_accepted(ft); });
       entry.filetransfer_rejected.connect((ft) => { filetransfer_rejected(ft); });
-      conversation_list.pack_start(entry,false,false,0);
-      entry.set_visible(true);
+      conversation_view.add_filetransfer(entry);
     }
 
     //history
 
     public void load_history(GLib.List<Message> messages) {
       messages.foreach((message) => {
-          display_message(message);
+          conversation_view.add_message(message);
         });
     }
 
@@ -163,11 +138,11 @@ namespace Venom {
     public void on_incoming_message(Message message) {
       if(message.from != contact)
         return;
-      display_message(message);
+      conversation_view.add_message(message);
     }
 
     public void on_incoming_filetransfer(FileTransfer ft) {
-      display_filetransfer(ft);
+      add_filetransfer(ft);
     }
 
     public void entry_activate(Gtk.Entry source) {
@@ -182,11 +157,11 @@ namespace Venom {
           action_string = "";
         }
         ActionMessage a = new ActionMessage.outgoing(contact, action_string);
-        display_message(a);
+        conversation_view.add_message(a);
         new_outgoing_action(a);
       } else {
         Message m = new Message.outgoing(contact, s);
-        display_message(m);
+        conversation_view.add_message(m);
         new_outgoing_message(m);
       }
       source.text = "";
@@ -228,7 +203,7 @@ namespace Venom {
       }
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.OUTGOING, file_size, file.get_basename(), file.get_path() );
       new_outgoing_file(ft);
-      display_filetransfer(ft);
+      add_filetransfer(ft);
     }
   }
 }
