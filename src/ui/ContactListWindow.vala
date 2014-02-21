@@ -360,11 +360,10 @@ namespace Venom {
     }
 
     private void init_save_session_hooks() {
-      // Groupchats currently commented out, since tox does not save them
       contact_added.connect(    () => {save_session();});
-      //groupchat_added.connect(  () => {save_session();});
       contact_removed.connect(  () => {save_session();});
-      //groupchat_removed.connect(() => {save_session();});
+      groupchat_added.connect(  () => {save_session();});
+      groupchat_removed.connect(() => {save_session();});
     }
 
     // Restore friends from datafile
