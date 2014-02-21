@@ -23,11 +23,22 @@ namespace Venom {
   public class AboutDialog : Gtk.AboutDialog {
     public AboutDialog() {
       authors = {
-                  "naxuroqa <naxuroqa@gmail.com>",
-                  "Denys Han <h.denys@gmail.com>",
-                  "Andrii Titov <concuror@gmail.com>",
-                  null
-                };
+        "naxuroqa <naxuroqa@gmail.com>",
+        "Denys Han <h.denys@gmail.com>",
+        "Andrii Titov <concuror@gmail.com>",
+        "Maxim Golubev <3demax@gmail.com>",
+        "Fukukami",
+        null
+      };
+      artists = {
+        "ItsDuke",
+        null
+      };
+      string [] packagers = {
+        "stqism <sean@tox.im>",
+        null
+      };
+      this.add_credit_section("Packagers", (string) packagers);
       comments = Config.SHORT_DESCRIPTION;
       copyright = Config.COPYRIGHT_NOTICE;
       program_name = "Venom";
