@@ -229,35 +229,49 @@
       </packing>
     </child>
     <child>
-      <object class="GtkScrolledWindow" id="scrolled_window">
+      <object class="GtkPaned" id="paned1">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="hscrollbar_policy">automatic</property>
+        <property name="orientation">vertical</property>
         <child>
-          <placeholder/>
+          <object class="GtkScrolledWindow" id="scrolled_window">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="resize">True</property>
+            <property name="shrink">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolled_window_message">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="shadow_type">in</property>
+            <property name="min_content_height">0</property>
+            <child>
+              <object class="GtkTextView" id="textview_message">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="border_width">6</property>
+                <property name="wrap_mode">word-char</property>
+                <property name="accepts_tab">False</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="resize">False</property>
+            <property name="shrink">False</property>
+          </packing>
         </child>
       </object>
       <packing>
         <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkEntry" id="entry_message">
-        <property name="height_request">49</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="margin_left">1</property>
-        <property name="margin_right">3</property>
-        <property name="margin_bottom">3</property>
-        <property name="invisible_char">●</property>
-        <property name="placeholder_text">Type your message here...</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">3</property>
       </packing>
     </child>
   </object>

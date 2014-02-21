@@ -801,8 +801,7 @@ namespace Venom {
     private ConversationWidget? open_conversation_with(Contact c) {
       ConversationWidget w = conversation_widgets[c.friend_id];
       if(w == null) {
-        string my_name = session.getselfname();
-        w = new ConversationWidget(c,my_name);
+        w = new ConversationWidget(c);
         w.load_history(session.load_history_for_contact(c));
         incoming_message.connect(w.on_incoming_message);
         incoming_action.connect(w.on_incoming_message);
