@@ -140,12 +140,9 @@ namespace Venom {
       try {
         session.load_from_file(ResourceFactory.instance.data_filename);
       } catch (Error e) {
-        try {
           stdout.printf("Could not load session data (%s), creating new one.\n", e.message);
-          session.save_to_file(ResourceFactory.instance.data_filename);
-        } catch (Error e) {
-          stderr.printf("Could not load messenger data and failed to create new one.\n");
-        }
+          session.set_name(ResourceFactory.instance.default_username);
+          save_session();
       }
     }
 

@@ -69,6 +69,7 @@ namespace Venom {
 
       settings_providers = new Gee.ArrayList<SettingsProvider>();
       default_add_contact_message = "Please let me add you to my contactlist.";
+      default_username = "Tox User";
     }
 
 
@@ -100,6 +101,7 @@ namespace Venom {
     public string db_filename {get; set;}
     public string config_filename {get; set;}
     public string default_add_contact_message {get; private set;}
+    public string default_username {get; private set;}
 
     public bool offline_mode {get; set; default = false;}
     public bool textview_mode {get; set; default = false;}
