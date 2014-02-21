@@ -4,6 +4,8 @@
     <file preprocess="xml-stripblanks">add_contact_dialog.ui</file>
     <file preprocess="xml-stripblanks">contact_list.ui</file>
     <file preprocess="xml-stripblanks">conversation_window.ui</file>
+    <file preprocess="xml-stripblanks">chat_message.ui</file>
+    <file preprocess="xml-stripblanks">chat_filetransfer.ui</file>
     <file preprocess="xml-stripblanks">user_info_window.ui</file>
   </gresource>
 </gresources>

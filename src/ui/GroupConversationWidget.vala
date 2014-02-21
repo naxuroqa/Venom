@@ -25,7 +25,9 @@ namespace Venom {
     private Gtk.Label label_groupchat_statusmessage;
     private Gtk.Image image_groupchat_image;
 
-    private IConversationView conversation_view;
+    private string last_sender_name;
+    private Gtk.Box conversation_list;
+
     private unowned GroupChat groupchat {get; private set;}
 
     public signal void new_outgoing_message(GroupMessage message);
@@ -58,41 +60,46 @@ namespace Venom {
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.add(box);
       this.get_style_context().add_class("conversation_widget");
-
       label_groupchat_name = builder.get_object("label_contact_name") as Gtk.Label;
       label_groupchat_statusmessage = builder.get_object("label_contact_statusmessage") as Gtk.Label;
       image_groupchat_image = builder.get_object("image_contact_image") as Gtk.Image;
 
-      Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
-      Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
-      Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
+      Gtk.Image image_call = builder.get_object("image_call") as Gtk.Image;
+      Gtk.Image image_call_video = builder.get_object("image_call_video") as Gtk.Image;
+      Gtk.Image image_send_file = builder.get_object("image_send_file") as Gtk.Image;
 
-      button_call.destroy();
-      button_call_video.destroy();
-      button_send_file.destroy();
+      //TODO
+      //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
+      //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
+      //Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
+
+      //button_send_file.clicked.connect(button_send_file_clicked);
 
       Gtk.Entry entry_message = builder.get_object("entry_message") as Gtk.Entry;
       entry_message.activate.connect(entry_activate);
 
-      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
+      image_call.set_from_pixbuf(ResourceFactory.instance.call);
+      image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
+      image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
 
-      if( ResourceFactory.instance.textview_mode ) {
-        conversation_view = new TextConversationView();
-      } else {
-        conversation_view = new ConversationView();
-      }
-      conversation_view.show_all();
-      scrolled_window.add_with_viewport(conversation_view);
+      conversation_list = new Gtk.Box(Gtk.Orientation.VERTICAL,0);
+      conversation_list.set_size_request(300,400);
+      conversation_list.get_style_context().add_class("chat_list");
+      Gtk.Viewport viewport = new Gtk.Viewport(null,null);
+      viewport.add(conversation_list);
+      viewport.set_size_request(300,400);
+      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
+      scrolled_window.add(viewport);
 
       //TODO: move to bottom only when wanted
-      conversation_view.size_allocate.connect( () => {
+      conversation_list.size_allocate.connect( () => {
         Gtk.Adjustment adjustment = scrolled_window.get_vadjustment();
         adjustment.set_value(adjustment.upper - adjustment.page_size);
       });
 
-      delete_event.connect(() => {hide(); return true;});
+      delete_event.connect(hide_on_delete);
     }
-/*
+    /*
     //history
     public void load_history(GLib.List<Message> messages) {
       messages.foreach((message) => {
@@ -100,11 +107,19 @@ namespace Venom {
         });
     }*/
 
+    private void display_message(GroupMessage message) {
+      bool following = message.from_name == last_sender_name;
+      ChatMessage cm = new ChatMessage.group(message,following);
+      conversation_list.pack_start(cm,false,false,0);
+      last_sender_name = message.from_name;
+    }
+
+
     public void on_incoming_message(GroupMessage message) {
       if(message.from != groupchat)
         return;
 
-      conversation_view.add_message(message);
+      display_message(message);
     }
 
     public void entry_activate(Gtk.Entry source) {
