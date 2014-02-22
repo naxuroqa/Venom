@@ -21,6 +21,7 @@
 
 namespace Venom {
   public class TextConversationView : IConversationView, Gtk.EventBox {
+    public bool short_names {get; set; default = false;}
     private Gtk.TextView   text_view;
     private Gtk.TextBuffer text_buffer;
     private Gtk.TextTag bold_tag;
@@ -51,7 +52,7 @@ namespace Venom {
 
       text_buffer.get_end_iter(out text_end);
       text = "%s: ".printf(
-        message.get_sender_plain()
+        short_names ? Tools.shorten_name(message.get_sender_plain()) : message.get_sender_plain()
       );
       text_buffer.insert_with_tags(text_end, text, text.length, bold_tag);
 

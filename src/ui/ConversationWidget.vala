@@ -126,6 +126,7 @@ namespace Venom {
         conversation_view = new ConversationView();
       }
       conversation_view.get_style_context().add_class("chat_list");
+      conversation_view.short_names = true;
       Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
       scrolled_window.add_with_viewport(conversation_view);
 
