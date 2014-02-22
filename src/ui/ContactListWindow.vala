@@ -644,7 +644,7 @@ namespace Venom {
       stdout.printf("[gm] %s [%i]@%i: %s\n", from_name, friendgroupnumber, g.group_id, message);
 
       GroupConversationWidget w = open_group_conversation_with(g);
-      incoming_group_message(new GroupMessage.incoming(g, from_name, message));
+      incoming_group_message(new GroupMessage.incoming(g, g.peers.get(friendgroupnumber), message));
       
       if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
         g.unread_messages++;
@@ -658,7 +658,7 @@ namespace Venom {
       stdout.printf("[ga] %s [%i]@%i: %s\n", from_name, friendgroupnumber, g.group_id, message);
 
       GroupConversationWidget w = open_group_conversation_with(g);
-      incoming_group_action(new GroupActionMessage.incoming(g, from_name, message));
+      incoming_group_action(new GroupActionMessage.incoming(g, g.peers.get(friendgroupnumber), message));
       
       if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
         g.unread_messages++;
