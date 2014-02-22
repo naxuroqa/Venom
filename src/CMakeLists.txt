@@ -97,6 +97,7 @@ SET( VENOM_SRC
   ui/TextConversationView.vala
   ui/UserInfoWindow.vala
   ui/UITools.vala
+  ui/SettingsWindow.vala
   Main.vala
 )
 

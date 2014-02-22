@@ -969,9 +969,8 @@ namespace Venom {
     }
 
     public void button_preferences_clicked(Gtk.Button source) {
-      //PreferencesWindow preferences_window = new PreferencesWindow();
-      //preferences_window.run();
-      //preferences_window.destroy();
+      SettingsWindow settings_window = new SettingsWindow();
+      settings_window.visible = true;
     }
   }
 }
