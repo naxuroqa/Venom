@@ -22,8 +22,8 @@
 namespace Venom {
   public class ContactListWindow : Gtk.ApplicationWindow {
     // Containers
-    private Gee.AbstractMap<int, ConversationWidget> conversation_widgets;
-    private Gee.AbstractMap<int, GroupConversationWidget> group_conversation_widgets;
+    private GLib.HashTable<int, ConversationWidget> conversation_widgets;
+    private GLib.HashTable<int, GroupConversationWidget> group_conversation_widgets;
     // Tox session wrapper
     private ToxSession session;
     private UserStatus user_status = UserStatus.OFFLINE;
@@ -60,8 +60,8 @@ namespace Venom {
     // Default Constructor
     public ContactListWindow (Gtk.Application application) {
       GLib.Object(application:application);
-      this.conversation_widgets = new Gee.HashMap<int, ConversationWidget>();
-      this.group_conversation_widgets = new Gee.HashMap<int, GroupConversationWidget>();
+      this.conversation_widgets = new GLib.HashTable<int, ConversationWidget>(null, null);
+      this.group_conversation_widgets = new GLib.HashTable<int, GroupConversationWidget>(null, null);
 
       init_theme();
       init_session();
@@ -331,16 +331,16 @@ namespace Venom {
         contact_list_tree_view.remove_entry(c);
         ConversationWidget w = conversation_widgets[c.friend_id];
         if(w != null) {
-          conversation_widgets[c.friend_id].destroy();
-          conversation_widgets.unset(c.friend_id);
+          conversation_widgets.get(c.friend_id).destroy();
+          conversation_widgets.remove(c.friend_id);
         }
       } );
       groupchat_removed.connect( (g) => {
         contact_list_tree_view.remove_entry(g);
         GroupConversationWidget w = group_conversation_widgets[g.group_id];
         if(w != null) {
-          group_conversation_widgets[g.group_id].destroy();
-          group_conversation_widgets.unset(g.group_id);
+          group_conversation_widgets.get(g.group_id).destroy();
+          group_conversation_widgets.remove(g.group_id);
         }
       } );
 
@@ -365,11 +365,11 @@ namespace Venom {
 
     // Restore friends from datafile
     private void init_contacts() {
-      Gee.HashMap<int, Contact> contacts = session.get_contact_list();
-      foreach(Contact c in contacts) {
-        stdout.printf("Retrieved contact %s from savefile.\n", Tools.bin_to_hexstring(c.public_key));
-        contact_added(c);
-      }
+      GLib.HashTable<int, Contact> contacts = session.get_contact_list();
+      contacts.foreach((key, val) => {
+        stdout.printf("Retrieved contact %s from savefile.\n", Tools.bin_to_hexstring(val.public_key));
+        contact_added(val);
+      });
     }
 
     private void set_title_from_status(UserStatus status) {
@@ -479,7 +479,7 @@ namespace Venom {
       uint8 filenumber = session.send_file_request(ft.friend.friend_id,ft.file_size,ft.name);
       if(filenumber != -1) {
         //ft.filenumber = filenumber;
-        Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers();
+        GLib.HashTable<uint8, FileTransfer> transfers = session.get_filetransfers();
         transfers[filenumber] = ft;
       } else {
         stderr.printf("failed to send file %s to %s", ft.name, ft.friend.name);
@@ -677,7 +677,7 @@ namespace Venom {
       stdout.printf ("received file send request friend: %i filenumber: %i filename: %s \n",friendnumber,filenumber,filename );
       Contact contact = session.get_contact_list()[friendnumber];
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null);
-      Gee.Map<uint8,FileTransfer> transfers = session.get_filetransfers();
+      GLib.HashTable<uint8,FileTransfer> transfers = session.get_filetransfers();
       transfers[filenumber] = ft;
       ConversationWidget w = conversation_widgets[friendnumber];
       w.on_incoming_filetransfer(ft);
