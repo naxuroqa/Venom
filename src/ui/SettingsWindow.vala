@@ -42,7 +42,7 @@ namespace Venom {
       save_button.clicked.connect(save);
       Gtk.Button cancel_button = builder.get_object("cancel_button") as Gtk.Button;
       cancel_button.clicked.connect(cancel);
-      
+
       enable_history_checkbox = builder.get_object("enable_history_checkbox") as Gtk.CheckButton;
       enable_history_checkbox.toggled.connect( () => {
           if(enable_history_checkbox.active) {
@@ -52,7 +52,6 @@ namespace Venom {
           }
         });
       days_to_log_entry = builder.get_object("days_to_log_entry") as Gtk.Entry;
-      days_to_log_entry.input_purpose = Gtk.InputPurpose.DIGITS;
       enable_urgency_notification_checkbox = builder.get_object("enable_urgency_notification_checkbox") as Gtk.CheckButton;
       dec_binary_checkbox = builder.get_object("dec_binary_checkbox") as Gtk.CheckButton;
 
@@ -71,11 +70,11 @@ namespace Venom {
       settings.dec_binary_prefix = dec_binary_checkbox.active;
 
       settings.save_setting(ResourceFactory.instance.config_filename);
-      this.close();
+      this.destroy();
     }
 
     private void cancel(){
-      this.close();
+      this.destroy();
     }
   }
 }
