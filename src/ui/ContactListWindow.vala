@@ -428,8 +428,11 @@ namespace Venom {
 
     private void edit_user_information() {
       UserInfoWindow w = new UserInfoWindow();
-      w.user_name  = label_name.get_text();
+
+      w.user_name = label_name.get_text();
+      w.max_name_length = Tox.MAX_NAME_LENGTH;
       w.user_status = label_status.get_text();
+      w.max_status_length = Tox.MAX_STATUSMESSAGE_LENGTH;
       w.user_image = image_userimage.get_pixbuf();
       w.user_id = Tools.bin_to_hexstring(session.get_address());
 
@@ -438,13 +441,14 @@ namespace Venom {
       int response = w.run();
 
       if(response == Gtk.ResponseType.APPLY) {
+        //TODO once possible in core
         image_userimage.set_from_pixbuf(w.user_image);
 
-        label_name.set_text(w.user_name);
-        label_status.set_text(w.user_status);
-
         session.set_name(w.user_name);
+        label_name.set_text(w.user_name);
+
         session.set_statusmessage(w.user_status);
+        label_status.set_text(w.user_status);
       }
       w.destroy();
     }

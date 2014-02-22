@@ -33,10 +33,17 @@ namespace Venom {
       get { return image_userimage.get_pixbuf(); }
       set { image_userimage.set_from_pixbuf(value); }
     }
-
     public string user_id {
       set { label_id.set_text(value); }
       get { return label_id.get_text(); }
+    }
+    public int max_name_length {
+      get { return entry_username.max_length; }
+      set { entry_username.max_length = value; }
+    }
+    public int max_status_length {
+      get { return entry_statusmessage.max_length; }
+      set { entry_statusmessage.max_length = value; }
     }
 
     private Gtk.Entry entry_username;
