@@ -86,17 +86,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6"
-     inkscape:cx="8.1456459"
-     inkscape:cy="-13.213482"
+     inkscape:zoom="22.4"
+     inkscape:cx="4.6090254"
+     inkscape:cy="13.600041"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="925"
-     inkscape:window-height="759"
-     inkscape:window-x="211"
-     inkscape:window-y="249"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="1920"
+     inkscape:window-height="1032"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -117,17 +117,17 @@
     <rect
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect2996"
-       width="3"
-       height="14"
-       x="7.5"
-       y="1036.3622" />
+       width="3.5"
+       height="16"
+       x="7.25"
+       y="1035.3622" />
     <rect
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect2996-7"
-       width="3"
-       height="14"
-       x="1041.8622"
-       y="-16"
+       width="3.5"
+       height="16"
+       x="1041.6122"
+       y="-17"
        transform="matrix(0,1,-1,0,0,0)" />
   </g>
 </svg>
