@@ -46,9 +46,9 @@ namespace Venom {
     private Tox.Tox handle;
     private ILocalStorage local_storage;
     private DhtServer[] dht_servers = {};
-    private Gee.HashMap<int, Contact> _contacts = new Gee.HashMap<int, Contact>();
-    private Gee.HashMap<int, GroupChat> _groups = new Gee.HashMap<int, GroupChat>();
-    private Gee.HashMap<uint8, FileTransfer> _file_transfers = new Gee.HashMap<uint8,FileTransfer>();
+    private GLib.HashTable<int, Contact> _contacts = new GLib.HashTable<int, Contact>(null, null);
+    private GLib.HashTable<int, GroupChat> _groups = new GLib.HashTable<int, GroupChat>(null, null);
+    private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
     private Thread<int> session_thread = null;
     private bool bootstrapped = false;
     private bool ipv6 = false;
@@ -159,8 +159,8 @@ namespace Venom {
       }
       if(ret != count_friendlist)
         return;
-      _contacts.clear();
-      _groups.clear();
+      _contacts.remove_all();
+      _groups.remove_all();
       for(int i = 0; i < friend_numbers.length; ++i) {
         int friend_id = friend_numbers[i];
         uint8[] friend_key = getclient_id(friend_id);
@@ -255,9 +255,37 @@ namespace Venom {
     }
 
     private void on_group_namelist_change_callback(Tox.Tox tox, int groupnumber, int peernumber, Tox.ChatChange change) {
+      string chat_change_string = "";
+      if(change == Tox.ChatChange.PEER_ADD) {
+        chat_change_string = "ADD";
+      } else if (change == Tox.ChatChange.PEER_DEL) {
+        chat_change_string = "DEL";
+      } else {
+        chat_change_string = "NAME";
+      }
+      //stdout.printf("[gnc] #%i [%i] %s\n", groupnumber, peernumber, chat_change_string);
       Idle.add(() => {
         GroupChat g = _groups.get(groupnumber);
-        g.peer_count = group_number_peers(g);
+        if(change == Tox.ChatChange.PEER_ADD) {
+          //stdout.printf("Adding new peer [%i] to groupchat #%i\n", peernumber, groupnumber);
+          GroupChatContact c = new GroupChatContact(peernumber);
+          g.peers.insert(peernumber, c);
+          g.peer_count++;
+          
+        } else if (change == Tox.ChatChange.PEER_DEL) {
+          GroupChatContact c = g.peers.get(peernumber);
+          if(c != null) {
+            //stdout.printf("Removing peer %s[%i] from groupchat #%i\n", c.name, peernumber, groupnumber);
+            g.peers.remove(peernumber);
+          } else {
+            //stdout.printf("Can't remove peer [%i] from groupchat #%i (no such peer)\n", peernumber, groupnumber);
+          }
+          g.peer_count--;
+        } else { // change == PEER_NAME
+          string new_name = group_peername(g, peernumber);
+          //stdout.printf("Changing name of peer %s[%i] to %s in groupchat #%i\n", g.peers.get(peernumber).name, peernumber, new_name, groupnumber);
+          g.peers.get(peernumber).name = new_name;
+        }
         on_group_peer_changed(g, peernumber, change);
         return false;
       });
@@ -359,7 +387,7 @@ namespace Venom {
         ret = handle.del_friend(c.friend_id);
       }
       if(ret == 0) {
-        _contacts.unset(c.friend_id);
+        _contacts.remove(c.friend_id);
       }
       return ret == 0;
     }
@@ -372,7 +400,7 @@ namespace Venom {
         ret = handle.del_groupchat(g.group_id);
       }
       if(ret == 0) {
-        _groups.unset(g.group_id);
+        _groups.remove(g.group_id);
       }
       return ret == 0;
     }
@@ -530,11 +558,11 @@ namespace Venom {
       }
     }
 
-    public unowned Gee.HashMap<int, Contact> get_contact_list() {
+    public unowned GLib.HashTable<int, Contact> get_contact_list() {
       return _contacts;
     }
 
-    public unowned Gee.HashMap<uint8, FileTransfer> get_filetransfers() {
+    public unowned GLib.HashTable<uint8, FileTransfer> get_filetransfers() {
       return _file_transfers;
     }
 

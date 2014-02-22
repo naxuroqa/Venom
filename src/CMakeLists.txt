@@ -28,7 +28,6 @@ FIND_PACKAGE(PkgConfig REQUIRED)
 SET(TARGET_GLIB 2.32)
 
 PKG_CHECK_MODULES_FULLPATH(GTK    REQUIRED gtk+-3.0>=3.4)
-PKG_CHECK_MODULES_FULLPATH(GEE    REQUIRED gee-0.8>=0.8)
 PKG_CHECK_MODULES_FULLPATH(GIO    REQUIRED gio-2.0>=${TARGET_GLIB})
 PKG_CHECK_MODULES_FULLPATH(GLIB   REQUIRED glib-2.0>=${TARGET_GLIB})
 PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
@@ -58,7 +57,6 @@ ENDIF(LINK_GIO_STATIC)
 
 SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
                   ${GTK_CFLAGS}    ${GTK_CFLAGS_OTHER}
-                  ${GEE_CFLAGS}    ${GEE_CFLAGS_OTHER}
                   ${GIO_CFLAGS}    ${GIO_CFLAGS_OTHER}
                   ${GLIB_CFLAGS}   ${GLIB_CFLAGS_OTHER}
                   ${SQLITE_CFLAGS} ${SQLITE_CFLAGS_OTHER}
@@ -77,10 +75,10 @@ SET( VENOM_SRC
   core/Contact.vala
   core/DhtServer.vala
   core/GroupChat.vala
+  core/GroupChatContact.vala
   core/Message.vala
   core/FileTransfer.vala
   core/ResourceFactory.vala
-  core/SettingsProvider.vala
   core/Tools.vala
   core/ToxSession.vala
   core/LocalStorage.vala
@@ -96,7 +94,6 @@ SET( VENOM_SRC
   ui/ContactListTreeView.vala
   ui/ContactListCellRenderer.vala
   ui/GroupConversationWidget.vala
-  ui/PreferencesWindow.vala
   ui/TextConversationView.vala
   ui/UserInfoWindow.vala
   ui/UITools.vala
@@ -106,7 +103,6 @@ SET( VENOM_SRC
 VALA_PRECOMPILE( VALA_C_VENOM
     ${VENOM_SRC}
   PACKAGES
-    gee-0.8
     gtk+-3.0
     glib-2.0
     gio-2.0

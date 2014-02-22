@@ -21,28 +21,27 @@ Additionally to the tox build dependencies, you will need:
 | valac            | >= 0.18.1 |
 | cmake            | >=2.8.7   |
 | libgtk-3-dev     | >=3.4     |
-| libgee-0.8-dev   | >=0.8     |
 | libjson-glib-dev | >=0.14    |
 | libsqlite3-dev   | >=3.7     |
 
 
 Ubuntu >= 12.10 (Quantal Quetzal) / Linux Mint / Debian:
 
-    apt-get install valac cmake libgtk-3-dev libgee-0.8-dev libjson-glib-dev libsqlite3-dev
+    apt-get install valac cmake libgtk-3-dev libjson-glib-dev libsqlite3-dev
 
-Ubuntu 12.04 (Precise Pangolin): (needs a ppa to get a newer version of valac and libgee-0.8)
+Ubuntu 12.04 (Precise Pangolin): (needs a ppa to get a newer version of valac)
 
     apt-add-repository ppa:vala-team/ppa
     apt-get update
-    apt-get install valac cmake libgtk-3-dev libgee-0.8-dev libjson-glib-dev libsqlite3-dev
+    apt-get install valac cmake libgtk-3-dev libjson-glib-dev libsqlite3-dev
 
 Fedora:
 
-    yum install vala cmake gtk3-devel libgee-devel json-glib-devel sqlite-devel
+    yum install vala cmake gtk3-devel json-glib-devel sqlite-devel
 
 Arch Linux: (There is an [aur-package](https://aur.archlinux.org/packages/venom-git))
 
-    pacman -S vala cmake gtk3 libgee json-glib sqlite
+    pacman -S vala cmake gtk3 json-glib sqlite
 
 Building and installing Venom
 -----------------------------
@@ -83,7 +82,6 @@ Cross compile (mingw-w64)
 * build libsodium
 * build libtoxcore
 * build gtk+-3.x
-* build libgee
 * build libjson-glib
 * build libsqlite3
 

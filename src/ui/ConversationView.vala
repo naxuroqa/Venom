@@ -21,11 +21,13 @@
 
 namespace Venom {
   public interface IConversationView : Gtk.Widget {
+    public abstract bool short_names {get; set;}
     public abstract void add_message(IMessage message);
     public abstract void add_filetransfer(FileTransferChatEntry entry);
   }
 
   public class ConversationView : IConversationView, Gtk.EventBox {
+    public bool short_names {get; set; default = false;}
     private Gtk.Box conversation_list;
     private IMessage last_message = null;
 
@@ -42,9 +44,9 @@ namespace Venom {
     public void add_message(IMessage message) {
       ChatMessage cm;
       if(last_message != null && last_message.compare_sender(message)) {
-        cm = new ChatMessage(message, true);
+        cm = new ChatMessage(message, short_names, true);
       } else {
-        cm = new ChatMessage(message, false);
+        cm = new ChatMessage(message, short_names, false);
       }
       conversation_list.pack_start(cm,false,false,0);
       last_message = message;

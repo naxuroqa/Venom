@@ -1,5 +1,7 @@
 /*
- *    Copyright (C) 2013 Venom authors and contributors
+ *    GroupChatContact.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -18,9 +20,13 @@
  */
 
 namespace Venom {
-  public interface SettingsProvider : GLib.Object {
-    public abstract void reset();
-    public abstract Gtk.Label get_label();
-    public abstract Gtk.Widget get_content();
+  public class GroupChatContact : GLib.Object{
+    public int group_contact_id { get; set; default = -1; }
+    public string name          { get; set; default = ""; }
+
+    public GroupChatContact(int group_contact_id) {
+      this.group_contact_id = group_contact_id;
+      this.name = "";
+    }
   }
 }

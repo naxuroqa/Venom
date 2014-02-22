@@ -104,7 +104,7 @@ DeleteRegKey HKCR \\\"tox\\\"
 ")
 # .deb
 # libtoxcore ommitted, since we are most likely linking it statically
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS  "libgtk-3-0 (>= 3.4.1), libgee-0.8-2 (>= 0.8.0), libjson-glib-1.0-0 (>= 0.14.2), libsqlite3-0 (>= 3.7.9)")
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS  "libgtk-3-0 (>= 3.4.1), libjson-glib-1.0-0 (>= 0.14.2), libsqlite3-0 (>= 3.7.9)")
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION  "web")
 SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${VENOM_WEBSITE}")
@@ -112,7 +112,7 @@ SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${VENOM_WEBSITE}")
 # .rpm
 SET(CPACK_RPM_PACKAGE_LICENSE  "GPLv3")
 SET(CPACK_RPM_PACKAGE_GROUP    "Applications/Internet")
-SET(CPACK_RPM_PACKAGE_REQUIRES "gtk3 >= 3.4.1, libgee >= 0.8.0, json-glib >= 0.14.2, sqlite >= 3.7.9")
+SET(CPACK_RPM_PACKAGE_REQUIRES "gtk3 >= 3.4.1, json-glib >= 0.14.2, sqlite >= 3.7.9")
 # Default: some cpack comment, overwrite if needed
 #SET(CPACK_RPM_CHANGELOG_FILE   "")
 SET(CPACK_RPM_PACKAGE_RELEASE  1)

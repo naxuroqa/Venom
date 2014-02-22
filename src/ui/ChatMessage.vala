@@ -25,7 +25,7 @@ namespace Venom {
     private Gtk.Frame frame;
     private static GLib.Regex regex_uri = null;
 
-    public ChatMessage(IMessage message, bool following = false){
+    public ChatMessage(IMessage message, bool short_names, bool following){
       init_widgets();
 
       if(!following) {
@@ -33,7 +33,11 @@ namespace Venom {
         if(message.message_direction == MessageDirection.OUTGOING) {
           name_label.get_style_context().add_class("own_name");
         }
-        name_label.set_text( Tools.shorten_name( message.get_sender_plain() ) );
+        if(short_names) {
+          name_label.set_text( Tools.shorten_name( message.get_sender_plain() ) );
+        } else {
+          name_label.set_text( message.get_sender_plain() );
+        }
       } else {
         name_label.set_text("");
       }

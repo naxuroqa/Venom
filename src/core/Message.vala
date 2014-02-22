@@ -107,13 +107,13 @@ namespace Venom {
       return "*";
     }
     public override string get_message_plain() {
-      return "%s %s".printf(from != null ? from.name : "me", message);
+      return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from.name : "me", message);
     }
   }
   public class GroupMessage : IMessage, GLib.Object {
     public unowned GroupChat from {get; protected set;}
     public unowned GroupChat to {get; protected set;}
-    public string from_name {get; protected set;}
+    public GroupChatContact from_contact {get; protected set;}
     public string message {get; protected set;}
     public DateTime timestamp {get; protected set;}
     public MessageDirection message_direction {get; protected set;}
@@ -122,15 +122,15 @@ namespace Venom {
       this.message_direction = MessageDirection.OUTGOING;
       this.from = null;
       this.to = receiver;
-      this.from_name = null;
+      this.from_contact = null;
       this.message = message;
       this.timestamp = timestamp;
     }
-    public GroupMessage.incoming(GroupChat sender, string from_name, string message, DateTime timestamp = new DateTime.now_local()) {
+    public GroupMessage.incoming(GroupChat sender, GroupChatContact from_contact, string message, DateTime timestamp = new DateTime.now_local()) {
       this.message_direction = MessageDirection.INCOMING;
       this.from = sender;
       this.to = null;
-      this.from_name = from_name;
+      this.from_contact = from_contact;
       this.message = message;
       this.timestamp = timestamp;
     }
@@ -138,7 +138,7 @@ namespace Venom {
       if(from == null) {
         return "Me";
       } else {
-        return from_name;
+        return from_contact.name;
       }
     }
     public virtual string get_message_plain() {
@@ -147,7 +147,7 @@ namespace Venom {
     public bool compare_sender(IMessage to) {
       if(to is GroupMessage) {
         GroupMessage gm = to as GroupMessage;
-        return ((from == gm.from) && (from_name == gm.from_name));
+        return ((from == gm.from) && (from_contact == gm.from_contact));
       }
       return false;
     }
@@ -157,15 +157,15 @@ namespace Venom {
       this.message_direction = MessageDirection.OUTGOING;
       this.from = null;
       this.to = receiver;
-      this.from_name = null;
+      this.from_contact = from_contact;
       this.message = message;
       this.timestamp = timestamp;
     }
-    public GroupActionMessage.incoming(GroupChat sender, string from_name, string message, DateTime timestamp = new DateTime.now_local()) {
+    public GroupActionMessage.incoming(GroupChat sender, GroupChatContact from_contact, string message, DateTime timestamp = new DateTime.now_local()) {
       this.message_direction = MessageDirection.INCOMING;
       this.from = sender;
       this.to = null;
-      this.from_name = from_name;
+      this.from_contact = from_contact;
       this.message = message;
       this.timestamp = timestamp;
     }
@@ -173,7 +173,7 @@ namespace Venom {
       return "*";
     }
     public override string get_message_plain() {
-      return "%s %s".printf(from != null ? from_name : "me", message);
+      return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from_contact.name : "me", message);
     }
   }
 }

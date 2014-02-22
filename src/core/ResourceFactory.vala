@@ -67,7 +67,6 @@ namespace Venom {
       db_filename = Path.build_filename(tox_config_dir, "tox.db");
       config_filename = Path.build_filename(tox_config_dir, "config.json");
 
-      settings_providers = new Gee.ArrayList<SettingsProvider>();
       default_add_contact_message = "Please let me add you to my contactlist.";
       default_username = "Tox User";
     }
@@ -105,8 +104,6 @@ namespace Venom {
 
     public bool offline_mode {get; set; default = false;}
     public bool textview_mode {get; set; default = false;}
-
-    public Gee.ArrayList<SettingsProvider> settings_providers {get; set;}
 
     private Gdk.Pixbuf? load_image_from_resource(string resourcename) {
       Gdk.Pixbuf buf = null;
