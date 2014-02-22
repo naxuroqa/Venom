@@ -55,10 +55,9 @@ namespace Venom {
       try {
         generator.to_file (path_to_file);
       } catch (Error e) {
-          stderr.printf("Error saving configs:%s\n",e.message);
-          return;
+        stderr.printf("Error saving configs:%s\n",e.message);
+        return;
       }
-
     }
 
     private VenomSettings() {

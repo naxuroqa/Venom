@@ -428,9 +428,9 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="button_preferences">
+                    <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="no_show_all">True</property>
                     <property name="tooltip_text" translatable="yes">Open preferences</property>
                     <property name="image">image_preferences</property>
                     <style>

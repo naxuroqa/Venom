@@ -7,5 +7,6 @@
     <file preprocess="xml-stripblanks">chat_message.ui</file>
     <file preprocess="xml-stripblanks">chat_filetransfer.ui</file>
     <file preprocess="xml-stripblanks">user_info_window.ui</file>
+    <file preprocess="xml-stripblanks">settings_window.ui</file>
   </gresource>
 </gresources>
