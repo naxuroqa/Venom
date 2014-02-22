@@ -40,6 +40,7 @@ namespace Venom {
     private Gtk.Notebook notebook_conversations;
     private Gtk.Menu menu_user;
     private Gtk.ToggleButton button_user;
+    private Gtk.Window settings_window;
 
     private bool cleaned_up = false;
 
@@ -973,8 +974,13 @@ namespace Venom {
     }
 
     public void button_preferences_clicked(Gtk.Button source) {
-      SettingsWindow settings_window = new SettingsWindow();
-      settings_window.visible = true;
+      if(settings_window == null) {
+        settings_window = new SettingsWindow();
+        settings_window.destroy.connect( () => {settings_window = null;});
+        settings_window.visible = true;
+      } else {
+        settings_window.present();
+      }
     }
   }
 }

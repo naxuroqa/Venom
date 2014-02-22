@@ -45,17 +45,14 @@ namespace Venom {
 
       enable_history_checkbox = builder.get_object("enable_history_checkbox") as Gtk.CheckButton;
       enable_history_checkbox.toggled.connect( () => {
-          if(enable_history_checkbox.active) {
-            days_to_log_entry.sensitive = true;
-          } else {
-            days_to_log_entry.sensitive = false;
-          }
+          days_to_log_entry.sensitive = enable_history_checkbox.active;
         });
       days_to_log_entry = builder.get_object("days_to_log_entry") as Gtk.Entry;
       enable_urgency_notification_checkbox = builder.get_object("enable_urgency_notification_checkbox") as Gtk.CheckButton;
       dec_binary_checkbox = builder.get_object("dec_binary_checkbox") as Gtk.CheckButton;
 
       enable_history_checkbox.active = settings.enable_logging;
+      enable_history_checkbox.toggled();
       days_to_log_entry.text = settings.days_to_log.to_string();
       enable_urgency_notification_checkbox.active = settings.enable_urgency_notification;
       dec_binary_checkbox.active = settings.dec_binary_prefix;
