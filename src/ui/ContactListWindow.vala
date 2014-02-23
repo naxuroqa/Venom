@@ -40,6 +40,7 @@ namespace Venom {
     private Gtk.Notebook notebook_conversations;
     private Gtk.Menu menu_user;
     private Gtk.ToggleButton button_user;
+    private Gtk.Window settings_window;
 
     private bool cleaned_up = false;
 
@@ -428,8 +429,11 @@ namespace Venom {
 
     private void edit_user_information() {
       UserInfoWindow w = new UserInfoWindow();
-      w.user_name  = label_name.get_text();
+
+      w.user_name = label_name.get_text();
+      w.max_name_length = Tox.MAX_NAME_LENGTH;
       w.user_status = label_status.get_text();
+      w.max_status_length = Tox.MAX_STATUSMESSAGE_LENGTH;
       w.user_image = image_userimage.get_pixbuf();
       w.user_id = Tools.bin_to_hexstring(session.get_address());
 
@@ -438,13 +442,14 @@ namespace Venom {
       int response = w.run();
 
       if(response == Gtk.ResponseType.APPLY) {
+        //TODO once possible in core
         image_userimage.set_from_pixbuf(w.user_image);
 
-        label_name.set_text(w.user_name);
-        label_status.set_text(w.user_status);
-
         session.set_name(w.user_name);
+        label_name.set_text(w.user_name);
+
         session.set_statusmessage(w.user_status);
+        label_status.set_text(w.user_status);
       }
       w.destroy();
     }
@@ -969,9 +974,13 @@ namespace Venom {
     }
 
     public void button_preferences_clicked(Gtk.Button source) {
-      //PreferencesWindow preferences_window = new PreferencesWindow();
-      //preferences_window.run();
-      //preferences_window.destroy();
+      if(settings_window == null) {
+        settings_window = new SettingsWindow();
+        settings_window.destroy.connect( () => {settings_window = null;});
+        settings_window.visible = true;
+      } else {
+        settings_window.present();
+      }
     }
   }
 }

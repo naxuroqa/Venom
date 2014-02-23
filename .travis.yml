@@ -5,33 +5,49 @@ compiler:
 
 before_install:
   - sudo apt-add-repository -y ppa:vala-team/ppa
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq valac cmake libgtk-3-dev libgee-0.8-dev check libjson-glib-dev libsqlite3-dev
+  - sudo apt-get update -qq > /dev/null
+  - sudo apt-get install -qq valac cmake libgtk-3-dev check libjson-glib-dev libsqlite3-dev yasm > /dev/null
 
 before_script:
-# installing libsodium
+  #installing libsodium, needed for Core
   - _libsodium_ver=0.4.5
-  - wget https://github.com/jedisct1/libsodium/releases/download/${_libsodium_ver}/libsodium-${_libsodium_ver}.tar.gz
-  - tar -xzf libsodium-${_libsodium_ver}.tar.gz
-  - pushd libsodium-${_libsodium_ver}
-  - ./autogen.sh
-  - ./configure --prefix=/usr && make -j
-  - sudo make install
+  - git clone git://github.com/jedisct1/libsodium.git > /dev/null
+  - pushd libsodium
+  - git checkout tags/${_libsodium_ver} > /dev/null
+  - ./autogen.sh > /dev/null
+  - ./configure --prefix=/usr > /dev/null
+  - make -j3 > /dev/null
+  - sudo make install > /dev/null
   - popd
-  - sudo ldconfig
+  #installing libopus, needed for audio encoding/decoding
+  - wget http://downloads.xiph.org/releases/opus/opus-1.0.3.tar.gz > /dev/null
+  - tar xzf opus-1.0.3.tar.gz > /dev/null
+  - pushd opus-1.0.3
+  - ./configure --prefix=/usr > /dev/null
+  - make -j3 > /dev/null
+  - sudo make install > /dev/null
+  - popd
+  #installing vpx
+  - git clone http://git.chromium.org/webm/libvpx.git > /dev/null
+  - pushd libvpx
+  - ./configure --prefix=/usr > /dev/null
+  - make -j3 > /dev/null
+  - sudo make install > /dev/null
+  - popd
+  #installing toxcore
+  - git clone http://github.com/irungentoo/ProjectTox-Core.git > /dev/null
+  - pushd ProjectTox-Core
+  - autoreconf -i > /dev/null
+  - ./configure --prefix=/usr --disable-testing --disable-ntox --disable-dht-bootstrap-daemon > /dev/null
+  - make -j3 > /dev/null
+  - sudo make install > /dev/null
+  - popd
+  #creating libraries links and updating cache
+  - sudo ldconfig > /dev/null
 
-# installing toxcore
-  - wget https://github.com/irungentoo/ProjectTox-Core/archive/master.tar.gz
-  - tar -xzf master.tar.gz
-  - pushd ProjectTox-Core-master
-  - autoreconf -i
-  - ./configure --prefix=/usr --disable-testing --disable-ntox --disable-av --disable-dht-bootstrap-daemon && make -j
-  - sudo make install
-  - popd
-  - sudo ldconfig
 script:
   - mkdir build
   - cd build
   - cmake ..
-  - make -j
+  - make -j3
   - sudo make install
