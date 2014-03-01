@@ -34,5 +34,34 @@ namespace Venom {
       dialog.run();
       dialog.destroy();
     }
+    public static string format_filesize(uint64 size) {
+      if(VenomSettings.instance.dec_binary_prefix) {
+        uint64 kibibyte = 1024;
+        uint64 mebibyte = kibibyte * 1024;
+        uint64 gibibyte = mebibyte * 1024;
+        uint64 tebibyte = gibibyte * 1024;
+        uint64 pebibyte = tebibyte * 1024;
+
+        if(size < kibibyte) return "%llu bytes".printf(size);
+        if(size < mebibyte) return "%.2lf KiB".printf( (double) size / kibibyte );
+        if(size < gibibyte) return "%.2lf MiB".printf( (double) size / mebibyte );
+        if(size < tebibyte) return "%.2lf GiB".printf( (double) size / gibibyte );
+        if(size < pebibyte) return "%.2lf TiB".printf( (double) size / tebibyte );
+        return "really big file";
+      } else {
+        uint64 kilobyte = 1000;
+        uint64 megabyte = kilobyte * 1000;
+        uint64 gigabyte = megabyte * 1000;
+        uint64 terabyte = gigabyte * 1000;
+        uint64 petabyte = terabyte * 1000;
+
+        if(size < kilobyte) return "%llu bytes".printf(size);
+        if(size < megabyte) return "%.2lf KB".printf( (double) size / kilobyte );
+        if(size < gigabyte) return "%.2lf MB".printf( (double) size / megabyte );
+        if(size < terabyte) return "%.2lf GB".printf( (double) size / gigabyte );
+        if(size < petabyte) return "%.2lf TB".printf( (double) size / terabyte );
+        return "really big file";
+      }
+    }
   }
 }

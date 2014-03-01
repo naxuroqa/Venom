@@ -126,9 +126,9 @@ namespace Testing {
     private void on_friend_request(uint8[] key, uint8[] data) {
       uint8[] public_key = Venom.Tools.clone(key, Tox.CLIENT_ID_SIZE);
       stdout.printf("[LOG] Friend request from %s received.\n", Venom.Tools.bin_to_hexstring(public_key));
-      Tox.FriendAddError friend_number = tox.add_friend_norequest(public_key);
+      int friend_number = tox.add_friend_norequest(public_key);
       if(friend_number < 0) {
-        stderr.printf("[ERR] Friend could not be added :%s\n", Venom.Tools.friend_add_error_to_string(friend_number));
+        stderr.printf("[ERR] Friend could not be added.\n");
       }
     }
     
