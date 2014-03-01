@@ -20,15 +20,16 @@
  */
 
 namespace Venom {
-  public class SettingsWindow : Gtk.Window {
+  public class SettingsWindow : Gtk.Dialog {
     private Gtk.Box box;
     private Gtk.CheckButton enable_history_checkbox;
-    private Gtk.Entry days_to_log_entry;
+    private Gtk.SpinButton days_to_log_spinbutton;
     private Gtk.CheckButton enable_urgency_notification_checkbox;
     private Gtk.CheckButton dec_binary_checkbox;
     private VenomSettings settings = VenomSettings.instance;
 
     public SettingsWindow() {
+      title = "Settings";
       Gtk.Builder builder = new Gtk.Builder();
       try {
         builder.add_from_resource("/org/gtk/venom/settings_window.ui");
@@ -36,42 +37,37 @@ namespace Venom {
         stderr.printf("Loading conversation window failed!\n");
       }
       box = builder.get_object("box1") as Gtk.Box;
-      this.add(box);
-
-      Gtk.Button save_button = builder.get_object("save_button") as Gtk.Button;
-      save_button.clicked.connect(save);
-      Gtk.Button cancel_button = builder.get_object("cancel_button") as Gtk.Button;
-      cancel_button.clicked.connect(cancel);
+      get_content_area().add(box);
 
       enable_history_checkbox = builder.get_object("enable_history_checkbox") as Gtk.CheckButton;
       enable_history_checkbox.toggled.connect( () => {
-          days_to_log_entry.sensitive = enable_history_checkbox.active;
+          days_to_log_spinbutton.sensitive = enable_history_checkbox.active;
         });
-      days_to_log_entry = builder.get_object("days_to_log_entry") as Gtk.Entry;
+      days_to_log_spinbutton = builder.get_object("days_to_log_spinbutton") as Gtk.SpinButton;
       enable_urgency_notification_checkbox = builder.get_object("enable_urgency_notification_checkbox") as Gtk.CheckButton;
       dec_binary_checkbox = builder.get_object("dec_binary_checkbox") as Gtk.CheckButton;
 
       enable_history_checkbox.active = settings.enable_logging;
       enable_history_checkbox.toggled();
-      days_to_log_entry.text = settings.days_to_log.to_string();
+      days_to_log_spinbutton.value = settings.days_to_log;
       enable_urgency_notification_checkbox.active = settings.enable_urgency_notification;
       dec_binary_checkbox.active = settings.dec_binary_prefix;
 
-      this.title = "Settings";
+      add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Save", Gtk.ResponseType.OK, null);
+      set_default_response(Gtk.ResponseType.CANCEL);
+
+      response.connect( (id) => {
+        if(id == Gtk.ResponseType.OK) {
+          settings.enable_logging = enable_history_checkbox.active;
+          settings.days_to_log = (int) days_to_log_spinbutton.value;
+          settings.enable_urgency_notification = enable_urgency_notification_checkbox.active;
+          settings.dec_binary_prefix = dec_binary_checkbox.active;
+
+          settings.save_setting(ResourceFactory.instance.config_filename);
+        }
+        destroy();
+      });
     }
 
-    private void save(){
-      settings.enable_logging = enable_history_checkbox.active;
-      settings.days_to_log = int.parse(days_to_log_entry.text);
-      settings.enable_urgency_notification = enable_urgency_notification_checkbox.active;
-      settings.dec_binary_prefix = dec_binary_checkbox.active;
-
-      settings.save_setting(ResourceFactory.instance.config_filename);
-      this.destroy();
-    }
-
-    private void cancel(){
-      this.destroy();
-    }
   }
 }
