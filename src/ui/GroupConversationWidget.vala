@@ -125,10 +125,15 @@ namespace Venom {
       conversation_view.get_style_context().add_class("chat_list");
       conversation_view.short_names = false;
 
-      //TODO: move to bottom only when wanted
+      Gtk.Adjustment vadjustment = scrolled_window.get_vadjustment();
+      bool scroll_to_bottom = true;
       conversation_view.size_allocate.connect( () => {
-        Gtk.Adjustment adjustment = scrolled_window.get_vadjustment();
-        adjustment.set_value(adjustment.upper - adjustment.page_size);
+        if(scroll_to_bottom) {
+          vadjustment.value = vadjustment.upper - vadjustment.page_size;
+        }
+      });
+      vadjustment.value_changed.connect( () => {
+        scroll_to_bottom = (vadjustment.value == vadjustment.upper - vadjustment.page_size);
       });
 
       delete_event.connect(hide_on_delete);
