@@ -116,6 +116,13 @@ namespace Tox {
   [CCode (cname = "Tox", free_function = "tox_kill", cprefix = "tox_", has_type_id = false)]
   [Compact]
   public class Tox {
+    /* NOTE: Strings in Tox are all UTF-8, also the last byte in all strings must be NULL (0).
+     *
+     * The length when passing those strings to the core includes that NULL character.
+     *
+     * If you send non NULL terminated strings Tox will force NULL terminates them when it receives them.
+     */
+
     /*
      *  Run this function at startup.
      *
@@ -132,14 +139,14 @@ namespace Tox {
     [CCode (cname = "tox_new")]
     public Tox(uint8 ipv6enabled);
 
-    /*  return FRIEND_ADDRESS_SIZE byte address to give to others.
+    /*  return TOX_FRIEND_ADDRESS_SIZE byte address to give to others.
      * format: [client_id (32 bytes)][nospam number (4 bytes)][checksum (2 bytes)]
      */
     public void get_address([CCode(array_length=false)] uint8[] address);
 
     /* Add a friend.
      * Set the data that will be sent along with friend request.
-     * address is the address of the friend (returned by getaddress of the friend you wish to add) it must be FRIEND_ADDRESS_SIZE bytes. TODO: add checksum.
+     * address is the address of the friend (returned by getaddress of the friend you wish to add) it must be TOX_FRIEND_ADDRESS_SIZE bytes. TODO: add checksum.
      * data is the data and length is the length.
      *
      *  return the friend number if success.
@@ -159,7 +166,7 @@ namespace Tox {
      *  return the friend number if success.
      *  return -1 if failure.
      */
-    public FriendAddError add_friend_norequest([CCode(array_length=false)] uint8[] client_id);
+    public int add_friend_norequest([CCode(array_length=false)] uint8[] client_id);
 
     /* return the friend id associated to that client id.
         return -1 if no such friend */
@@ -201,7 +208,7 @@ namespace Tox {
      * however we can generate an id for you by calling plain m_sendmessage.
      */
     public uint32 send_message(int friendnumber, [CCode(array_length_type="guint32")] uint8[] message);
-    public uint32 send_message_withid(int friendnumber, uint32 id, [CCode(array_length_type="guint32")] uint8[] message);
+    public uint32 send_message_withid(int friendnumber, uint32 theid, [CCode(array_length_type="guint32")] uint8[] message);
 
     /* Send an action to an online friend.
      *
@@ -277,6 +284,21 @@ namespace Tox {
     public UserStatus get_user_status(int friendnumber);
     public UserStatus get_self_user_status();
 
+    /* Set our typing status for a friend.
+     * You are responsible for turning it on or off.
+     *
+     * returns 0 on success.
+     * returns -1 on failure.
+     */
+    public int set_user_is_typing(int friendnumber, uint8 is_typing);
+
+    /* Get the typing status of a friend.
+     *
+     * returns 0 if friend is not typing.
+     * returns 1 if friend is typing.
+     */
+    public int get_is_typing(int friendnumber);
+
     /* Sets whether we send read receipts for friendnumber.
      * This function is not lazy, and it will fail if yesno is not (0 or 1).
      */
@@ -286,6 +308,9 @@ namespace Tox {
      * You should use this to determine how much memory to allocate
      * for copy_friendlist. */
     public uint32 count_friendlist();
+
+    /* Return the number of online friends in the instance m. */
+    public uint32 get_num_online_friends();
 
     /* Copy a list of valid friend IDs into the array out_list.
      * If out_list is NULL, returns 0.
@@ -331,6 +356,12 @@ namespace Tox {
      */
     public delegate void UserStatusCallback(Tox tox, int friend_number, UserStatus user_status);
     public void callback_user_status(UserStatusCallback callback);
+
+    /* Set the callback for typing changes.
+     *  function (int friendnumber, int is_typing)
+     */
+    public delegate void TypingChangeCallback(Tox tox, int friendnumber, int is_typing);
+    public void callback_typing_change(TypingChangeCallback callback);
 
     /* Set the callback for read receipts.
      *  function(int friendnumber, uint32_t receipt)

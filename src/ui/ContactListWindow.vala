@@ -529,14 +529,13 @@ namespace Venom {
       if(response != Gtk.ResponseType.ACCEPT)
         return;
 
-      Tox.FriendAddError friend_add_error = session.addfriend_norequest(c);
-      if((int)friend_add_error < 0) {
-        stderr.printf("Could not add friend: %s\n", Tools.friend_add_error_to_string(friend_add_error));
+      int friend_add_error = session.addfriend_norequest(c);
+      if(friend_add_error < 0) {
+        stderr.printf("Friend could not be added.\n");
         return;
       }
       stdout.printf("Added new friend #%i\n", c.friend_id);
       contact_added(c);
-      this.set_urgency();
     }
     private void on_friendmessage(Contact c, string message) {
       stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name != null ? c.name : "<%i>".printf(c.friend_id), message);

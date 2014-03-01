@@ -334,10 +334,10 @@ namespace Venom {
       return ret;
     }
 
-    public Tox.FriendAddError addfriend_norequest(Contact c)
+    public int addfriend_norequest(Contact c)
       requires(c != null)
     {
-      Tox.FriendAddError ret = Tox.FriendAddError.UNKNOWN;
+      int ret = -1;
 
       if(c.public_key.length != Tox.CLIENT_ID_SIZE)
         return ret;
@@ -345,10 +345,10 @@ namespace Venom {
       lock(handle) {
         ret = handle.add_friend_norequest(c.public_key);
       }
-      if(ret < 0)
-        return ret;
-      c.friend_id = (int)ret;
-      _contacts.set((int)ret, c);
+      if(ret >= 0) {
+        c.friend_id = ret;
+        _contacts.set(ret, c);
+      }
       return ret;
     }
 
