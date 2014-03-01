@@ -120,15 +120,18 @@ namespace Venom {
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
 
+      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
+
       if( ResourceFactory.instance.textview_mode ) {
         conversation_view = new TextConversationView();
+        scrolled_window.add(conversation_view);
       } else {
         conversation_view = new ConversationView();
+        scrolled_window.add_with_viewport(conversation_view);
       }
       conversation_view.get_style_context().add_class("chat_list");
       conversation_view.short_names = true;
-      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
-      scrolled_window.add_with_viewport(conversation_view);
+
 
       //TODO: move to bottom only when wanted
       conversation_view.size_allocate.connect( () => {

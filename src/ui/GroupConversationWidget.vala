@@ -112,14 +112,18 @@ namespace Venom {
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
 
-      if(ResourceFactory.instance.textview_mode) {
+
+      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
+
+      if( ResourceFactory.instance.textview_mode ) {
         conversation_view = new TextConversationView();
+        scrolled_window.add(conversation_view);
       } else {
         conversation_view = new ConversationView();
+        scrolled_window.add_with_viewport(conversation_view);
       }
       conversation_view.get_style_context().add_class("chat_list");
-      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
-      scrolled_window.add_with_viewport(conversation_view);
+      conversation_view.short_names = false;
 
       //TODO: move to bottom only when wanted
       conversation_view.size_allocate.connect( () => {
@@ -135,15 +139,6 @@ namespace Venom {
       buffer.get_end_iter(out text_end);
       buffer.insert_with_tags(text_end, text, text.length, tag);
     }
-
-
-    /*
-    //history
-    public void load_history(GLib.List<Message> messages) {
-      messages.foreach((message) => {
-        conversation_view.add_message(message);
-        });
-    }*/
 
     public void on_incoming_message(GroupMessage message) {
       if(message.from != groupchat)
