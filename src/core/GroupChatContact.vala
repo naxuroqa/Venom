@@ -21,11 +21,12 @@
 
 namespace Venom {
   public class GroupChatContact : GLib.Object{
-    public int group_contact_id { get; set; default = -1;   }
-    public string name          { get; set; default = null; }
+    public int group_contact_id { get; set; }
+    public string name          { get; set; }
 
-    public GroupChatContact(int group_contact_id) {
+    public GroupChatContact(int group_contact_id, string? name = null) {
       this.group_contact_id = group_contact_id;
+      this.name = name;
     }
   }
 }

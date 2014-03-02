@@ -648,8 +648,20 @@ namespace Venom {
       stdout.printf("[gm] %s [%i]@%i: %s\n", from_name, friendgroupnumber, g.group_id, message);
 
       GroupConversationWidget w = open_group_conversation_with(g);
-      incoming_group_message(new GroupMessage.incoming(g, g.peers.get(friendgroupnumber), message));
-      
+
+      //FIXME remove this workaround as soon as the problem gets fixed in the core
+      /** BEGIN **/
+      GroupChatContact gcc = g.peers.get(friendgroupnumber);
+      if(gcc == null) {
+        stderr.printf("Group message from unknown contact #%i [%i]\n", friendgroupnumber, g.group_id);
+        gcc = new GroupChatContact(friendgroupnumber);
+        gcc.name = from_name;
+        g.peers.set(friendgroupnumber, gcc);
+        on_group_peer_changed(g, friendgroupnumber, Tox.ChatChange.PEER_ADD);
+      }
+      /** END **/
+      incoming_group_message(new GroupMessage.incoming(g, gcc, message));
+
       if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
         g.unread_messages++;
         contact_list_tree_view.update_entry(g);
@@ -662,7 +674,19 @@ namespace Venom {
       stdout.printf("[ga] %s [%i]@%i: %s\n", from_name, friendgroupnumber, g.group_id, message);
 
       GroupConversationWidget w = open_group_conversation_with(g);
-      incoming_group_action(new GroupActionMessage.incoming(g, g.peers.get(friendgroupnumber), message));
+
+      //FIXME remove this workaround as soon as the problem gets fixed in the core
+      /** BEGIN **/
+      GroupChatContact gcc = g.peers.get(friendgroupnumber);
+      if(gcc == null) {
+        stderr.printf("Group action from unknown contact #%i [%i]\n", friendgroupnumber, g.group_id);
+        gcc = new GroupChatContact(friendgroupnumber);
+        gcc.name = from_name;
+        g.peers.set(friendgroupnumber, gcc);
+        on_group_peer_changed(g, friendgroupnumber, Tox.ChatChange.PEER_ADD);
+      }
+      /** END **/
+      incoming_group_action(new GroupActionMessage.incoming(g, gcc, message));
       
       if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
         g.unread_messages++;
