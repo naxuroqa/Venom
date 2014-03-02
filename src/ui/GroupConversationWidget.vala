@@ -30,6 +30,7 @@ namespace Venom {
     private Gtk.TextTag empty_message_tag;
 
     private IConversationView conversation_view;
+    private IGroupConversationSidebar group_conversation_sidebar;
 
     private unowned GroupChat groupchat {get; private set;}
 
@@ -39,10 +40,10 @@ namespace Venom {
     public GroupConversationWidget( GroupChat groupchat ) {
       this.groupchat = groupchat;
       init_widgets();
-      update_contact();
+      update_groupchat_info();
     }
 
-    public void update_contact() {
+    public void update_groupchat_info() {
       // update groupchat name
       label_groupchat_name.set_text("Groupchat #%i".printf(groupchat.group_id));
 
@@ -51,6 +52,14 @@ namespace Venom {
 
       // update groupchat image
       image_groupchat_image.set_from_pixbuf(groupchat.image != null ? groupchat.image : ResourceFactory.instance.default_groupchat);
+    }
+
+    public void update_contact(int peernumber, Tox.ChatChange change) {
+      if(change == Tox.ChatChange.PEER_ADD || change == Tox.ChatChange.PEER_DEL) {
+        update_groupchat_info();
+      }
+      // update sidebar
+      group_conversation_sidebar.update_contact(peernumber, change);
     }
 
     private void init_widgets() {
@@ -107,6 +116,11 @@ namespace Venom {
         }
         return false;
       });
+
+      Gtk.Paned paned_sidebar = builder.get_object("paned_sidebar") as Gtk.Paned;
+      group_conversation_sidebar = new GroupConversationSidebar(groupchat);
+      group_conversation_sidebar.show_all();
+      paned_sidebar.pack2(group_conversation_sidebar, false, true);
 
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);

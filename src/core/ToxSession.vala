@@ -255,14 +255,14 @@ namespace Venom {
     }
 
     private void on_group_namelist_change_callback(Tox.Tox tox, int groupnumber, int peernumber, Tox.ChatChange change) {
-      string chat_change_string = "";
+      /*string chat_change_string = "";
       if(change == Tox.ChatChange.PEER_ADD) {
         chat_change_string = "ADD";
       } else if (change == Tox.ChatChange.PEER_DEL) {
         chat_change_string = "DEL";
       } else {
         chat_change_string = "NAME";
-      }
+      }*/
       //stdout.printf("[gnc] #%i [%i] %s\n", groupnumber, peernumber, chat_change_string);
       Idle.add(() => {
         GroupChat g = _groups.get(groupnumber);

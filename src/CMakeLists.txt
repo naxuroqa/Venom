@@ -88,11 +88,12 @@ SET( VENOM_SRC
   ui/ConversationView.vala
   ui/ConversationWidget.vala
   ui/ChatMessage.vala
-  ui/FileTransferChatEntry.vala
   ui/ContactFilter.vala
   ui/ContactListWindow.vala
   ui/ContactListTreeView.vala
   ui/ContactListCellRenderer.vala
+  ui/FileTransferChatEntry.vala
+  ui/GroupConversationSidebar.vala
   ui/GroupConversationWidget.vala
   ui/TextConversationView.vala
   ui/UserInfoWindow.vala
@@ -175,7 +176,6 @@ TARGET_LINK_LIBRARIES( venom
                        ${GIO_LIBRARIES}
                        ${GLIB_LIBRARIES}
                        ${GTK_LIBRARIES}
-                       ${GEE_LIBRARIES}
                        ${JSON_LIBRARIES}
 )
 

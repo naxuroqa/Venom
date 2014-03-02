@@ -233,17 +233,32 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="orientation">vertical</property>
+        <property name="position">2147483647</property>
+        <property name="position_set">True</property>
         <child>
-          <object class="GtkScrolledWindow" id="scrolled_window">
+          <object class="GtkPaned" id="paned_sidebar">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolled_window">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="resize">True</property>
+                <property name="shrink">False</property>
+              </packing>
+            </child>
             <child>
               <placeholder/>
             </child>
           </object>
           <packing>
             <property name="resize">True</property>
-            <property name="shrink">False</property>
+            <property name="shrink">True</property>
           </packing>
         </child>
         <child>

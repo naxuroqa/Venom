@@ -325,7 +325,7 @@ namespace Venom {
         contact_list_tree_view.update_entry(g);
         GroupConversationWidget w = group_conversation_widgets[g.group_id];
         if(w != null)
-          w.update_contact();
+          w.update_groupchat_info();
       } );
 
       contact_removed.connect( (c) => {
@@ -673,7 +673,7 @@ namespace Venom {
 
     private void on_group_peer_changed(GroupChat g, int peernumber, Tox.ChatChange change) {
       GroupConversationWidget w = open_group_conversation_with(g);
-      w.update_contact();
+      w.update_contact(peernumber, change);
       groupchat_changed(g);
     }
 

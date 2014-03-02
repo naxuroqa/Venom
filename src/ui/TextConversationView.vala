@@ -51,7 +51,7 @@ namespace Venom {
       buffer.insert_with_tags(text_end, text, text.length, bold_tag);
 
       buffer.get_end_iter(out text_end);
-      text = "%s ".printf(
+      text = "%s".printf(
         message.get_message_plain()
       );
       if (text[0] == '>') {
