@@ -158,7 +158,7 @@ namespace Venom {
       } else if(entry is GroupChat) {
         GroupChat g = entry as GroupChat;
         if(g.peer_count > 0) {
-          layout.set_text("%i peer%s connected".printf(g.peer_count, g.peer_count > 1 ? "s" : ""), -1);
+          layout.set_text("%i user%s in chat".printf(g.peer_count, g.peer_count > 1 ? "s" : ""), -1);
         } else{
           layout.set_text("Offline", -1);
         }
