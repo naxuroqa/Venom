@@ -118,9 +118,11 @@ namespace Venom {
       });
 
       Gtk.Paned paned_sidebar = builder.get_object("paned_sidebar") as Gtk.Paned;
+      Gtk.ScrolledWindow sidebar_scrolled_window = new Gtk.ScrolledWindow(null, null);
       group_conversation_sidebar = new GroupConversationSidebar(groupchat);
-      group_conversation_sidebar.show_all();
-      paned_sidebar.pack2(group_conversation_sidebar, false, true);
+      sidebar_scrolled_window.add(group_conversation_sidebar);
+      sidebar_scrolled_window.show_all();
+      paned_sidebar.pack2(sidebar_scrolled_window, false, true);
 
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
