@@ -83,7 +83,9 @@ namespace Venom {
       //TODO
       //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
       //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
-      //Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
+      Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
+      button_send_file.visible = false;
+      button_send_file.no_show_all = true;
 
       //button_send_file.clicked.connect(button_send_file_clicked);
 
