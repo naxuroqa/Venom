@@ -112,6 +112,7 @@ VALA_PRECOMPILE( VALA_C_VENOM
     sqlite3
     tox-1.0
     config
+    posix
   OPTIONS
     --target-glib=${TARGET_GLIB}
     --thread

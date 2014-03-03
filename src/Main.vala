@@ -35,6 +35,7 @@ public class Main : GLib.Object {
 	  };
 
     public static int main (string[] args) {
+      Posix.umask(Posix.S_IRGRP | Posix.S_IWGRP | Posix.S_IROTH | Posix.S_IWOTH);
       try {
 		    GLib.OptionContext option_context = new GLib.OptionContext("");
 		    option_context.set_help_enabled(true);
