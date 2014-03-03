@@ -98,6 +98,15 @@ namespace Venom {
       return parts[0];
     }
 
+    public static string remove_whitespace(string str) {
+      try {
+			var regex = new GLib.Regex ("\\s");
+			  return(regex.replace(str, -1, 0, ""));
+		  } catch (GLib.RegexError e) {
+			  GLib.assert_not_reached ();
+		  }
+    }
+
     public static string friend_add_error_to_string(Tox.FriendAddError friend_add_error) {
       switch(friend_add_error) {
         case Tox.FriendAddError.TOOLONG:

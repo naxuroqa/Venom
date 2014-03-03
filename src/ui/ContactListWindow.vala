@@ -939,13 +939,8 @@ namespace Venom {
     }
 
     public void add_contact(string contact_id_string, string contact_message = ResourceFactory.instance.default_add_contact_message) {
-      string trimmed_id = contact_id_string.dup();
-      try {
-			var regex = new GLib.Regex ("\\s");
-			  trimmed_id = regex.replace(trimmed_id, -1, 0, "");
-		  } catch (GLib.RegexError e) {
-			  GLib.assert_not_reached ();
-		  }
+      string trimmed_id = Tools.remove_whitespace(contact_id_string);
+
       if(trimmed_id.length != Tox.FRIEND_ADDRESS_SIZE * 2) {
         string error_message = "Could not add friend: Invalid ID\n";
         stderr.printf(error_message);
@@ -977,12 +972,13 @@ namespace Venom {
     // GUI Events
     public void button_add_contact_clicked(Gtk.Button source) {
       AddContactDialog dialog = new AddContactDialog();
+      dialog.message = ResourceFactory.instance.default_add_contact_message;
       dialog.set_modal(true);
       dialog.set_transient_for(this);
 
       int response = dialog.run();
-      string contact_id_string = dialog.contact_id;
-      string contact_message = dialog.contact_message;
+      string contact_id_string = dialog.id;
+      string contact_message = dialog.message;
       dialog.destroy();
 
       if(response != Gtk.ResponseType.OK)

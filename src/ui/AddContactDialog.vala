@@ -21,14 +21,15 @@
 
 namespace Venom {
   public class AddContactDialog : Gtk.Dialog{
-    public string contact_id {
-      get { return entry_contact_id.get_text(); }
-      set { entry_contact_id.set_text(value); }
+    public string id {
+      get { return entry_contact_id.text; }
+      set { entry_contact_id.text = value; }
     }
-    public string contact_message {
+    public string message {
       owned get { return textview_contact_message.buffer.text; }
       set { textview_contact_message.buffer.text = value; }
     }
+    public int max_message_length { get; set; default = -1;}
 
     private Gtk.Entry entry_contact_id;
     private Gtk.TextView textview_contact_message;
@@ -55,6 +56,8 @@ namespace Venom {
       entry_contact_id.changed.connect(on_entry_changed);
       on_entry_changed();
 
+      textview_contact_message.buffer.insert_text.connect(on_insert_text);
+
       try {
         id_regex = new GLib.Regex("^[[:xdigit:]]*$");
       } catch (RegexError re) {
@@ -65,22 +68,31 @@ namespace Venom {
       this.set_default_response(Gtk.ResponseType.OK);
       this.title = "Add contact";
       this.set_default_size(400, 250);
+    }
 
-      contact_message = ResourceFactory.instance.default_add_contact_message;
+    private void on_insert_text(ref Gtk.TextIter pos, string new_text, int new_text_length) {
+      int buffer_length = textview_contact_message.buffer.text.length;
+      if(max_message_length < 0 || buffer_length <= max_message_length)
+        return;
+
+      //TODO cut off too long messages
     }
 
     private void on_entry_changed() {
-      if(contact_id == null || contact_id == "") {
+      if(id == null || id == "") {
         entry_contact_id.secondary_icon_tooltip_text = "No ID given";
         entry_contact_id.secondary_icon_name = "dialog-warning";
-      } else if (contact_id.length != Tox.FRIEND_ADDRESS_SIZE*2) {
-        entry_contact_id.secondary_icon_tooltip_text = "ID of invalid size";
-        entry_contact_id.secondary_icon_name = "dialog-warning";
-      } else if (id_regex != null && !id_regex.match(contact_id)) {
-        entry_contact_id.secondary_icon_tooltip_text = "ID contains invalid characters";
-        entry_contact_id.secondary_icon_name = "dialog-warning";
       } else {
-        entry_contact_id.secondary_icon_pixbuf = null;
+        string stripped_id = Tools.remove_whitespace(id);
+        if (stripped_id.length != Tox.FRIEND_ADDRESS_SIZE*2) {
+          entry_contact_id.secondary_icon_tooltip_text = "ID of invalid size";
+          entry_contact_id.secondary_icon_name = "dialog-warning";
+        } else if (id_regex != null && !id_regex.match(stripped_id)) {
+          entry_contact_id.secondary_icon_tooltip_text = "ID contains invalid characters";
+          entry_contact_id.secondary_icon_name = "dialog-warning";
+        } else {
+          entry_contact_id.secondary_icon_pixbuf = null;
+        }
       }
     }
   }
