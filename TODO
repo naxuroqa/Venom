@@ -11,7 +11,7 @@
 [0.4]
 * Local storage additionally to tox data file (sqlite, plain xml file, ...?)
   * add local nicknames/tags for contacts (optionally)
-  * make dht servers editable / selectable
+  * make dht boostrapping nodes editable / selectable
 * add settings window
 
 [future]

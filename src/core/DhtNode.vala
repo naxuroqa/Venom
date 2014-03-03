@@ -1,5 +1,5 @@
 /*
- *    DhtServer.vala
+ *    DhtNode.vala
  *
  *    Copyright (C) 2013-2014  Venom authors and contributors
  *
@@ -21,19 +21,19 @@
 
 using Tox;
 namespace Venom {
-  public class DhtServer : GLib.Object {
+  public class DhtNode : GLib.Object {
     public string host {get; set;}
     public uint16 port {get; set;}
     public uint8[] pub_key {get; set;}
     public bool is_ipv6 {get; set;}
 
-    public DhtServer.ipv4(string host, string pub_key, uint16 port = 33445) {
+    public DhtNode.ipv4(string host, string pub_key, uint16 port = 33445) {
       this.host = host;
       this.port = port;
       this.pub_key = Tools.hexstring_to_bin(pub_key);
       this.is_ipv6 = false;
     }
-    public DhtServer.ipv6(string host, string pub_key, uint16 port = 33445) {
+    public DhtNode.ipv6(string host, string pub_key, uint16 port = 33445) {
       this.host = host;
       this.port = port;
       this.pub_key = Tools.hexstring_to_bin(pub_key);

@@ -45,7 +45,7 @@ namespace Venom {
   public class ToxSession : Object {
     private Tox.Tox handle;
     private ILocalStorage local_storage;
-    private DhtServer[] dht_servers = {};
+    private DhtNode[] dht_nodes = {};
     private GLib.HashTable<int, Contact> _contacts = new GLib.HashTable<int, Contact>(null, null);
     private GLib.HashTable<int, GroupChat> _groups = new GLib.HashTable<int, GroupChat>(null, null);
     private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
@@ -54,7 +54,7 @@ namespace Venom {
     private bool ipv6 = false;
     public bool running {get; private set; default=false; }
     public bool connected { get; private set; default=false; }
-    public DhtServer connected_dht_server { get; private set; default=null; }
+    public DhtNode connected_dht_node { get; private set; default=null; }
 
     // Core functionality signals
     public signal void on_friend_request(Contact c, string message);
@@ -97,7 +97,7 @@ namespace Venom {
         local_storage = new DummyStorage();
       }
 
-      init_dht_servers();
+      init_dht_nodes();
       init_callbacks();
     }
 
@@ -106,20 +106,20 @@ namespace Venom {
       running = false;
     }
 
-    private void init_dht_servers() {
-      dht_servers += new DhtServer.ipv4(
+    private void init_dht_nodes() {
+      dht_nodes += new DhtNode.ipv4(
         "192.254.75.98",
         "FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"
       );
-      dht_servers += new DhtServer.ipv6(
+      dht_nodes += new DhtNode.ipv6(
         "2607:5600:284::2",
         "FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"
       );
-      dht_servers += new DhtServer.ipv4(
+      dht_nodes += new DhtNode.ipv4(
         "66.175.223.88",
         "B24E2FB924AE66D023FE1E42A2EE3B432010206F751A2FFD3E297383ACF1572E"
       );
-      dht_servers += new DhtServer.ipv4(
+      dht_nodes += new DhtNode.ipv4(
         "192.210.149.121",
         "F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67"
       );
@@ -612,18 +612,18 @@ namespace Venom {
       stdout.printf("Background thread started.\n");
 
       if(!bootstrapped) {
-        stdout.printf("Connecting to DHT servers:\n");
-        for(int i = 0; i < dht_servers.length; ++i) {
-          // skip ipv6 servers if we don't support them
-          if(dht_servers[i].is_ipv6 && !ipv6)
+        stdout.printf("Connecting to DHT Nodes:\n");
+        for(int i = 0; i < dht_nodes.length; ++i) {
+          // skip ipv6 nodes if we don't support them
+          if(dht_nodes[i].is_ipv6 && !ipv6)
             continue;
-          stdout.printf("  %s\n", dht_servers[i].to_string());
+          stdout.printf("  %s\n", dht_nodes[i].to_string());
           lock(handle) {
             handle.bootstrap_from_address(
-              dht_servers[i].host,
-              dht_servers[i].is_ipv6 ? 1 : 0,
-              dht_servers[i].port.to_big_endian(),
-              dht_servers[i].pub_key
+              dht_nodes[i].host,
+              dht_nodes[i].is_ipv6 ? 1 : 0,
+              dht_nodes[i].port.to_big_endian(),
+              dht_nodes[i].pub_key
             );
           }
         }
@@ -637,7 +637,7 @@ namespace Venom {
         }
         if(new_status && !connected) {
           connected = true;
-          connected_dht_server = dht_servers[0];
+          connected_dht_node = dht_nodes[0];
           Idle.add(() => { on_own_connection_status(true); return false; });
         } else if(!new_status && connected) {
           connected = false;
