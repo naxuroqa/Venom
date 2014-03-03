@@ -635,9 +635,10 @@ namespace Tox {
      *
      *  returns 1 on success
      *  returns 0 on failure (length is insufficient)
-     *
-     *
-     * tox_wait_execute(): function can be called asynchronously
+     */
+    public int wait_prepare([CCode(array_length=false)]out uint8[] data, ref uint16 lenptr);
+
+    /* tox_wait_execute(): function can be called asynchronously
      * Waits for something to happen on the socket for up to milliseconds milliseconds.
      * *** Function MUSTN'T poll. ***
      * The function mustn't modify anything at all, so it can be called completely
@@ -646,16 +647,15 @@ namespace Tox {
      *  returns  1 if there is socket activity (i.e. tox_do() should be called)
      *  returns  0 if the timeout was reached
      *  returns -1 if data was NULL or len too short
-     *
-     *
-     * tox_wait_cleanup(): function should be called under lock
+     */
+    public int wait_execute([CCode(array_length_type="guint16")]uint8[] data, uint16 milliseconds);
+
+    /* tox_wait_cleanup(): function should be called under lock
      * Stores results from tox_wait_execute().
      *
      * data[]/len shall be the exact same as given to tox_wait_execute()
      *
      */
-    public int wait_prepare([CCode(array_length=false)]out uint8[] data, ref uint16 lenptr);
-    public int wait_execute([CCode(array_length_type="guint16")]uint8[] data, uint16 milliseconds);
     public void wait_cleanup([CCode(array_length_type="guint16")]uint8[] data);
 
     /* SAVING AND LOADING FUNCTIONS: */
