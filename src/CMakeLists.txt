@@ -71,23 +71,24 @@ STRING(REPLACE ";" " " CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 CONFIGURE_FILE( config.h.in config.h )
 
 SET( VENOM_SRC
-  core/Client.vala
+  Main.vala
   core/Contact.vala
   core/DhtServer.vala
+  core/FileTransfer.vala
   core/GroupChat.vala
   core/GroupChatContact.vala
+  core/LocalStorage.vala
   core/Message.vala
-  core/FileTransfer.vala
   core/ResourceFactory.vala
   core/Tools.vala
   core/ToxSession.vala
-  core/LocalStorage.vala
   core/VenomSettings.vala
   ui/AddContactDialog.vala
   ui/AboutDialog.vala
+  ui/ChatMessage.vala
+  ui/Client.vala
   ui/ConversationView.vala
   ui/ConversationWidget.vala
-  ui/ChatMessage.vala
   ui/ContactFilter.vala
   ui/ContactListWindow.vala
   ui/ContactListTreeView.vala
@@ -99,7 +100,6 @@ SET( VENOM_SRC
   ui/UserInfoWindow.vala
   ui/UITools.vala
   ui/SettingsWindow.vala
-  Main.vala
 )
 
 VALA_PRECOMPILE( VALA_C_VENOM

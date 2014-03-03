@@ -40,7 +40,6 @@ namespace Venom {
     private Gtk.Notebook notebook_conversations;
     private Gtk.Menu menu_user;
     private Gtk.ToggleButton button_user;
-    private Gtk.Window settings_window;
 
     private bool cleaned_up = false;
 
@@ -151,6 +150,7 @@ namespace Venom {
     private void init_widgets() {
       // Set up Window
       set_default_size(230, 600);
+      show_menubar = false;
       try {
         Gtk.IconTheme theme = Gtk.IconTheme.get_default();
         theme.append_search_path(Path.build_filename("share", "pixmaps"));
@@ -204,8 +204,6 @@ namespace Venom {
 
       Gtk.ImageMenuItem menuitem_edit_info = builder.get_object("menuitem_edit_info") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.ImageMenuItem;
-      Gtk.ImageMenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.ImageMenuItem;
-      Gtk.ImageMenuItem menuitem_quit = builder.get_object("menuitem_quit") as Gtk.ImageMenuItem;
 
       menuitem_status = builder.get_object("menuitem_status") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_status_online = builder.get_object("menuitem_status_online") as Gtk.ImageMenuItem;
@@ -242,10 +240,10 @@ namespace Venom {
       scrolled_window_contact_list.add(contact_list_tree_view);
 
       menu_user = builder.get_object("menu_user") as Gtk.Menu;
+      menu_user.attach_widget = this;
       button_user = builder.get_object("button_user") as Gtk.ToggleButton;
       Gtk.Button button_add_contact = builder.get_object("button_add_contact") as Gtk.Button;
       Gtk.Button button_group_chat = builder.get_object("button_group_chat") as Gtk.Button;
-      Gtk.Button button_preferences = builder.get_object("button_preferences") as Gtk.Button;
 
       // poor man's Gtk.MenuButton
       //FIXME choose monitor to display this on
@@ -270,12 +268,9 @@ namespace Venom {
       });*/
       button_add_contact.clicked.connect(button_add_contact_clicked);
       button_group_chat.clicked.connect(button_group_chat_clicked);
-      button_preferences.clicked.connect(button_preferences_clicked);
 
       menuitem_edit_info.activate.connect( edit_user_information );
       menuitem_copy_id.activate.connect( copy_id_to_clipboard);
-      menuitem_about.activate.connect( show_about_dialog );
-      menuitem_quit.activate.connect( () => {this.destroy();});
 
       menuitem_status_online.activate.connect(  () => { set_userstatus(UserStatus.ONLINE); } );
       menuitem_status_away.activate.connect(    () => { set_userstatus(UserStatus.AWAY); } );
@@ -416,15 +411,6 @@ namespace Venom {
       Gdk.Display display = get_display();
       Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD).set_text(id_string, -1);
       Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_PRIMARY).set_text(id_string, -1);
-    }
-
-    private void show_about_dialog() {
-      AboutDialog dialog = new AboutDialog();
-      dialog.set_transient_for(this);
-      dialog.set_modal(true);
-
-      dialog.run();
-      dialog.destroy();
     }
 
     private void edit_user_information() {
@@ -994,16 +980,6 @@ namespace Venom {
         return;
       }
       groupchat_added(g);
-    }
-
-    public void button_preferences_clicked(Gtk.Button source) {
-      if(settings_window == null) {
-        settings_window = new SettingsWindow();
-        settings_window.destroy.connect( () => {settings_window = null;});
-        settings_window.visible = true;
-      } else {
-        settings_window.present();
-      }
     }
   }
 }
