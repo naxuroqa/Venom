@@ -659,7 +659,6 @@ namespace Venom {
       if(gcc == null) {
         stderr.printf("Group message from unknown contact #%i [%i]\n", friendgroupnumber, g.group_id);
         gcc = new GroupChatContact(friendgroupnumber);
-        gcc.name = from_name;
         g.peers.set(friendgroupnumber, gcc);
         on_group_peer_changed(g, friendgroupnumber, Tox.ChatChange.PEER_ADD);
       }
@@ -685,7 +684,6 @@ namespace Venom {
       if(gcc == null) {
         stderr.printf("Group action from unknown contact #%i [%i]\n", friendgroupnumber, g.group_id);
         gcc = new GroupChatContact(friendgroupnumber);
-        gcc.name = from_name;
         g.peers.set(friendgroupnumber, gcc);
         on_group_peer_changed(g, friendgroupnumber, Tox.ChatChange.PEER_ADD);
       }
