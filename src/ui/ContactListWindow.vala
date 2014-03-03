@@ -211,6 +211,12 @@ namespace Venom {
       Gtk.ImageMenuItem menuitem_status_busy = builder.get_object("menuitem_status_busy") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_status_offline = builder.get_object("menuitem_status_offline") as Gtk.ImageMenuItem;
 
+      // Workaround for gtk+ 3.4 MenuItems not deriving from Gtk.Actionable
+      Gtk.ImageMenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_quit  = builder.get_object("menuitem_quit") as Gtk.ImageMenuItem;
+      menuitem_about.activate.connect(() => {application.activate_action("about", null);});
+      menuitem_quit.activate.connect( () => {application.activate_action("quit",  null);});
+
       (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
       (menuitem_status_online.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.online);
       (menuitem_status_away.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.away);
