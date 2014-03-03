@@ -705,7 +705,7 @@ namespace Venom {
       if(!file.query_exists()) {
         Tools.create_path_for_file(filename, 0755);
       }
-      DataOutputStream os = new DataOutputStream(file.replace(null, false, FileCreateFlags.NONE));
+      DataOutputStream os = new DataOutputStream(file.replace(null, false, FileCreateFlags.PRIVATE | FileCreateFlags.REPLACE_DESTINATION ));
 
       uint32 size = 0;
       uint8[] buf;

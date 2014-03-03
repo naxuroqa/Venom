@@ -62,7 +62,6 @@ namespace Venom {
           settings.days_to_log = (int) days_to_log_spinbutton.value;
           settings.enable_urgency_notification = enable_urgency_notification_checkbox.active;
           settings.dec_binary_prefix = dec_binary_checkbox.active;
-
           settings.save_setting(ResourceFactory.instance.config_filename);
         }
         destroy();

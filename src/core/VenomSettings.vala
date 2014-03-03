@@ -22,10 +22,10 @@
 namespace Venom {
   public class VenomSettings : Object {
 
-    public bool enable_logging{get;set;}
-    public bool enable_urgency_notification{get;set;}
-    public int days_to_log{get;set;}
-    public bool dec_binary_prefix{get;set;}
+    public bool enable_logging { get; set; }
+    public bool enable_urgency_notification { get; set; }
+    public int  days_to_log { get; set; }
+    public bool dec_binary_prefix { get; set; }
 
     private static VenomSettings? _instance;
     public static VenomSettings instance {
@@ -51,19 +51,23 @@ namespace Venom {
 
       Json.Generator generator = new Json.Generator ();
       generator.set_root (root);
+      generator.pretty = true;
 
+      File file = File.new_for_path(path_to_file);
       try {
-        generator.to_file (path_to_file);
+        DataOutputStream os = new DataOutputStream(file.replace(null, false, FileCreateFlags.PRIVATE | FileCreateFlags.REPLACE_DESTINATION ));
+        generator.to_stream(os);
       } catch (Error e) {
         stderr.printf("Error saving configs:%s\n",e.message);
         return;
       }
+      stdout.printf("Settings saved.\n");
     }
 
     private VenomSettings() {
       enable_urgency_notification = true;
       enable_logging = false;
-      this.days_to_log = 180;
+      days_to_log = 180;
       dec_binary_prefix = true;
     }
 
