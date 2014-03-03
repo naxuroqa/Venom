@@ -70,13 +70,6 @@ namespace Venom {
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
       label_id = builder.get_object("label_id") as Gtk.Label;
 
-      Gtk.Button button_copy_id = builder.get_object("button_copy_id") as Gtk.Button;
-      button_copy_id.clicked.connect(() => {
-        Gdk.Display display = get_display();
-        Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD).set_text(user_id, -1);
-        Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_PRIMARY).set_text(user_id, -1);
-      });
-
       this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Apply", Gtk.ResponseType.APPLY, null);
       this.set_default_response(Gtk.ResponseType.APPLY);
       this.title = "Edit user information";

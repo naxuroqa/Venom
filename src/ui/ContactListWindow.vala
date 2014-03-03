@@ -21,6 +21,14 @@
 
 namespace Venom {
   public class ContactListWindow : Gtk.ApplicationWindow {
+    private const GLib.ActionEntry win_entries[] =
+    {
+      { "edit-user", edit_user_information }
+    };
+    private const GLib.ActionEntry app_entries[] =
+    {
+      { "copy-id", copy_id_to_clipboard }
+    };
     // Containers
     private GLib.HashTable<int, ConversationWidget> conversation_widgets;
     private GLib.HashTable<int, GroupConversationWidget> group_conversation_widgets;
@@ -151,6 +159,8 @@ namespace Venom {
       // Set up Window
       set_default_size(230, 600);
       show_menubar = false;
+      add_action_entries(win_entries, this);
+      application.add_action_entries(app_entries, this);
       try {
         Gtk.IconTheme theme = Gtk.IconTheme.get_default();
         theme.append_search_path(Path.build_filename("share", "pixmaps"));
@@ -211,17 +221,14 @@ namespace Venom {
       Gtk.ImageMenuItem menuitem_status_busy = builder.get_object("menuitem_status_busy") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_status_offline = builder.get_object("menuitem_status_offline") as Gtk.ImageMenuItem;
 
-      // Workaround for gtk+ 3.4 MenuItems not deriving from Gtk.Actionable
-      Gtk.ImageMenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.ImageMenuItem;
-      Gtk.ImageMenuItem menuitem_quit  = builder.get_object("menuitem_quit") as Gtk.ImageMenuItem;
-      menuitem_about.activate.connect(() => {application.activate_action("about", null);});
-      menuitem_quit.activate.connect( () => {application.activate_action("quit",  null);});
-
       (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
       (menuitem_status_online.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.online);
       (menuitem_status_away.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.away);
       (menuitem_status_busy.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.busy);
       (menuitem_status_offline.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
+
+      Gtk.ImageMenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_quit  = builder.get_object("menuitem_quit") as Gtk.ImageMenuItem;
 
       image_status.set_from_pixbuf(ResourceFactory.instance.offline);
       image_userimage.set_from_pixbuf(ResourceFactory.instance.default_contact);
@@ -275,8 +282,11 @@ namespace Venom {
       button_add_contact.clicked.connect(button_add_contact_clicked);
       button_group_chat.clicked.connect(button_group_chat_clicked);
 
-      menuitem_edit_info.activate.connect( edit_user_information );
-      menuitem_copy_id.activate.connect( copy_id_to_clipboard);
+      // Workaround for gtk+ 3.4 MenuItems not deriving from Gtk.Actionable
+      menuitem_copy_id.activate.connect(  () => {application.activate_action("copy-id",  null);});
+      menuitem_edit_info.activate.connect(() => {activate_action("edit-user",  null);});
+      menuitem_about.activate.connect(() => {application.activate_action("about", null);});
+      menuitem_quit.activate.connect( () => {application.activate_action("quit",  null);});
 
       menuitem_status_online.activate.connect(  () => { set_userstatus(UserStatus.ONLINE); } );
       menuitem_status_away.activate.connect(    () => { set_userstatus(UserStatus.AWAY); } );
@@ -417,11 +427,13 @@ namespace Venom {
       Gdk.Display display = get_display();
       Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD).set_text(id_string, -1);
       Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_PRIMARY).set_text(id_string, -1);
+      stdout.printf("Copied Tox ID to clipboard\n");
     }
 
     private void edit_user_information() {
       UserInfoWindow w = new UserInfoWindow();
 
+      w.application = application;
       w.user_name = label_name.get_text();
       w.max_name_length = Tox.MAX_NAME_LENGTH;
       w.user_status = label_status.get_text();
