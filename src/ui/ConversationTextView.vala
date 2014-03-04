@@ -1,5 +1,5 @@
 /*
- *    TextConversationView.vala
+ *    ConversationTextView.vala
  *
  *    Copyright (C) 2014  Venom authors and contributors
  *
@@ -20,13 +20,13 @@
  */
 
 namespace Venom {
-  public class TextConversationView : IConversationView, Gtk.TextView {
+  public class ConversationTextView : IConversationView, Gtk.TextView {
     public bool short_names {get; set; default = false;}
     private Gtk.TextTag bold_tag;
     private Gtk.TextTag grey_tag;
     private Gtk.TextTag implication_tag;
 
-    public TextConversationView() {
+    public ConversationTextView() {
       set_wrap_mode(Gtk.WrapMode.WORD_CHAR);
       editable = false;
 

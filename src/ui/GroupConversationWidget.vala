@@ -134,7 +134,7 @@ namespace Venom {
       Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
 
       if( ResourceFactory.instance.textview_mode ) {
-        conversation_view = new TextConversationView();
+        conversation_view = new ConversationTextView();
         scrolled_window.add(conversation_view);
       } else {
         conversation_view = new ConversationView();

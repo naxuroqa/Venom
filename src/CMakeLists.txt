@@ -83,20 +83,20 @@ SET( VENOM_SRC
   core/Tools.vala
   core/ToxSession.vala
   core/VenomSettings.vala
-  ui/AddContactDialog.vala
   ui/AboutDialog.vala
+  ui/AddContactDialog.vala
   ui/ChatMessage.vala
   ui/Client.vala
+  ui/ContactFilter.vala
+  ui/ContactListCellRenderer.vala
+  ui/ContactListTreeView.vala
+  ui/ContactListWindow.vala
+  ui/ConversationTextView.vala
   ui/ConversationView.vala
   ui/ConversationWidget.vala
-  ui/ContactFilter.vala
-  ui/ContactListWindow.vala
-  ui/ContactListTreeView.vala
-  ui/ContactListCellRenderer.vala
   ui/FileTransferChatEntry.vala
   ui/GroupConversationSidebar.vala
   ui/GroupConversationWidget.vala
-  ui/TextConversationView.vala
   ui/UserInfoWindow.vala
   ui/UITools.vala
   ui/SettingsWindow.vala
