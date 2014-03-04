@@ -97,6 +97,7 @@ SET( VENOM_SRC
   ui/FileTransferChatEntry.vala
   ui/GroupConversationSidebar.vala
   ui/GroupConversationWidget.vala
+  ui/MessageTextView.vala
   ui/SearchEntry.vala
   ui/UserInfoWindow.vala
   ui/UITools.vala

@@ -21,13 +21,9 @@
 
 namespace Venom {
   public class GroupConversationWidget : Gtk.EventBox {
-    private static string empty_message = "Type your message here...";
-    private bool textview_message_empty = true;
     private Gtk.Label label_groupchat_name;
     private Gtk.Label label_groupchat_statusmessage;
     private Gtk.Image image_groupchat_image;
-
-    private Gtk.TextTag empty_message_tag;
 
     private IConversationView conversation_view;
     private IGroupConversationSidebar group_conversation_sidebar;
@@ -89,35 +85,13 @@ namespace Venom {
 
       //button_send_file.clicked.connect(button_send_file_clicked);
 
-      Gtk.TextView textview_message = builder.get_object("textview_message") as Gtk.TextView;
-      empty_message_tag = textview_message.buffer.create_tag(null, "foreground", "grey");
-      append_tagged_text_to_buffer(textview_message.buffer, empty_message, empty_message_tag);
-
-      textview_message.key_press_event.connect((k) => {
-        // only catch return if shift or control keys are not pressed
-        if(k.keyval == Gdk.Key.Return && (k.state & (Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK)) == 0) {
-          textview_activate(textview_message);
-          return true;
-        }
-        return false;
+      Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
+      MessageTextView message_textview = new MessageTextView();
+      message_textview.border_width = 6;
+      message_textview.textview_activate.connect( () => {
+        textview_activate(message_textview);
       });
-
-      textview_message.focus_in_event.connect(() => {
-        if(textview_message_empty == true) {
-          textview_message.buffer.text = "";
-        }
-        return false;
-      });
-
-      textview_message.focus_out_event.connect(() => {
-        if(textview_message.buffer.text == "") {
-          append_tagged_text_to_buffer(textview_message.buffer, empty_message, empty_message_tag);
-          textview_message_empty = true;
-        } else {
-          textview_message_empty = false;
-        }
-        return false;
-      });
+      scrolled_window_message.add(message_textview);
 
       Gtk.Paned paned_sidebar = builder.get_object("paned_sidebar") as Gtk.Paned;
       Gtk.ScrolledWindow sidebar_scrolled_window = new Gtk.ScrolledWindow(null, null);
@@ -129,7 +103,6 @@ namespace Venom {
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
-
 
       Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
 
@@ -163,12 +136,6 @@ namespace Venom {
       });
 
       delete_event.connect(hide_on_delete);
-    }
-
-    private void append_tagged_text_to_buffer(Gtk.TextBuffer buffer, string text, Gtk.TextTag tag) {
-      Gtk.TextIter text_end;
-      buffer.get_end_iter(out text_end);
-      buffer.insert_with_tags(text_end, text, text.length, tag);
     }
 
     public void on_incoming_message(GroupMessage message) {

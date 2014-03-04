@@ -274,13 +274,7 @@
             <property name="shadow_type">in</property>
             <property name="min_content_height">0</property>
             <child>
-              <object class="GtkTextView" id="textview_message">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="border_width">6</property>
-                <property name="wrap_mode">word-char</property>
-                <property name="accepts_tab">False</property>
-              </object>
+              <placeholder/>
             </child>
           </object>
           <packing>
