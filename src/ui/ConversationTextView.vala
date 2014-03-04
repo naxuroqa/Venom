@@ -96,5 +96,81 @@ namespace Venom {
       buffer.get_end_iter(out iter);
       buffer.insert(ref iter, "\n", 1);
     }
+    private bool forward_search(Gtk.TextIter iter, string text, Gtk.TextIter? limit = null, bool match_case = false) {
+      Gtk.TextIter match_start;
+      Gtk.TextIter match_end;
+      bool found = iter.forward_search(text, match_case ? Gtk.TextSearchFlags.CASE_INSENSITIVE : 0 , out match_start, out match_end, limit);
+      if(found) {
+        scroll_to_iter(match_start, 0, false, 0, 0);
+        buffer.select_range(match_start, match_end);
+      }
+      return found;
+    }
+    private void search(string search_text, bool wrap_around = true, bool match_case = false) {
+      Gtk.TextIter current_position_iter;
+      buffer.get_iter_at_mark(out current_position_iter,  buffer.get_insert());
+      if(!forward_search(current_position_iter, search_text, null) && wrap_around) {
+        Gtk.TextIter start_iter;
+        buffer.get_start_iter(out start_iter);
+        forward_search(start_iter, search_text, current_position_iter);
+      }
+    }
+    
+    public void register_search_entry(Gtk.Entry entry) {
+      key_press_event.connect((k) => {
+        if(k.keyval == Gdk.Key.f && (k.state & Gdk.ModifierType.CONTROL_MASK) != 0) {
+          entry.show();
+          entry.grab_focus();
+          return true;
+        }
+        return false;
+      });
+
+      entry.key_press_event.connect((k) => {
+        if(k.keyval == Gdk.Key.Escape) {
+          entry.hide();
+          grab_focus();
+          return true;
+        }
+        return false;
+      });
+
+      bool match_case = false;
+      bool wrap_around = true;
+
+      bool hold_searchbar = false;
+
+      entry.icon_release.connect((p0, p1) => {
+        if(p1.button.button == 3) {
+          hold_searchbar = true;
+          Gtk.Menu menu = new Gtk.Menu();
+
+          Gtk.CheckMenuItem menu_item_case = new Gtk.CheckMenuItem.with_mnemonic("_Match case");
+          menu_item_case.active = match_case;
+          menu_item_case.toggled.connect(() => { match_case = menu_item_case.active; });
+          menu.append(menu_item_case);
+
+          Gtk.CheckMenuItem menu_item_wrap = new Gtk.CheckMenuItem.with_mnemonic("_Wrap around");
+          menu_item_wrap.active = wrap_around;
+          menu_item_wrap.toggled.connect(() => { wrap_around = menu_item_wrap.active; });
+          menu.append(menu_item_wrap);
+
+          menu.show_all();
+          menu.attach_to_widget(entry, null);
+          menu.hide.connect(() => {hold_searchbar = false; menu.detach();});
+          menu.popup(null, null, null, 0, 0);
+        }
+      });
+
+      entry.focus_out_event.connect(() => {
+        if(!hold_searchbar)
+          entry.hide();
+        return false;
+      });
+
+      entry.insert_text.connect( (new_text, new_text_length, ref position) => {
+        search(entry.text + new_text, wrap_around, match_case);
+      });
+    }
   }
 }

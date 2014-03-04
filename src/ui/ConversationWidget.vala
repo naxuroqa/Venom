@@ -132,6 +132,13 @@ namespace Venom {
       conversation_view.get_style_context().add_class("chat_list");
       conversation_view.short_names = true;
 
+      Gtk.Overlay overlay = builder.get_object("overlay") as Gtk.Overlay;
+      Gtk.Entry entry_search = new SearchEntry();
+      entry_search.halign = Gtk.Align.END;
+      entry_search.valign = Gtk.Align.START;
+      entry_search.no_show_all = true;
+      conversation_view.register_search_entry(entry_search);
+      overlay.add_overlay(entry_search);
 
       Gtk.Adjustment vadjustment = scrolled_window.get_vadjustment();
       bool scroll_to_bottom = true;
