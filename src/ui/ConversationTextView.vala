@@ -99,7 +99,7 @@ namespace Venom {
     private bool forward_search(Gtk.TextIter iter, string text, Gtk.TextIter? limit = null, bool match_case = false) {
       Gtk.TextIter match_start;
       Gtk.TextIter match_end;
-      bool found = iter.forward_search(text, match_case ? Gtk.TextSearchFlags.CASE_INSENSITIVE : 0 , out match_start, out match_end, limit);
+      bool found = iter.forward_search(text, match_case ? 0 : Gtk.TextSearchFlags.CASE_INSENSITIVE , out match_start, out match_end, limit);
       if(found) {
         scroll_to_iter(match_start, 0, false, 0, 0);
         buffer.select_range(match_start, match_end);
