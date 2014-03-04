@@ -141,8 +141,18 @@ namespace Venom {
         }
         return _action_regex;
       }
-      private set {
-        _action_regex = value;
+    }
+    private static GLib.Regex _uri_regex;
+    public static GLib.Regex uri_regex {
+      get {
+        if(_uri_regex == null) {
+          try {
+          _uri_regex = new GLib.Regex("(?<u>[a-z]\\S*://\\S*)");
+          } catch (GLib.RegexError e) {
+            stderr.printf("Can't create action regex: %s.\n", e.message);
+          }
+        }
+        return _uri_regex;
       }
     }
   }

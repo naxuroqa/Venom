@@ -24,7 +24,8 @@ namespace Venom {
     public bool short_names {get; set; default = false;}
     private Gtk.TextTag bold_tag;
     private Gtk.TextTag grey_tag;
-    private Gtk.TextTag implication_tag;
+    private Gtk.TextTag quotation_tag;
+    private Gtk.TextTag uri_tag;
 
     public ConversationTextView() {
       set_wrap_mode(Gtk.WrapMode.WORD_CHAR);
@@ -32,7 +33,11 @@ namespace Venom {
 
       bold_tag = buffer.create_tag(null, "weight", 600);
       grey_tag = buffer.create_tag(null, "foreground", "grey");
-      implication_tag = buffer.create_tag(null, "foreground", "green");
+      quotation_tag = buffer.create_tag(null, "foreground", "green");
+      uri_tag = buffer.create_tag(null,
+          "underline", Pango.Underline.SINGLE,
+          "foreground", "blue"
+      );
     }
 
     public void add_message(IMessage message) {
@@ -51,13 +56,31 @@ namespace Venom {
       buffer.insert_with_tags(text_end, text, text.length, bold_tag);
 
       buffer.get_end_iter(out text_end);
-      text = "%s".printf(
-        message.get_message_plain()
-      );
+      text = message.get_message_plain();
       if (text[0] == '>') {
-        buffer.insert_with_tags(text_end, text, text.length, implication_tag);
+        buffer.insert_with_tags(text_end, text, text.length, quotation_tag);
       } else {
-        buffer.insert(ref text_end, text, text.length);
+        GLib.MatchInfo match_info;
+        Tools.uri_regex.match(text, 0, out match_info);
+        int offset = 0;
+        int start = 0, end = 0;
+        while(match_info.matches() && match_info.fetch_pos(0, out start, out end)) {
+          string before = text.substring(offset, start);
+          string uri = match_info.fetch(0);
+          buffer.insert(ref text_end, before, before.length);
+          buffer.insert_with_tags(text_end, uri, uri.length, uri_tag);
+          buffer.get_end_iter(out text_end);
+          offset = end;
+
+          try {
+            match_info.next();
+          } catch (GLib.RegexError e) {
+            stderr.printf("Error matching uri regex: %s\n", e.message);
+            break;
+          }
+        }
+        string after = text.substring(offset);
+        buffer.insert(ref text_end, after, after.length);
       }
 
       buffer.get_end_iter(out text_end);

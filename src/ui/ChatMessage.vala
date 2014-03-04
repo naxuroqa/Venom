@@ -23,7 +23,6 @@ namespace Venom {
     private Gtk.Label message_label;
     private Gtk.Label date_label;
     private Gtk.Frame frame;
-    private static GLib.Regex regex_uri = null;
 
     public ChatMessage(IMessage message, bool short_names, bool following){
       init_widgets();
@@ -73,10 +72,7 @@ namespace Venom {
     private string markup_uris(string text) {
       string ret;
       try {
-        if(regex_uri == null) {
-          regex_uri = new GLib.Regex("(?<u>[a-z]\\S*://\\S*)");
-        }
-        ret = regex_uri.replace(text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
+        ret = Tools.uri_regex.replace(text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
 		  } catch (GLib.RegexError e) {
 			  stderr.printf("Error when doing uri markup: %s", e.message);
 			  return text;
