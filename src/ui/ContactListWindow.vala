@@ -310,6 +310,7 @@ namespace Venom {
       session.on_connection_status.connect(this.on_connectionstatus);
       session.on_own_connection_status.connect(this.on_ownconnectionstatus);
       session.on_own_user_status.connect(this.on_ownuserstatus);
+      session.on_typing_change.connect(this.on_typing_change);
 
       //groupmessage signals
       session.on_group_invite.connect(this.on_group_invite);
@@ -540,6 +541,10 @@ namespace Venom {
       }
       stdout.printf("Added new friend #%i\n", c.friend_id);
       contact_added(c);
+    }
+    private void on_typing_change(Contact c, bool is_typing) {
+      ConversationWidget w = open_conversation_with(c);
+      w.on_typing_changed(is_typing);
     }
     private void on_friendmessage(Contact c, string message) {
       stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name != null ? c.name : "<%i>".printf(c.friend_id), message);
@@ -835,6 +840,11 @@ namespace Venom {
         w.new_outgoing_message.connect(on_outgoing_message);
         w.new_outgoing_action.connect(on_outgoing_action);
         w.new_outgoing_file.connect(on_outgoing_file);
+        w.typing_status.connect( (is_typing) => {
+          if(VenomSettings.instance.send_typing_status) {
+            session.set_user_is_typing(c.friend_id, is_typing);
+          }
+        });
         w.filetransfer_accepted.connect ( (ft) => {
           session.accept_file(ft.friend.friend_id,ft.filenumber);
         });

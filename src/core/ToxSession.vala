@@ -69,6 +69,7 @@ namespace Venom {
     public signal void on_connection_status(Contact c);
     public signal void on_own_connection_status(bool status);
     public signal void on_own_user_status(UserStatus status);
+    public signal void on_typing_change(Contact c, bool is_typing);
 
     // Groupchat signals
     public signal void on_group_invite(Contact c, GroupChat g);
@@ -135,6 +136,7 @@ namespace Venom {
       handle.callback_user_status(this.on_user_status_callback);
       handle.callback_read_receipt(this.on_read_receipt_callback);
       handle.callback_connection_status(this.on_connection_status_callback);
+      handle.callback_typing_change(this.on_typing_change_callback);
 
       // Groupchat callbacks
       handle.callback_group_invite(this.on_group_invite_callback);
@@ -229,6 +231,12 @@ namespace Venom {
       Contact contact = _contacts.get(friend_number);
       contact.online = (status != 0);
       Idle.add(() => { on_connection_status(contact); return false; });
+    }
+
+    private void on_typing_change_callback(Tox.Tox tox, int friend_number, int is_typing) {
+      Contact contact = _contacts.get(friend_number);
+      contact.is_typing = is_typing != 0;
+      Idle.add(() => { on_typing_change(contact, is_typing != 0); return false;});
     }
 
     // Group chat callbacks
@@ -549,6 +557,12 @@ namespace Venom {
       uint8[] buf = Tools.string_to_nullterm_uint(action);
       lock(handle) {
         return handle.group_action_send(groupnumber, buf);
+      }
+    }
+
+    public bool set_user_is_typing(int friend_number, bool is_typing) {
+      lock(handle) {
+        return handle.set_user_is_typing(friend_number, is_typing ? 1 : 0) == 0;
       }
     }
 

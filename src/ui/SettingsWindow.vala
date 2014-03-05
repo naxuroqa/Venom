@@ -26,6 +26,7 @@ namespace Venom {
     private Gtk.SpinButton days_to_log_spinbutton;
     private Gtk.CheckButton enable_urgency_notification_checkbox;
     private Gtk.CheckButton dec_binary_checkbox;
+    private Gtk.CheckButton send_typing_status;
     private VenomSettings settings = VenomSettings.instance;
 
     public SettingsWindow() {
@@ -46,12 +47,14 @@ namespace Venom {
       days_to_log_spinbutton = builder.get_object("days_to_log_spinbutton") as Gtk.SpinButton;
       enable_urgency_notification_checkbox = builder.get_object("enable_urgency_notification_checkbox") as Gtk.CheckButton;
       dec_binary_checkbox = builder.get_object("dec_binary_checkbox") as Gtk.CheckButton;
+      send_typing_status = builder.get_object("send_typing_status") as Gtk.CheckButton;
 
       enable_history_checkbox.active = settings.enable_logging;
       enable_history_checkbox.toggled();
       days_to_log_spinbutton.value = settings.days_to_log;
       enable_urgency_notification_checkbox.active = settings.enable_urgency_notification;
       dec_binary_checkbox.active = settings.dec_binary_prefix;
+      send_typing_status.active = settings.send_typing_status;
 
       add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Save", Gtk.ResponseType.OK, null);
       set_default_response(Gtk.ResponseType.CANCEL);
@@ -62,6 +65,7 @@ namespace Venom {
           settings.days_to_log = (int) days_to_log_spinbutton.value;
           settings.enable_urgency_notification = enable_urgency_notification_checkbox.active;
           settings.dec_binary_prefix = dec_binary_checkbox.active;
+          settings.send_typing_status = send_typing_status.active;
           settings.save_setting(ResourceFactory.instance.config_filename);
         }
         destroy();

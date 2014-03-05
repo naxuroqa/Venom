@@ -26,6 +26,7 @@ namespace Venom {
     public bool enable_urgency_notification { get; set; }
     public int  days_to_log { get; set; }
     public bool dec_binary_prefix { get; set; }
+    public bool send_typing_status { get; set; }
 
     private static VenomSettings? _instance;
     public static VenomSettings instance {
@@ -69,6 +70,7 @@ namespace Venom {
       enable_logging = false;
       days_to_log = 180;
       dec_binary_prefix = true;
+      send_typing_status = false;
     }
 
     private VenomSettings.with_settings(VenomSettings other) {

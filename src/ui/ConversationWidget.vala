@@ -24,13 +24,16 @@ namespace Venom {
     private Gtk.Label label_contact_name;
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
+    private Gtk.Label label_contact_typing;
 
     private IConversationView conversation_view;
     public unowned Contact contact {get; private set;}
+    public bool is_typing { get; set; default = false;}
 
     public signal void new_outgoing_message(Message message);
     public signal void new_outgoing_action(ActionMessage action);
     public signal void new_outgoing_file(FileTransfer ft);
+    public signal void typing_status(bool typing);
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
 
@@ -54,6 +57,9 @@ namespace Venom {
 
       // update contact image
       image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_contact);
+
+      if( contact.name != null )
+        label_contact_typing.label = "%s is typing...".printf(contact.name);
     }
 
     private void init_widgets() {
@@ -87,6 +93,13 @@ namespace Venom {
       message_textview.textview_activate.connect( () => {
         textview_activate(message_textview);
       });
+      message_textview.buffer.changed.connect( () => {
+        if(message_textview.buffer.text == "") {
+          stop_typing();
+        } else {
+          start_typing();
+        }
+      });
       scrolled_window_message.add(message_textview);
 
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
@@ -113,6 +126,13 @@ namespace Venom {
       conversation_view.register_search_entry(entry_search);
       overlay.add_overlay(entry_search);
 
+      label_contact_typing = new Gtk.Label(null);
+      label_contact_typing.get_style_context().add_class("typing_label");
+      label_contact_typing.halign = Gtk.Align.START;
+      label_contact_typing.valign = Gtk.Align.END;
+      label_contact_typing.no_show_all = true;
+      overlay.add_overlay(label_contact_typing);
+
       Gtk.Adjustment vadjustment = scrolled_window.get_vadjustment();
       bool scroll_to_bottom = true;
       conversation_view.size_allocate.connect( () => {
@@ -125,6 +145,24 @@ namespace Venom {
       });
 
       delete_event.connect(hide_on_delete);
+    }
+
+    private void start_typing() {
+      if(!is_typing) {
+        is_typing = true;
+        typing_status(is_typing);
+      }
+    }
+
+    private void stop_typing() {
+      if(is_typing) {
+        is_typing = false;
+        typing_status(is_typing);
+      }
+    }
+
+    public void on_typing_changed(bool is_typing) {
+      label_contact_typing.visible = is_typing;
     }
 
     private void add_filetransfer(FileTransfer ft) {
