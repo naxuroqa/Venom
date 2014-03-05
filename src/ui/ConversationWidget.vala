@@ -211,7 +211,7 @@ namespace Venom {
         conversation_view.add_message(a);
         new_outgoing_action(a);
       } else {
-        Message m = new Message.outgoing(contact, s);
+        Message m = new Message.outgoing(User.instance.user, contact, s);
         conversation_view.add_message(m);
         new_outgoing_message(m);
       }

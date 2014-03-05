@@ -57,9 +57,9 @@ namespace Venom {
     public DateTime timestamp {get; protected set;}
     public MessageDirection message_direction {get; protected set;}
 
-    public Message.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
+    public Message.outgoing(Contact sender, Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
       this.message_direction = MessageDirection.OUTGOING;
-      this.from = null;
+      this.from = User.instance.user;
       this.to = receiver;
       this.message = message;
       this.timestamp = timestamp;
@@ -91,7 +91,7 @@ namespace Venom {
   public class ActionMessage : Message {
     public ActionMessage.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
       this.message_direction = MessageDirection.OUTGOING;
-      this.from = null;
+      this.from = User.instance.user;
       this.to = receiver;
       this.message = message;
       this.timestamp = timestamp;
@@ -107,7 +107,7 @@ namespace Venom {
       return "*";
     }
     public override string get_message_plain() {
-      return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from.name : "me", message);
+      return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from.name : User.instance.user.name, message);
     }
   }
   public class GroupMessage : IMessage, GLib.Object {
@@ -120,7 +120,9 @@ namespace Venom {
 
     public GroupMessage.outgoing(GroupChat receiver, string message, DateTime timestamp = new DateTime.now_local()) {
       this.message_direction = MessageDirection.OUTGOING;
-      this.from = null;
+      GroupChat from = new GroupChat(receiver.public_key, receiver.group_id);
+      from.local_name = User.instance.user.name;
+      this.from = from;
       this.to = receiver;
       this.from_contact = null;
       this.message = message;
