@@ -99,14 +99,12 @@ namespace Venom {
         iter_start.backward_word_start();
 
         filter_string = iter_start.get_text(iter_end);
-        stdout.printf("completing %s\n", filter_string);
         completion_filtered.refilter();
 
         Gtk.TreeIter filter_iter;
         if( completion_filtered.get_iter_first(out filter_iter) ) {
           string completed_string;
           completion_filtered.get(filter_iter, completion_column, out completed_string, -1);
-          stdout.printf("matches: %s\n", completed_string);
           buffer.delete(ref iter_start, ref iter_end);
           buffer.insert(ref iter_start, completed_string, completed_string.length);
         }
