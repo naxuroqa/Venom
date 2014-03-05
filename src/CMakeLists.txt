@@ -83,6 +83,7 @@ SET( VENOM_SRC
   core/Tools.vala
   core/ToxSession.vala
   core/VenomSettings.vala
+  core/User.vala
   ui/AboutDialog.vala
   ui/AddContactDialog.vala
   ui/ChatMessage.vala

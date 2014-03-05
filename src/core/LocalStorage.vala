@@ -129,7 +129,7 @@ namespace Venom {
         DateTime send_time = new DateTime.from_unix_utc (timestamp);
         Message mess;
         if(issender) {
-          mess = new Message.outgoing(c, message, send_time);
+          mess = new Message.outgoing(User.instance.user, c, message, send_time);
         } else {
           mess = new Message.incoming(c, message, send_time);
         }

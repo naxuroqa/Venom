@@ -100,6 +100,7 @@ namespace Venom {
 
       init_dht_nodes();
       init_callbacks();
+      init_user();
     }
 
     // destructor
@@ -171,6 +172,11 @@ namespace Venom {
         c.status_message = get_statusmessage(friend_id);
         _contacts.set(friend_id, c);
       };
+    }
+
+    private void init_user() {
+      User.instance.user = new Contact(this.get_address());
+      User.instance.user.name = this.getselfname();
     }
 
     ////////////////////////////// Callbacks /////////////////////////////////////////
@@ -482,6 +488,7 @@ namespace Venom {
       lock(handle) {
         ret = handle.set_name(buf);
       }
+      User.instance.user.name = name;
       return ret == 0;
     }
 
