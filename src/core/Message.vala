@@ -140,6 +140,9 @@ namespace Venom {
       if(from == null) {
         return "Me";
       } else {
+        if(this.message_direction == MessageDirection.OUTGOING) {
+          return User.instance.user.name;
+        }
         return from_contact.name != null ? from_contact.name : "<unknown>";
       }
     }

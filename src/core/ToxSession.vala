@@ -480,6 +480,7 @@ namespace Venom {
       lock(handle) {
         ret = handle.set_name(buf);
       }
+      User.instance.user.name = name;
       return ret == 0;
     }
 
