@@ -498,7 +498,7 @@ namespace Venom {
     }
 
     public void set_urgency () {
-      if(!is_active && VenomSettings.instance.enable_urgency_notification) {
+      if(!is_active && Settings.instance.enable_urgency_notification) {
         this.set_urgency_hint(true);
       }
     }
@@ -841,7 +841,7 @@ namespace Venom {
         w.new_outgoing_action.connect(on_outgoing_action);
         w.new_outgoing_file.connect(on_outgoing_file);
         w.typing_status.connect( (is_typing) => {
-          if(VenomSettings.instance.send_typing_status) {
+          if(Settings.instance.send_typing_status) {
             session.set_user_is_typing(c.friend_id, is_typing);
           }
         });

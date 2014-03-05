@@ -91,7 +91,7 @@ namespace Venom {
       handle = new Tox.Tox( ipv6 ? 1 : 0);
 
       //start local storage
-      if(VenomSettings.instance.enable_logging) {
+      if(Settings.instance.enable_logging) {
         local_storage = new LocalStorage();
         local_storage.connect_to(this);
       } else {

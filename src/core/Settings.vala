@@ -1,5 +1,5 @@
 /*
- *    VenomSettings.vala
+ *    Settings.vala
  *
  *    Copyright (C) 2013-2014  Venom authors and contributors
  *
@@ -20,24 +20,24 @@
  */
 
 namespace Venom {
-  public class VenomSettings : Object {
+  public class Settings : Object {
 
-    public bool enable_logging { get; set; }
-    public bool enable_urgency_notification { get; set; }
-    public int  days_to_log { get; set; }
-    public bool dec_binary_prefix { get; set; }
-    public bool send_typing_status { get; set; }
+    public bool enable_logging              { get; set; default = false;}
+    public bool enable_urgency_notification { get; set; default = true; }
+    public int  days_to_log                 { get; set; default = 180;  }
+    public bool dec_binary_prefix           { get; set; default = true; }
+    public bool send_typing_status          { get; set; default = false;}
 
-    private static VenomSettings? _instance;
-    public static VenomSettings instance {
+    private static Settings? _instance;
+    public static Settings instance {
       get {
         if( _instance == null ) {
           File tmp = File.new_for_path(ResourceFactory.instance.config_filename);
           if (tmp.query_exists()) {
-            _instance = new VenomSettings.with_settings_file(ResourceFactory.instance.config_filename);
+            _instance = load_settings(ResourceFactory.instance.config_filename);
           } else {
-            _instance = new VenomSettings();
-            _instance.save_setting(ResourceFactory.instance.config_filename);
+            _instance = new Settings();
+            _instance.save_settings(ResourceFactory.instance.config_filename);
           }
         }
         return _instance;
@@ -47,7 +47,10 @@ namespace Venom {
       }
     }
 
-    public void save_setting(string path_to_file) {
+    private Settings() {
+    }
+
+    public void save_settings(string path_to_file) {
       Json.Node root = Json.gobject_serialize (this);
 
       Json.Generator generator = new Json.Generator ();
@@ -65,34 +68,17 @@ namespace Venom {
       stdout.printf("Settings saved.\n");
     }
 
-    private VenomSettings() {
-      enable_urgency_notification = true;
-      enable_logging = false;
-      days_to_log = 180;
-      dec_binary_prefix = true;
-      send_typing_status = false;
-    }
-
-    private VenomSettings.with_settings(VenomSettings other) {
-      this.enable_urgency_notification = other.enable_urgency_notification;
-      this.enable_logging = other.enable_logging;
-      this.days_to_log = other.days_to_log;
-      this.dec_binary_prefix = other.dec_binary_prefix;
-    }
-
-    public VenomSettings.with_settings_file(string path_to_file) {
+    public static Settings? load_settings(string path) {
       Json.Node node;
       try {
         Json.Parser parser = new Json.Parser();
-        parser.load_from_file(path_to_file);
+        parser.load_from_file(path);
         node = parser.get_root();
       } catch (Error e) {
         stderr.printf("Error reading configs:%s\n",e.message);
-        return;
+        return null;
       }
-      VenomSettings tmp = Json.gobject_deserialize (typeof (VenomSettings), node) as VenomSettings;
-      assert(tmp != null);
-      this.with_settings(tmp);
+      return Json.gobject_deserialize (typeof (Settings), node) as Settings;
     }
   }
 }

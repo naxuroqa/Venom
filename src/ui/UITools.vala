@@ -35,7 +35,7 @@ namespace Venom {
       dialog.destroy();
     }
     public static string format_filesize(uint64 size) {
-      if(VenomSettings.instance.dec_binary_prefix) {
+      if(Settings.instance.dec_binary_prefix) {
         uint64 kibibyte = 1024;
         uint64 mebibyte = kibibyte * 1024;
         uint64 gibibyte = mebibyte * 1024;

@@ -117,7 +117,7 @@ namespace Venom {
       param_position = prepared_select_statement.bind_parameter_index ("$OLDEST");
       assert (param_position > 0);
       DateTime earliestTime = new DateTime.now_utc();
-      earliestTime = earliestTime.add_days (-VenomSettings.instance.days_to_log);
+      earliestTime = earliestTime.add_days (-Settings.instance.days_to_log);
       prepared_select_statement.bind_int64(param_position, earliestTime.to_unix());
 
       List<Message> messages = new List<Message>();

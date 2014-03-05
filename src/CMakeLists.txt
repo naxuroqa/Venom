@@ -80,9 +80,9 @@ SET( VENOM_SRC
   core/LocalStorage.vala
   core/Message.vala
   core/ResourceFactory.vala
+  core/Settings.vala
   core/Tools.vala
   core/ToxSession.vala
-  core/VenomSettings.vala
   ui/AboutDialog.vala
   ui/AddContactDialog.vala
   ui/ChatMessage.vala

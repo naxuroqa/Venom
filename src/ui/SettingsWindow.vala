@@ -27,7 +27,7 @@ namespace Venom {
     private Gtk.CheckButton enable_urgency_notification_checkbox;
     private Gtk.CheckButton dec_binary_checkbox;
     private Gtk.CheckButton send_typing_status;
-    private VenomSettings settings = VenomSettings.instance;
+    private Settings settings = Settings.instance;
 
     public SettingsWindow() {
       title = "Settings";
@@ -66,7 +66,8 @@ namespace Venom {
           settings.enable_urgency_notification = enable_urgency_notification_checkbox.active;
           settings.dec_binary_prefix = dec_binary_checkbox.active;
           settings.send_typing_status = send_typing_status.active;
-          settings.save_setting(ResourceFactory.instance.config_filename);
+
+          settings.save_settings(ResourceFactory.instance.config_filename);
         }
         destroy();
       });
