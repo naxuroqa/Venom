@@ -22,6 +22,7 @@
 namespace Venom {
   public class MessageTextView : Gtk.TextView {
     public signal void textview_activate();
+    public signal void typing_status(bool typing);
 
     public string placeholder_text { get; set; default = "Type your message here..."; }
     public Gtk.TextTag placeholder_tag { get; set; }
@@ -38,9 +39,10 @@ namespace Venom {
     }
     public int completion_column { get; set; }
 
+    private bool is_typing = false;
+    private bool placeholder_visible = true;
     private Gtk.TreeModelFilter completion_filtered;
     private string filter_string;
-    private bool show_placeholder = true;
 
     public MessageTextView() {
       /** Placeholder **/
@@ -51,7 +53,8 @@ namespace Venom {
       key_press_event.connect(on_key_press);
 
       focus_in_event.connect(() => {
-        if(show_placeholder) {
+        if(placeholder_visible) {
+          placeholder_visible = false;
           buffer.text = "";
         }
         return false;
@@ -59,12 +62,26 @@ namespace Venom {
 
       focus_out_event.connect(() => {
         if(buffer.text == "") {
+          placeholder_visible = true;
           append_tagged_text(placeholder_text, placeholder_tag);
-          show_placeholder = true;
         } else {
-          show_placeholder = false;
+          placeholder_visible = false;
         }
         return false;
+      });
+
+      buffer.changed.connect( () => {
+        if(placeholder_visible || buffer.text == "") {
+          if(is_typing) {
+            is_typing = false;
+            typing_status(is_typing);
+          }
+        } else {
+          if(!is_typing) {
+            is_typing = true;
+            typing_status(is_typing);
+          }
+        }
       });
     }
 

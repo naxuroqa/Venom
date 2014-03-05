@@ -26,9 +26,9 @@ namespace Venom {
     private Gtk.Image image_contact_image;
     private Gtk.Label label_contact_typing;
 
+    private MessageTextView message_textview;
     private IConversationView conversation_view;
     public unowned Contact contact {get; private set;}
-    public bool is_typing { get; set; default = false;}
 
     public signal void new_outgoing_message(Message message);
     public signal void new_outgoing_action(ActionMessage action);
@@ -88,18 +88,13 @@ namespace Venom {
       button_send_file.clicked.connect(button_send_file_clicked);
 
       Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
-      MessageTextView message_textview = new MessageTextView();
+      message_textview = new MessageTextView();
       message_textview.border_width = 6;
-      message_textview.textview_activate.connect( () => {
-        textview_activate(message_textview);
+      message_textview.textview_activate.connect(textview_activate);
+      message_textview.typing_status.connect((is_typing) => {
+        typing_status(is_typing);
       });
-      message_textview.buffer.changed.connect( () => {
-        if(message_textview.buffer.text == "") {
-          stop_typing();
-        } else {
-          start_typing();
-        }
-      });
+
       scrolled_window_message.add(message_textview);
 
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
@@ -147,20 +142,6 @@ namespace Venom {
       delete_event.connect(hide_on_delete);
     }
 
-    private void start_typing() {
-      if(!is_typing) {
-        is_typing = true;
-        typing_status(is_typing);
-      }
-    }
-
-    private void stop_typing() {
-      if(is_typing) {
-        is_typing = false;
-        typing_status(is_typing);
-      }
-    }
-
     public void on_typing_changed(bool is_typing) {
       label_contact_typing.visible = is_typing;
     }
@@ -201,8 +182,8 @@ namespace Venom {
       add_filetransfer(ft);
     }
 
-    public void textview_activate(Gtk.TextView source) {
-      string s = source.buffer.text;
+    public void textview_activate() {
+      string s = message_textview.buffer.text;
       if(s == "")
         return;
 
@@ -220,7 +201,7 @@ namespace Venom {
         conversation_view.add_message(m);
         new_outgoing_message(m);
       }
-      source.buffer.text = "";
+      message_textview.buffer.text = "";
     }
 
     //GUI events
