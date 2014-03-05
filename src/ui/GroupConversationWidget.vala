@@ -85,20 +85,22 @@ namespace Venom {
 
       //button_send_file.clicked.connect(button_send_file_clicked);
 
-      Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
-      MessageTextView message_textview = new MessageTextView();
-      message_textview.border_width = 6;
-      message_textview.textview_activate.connect( () => {
-        textview_activate(message_textview);
-      });
-      scrolled_window_message.add(message_textview);
-
       Gtk.Paned paned_sidebar = builder.get_object("paned_sidebar") as Gtk.Paned;
       Gtk.ScrolledWindow sidebar_scrolled_window = new Gtk.ScrolledWindow(null, null);
       group_conversation_sidebar = new GroupConversationSidebar(groupchat);
       sidebar_scrolled_window.add(group_conversation_sidebar);
       sidebar_scrolled_window.show_all();
       paned_sidebar.pack2(sidebar_scrolled_window, false, true);
+
+      Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
+      MessageTextView message_textview = new MessageTextView();
+      message_textview.border_width = 6;
+      message_textview.textview_activate.connect( () => {
+        textview_activate(message_textview);
+      });
+      message_textview.completion_column = 1;
+      message_textview.completion_model = group_conversation_sidebar.model;
+      scrolled_window_message.add(message_textview);
 
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);

@@ -26,20 +26,29 @@ namespace Venom {
     public string placeholder_text { get; set; default = "Type your message here..."; }
     public Gtk.TextTag placeholder_tag { get; set; }
 
+    private Gtk.TreeModel _completion_model;
+    public Gtk.TreeModel completion_model {
+      get {
+        return _completion_model;
+      } set {
+        _completion_model = value;
+        completion_filtered = new Gtk.TreeModelFilter(_completion_model, null);
+        completion_filtered.set_visible_func(visible_function);
+      }
+    }
+    public int completion_column { get; set; }
+
+    private Gtk.TreeModelFilter completion_filtered;
+    private string filter_string;
     private bool show_placeholder = true;
 
     public MessageTextView() {
+      /** Placeholder **/
       placeholder_tag = buffer.create_tag(null, "foreground", "grey");
       append_tagged_text(placeholder_text, placeholder_tag);
 
-      key_press_event.connect((k) => {
-        // only catch return if shift or control keys are not pressed
-        if(k.keyval == Gdk.Key.Return && (k.state & (Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK)) == 0) {
-          textview_activate();
-          return true;
-        }
-        return false;
-      });
+      /** Events **/
+      key_press_event.connect(on_key_press);
 
       focus_in_event.connect(() => {
         if(show_placeholder) {
@@ -57,6 +66,53 @@ namespace Venom {
         }
         return false;
       });
+    }
+
+    private bool visible_function(Gtk.TreeModel model, Gtk.TreeIter iter) {
+      string str;
+      model.get(iter, completion_column, out str, -1);
+      return (str != null && filter_string != null && str.has_prefix(filter_string));
+    }
+
+    private bool on_key_press(Gdk.EventKey event) {
+      // only catch return if shift or control keys are not pressed
+      if(event.keyval == Gdk.Key.Return && (event.state & (Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK)) == 0) {
+        textview_activate();
+        return true;
+      } else if(event.keyval == Gdk.Key.Tab) {
+        if(completion_model == null) {
+          // behave as the default textview
+          return false;
+        }
+
+        Gtk.TextMark ohaimark = buffer.get_insert();
+        Gtk.TextIter iter_end;
+        buffer.get_iter_at_mark(out iter_end, ohaimark);
+
+        if(!iter_end.ends_word()) {
+          return true;
+        }
+
+        //FIXME workaround as iter.copy() won't work for some reason
+        Gtk.TextIter iter_start;
+        buffer.get_iter_at_mark(out iter_start, ohaimark);
+        iter_start.backward_word_start();
+
+        filter_string = iter_start.get_text(iter_end);
+        stdout.printf("completing %s\n", filter_string);
+        completion_filtered.refilter();
+
+        Gtk.TreeIter filter_iter;
+        if( completion_filtered.get_iter_first(out filter_iter) ) {
+          string completed_string;
+          completion_filtered.get(filter_iter, completion_column, out completed_string, -1);
+          stdout.printf("matches: %s\n", completed_string);
+          buffer.delete(ref iter_start, ref iter_end);
+          buffer.insert(ref iter_start, completed_string, completed_string.length);
+        }
+        return true;
+      }
+      return false;
     }
 
     private void append_tagged_text(string text, Gtk.TextTag tag) {

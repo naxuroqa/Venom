@@ -22,9 +22,10 @@ namespace Venom {
   public interface IGroupConversationSidebar : Gtk.Widget {
     public abstract GroupChat groupchat { get; set; }
     public abstract void update_contact(int peernumber, Tox.ChatChange change);
+    public abstract Gtk.TreeModel model { get; set; }
   }
 
-  public class GroupConversationSidebar : IGroupConversationSidebar, Gtk.TreeView {
+  public class GroupConversationSidebar : Gtk.TreeView, IGroupConversationSidebar {
     Gtk.ListStore listmodel;
     public GroupChat groupchat { get; set; }
     public GroupConversationSidebar( GroupChat groupchat ) {
