@@ -138,7 +138,7 @@ namespace Venom {
       if(from == null) {
         return "Me";
       } else {
-        return from_contact.name;
+        return from_contact.name != null ? from_contact.name : "<unknown>";
       }
     }
     public virtual string get_message_plain() {
@@ -173,6 +173,12 @@ namespace Venom {
       return "*";
     }
     public override string get_message_plain() {
+      string name_string;
+      if(message_direction == MessageDirection.INCOMING) {
+        name_string = from_contact.name != null ? from_contact.name : "<unknown>";
+      } else {
+        name_string = "me";
+      }
       return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from_contact.name : "me", message);
     }
   }

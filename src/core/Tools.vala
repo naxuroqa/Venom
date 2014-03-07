@@ -92,40 +92,19 @@ namespace Venom {
       return clone;
     }
 
-    public static string format_filesize(uint64 size) {
-      if(VenomSettings.instance.dec_binary_prefix) {
-        uint64 kibibyte = 1024;
-        uint64 mebibyte = kibibyte * 1024;
-        uint64 gibibyte = mebibyte * 1024;
-        uint64 tebibyte = gibibyte * 1024;
-        uint64 pebibyte = tebibyte * 1024;
-
-        if(size < kibibyte) return "%llu bytes".printf(size);
-        if(size < mebibyte) return "%.2lf KiB".printf( (double) size / kibibyte );
-        if(size < gibibyte) return "%.2lf MiB".printf( (double) size / mebibyte );
-        if(size < tebibyte) return "%.2lf GiB".printf( (double) size / gibibyte );
-        if(size < pebibyte) return "%.2lf TiB".printf( (double) size / tebibyte );
-        return "really big file";
-      } else {
-        uint64 kilobyte = 1000;
-        uint64 megabyte = kilobyte * 1000;
-        uint64 gigabyte = megabyte * 1000;
-        uint64 terabyte = gigabyte * 1000;
-        uint64 petabyte = terabyte * 1000;
-
-        if(size < kilobyte) return "%llu bytes".printf(size);
-        if(size < megabyte) return "%.2lf KB".printf( (double) size / kilobyte );
-        if(size < gigabyte) return "%.2lf MB".printf( (double) size / megabyte );
-        if(size < terabyte) return "%.2lf GB".printf( (double) size / gigabyte );
-        if(size < petabyte) return "%.2lf TB".printf( (double) size / terabyte );
-        return "really big file";
-      }
-    }
-
     public static string shorten_name(string name) {
       string[] parts = Regex.split_simple("\\s",name);
       if(parts.length < 2) return name;
       return parts[0];
+    }
+
+    public static string remove_whitespace(string str) {
+      try {
+			var regex = new GLib.Regex ("\\s");
+			  return(regex.replace(str, -1, 0, ""));
+		  } catch (GLib.RegexError e) {
+			  GLib.assert_not_reached ();
+		  }
     }
 
     public static string friend_add_error_to_string(Tox.FriendAddError friend_add_error) {
@@ -162,8 +141,18 @@ namespace Venom {
         }
         return _action_regex;
       }
-      private set {
-        _action_regex = value;
+    }
+    private static GLib.Regex _uri_regex;
+    public static GLib.Regex uri_regex {
+      get {
+        if(_uri_regex == null) {
+          try {
+          _uri_regex = new GLib.Regex("(?<u>[a-z]\\S*://\\S*)");
+          } catch (GLib.RegexError e) {
+            stderr.printf("Can't create action regex: %s.\n", e.message);
+          }
+        }
+        return _uri_regex;
       }
     }
   }

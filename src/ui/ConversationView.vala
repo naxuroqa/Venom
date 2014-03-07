@@ -24,6 +24,7 @@ namespace Venom {
     public abstract bool short_names {get; set;}
     public abstract void add_message(IMessage message);
     public abstract void add_filetransfer(FileTransferChatEntry entry);
+    public abstract void register_search_entry(Gtk.Entry entry);
   }
 
   public class ConversationView : IConversationView, Gtk.EventBox {
@@ -50,6 +51,8 @@ namespace Venom {
       }
       conversation_list.pack_start(cm,false,false,0);
       last_message = message;
+    }
+    public void register_search_entry(Gtk.Entry entry) {
     }
   }
 }

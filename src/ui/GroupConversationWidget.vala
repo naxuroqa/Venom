@@ -21,15 +21,12 @@
 
 namespace Venom {
   public class GroupConversationWidget : Gtk.EventBox {
-    private static string empty_message = "Type your message here...";
-    private bool textview_message_empty = true;
     private Gtk.Label label_groupchat_name;
     private Gtk.Label label_groupchat_statusmessage;
     private Gtk.Image image_groupchat_image;
 
-    private Gtk.TextTag empty_message_tag;
-
     private IConversationView conversation_view;
+    private IGroupConversationSidebar group_conversation_sidebar;
 
     private unowned GroupChat groupchat {get; private set;}
 
@@ -39,10 +36,10 @@ namespace Venom {
     public GroupConversationWidget( GroupChat groupchat ) {
       this.groupchat = groupchat;
       init_widgets();
-      update_contact();
+      update_groupchat_info();
     }
 
-    public void update_contact() {
+    public void update_groupchat_info() {
       // update groupchat name
       label_groupchat_name.set_text("Groupchat #%i".printf(groupchat.group_id));
 
@@ -51,6 +48,14 @@ namespace Venom {
 
       // update groupchat image
       image_groupchat_image.set_from_pixbuf(groupchat.image != null ? groupchat.image : ResourceFactory.instance.default_groupchat);
+    }
+
+    public void update_contact(int peernumber, Tox.ChatChange change) {
+      if(change == Tox.ChatChange.PEER_ADD || change == Tox.ChatChange.PEER_DEL) {
+        update_groupchat_info();
+      }
+      // update sidebar
+      group_conversation_sidebar.update_contact(peernumber, change);
     }
 
     private void init_widgets() {
@@ -74,76 +79,66 @@ namespace Venom {
       //TODO
       //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
       //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
-      //Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
+      Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
+      button_send_file.visible = false;
+      button_send_file.no_show_all = true;
 
       //button_send_file.clicked.connect(button_send_file_clicked);
 
-      Gtk.TextView textview_message = builder.get_object("textview_message") as Gtk.TextView;
-      empty_message_tag = textview_message.buffer.create_tag(null, "foreground", "grey");
-      append_tagged_text_to_buffer(textview_message.buffer, empty_message, empty_message_tag);
+      Gtk.Paned paned_sidebar = builder.get_object("paned_sidebar") as Gtk.Paned;
+      Gtk.ScrolledWindow sidebar_scrolled_window = new Gtk.ScrolledWindow(null, null);
+      group_conversation_sidebar = new GroupConversationSidebar(groupchat);
+      sidebar_scrolled_window.add(group_conversation_sidebar);
+      sidebar_scrolled_window.show_all();
+      paned_sidebar.pack2(sidebar_scrolled_window, false, true);
 
-      textview_message.key_press_event.connect((k) => {
-        // only catch return if shift or control keys are not pressed
-        if(k.keyval == Gdk.Key.Return && (k.state & (Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK)) == 0) {
-          textview_activate(textview_message);
-          return true;
-        }
-        return false;
+      Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
+      MessageTextView message_textview = new MessageTextView();
+      message_textview.border_width = 6;
+      message_textview.textview_activate.connect( () => {
+        textview_activate(message_textview);
       });
-
-      textview_message.focus_in_event.connect(() => {
-        if(textview_message_empty == true) {
-          textview_message.buffer.text = "";
-        }
-        return false;
-      });
-
-      textview_message.focus_out_event.connect(() => {
-        if(textview_message.buffer.text == "") {
-          append_tagged_text_to_buffer(textview_message.buffer, empty_message, empty_message_tag);
-          textview_message_empty = true;
-        } else {
-          textview_message_empty = false;
-        }
-        return false;
-      });
+      message_textview.completion_column = 1;
+      message_textview.completion_model = group_conversation_sidebar.model;
+      scrolled_window_message.add(message_textview);
 
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
 
-      if(ResourceFactory.instance.textview_mode) {
-        conversation_view = new TextConversationView();
+      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
+
+      if( ResourceFactory.instance.textview_mode ) {
+        conversation_view = new ConversationTextView();
+        scrolled_window.add(conversation_view);
       } else {
         conversation_view = new ConversationView();
+        scrolled_window.add_with_viewport(conversation_view);
       }
       conversation_view.get_style_context().add_class("chat_list");
-      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
-      scrolled_window.add_with_viewport(conversation_view);
+      conversation_view.short_names = false;
 
-      //TODO: move to bottom only when wanted
+      Gtk.Overlay overlay = builder.get_object("overlay") as Gtk.Overlay;
+      Gtk.Entry entry_search = new SearchEntry();
+      entry_search.halign = Gtk.Align.END;
+      entry_search.valign = Gtk.Align.START;
+      entry_search.no_show_all = true;
+      conversation_view.register_search_entry(entry_search);
+      overlay.add_overlay(entry_search);
+
+      Gtk.Adjustment vadjustment = scrolled_window.get_vadjustment();
+      bool scroll_to_bottom = true;
       conversation_view.size_allocate.connect( () => {
-        Gtk.Adjustment adjustment = scrolled_window.get_vadjustment();
-        adjustment.set_value(adjustment.upper - adjustment.page_size);
+        if(scroll_to_bottom) {
+          vadjustment.value = vadjustment.upper - vadjustment.page_size;
+        }
+      });
+      vadjustment.value_changed.connect( () => {
+        scroll_to_bottom = (vadjustment.value == vadjustment.upper - vadjustment.page_size);
       });
 
       delete_event.connect(hide_on_delete);
     }
-
-    private void append_tagged_text_to_buffer(Gtk.TextBuffer buffer, string text, Gtk.TextTag tag) {
-      Gtk.TextIter text_end;
-      buffer.get_end_iter(out text_end);
-      buffer.insert_with_tags(text_end, text, text.length, tag);
-    }
-
-
-    /*
-    //history
-    public void load_history(GLib.List<Message> messages) {
-      messages.foreach((message) => {
-        conversation_view.add_message(message);
-        });
-    }*/
 
     public void on_incoming_message(GroupMessage message) {
       if(message.from != groupchat)

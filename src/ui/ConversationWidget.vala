@@ -21,23 +21,21 @@
 
 namespace Venom {
   public class ConversationWidget : Gtk.EventBox {
-    private static string empty_message = "Type your message here...";
-    private bool textview_message_empty = true;
     private Gtk.Label label_contact_name;
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
+    private Gtk.Label label_contact_typing;
 
-    private Gtk.TextTag empty_message_tag;
-
+    private MessageTextView message_textview;
     private IConversationView conversation_view;
     public unowned Contact contact {get; private set;}
 
     public signal void new_outgoing_message(Message message);
     public signal void new_outgoing_action(ActionMessage action);
     public signal void new_outgoing_file(FileTransfer ft);
+    public signal void typing_status(bool typing);
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
-
 
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
@@ -59,6 +57,9 @@ namespace Venom {
 
       // update contact image
       image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_contact);
+
+      if( contact.name != null )
+        label_contact_typing.label = "%s is typing...".printf(contact.name);
     }
 
     private void init_widgets() {
@@ -86,57 +87,63 @@ namespace Venom {
 
       button_send_file.clicked.connect(button_send_file_clicked);
 
-      Gtk.TextView textview_message = builder.get_object("textview_message") as Gtk.TextView;
-      empty_message_tag = textview_message.buffer.create_tag(null, "foreground", "grey");
-      append_tagged_text_to_buffer(textview_message.buffer, empty_message, empty_message_tag);
-
-      textview_message.key_press_event.connect((k) => {
-        // only catch return if shift or control keys are not pressed
-        if(k.keyval == Gdk.Key.Return && (k.state & (Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK)) == 0) {
-          textview_activate(textview_message);
-          return true;
-        }
-        return false;
+      Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
+      message_textview = new MessageTextView();
+      message_textview.border_width = 6;
+      message_textview.textview_activate.connect(textview_activate);
+      message_textview.typing_status.connect((is_typing) => {
+        typing_status(is_typing);
       });
 
-      textview_message.focus_in_event.connect(() => {
-        if(textview_message_empty == true) {
-          textview_message.buffer.text = "";
-        }
-        return false;
-      });
-
-      textview_message.focus_out_event.connect(() => {
-        if(textview_message.buffer.text == "") {
-          append_tagged_text_to_buffer(textview_message.buffer, empty_message, empty_message_tag);
-          textview_message_empty = true;
-        } else {
-          textview_message_empty = false;
-        }
-        return false;
-      });
+      scrolled_window_message.add(message_textview);
 
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
 
+      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
+
       if( ResourceFactory.instance.textview_mode ) {
-        conversation_view = new TextConversationView();
+        conversation_view = new ConversationTextView();
+        scrolled_window.add(conversation_view);
       } else {
         conversation_view = new ConversationView();
+        scrolled_window.add_with_viewport(conversation_view);
       }
       conversation_view.get_style_context().add_class("chat_list");
       conversation_view.short_names = true;
-      Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
-      scrolled_window.add_with_viewport(conversation_view);
 
-      //TODO: move to bottom only when wanted
+      Gtk.Overlay overlay = builder.get_object("overlay") as Gtk.Overlay;
+      Gtk.Entry entry_search = new SearchEntry();
+      entry_search.halign = Gtk.Align.END;
+      entry_search.valign = Gtk.Align.START;
+      entry_search.no_show_all = true;
+      conversation_view.register_search_entry(entry_search);
+      overlay.add_overlay(entry_search);
+
+      label_contact_typing = new Gtk.Label(null);
+      label_contact_typing.get_style_context().add_class("typing_label");
+      label_contact_typing.halign = Gtk.Align.START;
+      label_contact_typing.valign = Gtk.Align.END;
+      label_contact_typing.no_show_all = true;
+      overlay.add_overlay(label_contact_typing);
+
+      Gtk.Adjustment vadjustment = scrolled_window.get_vadjustment();
+      bool scroll_to_bottom = true;
       conversation_view.size_allocate.connect( () => {
-        Gtk.Adjustment adjustment = scrolled_window.get_vadjustment();
-        adjustment.set_value(adjustment.upper - adjustment.page_size);
+        if(scroll_to_bottom) {
+          vadjustment.value = vadjustment.upper - vadjustment.page_size;
+        }
+      });
+      vadjustment.value_changed.connect( () => {
+        scroll_to_bottom = (vadjustment.value == vadjustment.upper - vadjustment.page_size);
       });
 
       delete_event.connect(hide_on_delete);
+    }
+
+    public void on_typing_changed(bool is_typing) {
+      label_contact_typing.visible = is_typing;
     }
 
     private void add_filetransfer(FileTransfer ft) {
@@ -144,12 +151,6 @@ namespace Venom {
       entry.filetransfer_accepted.connect((ft) => { filetransfer_accepted(ft); });
       entry.filetransfer_rejected.connect((ft) => { filetransfer_rejected(ft); });
       conversation_view.add_filetransfer(entry);
-    }
-
-    private void append_tagged_text_to_buffer(Gtk.TextBuffer buffer, string text, Gtk.TextTag tag) {
-      Gtk.TextIter text_end;
-      buffer.get_end_iter(out text_end);
-      buffer.insert_with_tags(text_end, text, text.length, tag);
     }
 
     //history
@@ -181,8 +182,8 @@ namespace Venom {
       add_filetransfer(ft);
     }
 
-    public void textview_activate(Gtk.TextView source) {
-      string s = source.buffer.text;
+    public void textview_activate() {
+      string s = message_textview.buffer.text;
       if(s == "")
         return;
 
@@ -200,7 +201,7 @@ namespace Venom {
         conversation_view.add_message(m);
         new_outgoing_message(m);
       }
-      source.buffer.text = "";
+      message_textview.buffer.text = "";
     }
 
     //GUI events

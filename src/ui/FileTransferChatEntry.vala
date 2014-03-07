@@ -59,7 +59,7 @@ namespace Venom {
       }
 
       name_label.set_text( ft.name );
-      size_or_status_label.set_text( Tools.format_filesize( ft.file_size ) );
+      size_or_status_label.set_text( UITools.format_filesize( ft.file_size ) );
 
       save_as_button.clicked.connect(accept_file);
       cancel_button.clicked.connect(reject_file);

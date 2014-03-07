@@ -71,34 +71,37 @@ STRING(REPLACE ";" " " CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 CONFIGURE_FILE( config.h.in config.h )
 
 SET( VENOM_SRC
-  core/Client.vala
+  Main.vala
   core/Contact.vala
-  core/DhtServer.vala
+  core/DhtNode.vala
+  core/FileTransfer.vala
   core/GroupChat.vala
   core/GroupChatContact.vala
+  core/LocalStorage.vala
   core/Message.vala
-  core/FileTransfer.vala
   core/ResourceFactory.vala
+  core/Settings.vala
   core/Tools.vala
   core/ToxSession.vala
-  core/LocalStorage.vala
-  core/VenomSettings.vala
-  ui/AddContactDialog.vala
   ui/AboutDialog.vala
+  ui/AddContactDialog.vala
+  ui/ChatMessage.vala
+  ui/Client.vala
+  ui/ContactFilter.vala
+  ui/ContactListCellRenderer.vala
+  ui/ContactListTreeView.vala
+  ui/ContactListWindow.vala
+  ui/ConversationTextView.vala
   ui/ConversationView.vala
   ui/ConversationWidget.vala
-  ui/ChatMessage.vala
   ui/FileTransferChatEntry.vala
-  ui/ContactFilter.vala
-  ui/ContactListWindow.vala
-  ui/ContactListTreeView.vala
-  ui/ContactListCellRenderer.vala
+  ui/GroupConversationSidebar.vala
   ui/GroupConversationWidget.vala
-  ui/TextConversationView.vala
+  ui/MessageTextView.vala
+  ui/SearchEntry.vala
   ui/UserInfoWindow.vala
   ui/UITools.vala
   ui/SettingsWindow.vala
-  Main.vala
 )
 
 VALA_PRECOMPILE( VALA_C_VENOM
@@ -175,7 +178,6 @@ TARGET_LINK_LIBRARIES( venom
                        ${GIO_LIBRARIES}
                        ${GLIB_LIBRARIES}
                        ${GTK_LIBRARIES}
-                       ${GEE_LIBRARIES}
                        ${JSON_LIBRARIES}
 )
 

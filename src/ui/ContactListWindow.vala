@@ -21,6 +21,14 @@
 
 namespace Venom {
   public class ContactListWindow : Gtk.ApplicationWindow {
+    private const GLib.ActionEntry win_entries[] =
+    {
+      { "edit-user", edit_user_information }
+    };
+    private const GLib.ActionEntry app_entries[] =
+    {
+      { "copy-id", copy_id_to_clipboard }
+    };
     // Containers
     private GLib.HashTable<int, ConversationWidget> conversation_widgets;
     private GLib.HashTable<int, GroupConversationWidget> group_conversation_widgets;
@@ -40,7 +48,6 @@ namespace Venom {
     private Gtk.Notebook notebook_conversations;
     private Gtk.Menu menu_user;
     private Gtk.ToggleButton button_user;
-    private Gtk.Window settings_window;
 
     private bool cleaned_up = false;
 
@@ -151,6 +158,9 @@ namespace Venom {
     private void init_widgets() {
       // Set up Window
       set_default_size(230, 600);
+      show_menubar = false;
+      add_action_entries(win_entries, this);
+      application.add_action_entries(app_entries, this);
       try {
         Gtk.IconTheme theme = Gtk.IconTheme.get_default();
         theme.append_search_path(Path.build_filename("share", "pixmaps"));
@@ -204,8 +214,6 @@ namespace Venom {
 
       Gtk.ImageMenuItem menuitem_edit_info = builder.get_object("menuitem_edit_info") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.ImageMenuItem;
-      Gtk.ImageMenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.ImageMenuItem;
-      Gtk.ImageMenuItem menuitem_quit = builder.get_object("menuitem_quit") as Gtk.ImageMenuItem;
 
       menuitem_status = builder.get_object("menuitem_status") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_status_online = builder.get_object("menuitem_status_online") as Gtk.ImageMenuItem;
@@ -218,6 +226,9 @@ namespace Venom {
       (menuitem_status_away.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.away);
       (menuitem_status_busy.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.busy);
       (menuitem_status_offline.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
+
+      Gtk.ImageMenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.ImageMenuItem;
+      Gtk.ImageMenuItem menuitem_quit  = builder.get_object("menuitem_quit") as Gtk.ImageMenuItem;
 
       image_status.set_from_pixbuf(ResourceFactory.instance.offline);
       image_userimage.set_from_pixbuf(ResourceFactory.instance.default_contact);
@@ -242,10 +253,10 @@ namespace Venom {
       scrolled_window_contact_list.add(contact_list_tree_view);
 
       menu_user = builder.get_object("menu_user") as Gtk.Menu;
+      menu_user.attach_widget = this;
       button_user = builder.get_object("button_user") as Gtk.ToggleButton;
       Gtk.Button button_add_contact = builder.get_object("button_add_contact") as Gtk.Button;
       Gtk.Button button_group_chat = builder.get_object("button_group_chat") as Gtk.Button;
-      Gtk.Button button_preferences = builder.get_object("button_preferences") as Gtk.Button;
 
       // poor man's Gtk.MenuButton
       //FIXME choose monitor to display this on
@@ -270,12 +281,12 @@ namespace Venom {
       });*/
       button_add_contact.clicked.connect(button_add_contact_clicked);
       button_group_chat.clicked.connect(button_group_chat_clicked);
-      button_preferences.clicked.connect(button_preferences_clicked);
 
-      menuitem_edit_info.activate.connect( edit_user_information );
-      menuitem_copy_id.activate.connect( copy_id_to_clipboard);
-      menuitem_about.activate.connect( show_about_dialog );
-      menuitem_quit.activate.connect( () => {this.destroy();});
+      // Workaround for gtk+ 3.4 MenuItems not deriving from Gtk.Actionable
+      menuitem_copy_id.activate.connect(  () => {application.activate_action("copy-id",  null);});
+      menuitem_edit_info.activate.connect(() => {activate_action("edit-user",  null);});
+      menuitem_about.activate.connect(() => {application.activate_action("about", null);});
+      menuitem_quit.activate.connect( () => {application.activate_action("quit",  null);});
 
       menuitem_status_online.activate.connect(  () => { set_userstatus(UserStatus.ONLINE); } );
       menuitem_status_away.activate.connect(    () => { set_userstatus(UserStatus.AWAY); } );
@@ -299,6 +310,7 @@ namespace Venom {
       session.on_connection_status.connect(this.on_connectionstatus);
       session.on_own_connection_status.connect(this.on_ownconnectionstatus);
       session.on_own_user_status.connect(this.on_ownuserstatus);
+      session.on_typing_change.connect(this.on_typing_change);
 
       //groupmessage signals
       session.on_group_invite.connect(this.on_group_invite);
@@ -325,7 +337,7 @@ namespace Venom {
         contact_list_tree_view.update_entry(g);
         GroupConversationWidget w = group_conversation_widgets[g.group_id];
         if(w != null)
-          w.update_contact();
+          w.update_groupchat_info();
       } );
 
       contact_removed.connect( (c) => {
@@ -416,20 +428,13 @@ namespace Venom {
       Gdk.Display display = get_display();
       Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD).set_text(id_string, -1);
       Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_PRIMARY).set_text(id_string, -1);
-    }
-
-    private void show_about_dialog() {
-      AboutDialog dialog = new AboutDialog();
-      dialog.set_transient_for(this);
-      dialog.set_modal(true);
-
-      dialog.run();
-      dialog.destroy();
+      stdout.printf("Copied Tox ID to clipboard\n");
     }
 
     private void edit_user_information() {
       UserInfoWindow w = new UserInfoWindow();
 
+      w.application = application;
       w.user_name = label_name.get_text();
       w.max_name_length = Tox.MAX_NAME_LENGTH;
       w.user_status = label_status.get_text();
@@ -493,7 +498,7 @@ namespace Venom {
     }
 
     public void set_urgency () {
-      if(!has_focus && VenomSettings.instance.enable_urgency_notification) {
+      if(!is_active && Settings.instance.enable_urgency_notification) {
         this.set_urgency_hint(true);
       }
     }
@@ -529,14 +534,17 @@ namespace Venom {
       if(response != Gtk.ResponseType.ACCEPT)
         return;
 
-      Tox.FriendAddError friend_add_error = session.addfriend_norequest(c);
-      if((int)friend_add_error < 0) {
-        stderr.printf("Could not add friend: %s\n", Tools.friend_add_error_to_string(friend_add_error));
+      int friend_add_error = session.addfriend_norequest(c);
+      if(friend_add_error < 0) {
+        stderr.printf("Friend could not be added.\n");
         return;
       }
       stdout.printf("Added new friend #%i\n", c.friend_id);
       contact_added(c);
-      this.set_urgency();
+    }
+    private void on_typing_change(Contact c, bool is_typing) {
+      ConversationWidget w = open_conversation_with(c);
+      w.on_typing_changed(is_typing);
     }
     private void on_friendmessage(Contact c, string message) {
       stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name != null ? c.name : "<%i>".printf(c.friend_id), message);
@@ -649,8 +657,19 @@ namespace Venom {
       stdout.printf("[gm] %s [%i]@%i: %s\n", from_name, friendgroupnumber, g.group_id, message);
 
       GroupConversationWidget w = open_group_conversation_with(g);
-      incoming_group_message(new GroupMessage.incoming(g, g.peers.get(friendgroupnumber), message));
-      
+
+      //FIXME remove this workaround as soon as the problem gets fixed in the core
+      /** BEGIN **/
+      GroupChatContact gcc = g.peers.get(friendgroupnumber);
+      if(gcc == null) {
+        stderr.printf("Group message from unknown contact #%i [%i]\n", friendgroupnumber, g.group_id);
+        gcc = new GroupChatContact(friendgroupnumber);
+        g.peers.set(friendgroupnumber, gcc);
+        on_group_peer_changed(g, friendgroupnumber, Tox.ChatChange.PEER_ADD);
+      }
+      /** END **/
+      incoming_group_message(new GroupMessage.incoming(g, gcc, message));
+
       if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
         g.unread_messages++;
         contact_list_tree_view.update_entry(g);
@@ -663,7 +682,18 @@ namespace Venom {
       stdout.printf("[ga] %s [%i]@%i: %s\n", from_name, friendgroupnumber, g.group_id, message);
 
       GroupConversationWidget w = open_group_conversation_with(g);
-      incoming_group_action(new GroupActionMessage.incoming(g, g.peers.get(friendgroupnumber), message));
+
+      //FIXME remove this workaround as soon as the problem gets fixed in the core
+      /** BEGIN **/
+      GroupChatContact gcc = g.peers.get(friendgroupnumber);
+      if(gcc == null) {
+        stderr.printf("Group action from unknown contact #%i [%i]\n", friendgroupnumber, g.group_id);
+        gcc = new GroupChatContact(friendgroupnumber);
+        g.peers.set(friendgroupnumber, gcc);
+        on_group_peer_changed(g, friendgroupnumber, Tox.ChatChange.PEER_ADD);
+      }
+      /** END **/
+      incoming_group_action(new GroupActionMessage.incoming(g, gcc, message));
       
       if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
         g.unread_messages++;
@@ -674,7 +704,7 @@ namespace Venom {
 
     private void on_group_peer_changed(GroupChat g, int peernumber, Tox.ChatChange change) {
       GroupConversationWidget w = open_group_conversation_with(g);
-      w.update_contact();
+      w.update_contact(peernumber, change);
       groupchat_changed(g);
     }
 
@@ -810,6 +840,11 @@ namespace Venom {
         w.new_outgoing_message.connect(on_outgoing_message);
         w.new_outgoing_action.connect(on_outgoing_action);
         w.new_outgoing_file.connect(on_outgoing_file);
+        w.typing_status.connect( (is_typing) => {
+          if(Settings.instance.send_typing_status) {
+            session.set_user_is_typing(c.friend_id, is_typing);
+          }
+        });
         w.filetransfer_accepted.connect ( (ft) => {
           session.accept_file(ft.friend.friend_id,ft.filenumber);
         });
@@ -912,13 +947,8 @@ namespace Venom {
     }
 
     public void add_contact(string contact_id_string, string contact_message = ResourceFactory.instance.default_add_contact_message) {
-      string trimmed_id = contact_id_string.dup();
-      try {
-			var regex = new GLib.Regex ("\\s");
-			  trimmed_id = regex.replace(trimmed_id, -1, 0, "");
-		  } catch (GLib.RegexError e) {
-			  GLib.assert_not_reached ();
-		  }
+      string trimmed_id = Tools.remove_whitespace(contact_id_string);
+
       if(trimmed_id.length != Tox.FRIEND_ADDRESS_SIZE * 2) {
         string error_message = "Could not add friend: Invalid ID\n";
         stderr.printf(error_message);
@@ -950,12 +980,13 @@ namespace Venom {
     // GUI Events
     public void button_add_contact_clicked(Gtk.Button source) {
       AddContactDialog dialog = new AddContactDialog();
+      dialog.message = ResourceFactory.instance.default_add_contact_message;
       dialog.set_modal(true);
       dialog.set_transient_for(this);
 
       int response = dialog.run();
-      string contact_id_string = dialog.contact_id;
-      string contact_message = dialog.contact_message;
+      string contact_id_string = dialog.id;
+      string contact_message = dialog.message;
       dialog.destroy();
 
       if(response != Gtk.ResponseType.OK)
@@ -971,16 +1002,6 @@ namespace Venom {
         return;
       }
       groupchat_added(g);
-    }
-
-    public void button_preferences_clicked(Gtk.Button source) {
-      if(settings_window == null) {
-        settings_window = new SettingsWindow();
-        settings_window.destroy.connect( () => {settings_window = null;});
-        settings_window.visible = true;
-      } else {
-        settings_window.present();
-      }
     }
   }
 }

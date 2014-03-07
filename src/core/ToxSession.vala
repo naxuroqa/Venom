@@ -45,7 +45,7 @@ namespace Venom {
   public class ToxSession : Object {
     private Tox.Tox handle;
     private ILocalStorage local_storage;
-    private DhtServer[] dht_servers = {};
+    private DhtNode[] dht_nodes = {};
     private GLib.HashTable<int, Contact> _contacts = new GLib.HashTable<int, Contact>(null, null);
     private GLib.HashTable<int, GroupChat> _groups = new GLib.HashTable<int, GroupChat>(null, null);
     private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
@@ -54,7 +54,7 @@ namespace Venom {
     private bool ipv6 = false;
     public bool running {get; private set; default=false; }
     public bool connected { get; private set; default=false; }
-    public DhtServer connected_dht_server { get; private set; default=null; }
+    public DhtNode connected_dht_node { get; private set; default=null; }
 
     // Core functionality signals
     public signal void on_friend_request(Contact c, string message);
@@ -69,6 +69,7 @@ namespace Venom {
     public signal void on_connection_status(Contact c);
     public signal void on_own_connection_status(bool status);
     public signal void on_own_user_status(UserStatus status);
+    public signal void on_typing_change(Contact c, bool is_typing);
 
     // Groupchat signals
     public signal void on_group_invite(Contact c, GroupChat g);
@@ -90,14 +91,14 @@ namespace Venom {
       handle = new Tox.Tox( ipv6 ? 1 : 0);
 
       //start local storage
-      if(VenomSettings.instance.enable_logging) {
+      if(Settings.instance.enable_logging) {
         local_storage = new LocalStorage();
         local_storage.connect_to(this);
       } else {
         local_storage = new DummyStorage();
       }
 
-      init_dht_servers();
+      init_dht_nodes();
       init_callbacks();
     }
 
@@ -106,20 +107,20 @@ namespace Venom {
       running = false;
     }
 
-    private void init_dht_servers() {
-      dht_servers += new DhtServer.ipv4(
+    private void init_dht_nodes() {
+      dht_nodes += new DhtNode.ipv4(
         "192.254.75.98",
         "FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"
       );
-      dht_servers += new DhtServer.ipv6(
+      dht_nodes += new DhtNode.ipv6(
         "2607:5600:284::2",
         "FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"
       );
-      dht_servers += new DhtServer.ipv4(
+      dht_nodes += new DhtNode.ipv4(
         "66.175.223.88",
         "B24E2FB924AE66D023FE1E42A2EE3B432010206F751A2FFD3E297383ACF1572E"
       );
-      dht_servers += new DhtServer.ipv4(
+      dht_nodes += new DhtNode.ipv4(
         "192.210.149.121",
         "F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67"
       );
@@ -135,6 +136,7 @@ namespace Venom {
       handle.callback_user_status(this.on_user_status_callback);
       handle.callback_read_receipt(this.on_read_receipt_callback);
       handle.callback_connection_status(this.on_connection_status_callback);
+      handle.callback_typing_change(this.on_typing_change_callback);
 
       // Groupchat callbacks
       handle.callback_group_invite(this.on_group_invite_callback);
@@ -231,6 +233,12 @@ namespace Venom {
       Idle.add(() => { on_connection_status(contact); return false; });
     }
 
+    private void on_typing_change_callback(Tox.Tox tox, int friend_number, int is_typing) {
+      Contact contact = _contacts.get(friend_number);
+      contact.is_typing = is_typing != 0;
+      Idle.add(() => { on_typing_change(contact, is_typing != 0); return false;});
+    }
+
     // Group chat callbacks
     private void on_group_invite_callback(Tox.Tox tox, int friendnumber, uint8[] group_public_key)
       requires(group_public_key != null)
@@ -255,6 +263,7 @@ namespace Venom {
     }
 
     private void on_group_namelist_change_callback(Tox.Tox tox, int groupnumber, int peernumber, Tox.ChatChange change) {
+/*
       string chat_change_string = "";
       if(change == Tox.ChatChange.PEER_ADD) {
         chat_change_string = "ADD";
@@ -263,28 +272,21 @@ namespace Venom {
       } else {
         chat_change_string = "NAME";
       }
-      //stdout.printf("[gnc] #%i [%i] %s\n", groupnumber, peernumber, chat_change_string);
+      stdout.printf("[gnc] <%s> [%i] #%i\n", chat_change_string, peernumber, groupnumber);
+*/
       Idle.add(() => {
         GroupChat g = _groups.get(groupnumber);
         if(change == Tox.ChatChange.PEER_ADD) {
-          //stdout.printf("Adding new peer [%i] to groupchat #%i\n", peernumber, groupnumber);
           GroupChatContact c = new GroupChatContact(peernumber);
-          g.peers.insert(peernumber, c);
+          g.peers.set(peernumber, c);
           g.peer_count++;
-          
         } else if (change == Tox.ChatChange.PEER_DEL) {
-          GroupChatContact c = g.peers.get(peernumber);
-          if(c != null) {
-            //stdout.printf("Removing peer %s[%i] from groupchat #%i\n", c.name, peernumber, groupnumber);
-            g.peers.remove(peernumber);
-          } else {
-            //stdout.printf("Can't remove peer [%i] from groupchat #%i (no such peer)\n", peernumber, groupnumber);
+          if(!g.peers.remove(peernumber)) {
+            stderr.printf("Could not remove peer [%i] from groupchat #%i (no such peer)\n", peernumber, groupnumber);
           }
           g.peer_count--;
         } else { // change == PEER_NAME
-          string new_name = group_peername(g, peernumber);
-          //stdout.printf("Changing name of peer %s[%i] to %s in groupchat #%i\n", g.peers.get(peernumber).name, peernumber, new_name, groupnumber);
-          g.peers.get(peernumber).name = new_name;
+          g.peers.get(peernumber).name = group_peername(g, peernumber);
         }
         on_group_peer_changed(g, peernumber, change);
         return false;
@@ -334,10 +336,10 @@ namespace Venom {
       return ret;
     }
 
-    public Tox.FriendAddError addfriend_norequest(Contact c)
+    public int addfriend_norequest(Contact c)
       requires(c != null)
     {
-      Tox.FriendAddError ret = Tox.FriendAddError.UNKNOWN;
+      int ret = -1;
 
       if(c.public_key.length != Tox.CLIENT_ID_SIZE)
         return ret;
@@ -345,10 +347,10 @@ namespace Venom {
       lock(handle) {
         ret = handle.add_friend_norequest(c.public_key);
       }
-      if(ret < 0)
-        return ret;
-      c.friend_id = (int)ret;
-      _contacts.set((int)ret, c);
+      if(ret >= 0) {
+        c.friend_id = ret;
+        _contacts.set(ret, c);
+      }
       return ret;
     }
 
@@ -558,6 +560,12 @@ namespace Venom {
       }
     }
 
+    public bool set_user_is_typing(int friend_number, bool is_typing) {
+      lock(handle) {
+        return handle.set_user_is_typing(friend_number, is_typing ? 1 : 0) == 0;
+      }
+    }
+
     public unowned GLib.HashTable<int, Contact> get_contact_list() {
       return _contacts;
     }
@@ -618,18 +626,18 @@ namespace Venom {
       stdout.printf("Background thread started.\n");
 
       if(!bootstrapped) {
-        stdout.printf("Connecting to DHT servers:\n");
-        for(int i = 0; i < dht_servers.length; ++i) {
-          // skip ipv6 servers if we don't support them
-          if(dht_servers[i].is_ipv6 && !ipv6)
+        stdout.printf("Connecting to DHT Nodes:\n");
+        for(int i = 0; i < dht_nodes.length; ++i) {
+          // skip ipv6 nodes if we don't support them
+          if(dht_nodes[i].is_ipv6 && !ipv6)
             continue;
-          stdout.printf("  %s\n", dht_servers[i].to_string());
+          stdout.printf("  %s\n", dht_nodes[i].to_string());
           lock(handle) {
             handle.bootstrap_from_address(
-              dht_servers[i].host,
-              dht_servers[i].is_ipv6 ? 1 : 0,
-              dht_servers[i].port.to_big_endian(),
-              dht_servers[i].pub_key
+              dht_nodes[i].host,
+              dht_nodes[i].is_ipv6 ? 1 : 0,
+              dht_nodes[i].port.to_big_endian(),
+              dht_nodes[i].pub_key
             );
           }
         }
@@ -643,7 +651,7 @@ namespace Venom {
         }
         if(new_status && !connected) {
           connected = true;
-          connected_dht_server = dht_servers[0];
+          connected_dht_node = dht_nodes[0];
           Idle.add(() => { on_own_connection_status(true); return false; });
         } else if(!new_status && connected) {
           connected = false;
@@ -711,7 +719,7 @@ namespace Venom {
       if(!file.query_exists()) {
         Tools.create_path_for_file(filename, 0755);
       }
-      DataOutputStream os = new DataOutputStream(file.replace(null, false, FileCreateFlags.NONE));
+      DataOutputStream os = new DataOutputStream(file.replace(null, false, FileCreateFlags.PRIVATE | FileCreateFlags.REPLACE_DESTINATION ));
 
       uint32 size = 0;
       uint8[] buf;

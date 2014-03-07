@@ -30,7 +30,7 @@ before_script:
   #installing vpx
   - git clone http://git.chromium.org/webm/libvpx.git > /dev/null
   - pushd libvpx
-  - ./configure --prefix=/usr > /dev/null
+  - ./configure --prefix=/usr --enable-shared > /dev/null
   - make -j3 > /dev/null
   - sudo make install > /dev/null
   - popd

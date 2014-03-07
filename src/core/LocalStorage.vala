@@ -47,6 +47,11 @@ namespace Venom {
 
     public LocalStorage() {
       init_db ();
+      stdout.printf ("SQLite database created.\n");
+    }
+    
+    ~LocalStorage() {
+      stdout.printf ("SQLite database closed.\n");
     }
 
     public void connect_to(ToxSession session) {
@@ -112,7 +117,7 @@ namespace Venom {
       param_position = prepared_select_statement.bind_parameter_index ("$OLDEST");
       assert (param_position > 0);
       DateTime earliestTime = new DateTime.now_utc();
-      earliestTime = earliestTime.add_days (-VenomSettings.instance.days_to_log);
+      earliestTime = earliestTime.add_days (-Settings.instance.days_to_log);
       prepared_select_statement.bind_int64(param_position, earliestTime.to_unix());
 
       List<Message> messages = new List<Message>();
@@ -145,6 +150,15 @@ namespace Venom {
 
       // Open/Create a database:
       string filepath = ResourceFactory.instance.db_filename;
+      File file = File.new_for_path(filepath);
+      if(file.query_exists()) {
+        GLib.FileUtils.chmod(filepath, 0600);
+      } else {
+        try{
+          file.create(GLib.FileCreateFlags.PRIVATE);
+        } catch (Error e) {
+        }
+      }
       int ec = Sqlite.Database.open (filepath, out db);
       if (ec != Sqlite.OK) {
         stderr.printf ("Can't open database: %d: %s\n", db.errcode (), db.errmsg ());
@@ -194,9 +208,6 @@ namespace Venom {
         stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
         return -1;
       }
-
-      stdout.printf ("Created db.\n");
-
       return 0;
     }
 

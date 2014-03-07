@@ -1,5 +1,5 @@
 /*
- *    GroupChatContact.vala
+ *    DhtNode.vala
  *
  *    Copyright (C) 2013-2014  Venom authors and contributors
  *
@@ -19,14 +19,28 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Tox;
 namespace Venom {
-  public class GroupChatContact : GLib.Object{
-    public int group_contact_id { get; set; }
-    public string name          { get; set; }
+  public class DhtNode : GLib.Object {
+    public string host {get; set;}
+    public uint16 port {get; set;}
+    public uint8[] pub_key {get; set;}
+    public bool is_ipv6 {get; set;}
 
-    public GroupChatContact(int group_contact_id, string? name = null) {
-      this.group_contact_id = group_contact_id;
-      this.name = name;
+    public DhtNode.ipv4(string host, string pub_key, uint16 port = 33445) {
+      this.host = host;
+      this.port = port;
+      this.pub_key = Tools.hexstring_to_bin(pub_key);
+      this.is_ipv6 = false;
+    }
+    public DhtNode.ipv6(string host, string pub_key, uint16 port = 33445) {
+      this.host = host;
+      this.port = port;
+      this.pub_key = Tools.hexstring_to_bin(pub_key);
+      this.is_ipv6 = true;
+    }
+    public string to_string() {
+      return "%s:%u%s %s".printf(host, port, is_ipv6 ? " (ipv6)" : "", Tools.bin_to_hexstring(pub_key));
     }
   }
 }

@@ -47,9 +47,10 @@
     <property name="can_focus">False</property>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_edit_info">
-        <property name="label" translatable="yes">Edit user</property>
+        <property name="label" translatable="yes">_Edit user</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="image">image7</property>
         <property name="use_stock">False</property>
         <property name="always_show_image">True</property>
@@ -57,9 +58,10 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_copy_id">
-        <property name="label" translatable="yes">Copy ID to clipboard</property>
+        <property name="label" translatable="yes">_Copy ID to clipboard</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="image">image6</property>
         <property name="use_stock">False</property>
         <property name="always_show_image">True</property>
@@ -67,9 +69,10 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_status">
-        <property name="label" translatable="yes">Change Status</property>
+        <property name="label" translatable="yes">Change _Status</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="image">image5</property>
         <property name="use_stock">False</property>
         <property name="always_show_image">True</property>
@@ -79,9 +82,10 @@
             <property name="can_focus">False</property>
             <child>
               <object class="GtkImageMenuItem" id="menuitem_status_online">
-                <property name="label" translatable="yes">Online</property>
+                <property name="label" translatable="yes">_Online</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_underline">True</property>
                 <property name="image">image4</property>
                 <property name="use_stock">False</property>
                 <property name="always_show_image">True</property>
@@ -89,9 +93,10 @@
             </child>
             <child>
               <object class="GtkImageMenuItem" id="menuitem_status_away">
-                <property name="label" translatable="yes">Away</property>
+                <property name="label" translatable="yes">_Away</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_underline">True</property>
                 <property name="image">image3</property>
                 <property name="use_stock">False</property>
                 <property name="always_show_image">True</property>
@@ -99,9 +104,10 @@
             </child>
             <child>
               <object class="GtkImageMenuItem" id="menuitem_status_busy">
-                <property name="label" translatable="yes">Busy</property>
+                <property name="label" translatable="yes">_Busy</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_underline">True</property>
                 <property name="image">image2</property>
                 <property name="use_stock">False</property>
                 <property name="always_show_image">True</property>
@@ -109,9 +115,10 @@
             </child>
             <child>
               <object class="GtkImageMenuItem" id="menuitem_status_offline">
-                <property name="label" translatable="yes">Offline</property>
+                <property name="label" translatable="yes">O_ffline</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_underline">True</property>
                 <property name="image">image1</property>
                 <property name="use_stock">False</property>
                 <property name="always_show_image">True</property>
@@ -432,6 +439,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Open preferences</property>
+                    <property name="action_name">app.preferences</property>
                     <property name="image">image_preferences</property>
                     <style>
                       <class name="bottombutton"/>
