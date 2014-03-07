@@ -590,10 +590,10 @@ namespace Venom {
     private void on_ownconnectionstatus(bool status) {
       stdout.printf("Connection to DHT %s.\n", status ? "established" : "lost");
       if(status) {
-        image_status.set_tooltip_text("Connected to network");
+        image_status.set_tooltip_text("Connected to the network");
         session.set_userstatus(user_status);
       } else {
-        image_status.set_tooltip_text("Disconnected from network");
+        image_status.set_tooltip_text("Disconnected from the network");
         on_ownuserstatus(UserStatus.OFFLINE);
       }
       image_status.show();
