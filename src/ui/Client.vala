@@ -39,6 +39,14 @@ namespace Venom {
       );
     }
 
+    ~Client() {
+      // FIXME Workaround for some DEs keeping
+      // one instance of the contactlistwindow alive
+      if(contact_list_window != null) {
+        contact_list_window.cleanup();
+      }
+    }
+
     private ContactListWindow get_contact_list_window() {
       if( get_windows () == null ) {
         contact_list_window = new ContactListWindow(this);

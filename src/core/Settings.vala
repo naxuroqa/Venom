@@ -27,6 +27,10 @@ namespace Venom {
     public int  days_to_log                 { get; set; default = 180;  }
     public bool dec_binary_prefix           { get; set; default = true; }
     public bool send_typing_status          { get; set; default = false;}
+    public int  contactlist_width           { get; set; default = 200;  }
+    public int  contactlist_height          { get; set; default = 600;  }
+    public int  window_width                { get; set; default = 600;  }
+    public int  window_height               { get; set; default = 600;  }
 
     private static Settings? _instance;
     public static Settings instance {
@@ -50,7 +54,27 @@ namespace Venom {
     private Settings() {
     }
 
+    private string filepath;
+    private bool timeout_started;
+    private bool timeout_function() {
+      // save only if not saved previously
+      if( timeout_started ) {
+        save_settings(filepath);
+      }
+      return false;
+    }
+
+    public void save_settings_with_timeout(string path_to_file) {
+      // only add timeout function once
+      if( !timeout_started ) {
+        timeout_started = true;
+        filepath = path_to_file;
+        Timeout.add_seconds(1, timeout_function);
+      }
+    }
+
     public void save_settings(string path_to_file) {
+      timeout_started = false;
       Json.Node root = Json.gobject_serialize (this);
 
       Json.Generator generator = new Json.Generator ();
@@ -62,7 +86,7 @@ namespace Venom {
         DataOutputStream os = new DataOutputStream(file.replace(null, false, FileCreateFlags.PRIVATE | FileCreateFlags.REPLACE_DESTINATION ));
         generator.to_stream(os);
       } catch (Error e) {
-        stderr.printf("Error saving configs:%s\n",e.message);
+        stderr.printf("Error saving configs:%s\n", e.message);
         return;
       }
       stdout.printf("Settings saved.\n");
