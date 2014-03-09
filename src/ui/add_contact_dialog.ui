@@ -5,9 +5,9 @@
   <object class="GtkBox" id="box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_left">6</property>
-    <property name="margin_right">6</property>
-    <property name="margin_top">6</property>
+    <property name="margin_left">5</property>
+    <property name="margin_right">5</property>
+    <property name="margin_top">5</property>
     <property name="orientation">vertical</property>
     <property name="spacing">12</property>
     <child>
@@ -62,7 +62,6 @@
             <property name="vexpand">True</property>
             <property name="border_width">6</property>
             <property name="wrap_mode">word-char</property>
-            <property name="buffer">textbuffer1</property>
           </object>
         </child>
       </object>
@@ -73,5 +72,4 @@
       </packing>
     </child>
   </object>
-  <object class="GtkTextBuffer" id="textbuffer1"/>
 </interface>
