@@ -77,7 +77,6 @@ namespace Venom {
 
     // convert a string to a nullterminated uint8[]
     public static uint8[] string_to_nullterm_uint (string input)
-      requires(input.length > 0)
     {
       uint8[] clone = new uint8[input.data.length + 1];
       Memory.copy(clone, input.data, input.data.length * sizeof(uint8));

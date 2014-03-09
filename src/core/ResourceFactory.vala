@@ -69,6 +69,7 @@ namespace Venom {
 
       default_add_contact_message = "Please let me add you to my contact list.";
       default_username = "Tox User";
+      default_statusmessage = "Toxing on Venom v.%s".printf(Config.VERSION);
     }
 
 
@@ -101,6 +102,7 @@ namespace Venom {
     public string config_filename {get; set;}
     public string default_add_contact_message {get; private set;}
     public string default_username {get; private set;}
+    public string default_statusmessage {get; private set;}
 
     public bool offline_mode {get; set; default = false;}
     public bool textview_mode {get; set; default = false;}
