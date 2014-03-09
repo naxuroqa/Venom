@@ -10,7 +10,9 @@ public class VideoSample : Window {
     private DrawingArea drawing_area;
     private Pipeline pipeline;
     private Element src;
+    private Element asrc;
     private Element sink;
+    private Element asink;
     private ulong xid;
 
     public VideoSample () {
@@ -42,10 +44,13 @@ public class VideoSample : Window {
 
     private void setup_gst_pipeline () {
         this.pipeline = new Pipeline ("mypipeline");
-        this.src = ElementFactory.make ("videotestsrc", "video");
-        this.sink = ElementFactory.make ("xvimagesink", "sink");
-        this.pipeline.add_many (this.src, this.sink);
+        this.src = ElementFactory.make ("v4l2src", "video");
+        this.asrc = ElementFactory.make("pulsesrc", "audio");
+        this.sink = ElementFactory.make ("autovideosink", "sink");
+        this.asink = ElementFactory.make("autoaudiosink", "asink");
+        this.pipeline.add_many (this.src, this.asrc, this.sink, this.asink);
         this.src.link (this.sink);
+        this.asrc.link(this.asink);
     }
 
     private void on_realize() {
