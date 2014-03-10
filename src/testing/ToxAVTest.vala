@@ -44,17 +44,32 @@ public class VideoSample : Window {
 
     private void setup_gst_pipeline () {
         this.pipeline = new Pipeline ("mypipeline");
+#if OSX
+        GLib.assert_not_reached();
+#elif WIN32
+        GLib.assert_not_reached();
+#elif UNIX
         this.src = ElementFactory.make ("v4l2src", "video");
         this.asrc = ElementFactory.make("pulsesrc", "audio");
-        this.sink = ElementFactory.make ("autovideosink", "sink");
+        this.sink = ElementFactory.make ("xvimagesink", "sink");
         this.asink = ElementFactory.make("autoaudiosink", "asink");
+#else
+        GLib.assert_not_reached();
+#endif
         this.pipeline.add_many (this.src, this.asrc, this.sink, this.asink);
         this.src.link (this.sink);
         this.asrc.link(this.asink);
     }
-
     private void on_realize() {
+#if OSX
+        GLib.assert_not_reached();
+#elif WIN32
+        GLib.assert_not_reached();
+#elif UNIX
         this.xid = (ulong)Gdk.X11Window.get_xid(this.drawing_area.get_window());
+#else
+        GLib.assert_not_reached();
+#endif
     }
 
     private void on_play () {
