@@ -36,6 +36,7 @@ PKG_CHECK_MODULES_FULLPATH(GDKX11    REQUIRED gdk-x11-3.0)
 PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
 PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
 PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
+PKG_CHECK_MODULES_FULLPATH(TOXAV  REQUIRED libtoxav>=0.0)
 
 IF(APPLE)
   PKG_CHECK_MODULES_FULLPATH(OVERLAY REQUIRED gdk-x11-3.0)
@@ -86,10 +87,11 @@ SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
                   ${GIO_CFLAGS}    ${GIO_CFLAGS_OTHER}
                   ${GLIB_CFLAGS}   ${GLIB_CFLAGS_OTHER}
                   ${GSTREAMER_CFLAGS} ${GSTREAMER_CFLAGS_OTHER}
-                  ${GDKX11_CFLAGS} ${GDKX11_CFLAGS_OTHER}
+                  ${OVERLAY_CFLAGS} ${OVERLAY_CFLAGS_OTHER}
                   ${SQLITE_CFLAGS} ${SQLITE_CFLAGS_OTHER}
                   ${JSON_CFLAGS}   ${JSON_CFLAGS_OTHER}
                   ${TOX_CFLAGS}    ${TOX_CFLAGS_OTHER}
+                  ${TOXAV_CFLAGS}  ${TOXAV_CFLAGS_OTHER}
 )
 
 # since pkg_check_modules returns semicolon
@@ -169,7 +171,6 @@ VALA_PRECOMPILE( VALA_C_TOXAV_TEST
     tox-1.0
     gtk+-3.0
   OPTIONS
-    --debug
     --target-glib=${TARGET_GLIB}
     --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
     -D ${OS_DEFINES}
@@ -209,8 +210,9 @@ TARGET_LINK_LIBRARIES( venom
 
 TARGET_LINK_LIBRARIES( toxav_test
                        ${TOX_LIBRARIES}
+                       ${TOXAV_LIBRARIES}
                        ${GSTREAMER_LIBRARIES}
-                       ${GDKX11_LIBRARIES}
+                       ${OVERLAY_LIBRARIES}
                        ${GTK_LIBRARIES}
 )
 

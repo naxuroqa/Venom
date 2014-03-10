@@ -660,6 +660,67 @@ namespace Tox {
   }
 }
 
+namespace Vpx {
+  [CCode (cname = "vpx_img_fmt_t", cprefix = "VPX_IMG_FMT_", has_type_id = false)]
+  public enum ImageFormat {
+    RGB24,      // 24 bit per pixel packed RGB
+    RGB32,      // 32 bit per pixel packed 0RGB
+    RGB565,     // 16 bit per pixel, 565
+    RGB555,     // 16 bit per pixel, 555
+    UYVY,       // UYVY packed YUV
+    YUY2,       // YUYV packed YUV
+    YVYU,       // YVYU packed YUV
+    BGR24,      // 24 bit per pixel packed BGR
+    RGB32_LE,   // 32 bit packed BGR0
+    ARGB,       // 32 bit packed ARGB, alpha=255
+    ARGB_LE,    // 32 bit packed BGRA, alpha=255
+    RGB565_LE,  // 16 bit per pixel, gggbbbbb rrrrrggg
+    RGB555_LE,  // 16 bit per pixel, gggbbbbb 0rrrrrgg
+    YV12,       // planar YVU
+    VPXI420     // < planar 4:2:0 format with vpx color space
+  }
+
+  [CCode (cname = "vpx_image_t", free_function = "vpx_image_free", cprefix = "vpx_image_", has_type_id = false)]
+  public class Image {
+    [CCode (cname = "fmt")]
+    public ImageFormat fmt;
+    [CCode (cname = "w")]
+    public uint w;
+    [CCode (cname = "h")]
+    public uint h;
+    [CCode (cname = "d_w")]
+    public uint d_w;
+    [CCode (cname = "d_h")]
+    public uint d_h;
+    [CCode (cname = "x_chroma_shift")]
+    public uint x_chroma_shift;
+    [CCode (cname = "y_chroma_shift")]
+    public uint y_chroma_shift;
+    [CCode (cname = "planes")]
+    public uint8[][] planes;
+    [CCode (cname = "stride")]
+    public int[] stride;
+    [CCode (cname = "bps")]
+    public int bps;
+    //void* user_priv
+    [CCode (cname = "img_data")]
+    public uint8[] img_data;
+    [CCode (cname = "img_data_owner")]
+    public int img_data_owner;
+    [CCode (cname = "self_alloced")]
+    public int self_alloced;
+
+    [CCode (cname = "vpx_image_alloc")]
+    public Image(ImageFormat fmt, uint d_w, uint d_h, uint align);
+
+    public Image wrap(ImageFormat fmt, uint d_w, uint d_h, uint align, [CCode(array_length=false)] uint8[] img_data);
+
+    public int set_rect(uint x, uint y, uint w, uint h);
+
+    public void flip();
+  }
+}
+
 [CCode (cheader_filename = "tox/toxav.h", cprefix = "")]
 namespace ToxAV {
 
@@ -674,7 +735,7 @@ namespace ToxAV {
   /**
    * @brief Callbacks ids that handle the call states.
    */
-  [CCode (cname = "ToxAvCallbackID", cprefix = "", has_type_id = false)]
+  [CCode (cname = "ToxAvCallbackID", cprefix = "av_", has_type_id = false)]
   public enum CallbackID {
     /* Requests */
     OnInvite,
@@ -731,26 +792,23 @@ namespace ToxAV {
      *
      * @param messenger The messenger handle.
      * @param useragent The agent handling A/V session (i.e. phone).
-     * @param ua_name Useragent name.
      * @param video_width Width of video frame.
      * @param video_height Height of video frame.
      * @return ToxAv*
      * @retval NULL On error.
      */
-    //FIXME what do about userdata/useragent
-    //public ToxAV(Tox.Tox messenger, void *useragent, const char *ua_name, uint16_t video_width, uint16_t video_height);
+    [CCode (cname = "toxav_new")]
+    public ToxAV(Tox.Tox messenger, uint16 video_width, uint16 video_height);
 
-    //only here for completeness
-    /**
-     * @brief Remove A/V session.
-     *
-     * @param av Handler.
-     * @return void
-     */
+    /* #### only here for completeness #### */
+    ///**
+    // * @brief Remove A/V session.
+    // *
+    // * @param av Handler.
+    // * @return void
+    // */
     //void toxav_kill(ToxAv *av);
-    
-    //[CCode(has_target = false)]
-    //public delegate void ToxAVCallback( void *arg );
+
     /**
      * @brief Register callback for call state.
      *
@@ -758,8 +816,10 @@ namespace ToxAV {
      * @param id One of the ToxAvCallbackID values
      * @return void
      */
-    //public void register_callstate_callback (ToxAVCallback callback, ToxAvCallbackID id);
-    
+    [CCode (cname = "ToxAVCallback", has_type_id = false)]
+    public delegate int Callback ();
+    public static void register_callstate_callback (Callback callback, CallbackID id);
+
     /**
      * @brief Call user. Use its friend_id.
      *
@@ -855,7 +915,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On Error.
      */
-    //public AV_Error recv_video ( vpx_image_t **output);
+    public AV_Error recv_video ( out Vpx.Image output);
 
     /**
      * @brief Receive decoded audio frame.
@@ -879,7 +939,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    //public AV_Error send_video ( vpx_image_t *input);
+    public AV_Error send_video ( Vpx.Image input);
 
     /**
      * @brief Encode and send audio frame.
@@ -905,12 +965,81 @@ namespace ToxAV {
     public AV_Error get_peer_transmission_type ( int peer );
 
     /**
+     * @brief Get id of peer participating in conversation
+     * 
+     * @param av Handler
+     * @param peer peer index
+     * @return int
+     * @retval ToxAvError No peer id
+     */
+    public AV_Error get_peer_id ( int peer );
+
+    /**
      * @brief Get reference to an object that is handling av session.
      *
      * @param av Handler.
      * @return void*
      */
-    //void *toxav_get_agent_handler ( ToxAv *av );
-  }
+    //public void *get_agent_handler ();
 
+    /**
+     * @brief Is video encoding supported
+     * 
+     * @param av Handler
+     * @return int
+     * @retval 1 Yes.
+     * @retval 0 No.
+     */
+    public int video_encoding {
+      [CCode (cname = "toxav_video_encoding")] get;
+    }
+
+    /**
+     * @brief Is video decoding supported
+     * 
+     * @param av Handler
+     * @return int
+     * @retval 1 Yes.
+     * @retval 0 No.
+     */
+    public int video_decoding {
+      [CCode (cname = "toxav_video_decoding")] get;
+    }
+
+    /**
+     * @brief Is audio encoding supported
+     * 
+     * @param av Handler
+     * @return int
+     * @retval 1 Yes.
+     * @retval 0 No.
+     */
+    public int audio_encoding {
+      [CCode (cname = "toxav_audio_encoding")] get;
+    }
+
+    /**
+     * @brief Is audio decoding supported
+     * 
+     * @param av Handler
+     * @return int
+     * @retval 1 Yes.
+     * @retval 0 No.
+     */
+    public int audio_decoding {
+      [CCode (cname = "toxav_audio_decoding")] get;
+    }
+
+    /**
+     * @brief Get messenger handle
+     * 
+     * @param av Handler.
+     * @return Tox*
+     */
+    public Tox.Tox tox_handle {
+      [CCode (cname = "toxav_get_tox")] get;
+    }
+  }
 }
+
+

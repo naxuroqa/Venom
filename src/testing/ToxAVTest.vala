@@ -1,5 +1,25 @@
 /*
- * Example taken from https://wiki.gnome.org/Projects/Vala/GStreamerSample
+ *    ToxAVTest.vala
+ *
+ *    Copyright (C) 2013-2014  Venom authors and contributors
+ *
+ *    This file is part of Venom.
+ *
+ *    Venom is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    Venom is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/*
+ * Using example code from https://wiki.gnome.org/Projects/Vala/GStreamerSample
  */
 
 using Gtk;
@@ -7,6 +27,8 @@ using Gst;
 
 public class VideoSample : Window {
 
+    private Tox.Tox tox;
+    private ToxAV.ToxAV tox_av;
     private DrawingArea drawing_area;
     private Pipeline pipeline;
     private Element src;
@@ -18,6 +40,8 @@ public class VideoSample : Window {
     public VideoSample () {
         create_widgets ();
         setup_gst_pipeline ();
+        tox = new Tox.Tox(0);
+        //tox_av = new ToxAV.ToxAV(tox, 800, 600);
     }
 
     private void create_widgets () {
