@@ -76,7 +76,7 @@ namespace Venom {
       string name_str = name ?? "<unknown>";
       string collate_key = name_str.casefold().collate_key();
       listmodel.set(iter, TreeModelColumn.ID, id,
-                          TreeModelColumn.NAME, name ?? "<unknown>",
+                          TreeModelColumn.NAME, name_str,
                           TreeModelColumn.COLLATE_KEY, collate_key);
     }
 

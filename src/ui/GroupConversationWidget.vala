@@ -98,7 +98,7 @@ namespace Venom {
       message_textview.textview_activate.connect( () => {
         textview_activate(message_textview);
       });
-      message_textview.completion_column = 1;
+      message_textview.completion_column = GroupConversationSidebar.TreeModelColumn.NAME;
       message_textview.completion_model = group_conversation_sidebar.model;
       scrolled_window_message.add(message_textview);
 
