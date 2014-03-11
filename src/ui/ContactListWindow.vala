@@ -80,6 +80,7 @@ namespace Venom {
 
       // initialize session specific gui stuff
       label_name.set_text(session.getselfname());
+      User.instance.name = session.getselfname();
       string user_status = "Toxing on Venom v.%s".printf(Config.VERSION);
       if(session.set_statusmessage(user_status)) {
         label_status.set_text(user_status);
@@ -451,6 +452,7 @@ namespace Venom {
 
         session.set_name(w.user_name);
         label_name.set_text(w.user_name);
+        User.instance.name = w.user_name;
 
         session.set_statusmessage(w.user_status);
         label_status.set_text(w.user_status);
