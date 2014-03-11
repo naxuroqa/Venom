@@ -164,6 +164,7 @@ VALA_PRECOMPILE( VALA_C_VENOM
 
 VALA_PRECOMPILE( VALA_C_TOXAV_TEST
     testing/ToxAVTest.vala
+    core/Tools.vala
   PACKAGES
     gstreamer-0.10
     gstreamer-interfaces-0.10

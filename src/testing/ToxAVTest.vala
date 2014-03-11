@@ -40,8 +40,7 @@ public class VideoSample : Window {
     public VideoSample () {
         create_widgets ();
         setup_gst_pipeline ();
-        tox = new Tox.Tox(0);
-        //tox_av = new ToxAV.ToxAV(tox, 800, 600);
+        create_tox ();
     }
 
     private void create_widgets () {
@@ -64,6 +63,7 @@ public class VideoSample : Window {
         vbox.pack_start (bb, false, true, 0);
 
         add (vbox);
+        destroy.connect(() => {Gtk.main_quit();});
     }
 
     private void setup_gst_pipeline () {
@@ -75,6 +75,8 @@ public class VideoSample : Window {
 #elif UNIX
         this.src = ElementFactory.make ("v4l2src", "video");
         this.asrc = ElementFactory.make("pulsesrc", "audio");
+        //this.src = ElementFactory.make ("videotestsrc", "video");
+        //this.asrc = ElementFactory.make("audiotestsrc", "audio");
         this.sink = ElementFactory.make ("xvimagesink", "sink");
         this.asink = ElementFactory.make("autoaudiosink", "asink");
 #else
@@ -94,6 +96,96 @@ public class VideoSample : Window {
 #else
         GLib.assert_not_reached();
 #endif
+    }
+
+    private void create_tox() {
+      tox = new Tox.Tox(0);
+      tox.callback_friend_request(on_friend_request);
+
+      tox_av = new ToxAV.ToxAV(tox, 800, 600);
+      ToxAV.register_callstate_callback(on_toxav_invite         , ToxAV.CallbackID.INVITE);
+      ToxAV.register_callstate_callback(on_toxav_start          , ToxAV.CallbackID.START);
+      ToxAV.register_callstate_callback(on_toxav_cancel         , ToxAV.CallbackID.CANCEL);
+      ToxAV.register_callstate_callback(on_toxav_reject         , ToxAV.CallbackID.REJECT);
+      ToxAV.register_callstate_callback(on_toxav_end            , ToxAV.CallbackID.END);
+      ToxAV.register_callstate_callback(on_toxav_ringing        , ToxAV.CallbackID.RINGING);
+      ToxAV.register_callstate_callback(on_toxav_starting       , ToxAV.CallbackID.STARTING);
+      ToxAV.register_callstate_callback(on_toxav_ending         , ToxAV.CallbackID.ENDING);
+      ToxAV.register_callstate_callback(on_toxav_error          , ToxAV.CallbackID.ERROR);
+      ToxAV.register_callstate_callback(on_toxav_request_timeout, ToxAV.CallbackID.REQUEST_TIMEOUT);
+
+      uint8[] buf = new uint8[Tox.FRIEND_ADDRESS_SIZE];
+      tox.get_address(buf);
+      stdout.printf("[LOG] Tox ID: %s\n", Venom.Tools.bin_to_hexstring(buf));
+      tox.set_name(Venom.Tools.string_to_nullterm_uint("AV Test"));
+
+      bool bootstrapped = false;
+      bool connected = false;
+      GLib.Timeout.add(25, () => {
+        if(!bootstrapped) {
+          tox.bootstrap_from_address("66.175.223.88",
+            0,
+            ((uint16)33445).to_big_endian(),
+            Venom.Tools.hexstring_to_bin("B24E2FB924AE66D023FE1E42A2EE3B432010206F751A2FFD3E297383ACF1572E")
+          );
+          bootstrapped = true;
+          print("[LOG] Bootstrapped.\n");
+        }
+        if(tox.isconnected() != 0) {
+          if(!connected) {
+            connected = true;
+            print("[LOG] Connected.\n");
+          }
+        } else {
+          if(connected) {
+            connected = false;
+            print("[LOG] Disconnected.\n");
+          }
+        }
+
+        tox.do();
+        return true;
+      });
+    }
+
+    private void on_friend_request(uint8[] key, uint8[] data) {
+      uint8[] public_key = Venom.Tools.clone(key, Tox.CLIENT_ID_SIZE);
+      print("[LOG] Friend request from %s received.\n", Venom.Tools.bin_to_hexstring(public_key));
+      int friend_number = tox.add_friend_norequest(public_key);
+      if(friend_number < 0) {
+        print("[ERR] Friend could not be added.\n");
+      }
+    }
+
+    private void on_toxav_invite() {
+      print("[LOG] on_toxav_invite\n");
+    }
+    private void on_toxav_start() {
+      print("[LOG] on_toxav_start\n");
+    }
+    private void on_toxav_cancel() {
+      print("[LOG] on_toxav_cancel\n");
+    }
+    private void on_toxav_reject() {
+      print("[LOG] on_toxav_reject\n");
+    }
+    private void on_toxav_end() {
+      print("[LOG] on_toxav_end\n");
+    }
+    private void on_toxav_ringing() {
+      print("[LOG] on_toxav_ringing\n");
+    }
+    private void on_toxav_starting() {
+      print("[LOG] on_toxav_starting\n");
+    }
+    private void on_toxav_ending() {
+      print("[LOG] on_toxav_ending\n");
+    }
+    private void on_toxav_error() {
+      print("[LOG] on_toxav_error\n");
+    }
+    private void on_toxav_request_timeout() {
+      print("[LOG] on_toxav_request_timeout\n");
     }
 
     private void on_play () {
