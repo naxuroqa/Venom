@@ -146,6 +146,7 @@ namespace Venom {
       } catch (Error e) {
           stdout.printf("Could not load session data (%s), creating new one.\n", e.message);
           session.set_name(ResourceFactory.instance.default_username);
+          session.set_statusmessage(ResourceFactory.instance.default_statusmessage);
           save_session();
       }
     }
@@ -153,7 +154,7 @@ namespace Venom {
     // Initialize widgets
     private void init_widgets() {
       // Set up Window
-      set_default_size(230, 600);
+      set_default_size(Settings.instance.contactlist_width, Settings.instance.contactlist_height);
       show_menubar = false;
       add_action_entries(win_entries, this);
       application.add_action_entries(app_entries, this);
@@ -240,10 +241,10 @@ namespace Venom {
       contact_list_tree_view = new ContactListTreeView();
       contact_list_tree_view.show_all();
 
-      Gtk.TreeModel m = contact_list_tree_view.get_model();
+      Gtk.TreeModel m = contact_list_tree_view.model;
       Gtk.TreeModelFilter contact_list_tree_model_filter = new Gtk.TreeModelFilter(m, null);
       contact_list_tree_model_filter.set_visible_func(filter_default.filter_func);
-      contact_list_tree_view.set_model(contact_list_tree_model_filter);
+      contact_list_tree_view.model = contact_list_tree_model_filter;
 
       Gtk.ScrolledWindow scrolled_window_contact_list = builder.get_object("scrolled_window_contact_list") as Gtk.ScrolledWindow;
       scrolled_window_contact_list.add(contact_list_tree_view);
@@ -266,7 +267,7 @@ namespace Venom {
         }
       });
       menu_user.deactivate.connect( () => {
-        button_user.set_active(false);
+        button_user.active = false;
       });
       /*button_user.button_press_event.connect( (widget, event) => {
         if(event.type == Gdk.EventType.BUTTON_PRESS) {
@@ -290,7 +291,6 @@ namespace Venom {
       menuitem_status_offline.activate.connect( () => { set_userstatus(UserStatus.OFFLINE); } );
 
       notebook_conversations = builder.get_object("notebook_conversations") as Gtk.Notebook;
-      notebook_conversations.set_visible(false);
     }
 
     // Connect
@@ -306,6 +306,7 @@ namespace Venom {
       session.on_connection_status.connect(this.on_connectionstatus);
       session.on_own_connection_status.connect(this.on_ownconnectionstatus);
       session.on_own_user_status.connect(this.on_ownuserstatus);
+      session.on_typing_change.connect(this.on_typing_change);
 
       //groupmessage signals
       session.on_group_invite.connect(this.on_group_invite);
@@ -360,6 +361,21 @@ namespace Venom {
       
       this.focus_in_event.connect((e)  => {
         this.set_urgency_hint(false);
+        return false;
+      });
+
+      this.configure_event.connect((sender, event) => {
+        // only save unmaximized window sizes
+        if((get_window().get_state() & Gdk.WindowState.MAXIMIZED) == 0) {
+          if(notebook_conversations.visible) {
+            Settings.instance.window_width  = event.width;
+            Settings.instance.window_height = event.height;
+          } else {
+            Settings.instance.contactlist_width  = event.width;
+            Settings.instance.contactlist_height = event.height;
+          }
+          Settings.instance.save_settings_with_timeout(ResourceFactory.instance.config_filename);
+        }
         return false;
       });
     }
@@ -493,7 +509,7 @@ namespace Venom {
     }
 
     public void set_urgency () {
-      if(!is_active && VenomSettings.instance.enable_urgency_notification) {
+      if(!is_active && Settings.instance.enable_urgency_notification) {
         this.set_urgency_hint(true);
       }
     }
@@ -536,6 +552,10 @@ namespace Venom {
       }
       stdout.printf("Added new friend #%i\n", c.friend_id);
       contact_added(c);
+    }
+    private void on_typing_change(Contact c, bool is_typing) {
+      ConversationWidget w = open_conversation_with(c);
+      w.on_typing_changed(is_typing);
     }
     private void on_friendmessage(Contact c, string message) {
       stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name != null ? c.name : "<%i>".printf(c.friend_id), message);
@@ -581,10 +601,10 @@ namespace Venom {
     private void on_ownconnectionstatus(bool status) {
       stdout.printf("Connection to DHT %s.\n", status ? "established" : "lost");
       if(status) {
-        image_status.set_tooltip_text("Connected to network");
+        image_status.set_tooltip_text("Connected to the network");
         session.set_userstatus(user_status);
       } else {
-        image_status.set_tooltip_text("Disconnected from network");
+        image_status.set_tooltip_text("Disconnected from the network");
         on_ownuserstatus(UserStatus.OFFLINE);
       }
       image_status.show();
@@ -831,6 +851,11 @@ namespace Venom {
         w.new_outgoing_message.connect(on_outgoing_message);
         w.new_outgoing_action.connect(on_outgoing_action);
         w.new_outgoing_file.connect(on_outgoing_file);
+        w.typing_status.connect( (is_typing) => {
+          if(Settings.instance.send_typing_status) {
+            session.set_user_is_typing(c.friend_id, is_typing);
+          }
+        });
         w.filetransfer_accepted.connect ( (ft) => {
           session.accept_file(ft.friend.friend_id,ft.filenumber);
         });
@@ -860,26 +885,31 @@ namespace Venom {
 
     // Contact doubleclicked in treeview
     private void on_entry_activated(GLib.Object o) {
+      Gtk.Widget conversation_widget = null;
       if(o is Contact) {
         Contact c = o as Contact;
-        ConversationWidget w = open_conversation_with(c);
+        conversation_widget = open_conversation_with(c);
 
-        notebook_conversations.set_current_page(notebook_conversations.page_num(w));
-        notebook_conversations.set_visible(true);
         if(c.unread_messages != 0) {
           c.unread_messages = 0;
           contact_list_tree_view.update_entry(c);
         }
       } else if(o is GroupChat) {
         GroupChat g = o as GroupChat;
-        GroupConversationWidget w = open_group_conversation_with(g);
+        conversation_widget = open_group_conversation_with(g);
 
-        notebook_conversations.set_current_page(notebook_conversations.page_num(w));
-        notebook_conversations.set_visible(true);
         if(g.unread_messages != 0) {
           g.unread_messages = 0;
           contact_list_tree_view.update_entry(g);
         }
+      } else {
+        GLib.assert_not_reached();
+      }
+      int current_page = notebook_conversations.page_num(conversation_widget);
+      notebook_conversations.set_current_page(current_page);
+      if(notebook_conversations.visible == false) {
+        notebook_conversations.visible = true;
+        resize(Settings.instance.window_width, Settings.instance.window_height);
       }
     }
 
