@@ -73,7 +73,7 @@ namespace Venom {
     }
     public virtual string get_sender_plain() {
       if(from == null) {
-        return "me";
+        return User.instance.name;
       } else {
         return from.name;
       }
@@ -107,7 +107,7 @@ namespace Venom {
       return "*";
     }
     public override string get_message_plain() {
-      return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from.name : "me", message);
+      return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from.name : User.instance.name, message);
     }
   }
   public class GroupMessage : IMessage, GLib.Object {
@@ -136,8 +136,11 @@ namespace Venom {
     }
     public virtual string get_sender_plain() {
       if(from == null) {
-        return "Me";
+        return User.instance.name;
       } else {
+        if(this.message_direction == MessageDirection.OUTGOING) {
+          return User.instance.name;
+        }
         return from_contact.name != null ? from_contact.name : "<unknown>";
       }
     }
@@ -177,9 +180,9 @@ namespace Venom {
       if(message_direction == MessageDirection.INCOMING) {
         name_string = from_contact.name != null ? from_contact.name : "<unknown>";
       } else {
-        name_string = "me";
+        name_string = User.instance.name;
       }
-      return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from_contact.name : "me", message);
+      return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from_contact.name : User.instance.name, message);
     }
   }
 }
