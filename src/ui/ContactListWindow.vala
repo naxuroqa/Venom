@@ -685,7 +685,10 @@ namespace Venom {
         g.unread_messages++;
         contact_list_tree_view.update_entry(g);
       }
-      this.set_urgency();
+      // only set urgency in groupchat if the message contains our name
+      if(User.instance.name in message) {
+        this.set_urgency();
+      }
     }
 
     private void on_group_action(GroupChat g, int friendgroupnumber, string message) {
@@ -710,7 +713,10 @@ namespace Venom {
         g.unread_messages++;
         contact_list_tree_view.update_entry(g);
       }
-      this.set_urgency();
+      // only set urgency in groupchat if the message contains our name
+      if(User.instance.name in message) {
+        this.set_urgency();
+      }
     }
 
     private void on_group_peer_changed(GroupChat g, int peernumber, Tox.ChatChange change) {
