@@ -145,8 +145,10 @@ namespace Venom {
         session.load_from_file(ResourceFactory.instance.data_filename);
       } catch (Error e) {
           stdout.printf("Could not load session data (%s), creating new one.\n", e.message);
+
           session.set_name(ResourceFactory.instance.default_username);
-          session.set_statusmessage(ResourceFactory.instance.default_statusmessage);
+          session.set_status_message(ResourceFactory.instance.default_statusmessage);
+
           save_session();
       }
     }
@@ -422,7 +424,7 @@ namespace Venom {
         spinner_status.show();
         spinner_status.start();
       }
-      session.set_userstatus(status);
+      session.set_user_status(status);
 
       if(status == UserStatus.OFFLINE) {
         session.stop();
@@ -446,7 +448,7 @@ namespace Venom {
       UserInfoWindow w = new UserInfoWindow();
 
       w.application = application;
-      w.user_name = label_name.get_text();
+      w.user_name = User.instance.name;
       w.max_name_length = Tox.MAX_NAME_LENGTH;
       w.user_status = label_status.get_text();
       w.max_status_length = Tox.MAX_STATUSMESSAGE_LENGTH;
@@ -545,7 +547,7 @@ namespace Venom {
       if(response != Gtk.ResponseType.ACCEPT)
         return;
 
-      int friend_add_error = session.addfriend_norequest(c);
+      int friend_add_error = session.add_friend_norequest(c);
       if(friend_add_error < 0) {
         stderr.printf("Friend could not be added.\n");
         return;
@@ -602,7 +604,7 @@ namespace Venom {
       stdout.printf("Connection to DHT %s.\n", status ? "established" : "lost");
       if(status) {
         image_status.set_tooltip_text("Connected to the network");
-        session.set_userstatus(user_status);
+        session.set_user_status(user_status);
       } else {
         image_status.set_tooltip_text("Disconnected from the network");
         on_ownuserstatus(UserStatus.OFFLINE);
@@ -987,7 +989,7 @@ namespace Venom {
         return;
       }
       Contact c = new Contact(contact_id);
-      Tox.FriendAddError ret = session.addfriend(c, contact_message);
+      Tox.FriendAddError ret = session.add_friend(c, contact_message);
       if(ret < 0) {
         string error_message = "Could not add friend: %s.\n".printf(Tools.friend_add_error_to_string(ret));
         stderr.printf(error_message);

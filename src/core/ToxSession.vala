@@ -165,10 +165,10 @@ namespace Venom {
       _groups.remove_all();
       for(int i = 0; i < friend_numbers.length; ++i) {
         int friend_id = friend_numbers[i];
-        uint8[] friend_key = getclient_id(friend_id);
+        uint8[] friend_key = get_client_id(friend_id);
         Contact c = new Contact(friend_key, friend_id);
-        c.name = getname(friend_id);
-        c.status_message = get_statusmessage(friend_id);
+        c.name = get_name(friend_id);
+        c.status_message = get_status_message(friend_id);
         _contacts.set(friend_id, c);
       };
     }
@@ -316,7 +316,7 @@ namespace Venom {
     ////////////////////////////// Wrapper functions ////////////////////////////////
 
     // Add a friend, returns Tox.FriendAddError on error and friend_number on success
-    public Tox.FriendAddError addfriend(Contact c, string message)
+    public Tox.FriendAddError add_friend(Contact c, string message)
       requires(c != null)
       requires(c.public_key.length == Tox.FRIEND_ADDRESS_SIZE)
       requires(message != null)
@@ -336,7 +336,7 @@ namespace Venom {
       return ret;
     }
 
-    public int addfriend_norequest(Contact c)
+    public int add_friend_norequest(Contact c)
       requires(c != null)
     {
       int ret = -1;
@@ -432,7 +432,7 @@ namespace Venom {
     }
 
     // Set user status, returns true on success
-    public bool set_userstatus(UserStatus user_status) {
+    public bool set_user_status(UserStatus user_status) {
       int ret = -1;
       lock(handle) {
         ret = handle.set_user_status((Tox.UserStatus)user_status);
@@ -444,7 +444,7 @@ namespace Venom {
     }
 
     // Set user statusmessage, returns true on success
-    public bool set_statusmessage(string message)
+    public bool set_status_message(string message)
       requires(message != null)
     {
       int ret = -1;
@@ -455,7 +455,7 @@ namespace Venom {
       return ret == 0;
     }
 
-    public string get_self_statusmessage() {
+    public string get_self_status_message() {
       uint8[] buf = new uint8[Tox.MAX_STATUSMESSAGE_LENGTH];
       int ret = 0;
       lock(handle) {
@@ -485,7 +485,7 @@ namespace Venom {
       return ret == 0;
     }
 
-    public string getselfname() {
+    public string get_self_name() {
       uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH];
       int ret = -1;
       lock(handle) {
@@ -494,7 +494,7 @@ namespace Venom {
       return (string)buf;
     }
 
-    public uint8[] getclient_id(int friend_id) {
+    public uint8[] get_client_id(int friend_id) {
       uint8[] buf = new uint8[Tox.CLIENT_ID_SIZE];
       int ret = -1;
       lock(handle) {
@@ -503,7 +503,7 @@ namespace Venom {
       return (ret != 0) ? null : buf;
     }
 
-    public string? getname(int friend_number) {
+    public string? get_name(int friend_number) {
       uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH];
       int ret = -1;
       lock(handle) {
@@ -512,7 +512,7 @@ namespace Venom {
       return (ret < 0) ? null: (string)buf;
     }
 
-    public string get_statusmessage(int friend_number) {
+    public string get_status_message(int friend_number) {
       int size = 0;
       int ret = 0;
       uint8 [] buf;
