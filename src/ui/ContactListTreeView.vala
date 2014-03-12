@@ -41,8 +41,8 @@ namespace Venom {
       s.set_mode(Gtk.SelectionMode.SINGLE);
       s.set_select_function(on_row_selected);
       
-      query_tooltip.connect(modify_tooltip);
-      //set_tooltip_column(1);
+      query_tooltip.connect_after(modify_tooltip);
+      has_tooltip = true;
 
       //hide headers
       set_headers_visible(false);
@@ -58,18 +58,26 @@ namespace Venom {
     }
 
     private bool modify_tooltip(int x, int y, bool keyboard_tooltip, Gtk.Tooltip tooltip) {
-      //TODO add additional information about groupchat / contact
-      /*Gtk.TreeModel model;
+      Gtk.TreeModel model;
       Gtk.TreePath path;
       Gtk.TreeIter iter;
-      get_tooltip_context(ref x, ref y, keyboard_tooltip, out model, out path, out iter);
+      if(!get_tooltip_context(ref x, ref y, keyboard_tooltip, out model, out path, out iter))
+        return false;
       if(model == null)
         return false;
-      Contact c;
-      model.get(iter, 0, out c, -1);
-      if(c == null)
-        return false;*/
-      return false;
+      GLib.Value v;
+      model.get_value(iter, 0, out v);
+      GLib.Object o = v as Object;
+      if(o is Contact) {
+        Contact c = o as Contact;
+        tooltip.set_text("%s\n%s".printf(c.name, c.get_status_string()));
+      } else if (o is GroupChat) {
+        return false;
+      } else {
+        return false;
+      }
+      set_tooltip_row(tooltip, path);
+      return true;
     }
 
     public void add_entry(GLib.Object o) {

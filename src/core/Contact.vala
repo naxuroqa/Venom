@@ -40,5 +40,17 @@ namespace Venom {
       this.public_key = public_key;
       this.friend_id = friend_id;
     }
+    public string get_status_string() {
+      if(online) {
+        return status_message;
+      } else {
+        //if(last_seen != null) {
+        //  TimeSpan span = (new DateTime.now_local()).difference(last_seen);
+        //  return "last seen ";
+        //} else {
+          return "Offline";
+        //}
+      }
+    }
   }
 }
