@@ -27,6 +27,7 @@ namespace Venom {
   public interface IMessage : GLib.Object {
     public abstract DateTime timestamp {get; protected set;}
     public abstract MessageDirection message_direction {get; protected set;}
+    public abstract bool important {get; set;}
     
     /*
      *  Get plain sender string
@@ -56,6 +57,7 @@ namespace Venom {
     public string message {get; protected set;}
     public DateTime timestamp {get; protected set;}
     public MessageDirection message_direction {get; protected set;}
+    public bool important {get; set; default = false;}
 
     public Message.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
       this.message_direction = MessageDirection.OUTGOING;
@@ -117,6 +119,7 @@ namespace Venom {
     public string message {get; protected set;}
     public DateTime timestamp {get; protected set;}
     public MessageDirection message_direction {get; protected set;}
+    public bool important {get; set; default = false;}
 
     public GroupMessage.outgoing(GroupChat receiver, string message, DateTime timestamp = new DateTime.now_local()) {
       this.message_direction = MessageDirection.OUTGOING;

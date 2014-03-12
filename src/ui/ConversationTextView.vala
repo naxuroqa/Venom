@@ -24,6 +24,7 @@ namespace Venom {
     public bool short_names {get; set; default = false;}
     private Gtk.TextTag bold_tag;
     private Gtk.TextTag grey_tag;
+    private Gtk.TextTag important_tag;
     private Gtk.TextTag quotation_tag;
     private Gtk.TextTag uri_tag;
 
@@ -33,6 +34,11 @@ namespace Venom {
 
       bold_tag = buffer.create_tag(null, "weight", 600);
       grey_tag = buffer.create_tag(null, "foreground", "grey");
+      important_tag = buffer.create_tag(null,
+        "weight", 600,
+        "foreground", "white",
+        "background", "darkgrey"
+      );
       quotation_tag = buffer.create_tag(null, "foreground", "green");
       uri_tag = buffer.create_tag(null,
           "underline", Pango.Underline.SINGLE,
@@ -50,9 +56,20 @@ namespace Venom {
       buffer.insert_with_tags(text_end, text, text.length, grey_tag);
 
       buffer.get_end_iter(out text_end);
-      text = "%s: ".printf(
-        short_names ? Tools.shorten_name(message.get_sender_plain()) : message.get_sender_plain()
-      );
+      if(short_names) {
+        text = Tools.shorten_name(message.get_sender_plain());
+      } else {
+        text = message.get_sender_plain();
+      }
+
+      if(message.important) {
+        buffer.insert_with_tags(text_end, text, text.length, important_tag);
+      } else {
+        buffer.insert_with_tags(text_end, text, text.length, bold_tag);
+      }
+
+      buffer.get_end_iter(out text_end);
+      text = ": ";
       buffer.insert_with_tags(text_end, text, text.length, bold_tag);
 
       buffer.get_end_iter(out text_end);

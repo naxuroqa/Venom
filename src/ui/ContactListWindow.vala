@@ -703,16 +703,17 @@ namespace Venom {
         on_group_peer_changed(g, friendgroupnumber, Tox.ChatChange.PEER_ADD);
       }
       /** END **/
-      incoming_group_message(new GroupMessage.incoming(g, gcc, message));
-
       if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
         g.unread_messages++;
         contact_list_tree_view.update_entry(g);
       }
+      GroupMessage group_message = new GroupMessage.incoming(g, gcc, message);
       // only set urgency in groupchat if the message contains our name
       if(User.instance.name in message) {
         this.set_urgency();
+        group_message.important = true;
       }
+      incoming_group_message(group_message);
     }
 
     private void on_group_action(GroupChat g, int friendgroupnumber, string message) {
@@ -731,16 +732,18 @@ namespace Venom {
         on_group_peer_changed(g, friendgroupnumber, Tox.ChatChange.PEER_ADD);
       }
       /** END **/
-      incoming_group_action(new GroupActionMessage.incoming(g, gcc, message));
       
       if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
         g.unread_messages++;
         contact_list_tree_view.update_entry(g);
       }
+      GroupActionMessage group_message = new GroupActionMessage.incoming(g, gcc, message);
       // only set urgency in groupchat if the message contains our name
       if(User.instance.name in message) {
         this.set_urgency();
+        group_message.important = true;
       }
+      incoming_group_action(group_message);
     }
 
     private void on_group_peer_changed(GroupChat g, int peernumber, Tox.ChatChange change) {
