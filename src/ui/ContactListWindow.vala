@@ -77,11 +77,8 @@ namespace Venom {
       init_signals();
       init_contacts();
       init_save_session_hooks();
+      init_user();
 
-      // initialize session specific gui stuff
-      label_name.label = session.getselfname();
-      User.instance.name = session.getselfname();
-      label_status.label = session.get_self_statusmessage();
       on_ownconnectionstatus(false);
 
       stdout.printf("ID: %s\n", Tools.bin_to_hexstring(session.get_address()));
@@ -398,6 +395,34 @@ namespace Venom {
       });
     }
 
+    private void init_user() {
+      User.instance.name = session.get_self_name();
+      User.instance.status_message = session.get_self_status_message();
+
+      label_name.label = User.instance.name;
+      label_name.tooltip_text = User.instance.name;
+
+      label_status.label = User.instance.status_message;
+      label_status.tooltip_text = User.instance.status_message;
+
+      User.instance.notify["name"].connect(() => {
+        if( session.set_name(User.instance.name) ) {
+          label_name.label = User.instance.name;
+          label_name.tooltip_text = User.instance.name;
+        } else {
+          stderr.printf("Could not change user name!\n");
+        }
+      });
+      User.instance.notify["status-message"].connect(() => {
+        if( session.set_status_message(User.instance.status_message) ) {
+          label_status.label = User.instance.status_message;
+          label_status.tooltip_text = User.instance.status_message;
+        } else {
+          stderr.printf("Could not change user statusmessage!\n");
+        }
+      });
+    }
+
     private void set_title_from_status(UserStatus status) {
       set_title("Venom (%s)".printf(status.to_string()));
     }
@@ -463,11 +488,8 @@ namespace Venom {
         //TODO once possible in core
         image_userimage.set_from_pixbuf(w.user_image);
 
-        session.set_name(w.user_name);
-        label_name.set_text(w.user_name);
-
-        session.set_statusmessage(w.user_status);
-        label_status.set_text(w.user_status);
+        User.instance.name = w.user_name;
+        User.instance.status_message = w.user_status;
       }
       w.destroy();
     }

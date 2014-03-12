@@ -33,7 +33,8 @@ namespace Venom {
       }
     }
 
-    public string name;
+    public string name { get; set; }
+    public string status_message { get; set; }
 
     private User() {
     }
