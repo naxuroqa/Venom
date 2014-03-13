@@ -42,7 +42,7 @@ namespace Venom {
       }
       string markup_message_text = markup_uris(Markup.escape_text(message.get_message_plain()));
       message_label.set_markup( markup_message_text );
-      date_label.set_text( message.timestamp.format("%R") );
+      date_label.set_text( message.get_time_plain() );
     }
 
     private void init_widgets() {

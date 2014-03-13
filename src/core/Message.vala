@@ -43,7 +43,7 @@ namespace Venom {
      *  Get plain time string
      */
     public virtual string get_time_plain() {
-      return timestamp.format("%R");
+      return timestamp.format("%R:%S");
     }
 
     /*
