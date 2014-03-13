@@ -26,7 +26,6 @@ namespace Venom {
     private Gtk.TextTag grey_tag;
     private Gtk.TextTag important_tag;
     private Gtk.TextTag quotation_tag;
-    private Gtk.TextTag uri_tag;
 
     public ConversationTextView() {
       set_wrap_mode(Gtk.WrapMode.WORD_CHAR);
@@ -40,10 +39,54 @@ namespace Venom {
         "background", "darkgrey"
       );
       quotation_tag = buffer.create_tag(null, "foreground", "green");
-      uri_tag = buffer.create_tag(null,
-          "underline", Pango.Underline.SINGLE,
-          "foreground", "blue"
-      );
+      key_press_event.connect((e) => {
+        switch(e.keyval) {
+          case Gdk.Key.Return:
+          case Gdk.Key.KP_Enter:
+            Gtk.TextIter iter;
+            buffer.get_iter_at_mark(out iter, buffer.get_insert());
+            activate_uri_at_iter(iter);
+            break;
+          default:
+            break;
+        }
+        return false;
+      });
+      event_after.connect((e) => {
+        if(e.type != Gdk.EventType.BUTTON_RELEASE)
+          return;
+        Gtk.TextIter start, end, iter;
+
+        // Don't activate on selection
+        buffer.get_selection_bounds(out start, out end);
+        if(start.get_offset() != end.get_offset())
+          return;
+        int x, y;
+        window_to_buffer_coords(Gtk.TextWindowType.WIDGET, (int)e.button.x, (int)e.button.y, out x, out y);
+        get_iter_at_location(out iter, x, y);
+        activate_uri_at_iter(iter);
+      });
+      bool hovering = false;
+      Gdk.Cursor hand_cursor = new Gdk.Cursor(Gdk.CursorType.HAND1);
+      Gdk.Cursor regular_cursor = new Gdk.Cursor(Gdk.CursorType.XTERM);
+      motion_notify_event.connect((e)=> {
+        int x, y;
+        window_to_buffer_coords(Gtk.TextWindowType.WIDGET, (int)e.x, (int)e.y, out x, out y);
+        Gtk.TextIter iter;
+        get_iter_at_location(out iter, x, y);
+        if(get_uri_at_iter(iter) != null) {
+          if(!hovering) {
+            hovering = true;
+            this.get_window(Gtk.TextWindowType.TEXT).set_cursor(hand_cursor);
+          }
+        } else {
+          if(hovering) {
+            hovering = false;
+            this.get_window(Gtk.TextWindowType.TEXT).set_cursor(regular_cursor);
+          }
+        }
+        return false;
+      });
     }
 
     public void add_message(IMessage message) {
@@ -85,7 +128,7 @@ namespace Venom {
           string before = text.substring(offset, start);
           string uri = match_info.fetch(0);
           buffer.insert(ref text_end, before, before.length);
-          buffer.insert_with_tags(text_end, uri, uri.length, uri_tag);
+          insert_uri(text_end, uri);
           buffer.get_end_iter(out text_end);
           offset = end;
 
@@ -103,6 +146,7 @@ namespace Venom {
       buffer.get_end_iter(out text_end);
       buffer.insert(ref text_end, "\n", 1);
     }
+
     public void add_filetransfer(FileTransferChatEntry entry) {
       Gtk.TextIter iter;
       buffer.get_end_iter(out iter);
@@ -113,6 +157,40 @@ namespace Venom {
       buffer.get_end_iter(out iter);
       buffer.insert(ref iter, "\n", 1);
     }
+
+    private void insert_uri(Gtk.TextIter iter, string uri) {
+      Gtk.TextTag uri_tag;
+      uri_tag = buffer.create_tag(null,
+          "underline", Pango.Underline.SINGLE,
+          "foreground", "blue"
+      );
+      uri_tag.set_data<string>("uri", uri);
+      buffer.insert_with_tags(iter, uri, uri.length, uri_tag);
+    }
+
+    private string? get_uri_at_iter(Gtk.TextIter iter) {
+      GLib.SList<unowned Gtk.TextTag> tags = iter.get_tags();
+      for(unowned GLib.SList<unowned Gtk.TextTag> tagp = tags; tagp != null; tagp = tagp.next) {
+        var tag = tagp.data;
+        string uri = tag.get_data<string>("uri");
+        if(uri != null) {
+          return uri;
+        }
+      }
+      return null;
+    }
+
+    private void activate_uri_at_iter(Gtk.TextIter iter) {
+      string uri = get_uri_at_iter(iter);
+      if(uri == null)
+        return;
+      try {
+        Gtk.show_uri(null, uri, 0);
+      } catch (Error e) {
+        stderr.printf("Error when showing uri: %s\n", e.message);
+      }
+    }
+
     private bool forward_search(Gtk.TextIter iter, string text, Gtk.TextIter? limit = null, bool match_case = false) {
       Gtk.TextIter match_start;
       Gtk.TextIter match_end;
@@ -123,6 +201,7 @@ namespace Venom {
       }
       return found;
     }
+
     private void search(string search_text, bool wrap_around = true, bool match_case = false) {
       Gtk.TextIter current_position_iter;
       buffer.get_iter_at_mark(out current_position_iter,  buffer.get_insert());
