@@ -44,7 +44,7 @@ namespace Venom {
       label_groupchat_name.set_text("Groupchat #%i".printf(groupchat.group_id));
 
       // update groupchat status message
-      label_groupchat_statusmessage.set_text("%i persons connected".printf(groupchat.peer_count));
+      label_groupchat_statusmessage.set_text("%i people connected".printf(groupchat.peer_count));
 
       // update groupchat image
       image_groupchat_image.set_from_pixbuf(groupchat.image != null ? groupchat.image : ResourceFactory.instance.default_groupchat);
