@@ -88,7 +88,8 @@ namespace Venom {
     private bool visible_function(Gtk.TreeModel model, Gtk.TreeIter iter) {
       string str;
       model.get(iter, completion_column, out str, -1);
-      return (str != null && filter_string != null && str.has_prefix(filter_string));
+      return (str != null && filter_string != null && 
+        str.casefold().has_prefix(filter_string.casefold()));
     }
 
     private bool on_key_press(Gdk.EventKey event) {
@@ -121,6 +122,11 @@ namespace Venom {
           string completed_string;
           completion_filtered.get(filter_iter, completion_column, out completed_string, -1);
           buffer.delete(ref iter_start, ref iter_end);
+          if(iter_start.starts_line()) {
+            completed_string += ": ";
+          } else {
+            completed_string += " ";
+          }
           buffer.insert(ref iter_start, completed_string, completed_string.length);
         }
         return true;
