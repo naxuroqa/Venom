@@ -35,14 +35,13 @@ namespace Venom {
     // Tox session wrapper
     private ToxSession session;
     private UserStatus user_status = UserStatus.OFFLINE;
-    private Gtk.ImageMenuItem menuitem_status;
 
     // Widgets
     private Gtk.Image image_status;
     private Gtk.Spinner spinner_status;
     private Gtk.Image image_userimage;
-    private Gtk.Label label_name;
-    private Gtk.Label label_status;
+    private Gtk.Entry entry_name;
+    private Gtk.Entry entry_status;
     private ContactListTreeView contact_list_tree_view;
     private Gtk.ComboBox combobox_status;
     private Gtk.Notebook notebook_conversations;
@@ -181,8 +180,13 @@ namespace Venom {
       image_status = builder.get_object("image_status") as Gtk.Image;
       spinner_status = builder.get_object("spinner_status") as Gtk.Spinner;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
-      label_name = builder.get_object("label_username") as Gtk.Label;
-      label_status = builder.get_object("label_userstatus") as Gtk.Label;
+
+      entry_name = builder.get_object("entry_username") as Gtk.Entry;
+      entry_status = builder.get_object("entry_userstatus") as Gtk.Entry;
+      entry_name.max_length = Tox.MAX_NAME_LENGTH;
+      entry_status.max_length = Tox.MAX_STATUSMESSAGE_LENGTH;
+      entry_name.changed.connect( () => { session.set_name(entry_name.text); });
+      entry_status.changed.connect( () => { session.set_status_message(entry_status.text); });
 
       combobox_status = builder.get_object("combobox_status") as Gtk.ComboBox;
       Gtk.ListStore liststore_status = new Gtk.ListStore (2, typeof(string), typeof(ContactFilter));
@@ -211,13 +215,11 @@ namespace Venom {
       Gtk.ImageMenuItem menuitem_edit_info = builder.get_object("menuitem_edit_info") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.ImageMenuItem;
 
-      menuitem_status = builder.get_object("menuitem_status") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_status_online = builder.get_object("menuitem_status_online") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_status_away = builder.get_object("menuitem_status_away") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_status_busy = builder.get_object("menuitem_status_busy") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_status_offline = builder.get_object("menuitem_status_offline") as Gtk.ImageMenuItem;
 
-      (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
       (menuitem_status_online.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.online);
       (menuitem_status_away.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.away);
       (menuitem_status_busy.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.busy);
@@ -399,24 +401,24 @@ namespace Venom {
       User.instance.name = session.get_self_name();
       User.instance.status_message = session.get_self_status_message();
 
-      label_name.label = User.instance.name;
-      label_name.tooltip_text = User.instance.name;
+      entry_name.text = User.instance.name;
+      entry_name.tooltip_text = User.instance.name;
 
-      label_status.label = User.instance.status_message;
-      label_status.tooltip_text = User.instance.status_message;
+      entry_status.text = User.instance.status_message;
+      entry_status.tooltip_text = User.instance.status_message;
 
       User.instance.notify["name"].connect(() => {
         if( session.set_name(User.instance.name) ) {
-          label_name.label = User.instance.name;
-          label_name.tooltip_text = User.instance.name;
+          entry_name.text = User.instance.name;
+          entry_name.tooltip_text = User.instance.name;
         } else {
           stderr.printf("Could not change user name!\n");
         }
       });
       User.instance.notify["status-message"].connect(() => {
         if( session.set_status_message(User.instance.status_message) ) {
-          label_status.label = User.instance.status_message;
-          label_status.tooltip_text = User.instance.status_message;
+          entry_status.text = User.instance.status_message;
+          entry_status.tooltip_text = User.instance.status_message;
         } else {
           stderr.printf("Could not change user statusmessage!\n");
         }
@@ -475,7 +477,7 @@ namespace Venom {
       w.application = application;
       w.user_name = User.instance.name;
       w.max_name_length = Tox.MAX_NAME_LENGTH;
-      w.user_status = label_status.get_text();
+      w.user_status = entry_status.get_text();
       w.max_status_length = Tox.MAX_STATUSMESSAGE_LENGTH;
       w.user_image = image_userimage.get_pixbuf();
       w.user_id = Tools.bin_to_hexstring(session.get_address());
@@ -640,7 +642,6 @@ namespace Venom {
       //TODO clean up, decide what to do with deprecated GtkImageItems
       if(!session.connected || status == UserStatus.OFFLINE) {
         image_status.set_from_pixbuf(ResourceFactory.instance.offline);
-        (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
         set_title_from_status(UserStatus.OFFLINE);
         return;
       }
@@ -649,15 +650,12 @@ namespace Venom {
      switch(status) {
       case UserStatus.ONLINE:
         image_status.set_from_pixbuf(ResourceFactory.instance.online);
-        (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.online);
         break;
       case UserStatus.AWAY:
         image_status.set_from_pixbuf(ResourceFactory.instance.away);
-        (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.away);
         break;
       case UserStatus.BUSY:
         image_status.set_from_pixbuf(ResourceFactory.instance.busy);
-        (menuitem_status.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.busy);
         break;
      }
     }
