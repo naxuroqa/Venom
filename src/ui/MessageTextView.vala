@@ -110,9 +110,7 @@ namespace Venom {
           return true;
         }
 
-        //FIXME workaround as iter.copy() won't work for some reason
-        Gtk.TextIter iter_start;
-        buffer.get_iter_at_mark(out iter_start, ohaimark);
+        Gtk.TextIter iter_start = iter_end;
         iter_start.backward_word_start();
 
         filter_string = iter_start.get_text(iter_end);
