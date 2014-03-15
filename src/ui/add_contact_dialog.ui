@@ -53,7 +53,6 @@
       <object class="GtkScrolledWindow" id="scrolledwindow1">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="hscrollbar_policy">never</property>
         <property name="shadow_type">in</property>
         <child>
           <object class="GtkTextView" id="textview_contact_message">
