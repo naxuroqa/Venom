@@ -23,6 +23,7 @@ namespace Venom {
   public class Tools : GLib.Object{
     // find our data dir (on linux most likely /usr/share or /usr/local/share)
     public static string find_data_dir() {
+      //System data directory
       foreach (string s in GLib.Environment.get_system_data_dirs()) {
         string dir = Path.build_filename(s, "venom");
         File f = File.new_for_path(dir);
@@ -31,6 +32,7 @@ namespace Venom {
       }
       // Check for common directories on portable versions
       string[] portable_directories = {
+        Path.build_filename(GLib.Environment.get_user_data_dir(), "venom"),
         Path.build_filename("share", "venom"),
         Path.build_filename("..", "share", "venom")
       };
