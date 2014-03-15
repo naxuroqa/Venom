@@ -26,8 +26,6 @@ namespace Venom {
     private Gtk.ProgressBar progress_bar;
     private Gtk.Button save_as_button;
     private Gtk.Button cancel_button;
-    //container for save_as and cancel_buttons
-    private Gtk.Box button_box;
 
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
@@ -45,8 +43,6 @@ namespace Venom {
       Gtk.Frame frame = builder.get_object("frame1") as Gtk.Frame;
       this.add(frame);
       frame.get_style_context().add_class("frame");
-      
-      button_box = builder.get_object("box3") as Gtk.Box;
 
       name_label = builder.get_object("name_label") as Gtk.Label;
       size_or_status_label = builder.get_object("size_label") as Gtk.Label;
@@ -55,7 +51,7 @@ namespace Venom {
       save_as_button = builder.get_object("save_as_button") as Gtk.Button;
       cancel_button = builder.get_object("cancel_button") as Gtk.Button;
       if( ft.direction == FileTransferDirection.OUTGOING ) {
-        disable_buttons();
+        save_as_button.visible = false;
       }
 
       name_label.set_text( ft.name );
@@ -77,11 +73,8 @@ namespace Venom {
     }
 
     private void disable_buttons(){
-      button_box.visible = false;
       save_as_button.visible = false;
-      save_as_button.sensitive = false;
       cancel_button.visible = false;
-      cancel_button.sensitive = false;
     }
     
     private void status_changed(FileTransferStatus status,FileTransferDirection direction){
@@ -101,7 +94,7 @@ namespace Venom {
           disable_buttons();
         } break; 
         case FileTransferStatus.IN_PROGRESS: {
-          disable_buttons();
+          save_as_button.visible = false;
         } break;
         case FileTransferStatus.PAUSED: {
           size_or_status_label.set_text("Paused");
@@ -118,18 +111,33 @@ namespace Venom {
           progress_bar.visible = false;
           disable_buttons();
         } break;
+        case FileTransferStatus.CANCELED: {
+          size_or_status_label.set_text("Canceled");
+          progress_bar.visible = false;
+          disable_buttons();
+        } break; 
+        default:
+          GLib.assert_not_reached();
       }
     }
 
     private void reject_file() {
-      if(ft.status != FileTransferStatus.PENDING)  return;
-     
-      ft.status = FileTransferStatus.REJECTED;
+      if(ft.status != FileTransferStatus.PENDING) {
+        return;
+      }
+
+      if(ft.direction == FileTransferDirection.OUTGOING) {
+        ft.status = FileTransferStatus.CANCELED;
+      } else {
+        ft.status = FileTransferStatus.REJECTED;
+      }
       filetransfer_rejected(ft);
     }
 
     private void accept_file() {
-      if(ft.status != FileTransferStatus.PENDING)  return;
+      if(ft.status != FileTransferStatus.PENDING) {
+        return;
+      }
       
       Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog("Save file",null,
                                                                               Gtk.FileChooserAction.SAVE,

@@ -780,8 +780,8 @@ namespace Venom {
         uint64 remaining_bytes_to_send = file_size;
         uint8[] bytes = new uint8[chunk_size];
         bool read_more = true;
-        while ( remaining_bytes_to_send > 0  ) {
-          if(ft.status == FileTransferStatus.SENDING_FAILED) {
+        while ( remaining_bytes_to_send > 0 ) {
+          if(ft.status == FileTransferStatus.SENDING_FAILED || ft.status == FileTransferStatus.CANCELED) {
             return;
           }
           if(ft.status == FileTransferStatus.PAUSED) {
@@ -872,7 +872,6 @@ namespace Venom {
         ft.status = FileTransferStatus.RECEIVING_FAILED;
       }
     }
-
 
     private ConversationWidget? open_conversation_with(Contact c) {
       ConversationWidget w = conversation_widgets[c.friend_id];

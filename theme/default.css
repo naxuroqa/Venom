@@ -280,14 +280,6 @@
 @define-color cl-background #f1f2f2;
 
 
-.chat_list .filetransfer_entry .frame {
-  background: #5b5a5c;
-  border-radius: 5px;
-}
-
-.chat_list .filetransfer_entry .frame GtkLabel{
-  color: #d5d5d5;
-}
 
 .conversation_widget .scrollbar {
   background-color: @cl-background;
@@ -309,11 +301,7 @@
   color: #939598;
 }
 
-/*.filetransfer_entry *{
-  -GtkButton-default-border: 0;
-}*/
-
-.filetransfer_entry GtkLabel.error {
+.filetransfer_entry .label.error {
   color: #ff0000;
   background: #5b5a5c;
 }
@@ -323,13 +311,12 @@
   border-color: #111;
 }
 
-/*.filetransfer_entry GtkButton {
-  background-image: none;
+.filetransfer_entry .frame {
   background: #5b5a5c;
-  border-color: #222;
-}*/
+  border-radius: 5px;
+}
 
-.filetransfer_entry GtkButton GtkLabel {
-  color: #222;
+.filetransfer_entry .fileinfo{
+  color: #d5d5d5;
 }
 

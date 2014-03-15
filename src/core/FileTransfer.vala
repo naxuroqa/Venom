@@ -31,6 +31,7 @@ namespace Venom {
     REJECTED,
     IN_PROGRESS,
     PAUSED,
+    CANCELED,
     DONE
   }
 
