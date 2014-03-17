@@ -18,17 +18,15 @@
  */
 
 namespace Venom {
-  public class ChatMessage : Gtk.EventBox {
+  public class ChatMessage : Gtk.Box {
     private Gtk.Label name_label;
     private Gtk.Label message_label;
     private Gtk.Label date_label;
-    private Gtk.Frame frame;
 
     public ChatMessage(IMessage message, bool short_names, bool following){
       init_widgets();
 
       if(!following) {
-        frame.get_style_context().add_class("first");
         if(message.message_direction == MessageDirection.OUTGOING) {
           name_label.get_style_context().add_class("own_name");
         }
@@ -46,27 +44,23 @@ namespace Venom {
     }
 
     private void init_widgets() {
-      Gtk.Builder builder = new Gtk.Builder();
-      try {
-        builder.add_from_resource("/org/gtk/venom/chat_message.ui");
-      } catch (GLib.Error e) {
-        stderr.printf("Loading message widget failed: %s\n", e.message);
-      }
       this.get_style_context().add_class("message_entry");
-
-      Gtk.Box box = builder.get_object("box") as Gtk.Box;
-      frame = new Gtk.Frame(null);
-      frame.get_style_context().add_class("message_frame");
-      frame.set_visible(true);
-      frame.add(box);
-      this.add(frame);
-      name_label = builder.get_object("name_label") as Gtk.Label;
-      name_label.get_style_context().add_class("name_label");
-      message_label = builder.get_object("message_label") as Gtk.Label;
-      message_label.set_line_wrap(true);
-      date_label = builder.get_object("date_label") as Gtk.Label;      
-      this.set_visible(true);
-
+      this.spacing = 12;
+      this.margin_left = 12;
+      this.margin_right = 12;
+      name_label = new Gtk.Label(null);
+      name_label.set_alignment(1,0);
+      message_label = new Gtk.Label(null);
+      message_label.wrap_mode = Pango.WrapMode.WORD_CHAR;
+      message_label.wrap = true;
+      message_label.selectable = true;
+      message_label.set_alignment(0,0);
+      date_label = new Gtk.Label(null);
+      date_label.get_style_context().add_class("date_label");
+      date_label.set_alignment(0,0);
+      this.pack_start(name_label, false);
+      this.pack_start(message_label, false);
+      this.pack_end(date_label, false);
     }
 
     private string markup_uris(string text) {

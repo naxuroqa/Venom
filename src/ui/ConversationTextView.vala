@@ -28,6 +28,7 @@ namespace Venom {
     private Gtk.TextTag quotation_tag;
 
     public ConversationTextView() {
+      this.get_style_context().add_class("conversation_view");
       set_wrap_mode(Gtk.WrapMode.WORD_CHAR);
       editable = false;
 

@@ -33,12 +33,13 @@ namespace Venom {
     private IMessage last_message = null;
 
     public ConversationView() {
-      conversation_list = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+      conversation_list = new Gtk.Box(Gtk.Orientation.VERTICAL, 3);
+      this.get_style_context().add_class("conversation_view");
       this.add(conversation_list);
     }
 
     public void add_filetransfer(FileTransferChatEntry entry) {
-      conversation_list.pack_start(entry,false,false,0);
+      conversation_list.pack_start(entry, false, false, 0);
       entry.set_visible(true);
     }
 
@@ -47,9 +48,13 @@ namespace Venom {
       if(last_message != null && last_message.compare_sender(message)) {
         cm = new ChatMessage(message, short_names, true);
       } else {
+        var sep = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
+        conversation_list.pack_start(sep, false, false);
+        sep.show_all();
         cm = new ChatMessage(message, short_names, false);
       }
-      conversation_list.pack_start(cm,false,false,0);
+      conversation_list.pack_start(cm, false, false);
+      cm.show_all();
       last_message = message;
     }
     public void register_search_entry(Gtk.Entry entry) {

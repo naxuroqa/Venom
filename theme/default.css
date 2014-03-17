@@ -233,9 +233,16 @@
 }
 
 .conversation_widget,
-.conversation_widget GtkTreeView {
-  color: black;
+.conversation_widget .conversation_view,
+.conversation_widget .view {
+  color: @background;
   background-color: @foreground;
+}
+
+/* if using --textview mode */
+.conversation_widget .view:selected {
+  color: @foreground;
+  background-color: @background;
 }
 
 .conversation_widget GtkSeparator {
@@ -293,11 +300,11 @@
   background-color: #939598;
 }
 
-.chat_list .message_frame {
-  border-width: 0px;
+.message_entry .own_name {
+  color: #939598;
 }
 
-.message_entry .own_name {
+.message_entry .date_label {
   color: #939598;
 }
 
