@@ -26,7 +26,9 @@ namespace Venom {
     public ChatMessage(IMessage message, bool short_names, bool following){
       init_widgets();
 
-      if(!following) {
+      if( message.is_action ) {
+        name_label.set_text( message.get_sender_plain() );
+      } else if(!following) {
         if(message.message_direction == MessageDirection.OUTGOING) {
           name_label.get_style_context().add_class("own_name");
         }

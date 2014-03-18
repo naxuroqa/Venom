@@ -28,6 +28,7 @@ namespace Venom {
     public abstract DateTime timestamp {get; protected set;}
     public abstract MessageDirection message_direction {get; protected set;}
     public abstract bool important {get; set;}
+    public abstract bool is_action {get; set;}
     
     /*
      *  Get plain sender string
@@ -58,6 +59,7 @@ namespace Venom {
     public DateTime timestamp {get; protected set;}
     public MessageDirection message_direction {get; protected set;}
     public bool important {get; set; default = false;}
+    public bool is_action {get; set; default = false;}
 
     public Message.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
       this.message_direction = MessageDirection.OUTGOING;
@@ -97,6 +99,7 @@ namespace Venom {
       this.to = receiver;
       this.message = message;
       this.timestamp = timestamp;
+      this.is_action = true;
     }
     public ActionMessage.incoming(Contact sender, string message, DateTime timestamp = new DateTime.now_local()) {
       this.message_direction = MessageDirection.INCOMING;
@@ -104,6 +107,7 @@ namespace Venom {
       this.to = null;
       this.message = message;
       this.timestamp = timestamp;
+      this.is_action = true;
     }
     public override string get_sender_plain() {
       return "*";
@@ -120,6 +124,7 @@ namespace Venom {
     public DateTime timestamp {get; protected set;}
     public MessageDirection message_direction {get; protected set;}
     public bool important {get; set; default = false;}
+    public bool is_action {get; set; default = false;}
 
     public GroupMessage.outgoing(GroupChat receiver, string message, DateTime timestamp = new DateTime.now_local()) {
       this.message_direction = MessageDirection.OUTGOING;
@@ -166,6 +171,7 @@ namespace Venom {
       this.from_contact = from_contact;
       this.message = message;
       this.timestamp = timestamp;
+      this.is_action = true;
     }
     public GroupActionMessage.incoming(GroupChat sender, GroupChatContact from_contact, string message, DateTime timestamp = new DateTime.now_local()) {
       this.message_direction = MessageDirection.INCOMING;
@@ -174,6 +180,7 @@ namespace Venom {
       this.from_contact = from_contact;
       this.message = message;
       this.timestamp = timestamp;
+      this.is_action = true;
     }
     public override string get_sender_plain() {
       return "*";
