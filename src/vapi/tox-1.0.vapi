@@ -284,6 +284,11 @@ namespace Tox {
     public UserStatus get_user_status(int friendnumber);
     public UserStatus get_self_user_status();
 
+    /* returns timestamp of last time friendnumber was seen online, or 0 if never seen.
+     * returns -1 on error.
+     */
+    public uint64 get_last_online(int friendnumber);
+
     /* Set our typing status for a friend.
      * You are responsible for turning it on or off.
      *

@@ -151,7 +151,11 @@ namespace Venom {
       if(entry is Contact) {
         Contact contact = entry as Contact;
         if(!contact.online) {
-          layout.set_text("Offline", -1);
+          if(contact.last_seen == null) {
+            layout.set_text("Offline", -1);
+          } else {
+            layout.set_text("Last seen: %s".printf(contact.last_seen.format("%c")), -1);
+          }
         } else if(contact.status_message != null && contact.status_message != "") {
           layout.set_text(contact.status_message, -1);
         }

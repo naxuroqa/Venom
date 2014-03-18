@@ -169,6 +169,10 @@ namespace Venom {
         Contact c = new Contact(friend_key, friend_id);
         c.name = get_name(friend_id);
         c.status_message = get_status_message(friend_id);
+        uint64 last_seen = get_last_online(friend_id);
+        if(last_seen > 0) {
+          c.last_seen = new DateTime.from_unix_local((int64)last_seen);
+        }
         _contacts.set(friend_id, c);
       };
     }
@@ -230,6 +234,7 @@ namespace Venom {
     private void on_connection_status_callback(Tox.Tox tox, int friend_number, uint8 status) {
       Contact contact = _contacts.get(friend_number);
       contact.online = (status != 0);
+      contact.last_seen = new DateTime.now_local();
       Idle.add(() => { on_connection_status(contact); return false; });
     }
 
@@ -522,6 +527,12 @@ namespace Venom {
         ret = handle.get_status_message(friend_number, buf);
       }
       return (string)buf;
+    }
+
+    public uint64 get_last_online(int friendnumber) {
+      lock(handle) {
+        return handle.get_last_online(friendnumber);
+      }
     }
 
     public uint32 send_message(int friend_number, string message)

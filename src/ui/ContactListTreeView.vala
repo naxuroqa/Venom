@@ -70,7 +70,12 @@ namespace Venom {
       GLib.Object o = v as Object;
       if(o is Contact) {
         Contact c = o as Contact;
-        tooltip.set_text("%s\n%s".printf(c.name, c.get_status_string()));
+        string tooltip_string = "%s\n%s".printf(c.name, c.get_status_string());
+        if(!c.online && c.last_seen != null) {
+          tooltip_string += "\nLast seen: %s".printf(c.last_seen.format("%c"));
+        }
+        
+        tooltip.set_text(tooltip_string);
       } else if (o is GroupChat) {
         return false;
       } else {
