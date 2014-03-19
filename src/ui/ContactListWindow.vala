@@ -610,7 +610,7 @@ namespace Venom {
       stdout.printf("%s changed his status to %s\n", c.name, c.status_message);
       contact_changed(c);
     }
-    private void on_userstatus(Contact c, int old_status) {
+    private void on_userstatus(Contact c, uint8 old_status) {
       stdout.printf("[us] %s:%i\n", c.name, c.user_status);
       contact_changed(c);
     }

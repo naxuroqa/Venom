@@ -30,7 +30,7 @@ namespace Venom {
     //public string local_name     { get; set; default = ""; }
     public string status_message { get; set; default = ""; }
     public DateTime last_seen    { get; set; default = null; }
-    public int user_status       { get; set; default = (int)Tox.UserStatus.INVALID; }
+    public uint8 user_status     { get; set; default = (uint8)Tox.UserStatus.INVALID; }
     public bool online           { get; set; default = false; }
     public Gdk.Pixbuf? image     { get; set; default = null; }
     public int unread_messages   { get; set; default = 0; }

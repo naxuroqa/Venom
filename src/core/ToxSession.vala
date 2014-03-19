@@ -64,7 +64,7 @@ namespace Venom {
     public signal void on_friend_action(Contact c, string action);
     public signal void on_name_change(Contact c, string? old_name);
     public signal void on_status_message(Contact c, string? old_status);
-    public signal void on_user_status(Contact c, int old_status);
+    public signal void on_user_status(Contact c, uint8 old_status);
     public signal void on_read_receipt(Contact c, uint32 receipt);
     public signal void on_connection_status(Contact c);
     public signal void on_own_connection_status(bool status);
@@ -178,7 +178,7 @@ namespace Venom {
     }
 
     ////////////////////////////// Callbacks /////////////////////////////////////////
-    private void on_friend_request_callback(uint8[] public_key, uint8[] data) 
+    private void on_friend_request_callback(Tox.Tox tox, uint8[] public_key, uint8[] data) 
       requires (public_key != null)
       requires (data != null)
     {
@@ -195,14 +195,14 @@ namespace Venom {
       Idle.add(() => { on_friend_message(_contacts.get(friend_number), message_string); return false; });
     }
 
-    private void on_friend_action_callback(Tox.Tox tox, int friend_number, uint8[] action)
+    private void on_friend_action_callback(Tox.Tox tox, int32 friend_number, uint8[] action)
       requires(action != null)
     {
       string action_string = ((string)action).dup();
       Idle.add(() => { on_friend_action(_contacts.get(friend_number), action_string); return false; });
     }
 
-    private void on_name_change_callback(Tox.Tox tox, int friend_number, uint8[] new_name)
+    private void on_name_change_callback(Tox.Tox tox, int32 friend_number, uint8[] new_name)
       requires(new_name != null)
     {
       Contact contact = _contacts.get(friend_number);
@@ -211,7 +211,7 @@ namespace Venom {
       Idle.add(() => { on_name_change(contact, old_name); return false; });
     }
 
-    private void on_status_message_callback(Tox.Tox tox, int friend_number, uint8[] status)
+    private void on_status_message_callback(Tox.Tox tox, int32 friend_number, uint8[] status)
       requires(status != null)
     {
       Contact contact = _contacts.get(friend_number);
@@ -220,32 +220,32 @@ namespace Venom {
       Idle.add(() => { on_status_message(contact, old_status); return false; });
     }
 
-    private void on_user_status_callback(Tox.Tox tox, int friend_number, Tox.UserStatus user_status) {
+    private void on_user_status_callback(Tox.Tox tox, int32 friend_number, uint8 user_status) {
       Contact contact = _contacts.get(friend_number);
-      int old_status = contact.user_status;
+      uint8 old_status = contact.user_status;
       contact.user_status = user_status;
       Idle.add(() => { on_user_status(contact, old_status); return false; });
     }
 
-    private void on_read_receipt_callback(Tox.Tox tox, int friend_number, uint32 receipt) {
+    private void on_read_receipt_callback(Tox.Tox tox, int32 friend_number, uint32 receipt) {
       Idle.add(() => { on_read_receipt(_contacts.get(friend_number), receipt); return false; });
     }
 
-    private void on_connection_status_callback(Tox.Tox tox, int friend_number, uint8 status) {
+    private void on_connection_status_callback(Tox.Tox tox, int32 friend_number, uint8 status) {
       Contact contact = _contacts.get(friend_number);
       contact.online = (status != 0);
       contact.last_seen = new DateTime.now_local();
       Idle.add(() => { on_connection_status(contact); return false; });
     }
 
-    private void on_typing_change_callback(Tox.Tox tox, int friend_number, int is_typing) {
+    private void on_typing_change_callback(Tox.Tox tox, int32 friend_number, int is_typing) {
       Contact contact = _contacts.get(friend_number);
       contact.is_typing = is_typing != 0;
       Idle.add(() => { on_typing_change(contact, is_typing != 0); return false;});
     }
 
     // Group chat callbacks
-    private void on_group_invite_callback(Tox.Tox tox, int friendnumber, uint8[] group_public_key)
+    private void on_group_invite_callback(Tox.Tox tox, int32 friendnumber, uint8[] group_public_key)
       requires(group_public_key != null)
     {
       uint8[] public_key_clone = Tools.clone(group_public_key, Tox.CLIENT_ID_SIZE);
@@ -299,19 +299,19 @@ namespace Venom {
     }
 
     //File sending callbacks
-    private void on_file_sendrequest_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint64 filesize, uint8[] filename)
+    private void on_file_sendrequest_callback(Tox.Tox tox, int32 friendnumber, uint8 filenumber, uint64 filesize, uint8[] filename)
       requires(filename != null)
     {
       string filename_str = File.new_for_path((string)filename).get_basename();
       Idle.add(() => { on_file_sendrequest(friendnumber, filenumber, filesize, filename_str); return false; });
     }
 
-    private void on_file_control_callback(Tox.Tox tox, int friendnumber, uint8 receive_send, uint8 filenumber, uint8 status, uint8[] data) {
+    private void on_file_control_callback(Tox.Tox tox, int32 friendnumber, uint8 receive_send, uint8 filenumber, uint8 status, uint8[] data) {
       uint8[] data_clone = Tools.clone(data, data.length);
       Idle.add(() => { on_file_control(friendnumber, filenumber, receive_send, status, data_clone); return false; });
     }
 
-    private void on_file_data_callback(Tox.Tox tox, int friendnumber, uint8 filenumber, uint8[] data)
+    private void on_file_data_callback(Tox.Tox tox, int32 friendnumber, uint8 filenumber, uint8[] data)
       requires(data != null)
     {
       uint8[] data_clone = Tools.clone(data, data.length);
