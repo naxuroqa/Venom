@@ -112,6 +112,7 @@ VALA_PRECOMPILE( VALA_C_VENOM
     glib-2.0
     gio-2.0
     json-glib-1.0
+    libnotify
     sqlite3
     tox-1.0
     config

@@ -30,6 +30,7 @@ namespace Venom {
     private Gtk.CheckButton urgency_notification_checkbutton;
     private Gtk.ListStore filesize_prefix_liststore;
     private Gtk.ComboBox filesize_prefix_combobox;
+    private Gtk.CheckButton enable_tray_checkbutton;
 
     public bool keep_history {
       get { return keep_history_checkbutton.active; }
@@ -46,6 +47,12 @@ namespace Venom {
         }
       }
     }
+    
+    public bool enable_tray {
+      get { return enable_tray_checkbutton.active; }
+      set { enable_tray_checkbutton.active = value; }
+    }
+    
     public bool send_typing {
       get { return send_typing_checkbutton.active; }
       set { send_typing_checkbutton.active = value; }
@@ -81,7 +88,8 @@ namespace Venom {
       history_delete_spinbutton = builder.get_object("history_delete_spinbutton") as Gtk.SpinButton;
       send_typing_checkbutton = builder.get_object("send_typing_checkbutton") as Gtk.CheckButton;
       show_typing_checkbutton = builder.get_object("show_typing_checkbutton") as Gtk.CheckButton;
-      urgency_notification_checkbutton = builder.get_object("urgency_notification_checkbutton") as Gtk.CheckButton;
+      enable_tray_checkbutton = builder.get_object("urgency_notification_checkbutton") as Gtk.CheckButton;
+      urgency_notification_checkbutton = builder.get_object("enable_tray_checkbutton") as Gtk.CheckButton;
       filesize_prefix_combobox = builder.get_object("filesize_prefix_combobox") as Gtk.ComboBox;
       filesize_prefix_liststore = builder.get_object("filesize_prefix_liststore") as Gtk.ListStore;
 
@@ -102,6 +110,7 @@ namespace Venom {
       send_typing = settings.send_typing_status;
       show_typing = settings.show_typing_status;
       dec_binary_prefix = settings.dec_binary_prefix;
+      enable_tray = settings.enable_tray;
 
       add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Save", Gtk.ResponseType.OK, null);
       set_default_response(Gtk.ResponseType.CANCEL);
@@ -114,6 +123,7 @@ namespace Venom {
           settings.show_typing_status = show_typing;
           settings.enable_urgency_notification = urgency_notification;
           settings.dec_binary_prefix = dec_binary_prefix;
+          settings.enable_tray = enable_tray;
 
           settings.save_settings(ResourceFactory.instance.config_filename);
         }

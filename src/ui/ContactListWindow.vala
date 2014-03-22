@@ -307,6 +307,16 @@ namespace Venom {
       session.on_own_user_status.connect(this.on_ownuserstatus);
       session.on_typing_change.connect(this.on_typing_change);
 
+      //minimize on tray signals
+      if(Settings.instance.enable_tray){
+        this.window_state_event.connect( (e) => {
+          if (e.new_window_state == Gdk.WindowState.ICONIFIED){
+            this.hide();
+            return true;
+          } else {return false;}
+        } ) ;
+      }
+
       //groupmessage signals
       session.on_group_invite.connect(this.on_group_invite);
       session.on_group_message.connect(this.on_group_message);
