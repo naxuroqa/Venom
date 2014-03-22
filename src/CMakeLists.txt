@@ -181,6 +181,7 @@ TARGET_LINK_LIBRARIES( venom
                        ${GLIB_LIBRARIES}
                        ${GTK_LIBRARIES}
                        ${JSON_LIBRARIES}
+                       notify
 )
 
 TARGET_LINK_LIBRARIES( test_dht
