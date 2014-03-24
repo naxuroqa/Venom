@@ -238,7 +238,7 @@ namespace Venom {
       Idle.add(() => { on_connection_status(contact); return false; });
     }
 
-    private void on_typing_change_callback(Tox.Tox tox, int32 friend_number, int is_typing) {
+    private void on_typing_change_callback(Tox.Tox tox, int32 friend_number, uint8 is_typing) {
       Contact contact = _contacts.get(friend_number);
       contact.is_typing = is_typing != 0;
       Idle.add(() => { on_typing_change(contact, is_typing != 0); return false;});

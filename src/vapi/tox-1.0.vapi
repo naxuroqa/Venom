@@ -282,7 +282,7 @@ namespace Tox {
      * returns 0 if friend is not typing.
      * returns 1 if friend is typing.
      */
-    public int get_is_typing(int32 friendnumber);
+    public uint8 get_is_typing(int32 friendnumber);
 
     /* Sets whether we send read receipts for friendnumber.
      * This function is not lazy, and it will fail if yesno is not (0 or 1).
@@ -343,9 +343,9 @@ namespace Tox {
     public void callback_user_status(UserStatusCallback callback);
 
     /* Set the callback for typing changes.
-     *  function (int friendnumber, int is_typing)
+     *  function (int friendnumber, uint8_t is_typing)
      */
-    public delegate void TypingChangeCallback(Tox tox, int32 friendnumber, int is_typing);
+    public delegate void TypingChangeCallback(Tox tox, int32 friendnumber, uint8 is_typing);
     public void callback_typing_change(TypingChangeCallback callback);
 
     /* Set the callback for read receipts.
