@@ -33,7 +33,7 @@ PKG_CHECK_MODULES_FULLPATH(GLIB   REQUIRED glib-2.0>=${TARGET_GLIB})
 PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
 PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
 PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
-
+PKG_CHECK_MODULES_FULLPATH(NOTIFY REQUIRED libnotify>=0.7.3)
 # Workaround for libtoxcore and libsodium not providing info on
 # all needed static libraries in their pkg-config files
 # see https://github.com/irungentoo/ProjectTox-Core/issues/705
@@ -62,6 +62,7 @@ SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
                   ${SQLITE_CFLAGS} ${SQLITE_CFLAGS_OTHER}
                   ${JSON_CFLAGS}   ${JSON_CFLAGS_OTHER}
                   ${TOX_CFLAGS}    ${TOX_CFLAGS_OTHER}
+                  ${NOTIFY_CFLAGS} ${NOTIFY_CFLAGS_OTHER}
 )
 
 # since pkg_check_modules returns semicolon
@@ -181,7 +182,7 @@ TARGET_LINK_LIBRARIES( venom
                        ${GLIB_LIBRARIES}
                        ${GTK_LIBRARIES}
                        ${JSON_LIBRARIES}
-                       notify
+                       ${NOTIFY_LIBRARIES}
 )
 
 TARGET_LINK_LIBRARIES( test_dht

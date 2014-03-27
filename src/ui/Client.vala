@@ -18,8 +18,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
-using Notify;
-
 namespace Venom {
   class Client : Gtk.Application {
     private const GLib.ActionEntry app_entries[] =
@@ -39,6 +37,18 @@ namespace Venom {
         application_id: "im.tox.venom",
         flags: GLib.ApplicationFlags.HANDLES_OPEN
       );
+      if(Settings.instance.enable_tray){
+        tray_icon = new Gtk.StatusIcon.from_pixbuf(get_contact_list_window().get_icon());
+        tray_icon.set_tooltip_text ("Venom");
+        tray_icon.set_visible(true);
+        tray_icon.activate.connect(()=>{
+          if(contact_list_window == null){
+            this.activate();
+          } else {
+            get_contact_list_window().show();
+          }
+        });
+      }
     }
 
     ~Client() {
@@ -81,18 +91,6 @@ namespace Venom {
 
     protected override void startup() {
       add_action_entries(app_entries, this);
-      if(Settings.instance.enable_tray){
-        tray_icon = new Gtk.StatusIcon.from_pixbuf(get_contact_list_window().get_icon());
-        tray_icon.set_tooltip_text ("Venom");
-        tray_icon.set_visible(true);
-        tray_icon.activate.connect(()=>{
-          if(contact_list_window == null){
-            this.activate();
-          } else {
-            get_contact_list_window().show();
-          }
-        });
-      }
       base.startup();
     }
 
@@ -114,15 +112,14 @@ namespace Venom {
       });
       window.incoming_group_message.connect((m)=>{
         if (!get_contact_list_window().has_toplevel_focus){
-          if(User.instance.name in m.get_message_plain()) {
-            try {
-              var notification = new Notify.Notification (m.get_sender_plain() + " says:", m.get_message_plain(), null);
-              notification.set_image_from_pixbuf(m.from.image);
-              notification.show ();
-            } catch (Error e) {
-          	  error ("Error: %s", e.message);
-            }
+          try {
+            var notification = new Notify.Notification (m.get_sender_plain() + " in " + (m.from.local_name==""? m.from.local_name : "Groupchat") + " says:", m.get_message_plain(), null);
+            notification.set_image_from_pixbuf(m.from.image);
+            notification.show ();
+          } catch (Error e) {
+        	  error ("Error: %s", e.message);
           }
+          
           
         }
       });
