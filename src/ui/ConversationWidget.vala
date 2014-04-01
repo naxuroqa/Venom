@@ -25,6 +25,7 @@ namespace Venom {
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
     private Gtk.Label label_contact_typing;
+    private Gtk.Button button_send_file;
 
     private MessageTextView message_textview;
     private IConversationView conversation_view;
@@ -60,6 +61,8 @@ namespace Venom {
 
       if( contact.name != null )
         label_contact_typing.label = "%s is typing...".printf(contact.name);
+
+      button_send_file.sensitive = contact.online;
     }
 
     private void init_widgets() {
@@ -83,7 +86,7 @@ namespace Venom {
       //TODO
       //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
       //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
-      Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
+      button_send_file = builder.get_object("button_send_file") as Gtk.Button;
 
       button_send_file.clicked.connect(button_send_file_clicked);
 

@@ -260,6 +260,12 @@
   box-shadow: none;
 }
 
+.conversation_widget .callbutton:insensitive,
+.conversation_widget .callbutton:insensitive:insensitive {
+  background-color: @callbutton-selected;
+  background-image: none;
+}
+
 .conversation_widget .callbutton:active,
 .conversation_widget .callbutton:hover:active,
 .conversation_widget .callbutton:focus:active {
