@@ -33,6 +33,7 @@ namespace Venom {
 
     private Gtk.Entry entry_contact_id;
     private Gtk.TextView textview_contact_message;
+
     private GLib.Regex id_regex;
 
     public AddContactDialog() {
@@ -52,8 +53,9 @@ namespace Venom {
 
       entry_contact_id = builder.get_object("entry_contact_id") as Gtk.Entry;
       textview_contact_message = builder.get_object("textview_contact_message") as Gtk.TextView;
-
+      entry_contact_id.icon_release.connect(on_entry_icon_release);
       entry_contact_id.changed.connect(on_entry_changed);
+
       on_entry_changed();
 
       textview_contact_message.buffer.insert_text.connect(on_insert_text);
@@ -70,6 +72,35 @@ namespace Venom {
       this.set_default_size(400, 250);
     }
 
+    private string? open_get_pin_dialog() {
+      string pin = null;
+      PinDialog dialog = new PinDialog();
+      dialog.transient_for = this;
+      dialog.modal = true;
+      dialog.show_all();
+
+      int result = dialog.run();
+      if(result == Gtk.ResponseType.OK) {
+        pin = dialog.pin;
+      }
+      dialog.destroy();
+      return pin;
+    }
+
+    private void on_entry_icon_release(Gtk.EntryIconPosition p0, Gdk.Event p1) {
+      resolve_tox_id();
+    }
+
+    private void resolve_tox_id() {
+      ToxDns dns_resolver = new ToxDns();
+      string resolved_id = dns_resolver.resolve_id(Tools.remove_whitespace(id), open_get_pin_dialog);
+      if(resolved_id != null) {
+        id = resolved_id;
+      } else {
+        UITools.ErrorDialog("Could not resolve ID from DNS record");
+      }
+    }
+
     private void on_insert_text(ref Gtk.TextIter pos, string new_text, int new_text_length) {
       int buffer_length = textview_contact_message.buffer.text.length;
       if(max_message_length < 0 || buffer_length <= max_message_length)
@@ -81,17 +112,26 @@ namespace Venom {
     private void on_entry_changed() {
       if(id == null || id == "") {
         entry_contact_id.secondary_icon_tooltip_text = "No ID given";
-        entry_contact_id.secondary_icon_name = "dialog-warning";
+        entry_contact_id.secondary_icon_name = "emblem-important-symbolic";
+        entry_contact_id.secondary_icon_sensitive = false;
       } else {
         string stripped_id = Tools.remove_whitespace(id);
-        if (stripped_id.length != Tox.FRIEND_ADDRESS_SIZE*2) {
+        if (ToxDns.tox_uri_regex != null && ToxDns.tox_uri_regex.match(stripped_id)) {
+          entry_contact_id.secondary_icon_tooltip_text = "Resolve ID...";
+          entry_contact_id.secondary_icon_name = "emblem-synchronizing-symbolic";
+          entry_contact_id.secondary_icon_sensitive = true;
+        } else if (stripped_id.length != Tox.FRIEND_ADDRESS_SIZE*2) {
           entry_contact_id.secondary_icon_tooltip_text = "ID of invalid size";
-          entry_contact_id.secondary_icon_name = "dialog-warning";
+          entry_contact_id.secondary_icon_name = "emblem-important-symbolic";
+          entry_contact_id.secondary_icon_sensitive = false;
         } else if (id_regex != null && !id_regex.match(stripped_id)) {
           entry_contact_id.secondary_icon_tooltip_text = "ID contains invalid characters";
-          entry_contact_id.secondary_icon_name = "dialog-warning";
+          entry_contact_id.secondary_icon_name = "emblem-important-symbolic";
+          entry_contact_id.secondary_icon_sensitive = false;
         } else {
-          entry_contact_id.secondary_icon_pixbuf = null;
+          entry_contact_id.secondary_icon_name = "emblem-ok-symbolic";
+          entry_contact_id.secondary_icon_tooltip_text = "Valid ID";
+          entry_contact_id.secondary_icon_sensitive = false;
         }
       }
     }

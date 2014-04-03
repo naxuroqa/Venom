@@ -1,5 +1,5 @@
 /*
- *    SearchEntry.vala
+ *    ToxTestDht.vala
  *
  *    Copyright (C) 2013-2014  Venom authors and contributors
  *
@@ -19,11 +19,25 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Venom {
-  public class SearchEntry : Gtk.Entry {
-    public SearchEntry() {
-      primary_icon_name = "edit-find-symbolic";
-      margin = 6;
+namespace Testing {
+  public class TestDns : GLib.Object {
+    public static int main(string[] args) {
+      if(args.length < 2) {
+        message("Wrong number of arguments");
+        message("Format: %s <dns-uri-scheme> <pin>", args[0]);
+        return -1;
+      }
+      string pin = args.length < 3 ? null : args[2];
+
+      Venom.ToxDns dns = new Venom.ToxDns();
+      dns.resolve_id(args[1], () => {
+        if(pin == null) {
+          stdout.printf("Please insert pin: ");
+          pin = stdin.read_line();
+        }
+        return pin;
+      });
+      return 0;
     }
   }
 }
