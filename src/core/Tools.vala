@@ -77,20 +77,10 @@ namespace Venom {
       return b.str;
     }
 
-    // convert a string to a nullterminated uint8[]
-    public static uint8[] string_to_nullterm_uint (string input)
-    {
-      uint8[] clone = new uint8[input.data.length + 1];
-      Memory.copy(clone, input.data, input.data.length * sizeof(uint8));
-      clone[clone.length - 1] = '\0';
-      return clone;
-    }
-
-    // clone the given array
-    public static uint8[] clone(uint8[] input, int length) {
-      uint8[] clone = new uint8[length];
-      Memory.copy(clone, input, length * sizeof(uint8));
-      return clone;
+    public static string uint8_to_nullterm_string(uint8[] data) {
+      uint8[] buf = new uint8[data.length + 1];
+      Memory.copy(buf, data, data.length);
+      return (string)buf;
     }
 
     public static string shorten_name(string name) {

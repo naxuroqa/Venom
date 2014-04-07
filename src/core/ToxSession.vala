@@ -182,89 +182,128 @@ namespace Venom {
       requires (public_key != null)
       requires (data != null)
     {
-      string message = ((string)data).dup();
-      uint8[] public_key_clone = Tools.clone(public_key, Tox.CLIENT_ID_SIZE);
-      Contact contact = new Contact(public_key_clone, -1);
-      Idle.add(() => { on_friend_request(contact, message); return false; });
+      string message = Tools.uint8_to_nullterm_string(data);
+      uint8[] public_key_clone = new uint8[Tox.CLIENT_ID_SIZE];
+      Memory.copy(public_key_clone, public_key, Tox.CLIENT_ID_SIZE);
+      Idle.add(() => {
+        Contact contact = new Contact(public_key_clone, -1);
+        on_friend_request(contact, message);
+        return false;
+      });
     }
 
     private void on_friend_message_callback(Tox.Tox tox, int friend_number, uint8[] message)
       requires(message != null)
     {
-      string message_string = ((string)message).dup();
-      Idle.add(() => { on_friend_message(_contacts.get(friend_number), message_string); return false; });
+      string message_string = Tools.uint8_to_nullterm_string(message);
+      Idle.add(() => {
+        on_friend_message(_contacts.get(friend_number), message_string);
+        return false;
+      });
     }
 
     private void on_friend_action_callback(Tox.Tox tox, int32 friend_number, uint8[] action)
       requires(action != null)
     {
-      string action_string = ((string)action).dup();
-      Idle.add(() => { on_friend_action(_contacts.get(friend_number), action_string); return false; });
+      string action_string = Tools.uint8_to_nullterm_string(action);
+      Idle.add(() => {
+        on_friend_action(_contacts.get(friend_number), action_string);
+        return false;
+      });
     }
 
     private void on_name_change_callback(Tox.Tox tox, int32 friend_number, uint8[] new_name)
       requires(new_name != null)
     {
-      Contact contact = _contacts.get(friend_number);
-      string old_name = contact.name;
-      contact.name = ((string)new_name).dup();
-      Idle.add(() => { on_name_change(contact, old_name); return false; });
+      string new_name_dup = Tools.uint8_to_nullterm_string(new_name);
+      Idle.add(() => {
+        Contact contact = _contacts.get(friend_number);
+        string old_name = contact.name;
+        contact.name = new_name_dup;
+        on_name_change(contact, old_name);
+        return false;
+      });
     }
 
     private void on_status_message_callback(Tox.Tox tox, int32 friend_number, uint8[] status)
       requires(status != null)
     {
-      Contact contact = _contacts.get(friend_number);
-      string old_status = contact.status_message;
-      contact.status_message = ((string)status).dup();
-      Idle.add(() => { on_status_message(contact, old_status); return false; });
+      string status_dup = Tools.uint8_to_nullterm_string(status);
+      Idle.add(() => {
+        Contact contact = _contacts.get(friend_number);
+        string old_status = contact.status_message;
+        contact.status_message = status_dup;
+        on_status_message(contact, old_status);
+        return false;
+      });
     }
 
     private void on_user_status_callback(Tox.Tox tox, int32 friend_number, uint8 user_status) {
-      Contact contact = _contacts.get(friend_number);
-      uint8 old_status = contact.user_status;
-      contact.user_status = user_status;
-      Idle.add(() => { on_user_status(contact, old_status); return false; });
+      Idle.add(() => {
+        Contact contact = _contacts.get(friend_number);
+        uint8 old_status = contact.user_status;
+        contact.user_status = user_status;
+        on_user_status(contact, old_status);
+        return false;
+      });
     }
 
     private void on_read_receipt_callback(Tox.Tox tox, int32 friend_number, uint32 receipt) {
-      Idle.add(() => { on_read_receipt(_contacts.get(friend_number), receipt); return false; });
+      Idle.add(() => {
+        on_read_receipt(_contacts.get(friend_number), receipt);
+        return false;
+      });
     }
 
     private void on_connection_status_callback(Tox.Tox tox, int32 friend_number, uint8 status) {
-      Contact contact = _contacts.get(friend_number);
-      contact.online = (status != 0);
-      contact.last_seen = new DateTime.now_local();
-      Idle.add(() => { on_connection_status(contact); return false; });
+      Idle.add(() => { 
+        Contact contact = _contacts.get(friend_number);
+        contact.online = (status != 0);
+        contact.last_seen = new DateTime.now_local();
+        on_connection_status(contact);
+        return false; 
+      });
     }
 
     private void on_typing_change_callback(Tox.Tox tox, int32 friend_number, uint8 is_typing) {
       Contact contact = _contacts.get(friend_number);
       contact.is_typing = is_typing != 0;
-      Idle.add(() => { on_typing_change(contact, is_typing != 0); return false;});
+      Idle.add(() => {
+        on_typing_change(contact, is_typing != 0);
+        return false;
+      });
     }
 
     // Group chat callbacks
     private void on_group_invite_callback(Tox.Tox tox, int32 friendnumber, uint8[] group_public_key)
       requires(group_public_key != null)
     {
-      uint8[] public_key_clone = Tools.clone(group_public_key, Tox.CLIENT_ID_SIZE);
-      GroupChat group_contact = new GroupChat(public_key_clone);
-      Idle.add(() => { on_group_invite(_contacts.get(friendnumber), group_contact); return false; });
+      uint8[] group_public_key_clone = new uint8[Tox.CLIENT_ID_SIZE];
+      Memory.copy(group_public_key_clone, group_public_key, Tox.CLIENT_ID_SIZE);
+      Idle.add(() => {
+        on_group_invite(_contacts.get(friendnumber), new GroupChat(group_public_key_clone));
+        return false;
+      });
     }
 
     private void on_group_message_callback(Tox.Tox tox, int groupnumber, int friendgroupnumber, uint8[] message)
       requires(message != null)
     {
-      string message_string = ((string)message).dup();
-      Idle.add(() => { on_group_message(_groups.get(groupnumber), friendgroupnumber, message_string); return false; });
+      string message_string = Tools.uint8_to_nullterm_string(message);
+      Idle.add(() => {
+        on_group_message(_groups.get(groupnumber), friendgroupnumber, message_string);
+        return false;
+      });
     }
 
     private void on_group_action_callback(Tox.Tox tox, int groupnumber, int friendgroupnumber, uint8[] action)
       requires(action != null)
     {
-      string action_string = ((string)action).dup();
-      Idle.add(() => { on_group_action(_groups.get(groupnumber), friendgroupnumber, action_string); return false; });
+      string action_string = Tools.uint8_to_nullterm_string(action);
+      Idle.add(() => {
+        on_group_action(_groups.get(groupnumber), friendgroupnumber, action_string);
+        return false;
+      });
     }
 
     private void on_group_namelist_change_callback(Tox.Tox tox, int groupnumber, int peernumber, Tox.ChatChange change) {
@@ -302,20 +341,32 @@ namespace Venom {
     private void on_file_sendrequest_callback(Tox.Tox tox, int32 friendnumber, uint8 filenumber, uint64 filesize, uint8[] filename)
       requires(filename != null)
     {
-      string filename_str = File.new_for_path((string)filename).get_basename();
-      Idle.add(() => { on_file_sendrequest(friendnumber, filenumber, filesize, filename_str); return false; });
+      string filename_dup = Tools.uint8_to_nullterm_string(filename);
+      Idle.add(() => {
+        string filename_str = File.new_for_path(filename_dup).get_basename();
+        on_file_sendrequest(friendnumber, filenumber, filesize, filename_str);
+        return false;
+      });
     }
 
     private void on_file_control_callback(Tox.Tox tox, int32 friendnumber, uint8 receive_send, uint8 filenumber, uint8 status, uint8[] data) {
-      uint8[] data_clone = Tools.clone(data, data.length);
-      Idle.add(() => { on_file_control(friendnumber, filenumber, receive_send, status, data_clone); return false; });
+      uint8[] data_clone = new uint8[data.length];
+      Memory.copy(data_clone, data, data.length);
+      Idle.add(() => {
+        on_file_control(friendnumber, filenumber, receive_send, status, data_clone);
+        return false;
+      });
     }
 
     private void on_file_data_callback(Tox.Tox tox, int32 friendnumber, uint8 filenumber, uint8[] data)
       requires(data != null)
     {
-      uint8[] data_clone = Tools.clone(data, data.length);
-      Idle.add(() => { on_file_data(friendnumber, filenumber, data_clone); return false; });
+      uint8[] data_clone = new uint8[data.length];
+      Memory.copy(data_clone, data, data.length);
+      Idle.add(() => {
+        on_file_data(friendnumber, filenumber, data_clone);
+        return false;
+      });
     }
 
     ////////////////////////////// Wrapper functions ////////////////////////////////
@@ -327,15 +378,16 @@ namespace Venom {
       requires(message != null)
     {
       Tox.FriendAddError ret = Tox.FriendAddError.UNKNOWN;
-      uint8[] data = Tools.string_to_nullterm_uint(message);
 
       lock(handle) {
-        ret = handle.add_friend(c.public_key, data);
+        ret = handle.add_friend(c.public_key, message.data);
       }
 
       if(ret < 0)
         return ret;
-      c.public_key = Tools.clone(c.public_key, Tox.CLIENT_ID_SIZE);
+      uint8[] client_key = new uint8[Tox.CLIENT_ID_SIZE];
+      Memory.copy(client_key, c.public_key, Tox.CLIENT_ID_SIZE);
+      c.public_key = client_key;
       c.friend_id = (int)ret;
       _contacts.set((int)ret, c);
       return ret;
@@ -412,16 +464,16 @@ namespace Venom {
       return ret == 0;
     }
 
-    public int invite_friend(int group_id,int friendnumber) {
+    public int invite_friend(int group_id, int friendnumber) {
       lock(handle){
-        return handle.invite_friend(friendnumber,group_id);
+        return handle.invite_friend(friendnumber, group_id);
       }
     }
 
     public string group_peername(GroupChat g, int peernumber)
       requires(g != null)
     {
-      uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH];
+      uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH + 1];
       lock(handle) {
         handle.group_peername(g.group_id, peernumber, buf);
       }
@@ -453,15 +505,14 @@ namespace Venom {
       requires(message != null)
     {
       int ret = -1;
-      uint8[] buf = Tools.string_to_nullterm_uint(message);
       lock(handle) {
-        ret = handle.set_status_message(buf);
+        ret = handle.set_status_message(message.data);
       }
       return ret == 0;
     }
 
     public string get_self_status_message() {
-      uint8[] buf = new uint8[Tox.MAX_STATUSMESSAGE_LENGTH];
+      uint8[] buf = new uint8[Tox.MAX_STATUSMESSAGE_LENGTH + 1];
       int ret = 0;
       lock(handle) {
         ret = handle.get_self_status_message(buf);
@@ -482,16 +533,15 @@ namespace Venom {
     public bool set_name(string name)
       requires(name != null)
     {
-      uint8[] buf = Tools.string_to_nullterm_uint(name);
       int ret = -1;
       lock(handle) {
-        ret = handle.set_name(buf);
+        ret = handle.set_name(name.data);
       }
       return ret == 0;
     }
 
     public string get_self_name() {
-      uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH];
+      uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH + 1];
       int ret = -1;
       lock(handle) {
         ret = handle.get_self_name(buf);
@@ -509,7 +559,7 @@ namespace Venom {
     }
 
     public string? get_name(int friend_number) {
-      uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH];
+      uint8[] buf = new uint8[Tox.MAX_NAME_LENGTH + 1];
       int ret = -1;
       lock(handle) {
         ret = handle.get_name(friend_number, buf);
@@ -523,7 +573,7 @@ namespace Venom {
       uint8 [] buf;
       lock(handle) {
         size = handle.get_status_message_size(friend_number);
-        buf = new uint8[size];
+        buf = new uint8[size + 1];
         ret = handle.get_status_message(friend_number, buf);
       }
       return (string)buf;
@@ -538,36 +588,32 @@ namespace Venom {
     public uint32 send_message(int friend_number, string message)
       requires(message != null)
     {
-      uint8[] buf = Tools.string_to_nullterm_uint(message);
       lock(handle) {
-        return handle.send_message(friend_number, buf);
+        return handle.send_message(friend_number, message.data);
       }
     }
 
     public uint32 send_action(int friend_number, string action)
       requires(action != null)
     {
-      uint8[] buf = Tools.string_to_nullterm_uint(action);
       lock(handle) {
-        return handle.send_action(friend_number, buf);
+        return handle.send_action(friend_number, action.data);
       }
     }
 
     public uint32 group_message_send(int groupnumber, string message)
       requires(message != null)
     {
-      uint8[] buf = Tools.string_to_nullterm_uint(message);
       lock(handle) {
-        return handle.group_message_send(groupnumber, buf);
+        return handle.group_message_send(groupnumber, message.data);
       }
     }
 
     public uint32 group_action_send(int groupnumber, string action)
       requires(action != null)
     {
-      uint8[] buf = Tools.string_to_nullterm_uint(action);
       lock(handle) {
-        return handle.group_action_send(groupnumber, buf);
+        return handle.group_action_send(groupnumber, action.data);
       }
     }
 
@@ -588,9 +634,8 @@ namespace Venom {
     public uint8 send_file_request(int friend_number, uint64 file_size, string filename)
       requires(filename != null)
     {
-      uint8[] buf = Tools.string_to_nullterm_uint(filename);
       lock(handle) {
-        return (uint8) handle.new_file_sender(friend_number, file_size,buf);
+        return (uint8) handle.new_file_sender(friend_number, file_size, filename.data);
       }
     }
 
