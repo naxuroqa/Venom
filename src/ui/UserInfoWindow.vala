@@ -21,6 +21,7 @@
 
 namespace Venom {
   public class UserInfoWindow : Gtk.Dialog {
+    protected Gtk.Widget button_apply;
     public string user_name {
       get { return entry_username.get_text(); }
       set { entry_username.set_text(value); }
@@ -70,11 +71,20 @@ namespace Venom {
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
       label_id = builder.get_object("label_id") as Gtk.Label;
 
-      this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Apply", Gtk.ResponseType.APPLY, null);
+      entry_username.changed.connect(on_entry_changed);
+      entry_statusmessage.changed.connect(on_entry_changed);
+
+      this.add_button("_Cancel", Gtk.ResponseType.CANCEL);
+      button_apply = this.add_button("_Apply", Gtk.ResponseType.APPLY);
+
       this.set_default_response(Gtk.ResponseType.APPLY);
       this.title = "Edit user information";
       // set dialog to minimal size
       set_default_size(0, 0);
+    }
+
+    public void on_entry_changed() {
+      button_apply.sensitive = (user_name != "" && user_status != "");
     }
   }
 }
