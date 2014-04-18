@@ -67,7 +67,6 @@ SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
                   ${SQLITE_CFLAGS} ${SQLITE_CFLAGS_OTHER}
                   ${JSON_CFLAGS}   ${JSON_CFLAGS_OTHER}
                   ${TOX_CFLAGS}    ${TOX_CFLAGS_OTHER}
-                  ${NOTIFY_CFLAGS} ${NOTIFY_CFLAGS_OTHER}
 )
 
 # since pkg_check_modules returns semicolon
@@ -123,7 +122,6 @@ VALA_PRECOMPILE( VALA_C_VENOM
     glib-2.0
     gio-2.0
     json-glib-1.0
-    libnotify
     sqlite3
     tox-1.0
     config
