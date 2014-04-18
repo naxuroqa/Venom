@@ -1,4 +1,4 @@
-Venom [![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=master)](https://travis-ci.org/naxuroqa/Venom)
+Venom [![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=master)](https://travis-ci.org/naxuroqa/Venom) [![tip for next commit](http://tip4commit.com/projects/634.svg)](http://tip4commit.com/projects/634)
 =====
 
 a cross-platform graphical user interface for [Tox](https://github.com/irungentoo/ProjectTox-Core) written in [Vala](https://wiki.gnome.org/Vala) using [GTK+](http://gtk.org).
