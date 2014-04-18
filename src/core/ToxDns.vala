@@ -109,6 +109,7 @@ namespace Venom {
     }
 
     private string? lookup_dns_record(string hostname) throws GLib.Error {
+#if GLIB_2_34
       GLib.Resolver resolver = GLib.Resolver.get_default();
       GLib.List<GLib.Variant> records = resolver.lookup_records(hostname, GLib.ResolverRecordType.TXT);
       if( records.length() > 0 ) {
@@ -119,6 +120,9 @@ namespace Venom {
           return s;
         }
       }
+#else
+    //FIXME implement this for glib < 2.34
+#endif
       return null;
     }
   }

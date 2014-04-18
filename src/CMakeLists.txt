@@ -27,16 +27,16 @@ INCLUDE(PkgCheckModulesFullpath)
 FIND_PACKAGE(Vala "0.18.1" REQUIRED)
 FIND_PACKAGE(PkgConfig REQUIRED)
 
-# Set a variable defining our minimal version of glib
-SET(TARGET_GLIB 2.32)
-
 # Get dependencies through pkg-config
 PKG_CHECK_MODULES_FULLPATH(GTK    REQUIRED gtk+-3.0>=3.4)
-PKG_CHECK_MODULES_FULLPATH(GIO    REQUIRED gio-2.0>=${TARGET_GLIB})
-PKG_CHECK_MODULES_FULLPATH(GLIB   REQUIRED glib-2.0>=${TARGET_GLIB})
+PKG_CHECK_MODULES_FULLPATH(GIO    REQUIRED gio-2.0>=2.32)
+PKG_CHECK_MODULES_FULLPATH(GLIB   REQUIRED glib-2.0>=2.32)
 PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
 PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
 PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
+
+# Set a variable defining our minimal version of glib
+SET(TARGET_GLIB ${GLIB_VERSION_MAJOR}.${GLIB_VERSION_MINOR})
 
 # Workaround for libtoxcore and libsodium not providing info on
 # all needed static libraries in their pkg-config files
@@ -129,6 +129,7 @@ VALA_PRECOMPILE( VALA_C_VENOM
     --target-glib=${TARGET_GLIB}
     --thread
     --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
+    ${VENOM_VALA_FLAGS_EXTRA}
   CUSTOM_VAPIS
   GENERATE_VAPI
   GENERATE_HEADER
