@@ -46,7 +46,7 @@ Arch Linux: (There is an [aur-package](https://aur.archlinux.org/packages/venom-
 Building and installing Venom
 -----------------------------
 
-If you your version of glib is smaller than 2.34, you will need djbdns to resolve dns entries:
+If your version of glib is smaller than 2.34, you will need djbdns to resolve dns entries:
 
     wget http://cr.yp.to/djbdns/djbdns-1.05.tar.gz
     tar -xzf djbdns-1.05.tar.gz
