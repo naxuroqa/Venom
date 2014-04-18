@@ -29,7 +29,7 @@ Ubuntu >= 12.10 (Quantal Quetzal) / Linux Mint / Debian:
 
     apt-get install valac cmake libgtk-3-dev libjson-glib-dev libsqlite3-dev
 
-Ubuntu 12.04 (Precise Pangolin): (needs a ppa to get a newer version of valac)
+Ubuntu 12.04 (Precise Pangolin): (needs a ppa to get a newer version of valac as well as djbdns for dns resolution)
 
     apt-add-repository ppa:vala-team/ppa
     apt-get update
@@ -46,6 +46,13 @@ Arch Linux: (There is an [aur-package](https://aur.archlinux.org/packages/venom-
 Building and installing Venom
 -----------------------------
 
+If you your version of glib is smaller than 2.34, you will need djbdns to resolve dns entries:
+    wget http://cr.yp.to/djbdns/djbdns-1.05.tar.gz
+    tar -xzf djbdns-1.05.tar.gz
+    cd djbdns-1.05
+    echo gcc -O2 -include /usr/include/errno.h > conf-cc
+    make
+
 After you installed the dependencies, clone, build and install venom:
 
     git clone git://github.com/naxuroqa/Venom.git
@@ -53,6 +60,8 @@ After you installed the dependencies, clone, build and install venom:
     mkdir build
     cd build
     cmake ..
+    # or for glib 2.32
+    cmake -DDJBDNS_DIRECTORY="<path-to-djbdns>" ..
     make
     sudo make install
 
