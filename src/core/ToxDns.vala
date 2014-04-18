@@ -121,7 +121,12 @@ namespace Venom {
         }
       }
 #else
-    //FIXME implement this for glib < 2.34
+      DJBDns.AllocatedString answer = DJBDns.AllocatedString();
+      DJBDns.AllocatedString fqdn = {hostname, hostname.length, 0};
+      int ret = DJBDns.dns_txt(out answer, fqdn);
+      if(ret == 0) {
+        return answer.s[0:answer.len];
+      }
 #endif
       return null;
     }

@@ -35,6 +35,14 @@ PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
 PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
 PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
 
+# use djbdns as substitute for missing dns_txt in glib 2.32
+IF(${GLIB_VERSION_MINOR} LESS 34)
+  MESSAGE("GLIB < 2.34 detected, using djbdns for dns resolution")
+  INCLUDE(FindDJBDns)
+  INCLUDE_DIRECTORIES(${DJBDNS_INCLUDE_DIRS})
+  MESSAGE("DJBDNS_LIBRARIES: ${DJBDNS_LIBRARIES}")
+ENDIF()
+
 # Set a variable defining our minimal version of glib
 SET(TARGET_GLIB ${GLIB_VERSION_MAJOR}.${GLIB_VERSION_MINOR})
 
@@ -125,6 +133,7 @@ VALA_PRECOMPILE( VALA_C_VENOM
     sqlite3
     tox-1.0
     config
+    djbdns
   OPTIONS
     --target-glib=${TARGET_GLIB}
     --thread
@@ -151,6 +160,7 @@ ADD_EXECUTABLE( venom
 
 # link the main executable to our dependencies
 TARGET_LINK_LIBRARIES( venom
+                       ${DJBDNS_LIBRARIES}
                        ${TOX_LIBRARIES}
                        ${SQLITE_LIBRARIES}
                        ${GIO_LIBRARIES}

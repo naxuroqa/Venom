@@ -33,11 +33,12 @@ VALA_PRECOMPILE( VALA_C_TEST_DHT
 
 VALA_PRECOMPILE( VALA_C_TEST_DNS
     TestDns.vala
-    ../core/Tools.vala
-    ../core/ToxDns.vala
+    "../core/Tools.vala"
+    "../core/ToxDns.vala"
   PACKAGES
     gio-2.0
     tox-1.0
+    djbdns
   OPTIONS
     --debug
     --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
@@ -81,6 +82,7 @@ TARGET_LINK_LIBRARIES( test_dht
 
 TARGET_LINK_LIBRARIES( test_dns
                        ${GIO_LIBRARIES}
+                       ${DJBDNS_LIBRARIES}
 )
 
 TARGET_LINK_LIBRARIES( group_bot
