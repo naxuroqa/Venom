@@ -123,13 +123,16 @@ namespace Venom {
       } else {
         GLib.MatchInfo match_info;
         Tools.uri_regex.match(text, 0, out match_info);
-        int offset = 0;
-        int start = 0, end = 0;
+        int start = 0, end = 0, offset = 0;
         while(match_info.matches() && match_info.fetch_pos(0, out start, out end)) {
-          string before = text.substring(offset, start);
+          // Add preceding text
+          if(start > offset) {
+            buffer.insert(ref text_end, text[offset:start], offset - start);
+          }
+          // Add uri
           string uri = match_info.fetch(0);
-          buffer.insert(ref text_end, before, before.length);
           insert_uri(text_end, uri);
+
           buffer.get_end_iter(out text_end);
           offset = end;
 
@@ -140,8 +143,11 @@ namespace Venom {
             break;
           }
         }
-        string after = text.substring(offset);
-        buffer.insert(ref text_end, after, after.length);
+        // Add trailing text
+        if(text.length > offset) {
+          string after = text.substring(offset);
+          buffer.insert(ref text_end, after, -1);
+        }
       }
 
       buffer.get_end_iter(out text_end);
