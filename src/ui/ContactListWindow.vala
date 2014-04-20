@@ -275,7 +275,7 @@ namespace Venom {
         }
         return false;
       });*/
-      button_add_contact.clicked.connect(button_add_contact_clicked);
+      button_add_contact.clicked.connect(() => { add_contact(); });
       button_group_chat.clicked.connect(button_group_chat_clicked);
 
       // Workaround for gtk+ 3.4 MenuItems not deriving from Gtk.Actionable
@@ -994,7 +994,7 @@ namespace Venom {
       groupchat_removed(g);
     }
 
-    public bool add_contact(string contact_id_string, string contact_message = ResourceFactory.instance.default_add_contact_message) {
+    private bool add_contact_real(string contact_id_string, string contact_message = ResourceFactory.instance.default_add_contact_message) {
       string stripped_id = Tools.remove_whitespace(contact_id_string);
 
       // Try to resolve the tox id from an address if the size does not match
@@ -1036,9 +1036,9 @@ namespace Venom {
       return true;
     }
 
-    private string? open_get_pin_dialog() {
+    private string? open_get_pin_dialog(string? username) {
       string pin = "";
-      PinDialog dialog = new PinDialog();
+      PinDialog dialog = new PinDialog( username );
       dialog.transient_for = this;
       dialog.modal = true;
       dialog.show_all();
@@ -1051,21 +1051,22 @@ namespace Venom {
       return pin;
     }
 
-    // GUI Events
-    public void button_add_contact_clicked(Gtk.Button source) {
+    public void add_contact(string? contact_id = null, string contact_message = ResourceFactory.instance.default_add_contact_message) {
       AddContactDialog dialog = new AddContactDialog();
-      dialog.message = ResourceFactory.instance.default_add_contact_message;
-      dialog.set_modal(true);
+      dialog.message = contact_message;
+      if(contact_id != null) {
+        dialog.id = contact_id;
+      }
       dialog.set_transient_for(this);
 
       string contact_id_string = "";
-      string contact_message = "";
+      string contact_message_string = "";
       int response = Gtk.ResponseType.CANCEL;
       do {
         response = dialog.run();
         contact_id_string = dialog.id;
-        contact_message = dialog.message;
-      } while(response == Gtk.ResponseType.OK && !add_contact(contact_id_string, contact_message));
+        contact_message_string = dialog.message;
+      } while(response == Gtk.ResponseType.OK && !add_contact_real(contact_id_string, contact_message_string));
 
       dialog.destroy();
     }

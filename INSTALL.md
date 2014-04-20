@@ -60,7 +60,7 @@ After you installed the dependencies, clone, build and install venom:
     cd Venom
     mkdir build
     cd build
-    # For for glib >= 2.34
+    # For glib >= 2.34
     cmake ..
     # or for glib 2.32
     cmake -DDJBDNS_DIRECTORY="<path-to-djbdns>" ..

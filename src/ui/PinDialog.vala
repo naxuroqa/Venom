@@ -21,18 +21,35 @@
 
 namespace Venom {
   public class PinDialog : Gtk.Dialog {
-    private Gtk.Entry pin_entry = new Gtk.Entry();
+    private Gtk.Entry pin_entry;
     public string pin {
       get { return pin_entry.text;  }
       set { pin_entry.text = value; }
     }
-    public PinDialog() {
-      add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Ok", Gtk.ResponseType.OK, null);
-      title = "Please insert pin...";
-      set_default_response(Gtk.ResponseType.OK);
-      
+    public PinDialog( string username ) {
+
+      Gtk.Box content_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+      content_box.spacing = 6;
+      content_box.margin_left = 5;
+      content_box.margin_right = 5;
+      content_box.margin_top = 5;
+
+      Gtk.Label label_pin = new Gtk.Label("Please insert PIN for \n<b>%s</b>".printf(Markup.escape_text( username )));
+      label_pin.use_markup = true;
+      content_box.pack_start(label_pin, false, false, 0);
+
+      pin_entry = new Gtk.Entry();
       pin_entry.activates_default = true;
-      get_content_area().add(pin_entry);
+      pin_entry.xalign = 0.5f;
+      content_box.pack_start(pin_entry, false, false, 0);
+
+      get_content_area().add(content_box);
+
+      add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Ok", Gtk.ResponseType.OK, null);
+      title = "Please insert PIN...";
+      pin = "000000";
+
+      set_default_response(Gtk.ResponseType.OK);
     }
   }
 }

@@ -22,7 +22,7 @@
 //TODO make asynchronous
 namespace Venom {
   public class ToxDns : GLib.Object{
-    public delegate string? pin_request_delegate();
+    public delegate string? pin_request_delegate(string? tox_dns_id = null);
     public string default_host { get; set; default = "";}
 
     private static GLib.Regex _tox_dns_record_regex;
@@ -55,8 +55,15 @@ namespace Venom {
     }
 
     public string? resolve_id(string tox_uri, pin_request_delegate pin_request) {
-      string hostname = hostname_from_tox_uri(tox_uri);
-      if(hostname == null) {
+      string hostname = null, tox_dns_id = null;
+      GLib.MatchInfo info = null;
+      if(tox_uri_regex != null && tox_uri_regex.match(tox_uri, 0, out info)) {
+        string authority_user = info.fetch_named("authority_user");
+        string authority_host = info.fetch_named("authority_host") ?? default_host;
+        hostname = authority_user + "._tox." + authority_host;
+        tox_dns_id = authority_user + "@" + authority_host;
+      } else {
+        stderr.printf("Invalid tox uri\n");
         return null;
       }
       string record = null;
@@ -67,22 +74,10 @@ namespace Venom {
         return null;
       }
 
-      return get_id_from_dns_record(record, pin_request);
+      return get_id_from_dns_record(tox_dns_id, record, pin_request);
     }
 
-    public string? hostname_from_tox_uri(string tox_uri) {
-      GLib.MatchInfo info = null;
-      if(tox_uri_regex != null && tox_uri_regex.match(tox_uri, 0, out info)) {
-        string authority_user = info.fetch_named("authority_user");
-        string authority_host = info.fetch_named("authority_host") ?? default_host;
-        return authority_user + "._tox." + authority_host;
-      } else {
-        stderr.printf("Invalid tox uri\n");
-      }
-      return null;
-    }
-
-    private string? get_id_from_dns_record(string dns_record, pin_request_delegate pin_request) {
+    private string? get_id_from_dns_record(string tox_dns_id, string dns_record, pin_request_delegate pin_request) {
       GLib.MatchInfo info = null;
       if(tox_dns_record_regex != null && tox_dns_record_regex.match(dns_record, 0, out info)) {
         string v = info.fetch_named("v");
@@ -95,7 +90,7 @@ namespace Venom {
             string pub = info.fetch_named("pub");
             string check = info.fetch_named("check");
             stdout.printf("tox 2 ID found: %s %s\n", pub, check);
-            string pin = pin_request();
+            string pin = pin_request(tox_dns_id);
             if(pin == null || pin == "") {
               stderr.printf("No pin privided, aborting...\n");
               return null;
