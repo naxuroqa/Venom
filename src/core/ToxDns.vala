@@ -23,6 +23,7 @@
 namespace Venom {
   public class ToxDns : GLib.Object{
     public delegate string? pin_request_delegate();
+    public string default_host { get; set; default = "";}
 
     private static GLib.Regex _tox_dns_record_regex;
     public static GLib.Regex tox_dns_record_regex {
@@ -43,7 +44,8 @@ namespace Venom {
       get {
         if(_tox_uri_regex == null) {
           try {
-            _tox_uri_regex = new GLib.Regex("^(tox://)?(?P<uri>.+@.+\\.[^\\W?#]+)");
+          //TODO support message pin and xname (ignored for now)
+            _tox_uri_regex = new GLib.Regex("^((?P<scheme>tox)://)?(?P<authority_user>[[:digit:][:alpha:]]+)(@(?P<authority_host>[[:digit:][:alpha:]]+(\\.[[:digit:][:alpha:]]+)+))?(\\?.*)?");
           } catch (GLib.Error e) {
             stderr.printf("Error creating tox uri regex: %s\n", e.message);
           }
@@ -68,10 +70,12 @@ namespace Venom {
       return get_id_from_dns_record(record, pin_request);
     }
 
-    public static string? hostname_from_tox_uri(string tox_uri) {
+    public string? hostname_from_tox_uri(string tox_uri) {
       GLib.MatchInfo info = null;
       if(tox_uri_regex != null && tox_uri_regex.match(tox_uri, 0, out info)) {
-        return info.fetch_named("uri").replace("@", "._tox.");
+        string authority_user = info.fetch_named("authority_user");
+        string authority_host = info.fetch_named("authority_host") ?? default_host;
+        return authority_user + "._tox." + authority_host;
       } else {
         stderr.printf("Invalid tox uri\n");
       }

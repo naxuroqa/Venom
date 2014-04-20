@@ -31,6 +31,7 @@ namespace Venom {
       title = "Please insert pin...";
       set_default_response(Gtk.ResponseType.OK);
       
+      pin_entry.activates_default = true;
       get_content_area().add(pin_entry);
     }
   }

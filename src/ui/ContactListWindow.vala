@@ -994,23 +994,33 @@ namespace Venom {
       groupchat_removed(g);
     }
 
-    public void add_contact(string contact_id_string, string contact_message = ResourceFactory.instance.default_add_contact_message) {
-      string trimmed_id = Tools.remove_whitespace(contact_id_string);
+    public bool add_contact(string contact_id_string, string contact_message = ResourceFactory.instance.default_add_contact_message) {
+      string stripped_id = Tools.remove_whitespace(contact_id_string);
 
-      if(trimmed_id.length != Tox.FRIEND_ADDRESS_SIZE * 2) {
-        string error_message = "Could not add friend: Invalid ID\n";
-        stderr.printf(error_message);
-        UITools.ErrorDialog("Adding Friend failed", error_message, this);
-        return;
+      // Try to resolve the tox id from an address if the size does not match
+      if(stripped_id.length != Tox.FRIEND_ADDRESS_SIZE * 2) {
+        if (ToxDns.tox_uri_regex != null && ToxDns.tox_uri_regex.match(stripped_id)) {
+          ToxDns dns_resolver = new ToxDns();
+          dns_resolver.default_host = Settings.instance.default_host;
+          string resolved_id = dns_resolver.resolve_id(stripped_id, open_get_pin_dialog);
+          if(resolved_id != null) {
+            stripped_id = resolved_id;
+          } else {
+            string error_message = "Could not resolve ID from DNS record\n";
+            stderr.printf(error_message);
+            UITools.ErrorDialog("Resolving ID failed", error_message, this);
+            return false;
+          }
+        }
       }
 
-      uint8[] contact_id = Tools.hexstring_to_bin(trimmed_id);
+      uint8[] contact_id = Tools.hexstring_to_bin(stripped_id);
       // add friend
       if(contact_id == null || contact_id.length != Tox.FRIEND_ADDRESS_SIZE) {
         string error_message = "Could not add friend: Invalid ID\n";
         stderr.printf(error_message);
         UITools.ErrorDialog("Adding Friend failed", error_message, this);
-        return;
+        return false;
       }
       Contact c = new Contact(contact_id);
       Tox.FriendAddError ret = session.add_friend(c, contact_message);
@@ -1018,11 +1028,27 @@ namespace Venom {
         string error_message = "Could not add friend: %s.\n".printf(Tools.friend_add_error_to_string(ret));
         stderr.printf(error_message);
         UITools.ErrorDialog("Adding Friend failed", error_message, this);
-        return;
+        return false;
       }
 
       stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
       contact_added(c);
+      return true;
+    }
+
+    private string? open_get_pin_dialog() {
+      string pin = "";
+      PinDialog dialog = new PinDialog();
+      dialog.transient_for = this;
+      dialog.modal = true;
+      dialog.show_all();
+
+      int result = dialog.run();
+      if(result == Gtk.ResponseType.OK) {
+        pin = dialog.pin;
+      }
+      dialog.destroy();
+      return pin;
     }
 
     // GUI Events
@@ -1032,15 +1058,16 @@ namespace Venom {
       dialog.set_modal(true);
       dialog.set_transient_for(this);
 
-      int response = dialog.run();
-      string contact_id_string = dialog.id;
-      string contact_message = dialog.message;
+      string contact_id_string = "";
+      string contact_message = "";
+      int response = Gtk.ResponseType.CANCEL;
+      do {
+        response = dialog.run();
+        contact_id_string = dialog.id;
+        contact_message = dialog.message;
+      } while(response == Gtk.ResponseType.OK && !add_contact(contact_id_string, contact_message));
+
       dialog.destroy();
-
-      if(response != Gtk.ResponseType.OK)
-          return;
-
-      add_contact(contact_id_string, contact_message);
     }
 
     public void button_group_chat_clicked(Gtk.Button source) {
