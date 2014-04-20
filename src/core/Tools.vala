@@ -98,6 +98,18 @@ namespace Venom {
 		  }
     }
 
+    public static string markup_uris(string text) {
+      string escaped_text = Markup.escape_text(text);
+      string ret;
+      try {
+        ret = Tools.uri_regex.replace(escaped_text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
+		  } catch (GLib.RegexError e) {
+			  stderr.printf("Error when doing uri markup: %s", e.message);
+			  return text;
+		  }
+		  return ret;
+    }
+
     public static string friend_add_error_to_string(Tox.FriendAddError friend_add_error) {
       switch(friend_add_error) {
         case Tox.FriendAddError.TOOLONG:

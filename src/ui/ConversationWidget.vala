@@ -48,13 +48,13 @@ namespace Venom {
     public void update_contact() {
       // update contact name
       if(contact.name == null || contact.name == "") {
-        label_contact_name.set_text(Tools.bin_to_hexstring(contact.public_key));
+        label_contact_name.label = "<b>%s</b>".printf(Tools.bin_to_hexstring(contact.public_key));
       } else {
-        label_contact_name.set_text(contact.name);
+        label_contact_name.label = "<b>%s</b>".printf(Tools.markup_uris(contact.name));
       }
 
       // update contact status message
-      label_contact_statusmessage.set_text(contact.status_message);
+      label_contact_statusmessage.label = Tools.markup_uris(contact.status_message);
 
       // update contact image
       image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_contact);
