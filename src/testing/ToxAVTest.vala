@@ -101,8 +101,9 @@ public class VideoSample : Window {
     private void create_tox() {
       tox = new Tox.Tox(0);
       tox.callback_friend_request(on_friend_request);
+      ToxAV.CodecSettings settings = ToxAV.DefaultCodecSettings;
+      tox_av = new ToxAV.ToxAV(tox, settings);
 
-      tox_av = new ToxAV.ToxAV(tox, 800, 600);
       ToxAV.register_callstate_callback(on_toxav_invite         , ToxAV.CallbackID.INVITE);
       ToxAV.register_callstate_callback(on_toxav_start          , ToxAV.CallbackID.START);
       ToxAV.register_callstate_callback(on_toxav_cancel         , ToxAV.CallbackID.CANCEL);
@@ -113,6 +114,7 @@ public class VideoSample : Window {
       ToxAV.register_callstate_callback(on_toxav_ending         , ToxAV.CallbackID.ENDING);
       ToxAV.register_callstate_callback(on_toxav_error          , ToxAV.CallbackID.ERROR);
       ToxAV.register_callstate_callback(on_toxav_request_timeout, ToxAV.CallbackID.REQUEST_TIMEOUT);
+      ToxAV.register_callstate_callback(on_toxav_peer_timeout   , ToxAV.CallbackID.PEER_TIMEOUT);
 
       uint8[] buf = new uint8[Tox.FRIEND_ADDRESS_SIZE];
       tox.get_address(buf);
@@ -185,6 +187,9 @@ public class VideoSample : Window {
     }
     private void on_toxav_request_timeout() {
       print("[LOG] on_toxav_request_timeout\n");
+    }
+    private void on_toxav_peer_timeout() {
+      print("[LOG] on_toxav_peer_timeout\n");
     }
 
     private void on_play () {

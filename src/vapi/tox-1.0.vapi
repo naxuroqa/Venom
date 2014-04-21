@@ -726,18 +726,6 @@ namespace ToxAV {
 
   public const int RTP_PAYLOAD_SIZE;
 
-  /* Number of audio channels. */
-  public const int AUDIO_CHANNELS;
-
-  /* Audio frame duration in miliseconds */
-  public const int AUDIO_FRAME_DURATION;
-
-  /* Audio sample rate recommended to be 48kHz for Opus */
-  public const int AUDIO_SAMPLE_RATE;
-
-  /* The amount of samples in one audio frame */
-  public const int AUDIO_FRAME_SIZE;
-
   /**
    * @brief Callbacks ids that handle the call states.
    */
@@ -767,7 +755,9 @@ namespace ToxAV {
     [CCode (cname = "av_OnError")]
     ERROR,
     [CCode (cname = "av_OnRequestTimeout")]
-    REQUEST_TIMEOUT
+    REQUEST_TIMEOUT,
+    [CCode (cname = "av_OnPeerTimeout")]
+    PEER_TIMEOUT
   }
 
   /**
@@ -805,8 +795,6 @@ namespace ToxAV {
     STARTING_AUDIO_RTP,
     [CCode (cname = "ErrorStartingVideoRtp")]
     STARTING_VIDEO_RTP,
-    [CCode (cname = "ErrorNoTransmission")]
-    NO_TRANSMISSION,
     [CCode (cname = "ErrorTerminatingAudioRtp")]
     TERMINATING_AUDIO_RTP,
     [CCode (cname = "ErrorTerminatingVideoRtp")]
@@ -832,17 +820,39 @@ namespace ToxAV {
   }
 
   /**
+   * @brief Encoding settings.
+   */
+  [CCode (cname = "ToxAvCodecSettings", destroy_function = "", cprefix = "", has_copy_function = false, has_type_id = false)]
+  public struct CodecSettings {
+      uint32 video_bitrate; /* In bits/s */
+      uint16 video_width; /* In px */
+      uint16 video_height; /* In px */
+      
+      uint32 audio_bitrate; /* In bits/s */
+      uint16 audio_frame_duration; /* In ms */
+      uint32 audio_sample_rate; /* In Hz */
+      uint32 audio_channels;
+      
+      uint32 jbuf_capacity; /* Size of jitter buffer */
+  }
+
+  [CCode (cname = "av_DefaultSettings", has_type_id = false)]
+  public const CodecSettings DefaultCodecSettings;
+
+  /**
    * @brief Register callback for call state.
    *
    * @param callback The callback
    * @param id One of the ToxAvCallbackID values
    * @return void
    */
-  //FIXME return value?
+  //typedef void ( *ToxAVCallback ) ( void *arg );
   [CCode (cname = "ToxAVCallback", has_type_id = false)]
   public delegate void CallstateCallback ();
-  [CCode (cname = "toxav_register_callstate_callback")]
-  public static void register_callstate_callback ([CCode (delegate_target_pos = 2.1)]CallstateCallback callback, CallbackID id);
+  //FIXME
+  [CCode (cname = "toxav_register_callstate_callback", has_type_id = false)]
+  public static void register_callstate_callback ([CCode( delegate_target_pos = 3 )] CallstateCallback callback, CallbackID id);
+
 
   [CCode (cname = "ToxAv", free_function = "toxav_kill", cprefix = "toxav_", has_type_id = false)]
   [Compact]
@@ -852,14 +862,14 @@ namespace ToxAV {
      *        it will result in undefined behaviour.
      *
      * @param messenger The messenger handle.
-     * @param useragent The agent handling A/V session (i.e. phone).
+     * @param userdata The agent handling A/V session (i.e. phone).
      * @param video_width Width of video frame.
      * @param video_height Height of video frame.
      * @return ToxAv*
      * @retval NULL On error.
      */
     [CCode (cname = "toxav_new")]
-    public ToxAV(Tox.Tox messenger, uint16 video_width, uint16 video_height);
+    public ToxAV(Tox.Tox messenger, CodecSettings codec_settings);
 
     /* #### only here for completeness #### */
     ///**
@@ -920,11 +930,12 @@ namespace ToxAV {
      *
      * @param av Handler.
      * @param reason Optional reason.
+     * @param peer_id peer friend_id
      * @return int
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error cancel(string reason);
+    public AV_Error cancel(int peer_id, string reason);
 
     /**
      * @brief Terminate transmission. Note that transmission will be terminated without informing remote peer.
@@ -940,11 +951,12 @@ namespace ToxAV {
      * @brief Must be call before any RTP transmission occurs.
      *
      * @param av Handler.
+     * @param support_video Is video supported ? 1 : 0
      * @return int
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error prepare_transmission();
+    public AV_Error prepare_transmission(int support_video);
 
     /**
      * @brief Call this at the end of the transmission.

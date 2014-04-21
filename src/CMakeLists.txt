@@ -172,6 +172,7 @@ VALA_PRECOMPILE( VALA_C_TOXAV_TEST
     tox-1.0
     gtk+-3.0
   OPTIONS
+    --debug
     --target-glib=${TARGET_GLIB}
     --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
     -D ${OS_DEFINES}
