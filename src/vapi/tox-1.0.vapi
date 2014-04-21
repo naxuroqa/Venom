@@ -307,7 +307,7 @@ namespace Tox {
     /* Set the function that will be executed when a friend request is received.
      *  Function format is function(Tox *tox, uint8_t * public_key, uint8_t * data, uint16_t length, void *userdata)
      */
-    public delegate void FriendRequestCallback(Tox tox, [CCode(array_length=false)] uint8[] public_key, [CCode(array_length_type="guint16")] uint8[] data);
+    public delegate void FriendRequestCallback(Tox tox, [CCode(array_length_cexpr = "TOX_CLIENT_ID_SIZE")] uint8[] public_key, [CCode(array_length_type="guint16")] uint8[] data);
     public void callback_friend_request(FriendRequestCallback callback);
 
     /* Set the function that will be executed when a message from a friend is received.
@@ -381,7 +381,7 @@ namespace Tox {
      *
      *  Function(Tox *tox, int friendnumber, uint8_t *group_public_key, void *userdata)
      */
-    public delegate void GroupInviteCallback(Tox tox, int32 friendnumber, [CCode(array_length=false)] uint8[] group_public_key);
+    public delegate void GroupInviteCallback(Tox tox, int32 friendnumber, [CCode(array_length_cexpr = "TOX_CLIENT_ID_SIZE")] uint8[] group_public_key);
     public void callback_group_invite(GroupInviteCallback callback);
 
     /* Set the callback for group messages.
