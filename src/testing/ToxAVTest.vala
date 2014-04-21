@@ -117,7 +117,7 @@ public class VideoSample : Window {
       uint8[] buf = new uint8[Tox.FRIEND_ADDRESS_SIZE];
       tox.get_address(buf);
       stdout.printf("[LOG] Tox ID: %s\n", Venom.Tools.bin_to_hexstring(buf));
-      tox.set_name(Venom.Tools.string_to_nullterm_uint("AV Test"));
+      tox.set_name("AV Test".data);
 
       bool bootstrapped = false;
       bool connected = false;
@@ -148,10 +148,9 @@ public class VideoSample : Window {
       });
     }
 
-    private void on_friend_request(uint8[] key, uint8[] data) {
-      uint8[] public_key = Venom.Tools.clone(key, Tox.CLIENT_ID_SIZE);
-      print("[LOG] Friend request from %s received.\n", Venom.Tools.bin_to_hexstring(public_key));
-      int friend_number = tox.add_friend_norequest(public_key);
+    private void on_friend_request(Tox.Tox tox, uint8[] key, uint8[] data) {
+      print("[LOG] Friend request from %s received.\n", Venom.Tools.bin_to_hexstring(key));
+      int friend_number = tox.add_friend_norequest(key);
       if(friend_number < 0) {
         print("[ERR] Friend could not be added.\n");
       }
