@@ -33,16 +33,26 @@ namespace Venom {
     public bool short_names {get; set; default = false;}
     public string is_typing_string {get; set; default = "";}
     private Gtk.Box conversation_list;
+    private Gtk.Label is_typing_label;
     private IMessage last_message = null;
 
     public void on_typing_changed(bool status) {
-      //FIXME todo
+      is_typing_label.visible = status;
     }
 
     public ConversationView() {
       conversation_list = new Gtk.Box(Gtk.Orientation.VERTICAL, 3);
       this.get_style_context().add_class("conversation_view");
       this.add(conversation_list);
+
+      is_typing_label = new Gtk.Label(is_typing_string);
+      is_typing_label.xalign = 0;
+      is_typing_label.no_show_all = true;
+      is_typing_label.visible = false;
+      this.notify["is-typing-string"].connect(() => {
+        is_typing_label.label = is_typing_string;
+      });
+      conversation_list.pack_end(is_typing_label, false, false);
     }
 
     public void add_filetransfer(FileTransferChatEntry entry) {
