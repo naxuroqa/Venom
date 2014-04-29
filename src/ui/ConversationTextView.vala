@@ -22,10 +22,15 @@
 namespace Venom {
   public class ConversationTextView : IConversationView, Gtk.TextView {
     public bool short_names {get; set; default = false;}
+    public string is_typing_string {get; set; default = "";}
+
     private Gtk.TextTag bold_tag;
     private Gtk.TextTag grey_tag;
     private Gtk.TextTag important_tag;
     private Gtk.TextTag quotation_tag;
+
+    private bool is_typing_status = false;
+    private Gtk.TextIter typing_status_iter;
 
     public ConversationTextView() {
       this.get_style_context().add_class("conversation_view");
@@ -88,9 +93,43 @@ namespace Venom {
         }
         return false;
       });
+      this.notify["is-typing-string"].connect(() => {
+        remove_typing_status();
+        append_typing_status();
+      });
+    }
+
+    public void on_typing_changed(bool status) {
+      if(status && !is_typing_status) {
+        is_typing_status = status;
+        append_typing_status();
+      } else if (!status && is_typing_status) {
+        remove_typing_status();
+        is_typing_status = status;
+      }
+    }
+
+    private void remove_typing_status() {
+      if(!is_typing_status) {
+        return;
+      }
+      Gtk.TextIter text_end;
+      buffer.get_end_iter(out text_end);
+      buffer.delete(ref typing_status_iter, ref text_end);
+    }
+
+    private void append_typing_status() {
+      if(!is_typing_status) {
+        return;
+      }
+      buffer.get_end_iter(out typing_status_iter);
+      buffer.insert(ref typing_status_iter, is_typing_string, is_typing_string.length);
+      typing_status_iter.backward_chars(is_typing_string.length);
     }
 
     public void add_message(IMessage message) {
+      remove_typing_status();
+
       Gtk.TextIter text_end;
       string text;
       buffer.get_end_iter(out text_end);
@@ -152,9 +191,13 @@ namespace Venom {
 
       buffer.get_end_iter(out text_end);
       buffer.insert(ref text_end, "\n", 1);
+
+      append_typing_status();
     }
 
     public void add_filetransfer(FileTransferChatEntry entry) {
+      remove_typing_status();
+
       Gtk.TextIter iter;
       buffer.get_end_iter(out iter);
       Gtk.TextChildAnchor child_anchor = buffer.create_child_anchor(iter);
@@ -163,6 +206,8 @@ namespace Venom {
 
       buffer.get_end_iter(out iter);
       buffer.insert(ref iter, "\n", 1);
+
+      append_typing_status();
     }
 
     private void insert_uri(Gtk.TextIter iter, string uri) {

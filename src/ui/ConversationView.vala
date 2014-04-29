@@ -22,15 +22,22 @@
 namespace Venom {
   public interface IConversationView : Gtk.Widget {
     public abstract bool short_names {get; set;}
+    public abstract string is_typing_string {get; set;}
     public abstract void add_message(IMessage message);
     public abstract void add_filetransfer(FileTransferChatEntry entry);
     public abstract void register_search_entry(Gtk.Entry entry);
+    public abstract void on_typing_changed(bool status);
   }
 
   public class ConversationView : IConversationView, Gtk.EventBox {
     public bool short_names {get; set; default = false;}
+    public string is_typing_string {get; set; default = "";}
     private Gtk.Box conversation_list;
     private IMessage last_message = null;
+
+    public void on_typing_changed(bool status) {
+      //FIXME todo
+    }
 
     public ConversationView() {
       conversation_list = new Gtk.Box(Gtk.Orientation.VERTICAL, 3);
