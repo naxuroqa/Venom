@@ -21,6 +21,7 @@
 
 namespace Venom {
   public interface ILocalStorage : GLib.Object {
+    public abstract string myId {get; set;}
     public abstract void on_message(Contact c, string message, bool issender);
     public abstract GLib.List<Message>? retrieve_history(Contact c);
     public abstract void delete_history(Contact c);
@@ -29,6 +30,7 @@ namespace Venom {
   }
 
   public class DummyStorage : ILocalStorage, GLib.Object {
+    public string myId {get; set;}
     public void on_message(Contact c, string message, bool issender) {}
     public GLib.List<Message>? retrieve_history(Contact c) { return null; }
     public void delete_history(Contact c) {}
@@ -36,14 +38,32 @@ namespace Venom {
     public void disconnect_from(ToxSession session) {}
   }
 
+
   public class LocalStorage : ILocalStorage, GLib.Object {
-    private unowned ToxSession session;
+    public string myId {get; set;}
+
+    public enum HistoryColumn {
+      ID,
+      USER,
+      CONTACT,
+      MESSAGE,
+      TIME,
+      SENDER
+    }
 
     private Sqlite.Database db;
+    private Sqlite.Statement insert_statement;
+    private Sqlite.Statement select_statement;
 
-    private Sqlite.Statement prepared_insert_statement;
+    private static string TABLE_USER = "$USER";
+    private static string TABLE_CONTACT = "$CONTACT";
+    private static string TABLE_MESSAGE = "$MESSAGE";
+    private static string TABLE_TIME = "$TIME";
+    private static string TABLE_SENDER = "$SENDER";
+    private static string TABLE_OLDEST = "$OLDEST";
 
-    private Sqlite.Statement prepared_select_statement;
+    private static string STATEMENT_INSERT = "INSERT INTO History (userHash, contactHash, message, timestamp, issent) VALUES (%s, %s, %s, %s, %s);".printf(TABLE_USER, TABLE_CONTACT, TABLE_MESSAGE, TABLE_TIME, TABLE_SENDER);
+    private static string STATEMENT_SELECT = "SELECT * FROM History WHERE userHash = %s AND contactHash = %s AND timestamp > %s;".printf(TABLE_USER, TABLE_CONTACT, TABLE_OLDEST);
 
     public LocalStorage() {
       init_db ();
@@ -55,7 +75,6 @@ namespace Venom {
     }
 
     public void connect_to(ToxSession session) {
-      this.session = session;
       session.on_own_message.connect(on_outgoing_message);
       session.on_friend_message.connect(on_incoming_message);
     }
@@ -74,69 +93,53 @@ namespace Venom {
     }
 
     public void on_message(Contact c, string message, bool issender) {
-
-      int param_position = prepared_insert_statement.bind_parameter_index ("$USER");
-      assert (param_position > 0);
-      string myId = Tools.bin_to_hexstring(session.get_address());
-      prepared_insert_statement.bind_text(param_position, myId);
-
-      param_position = prepared_insert_statement.bind_parameter_index ("$CONTACT");
-      assert (param_position > 0);
       string cId = Tools.bin_to_hexstring(c.public_key);
-      prepared_insert_statement.bind_text(param_position, cId);
-
-      param_position = prepared_insert_statement.bind_parameter_index ("$MESSAGE");
-      assert (param_position > 0);
-      prepared_insert_statement.bind_text(param_position, message);
-
-      param_position = prepared_insert_statement.bind_parameter_index ("$TIME");
-      assert (param_position > 0);
       DateTime nowTime = new DateTime.now_utc();
-      prepared_insert_statement.bind_int64(param_position, nowTime.to_unix());
 
-      param_position = prepared_insert_statement.bind_parameter_index ("$SENDER");
-      assert (param_position > 0);
-      prepared_insert_statement.bind_int(param_position, issender?1:0);
+      try {
+        SqliteTools.put_text(insert_statement,  TABLE_USER,    myId);
+        SqliteTools.put_text(insert_statement,  TABLE_CONTACT, cId);
+        SqliteTools.put_text(insert_statement,  TABLE_MESSAGE, message);
+        SqliteTools.put_int64(insert_statement, TABLE_TIME,    nowTime.to_unix());
+        SqliteTools.put_int(insert_statement,   TABLE_SENDER,  issender ? 1 : 0);
+      } catch (SqliteError e) {
+        stderr.printf("Error writing message to sqlite database: %s\n", e.message);
+        return;
+      }
 
-      prepared_insert_statement.step ();
-
-      prepared_insert_statement.reset ();
+      insert_statement.step();
+      insert_statement.reset();
     }
 
     public GLib.List<Message>? retrieve_history(Contact c) {
-      int param_position = prepared_select_statement.bind_parameter_index ("$USER");
-      assert (param_position > 0);
-      string myId = Tools.bin_to_hexstring(session.get_address());
-      prepared_select_statement.bind_text(param_position, myId);
-
-      param_position = prepared_select_statement.bind_parameter_index ("$CONTACT");
-      assert (param_position > 0);
       string cId = Tools.bin_to_hexstring(c.public_key);
-      prepared_select_statement.bind_text(param_position, cId);
-
-      param_position = prepared_select_statement.bind_parameter_index ("$OLDEST");
-      assert (param_position > 0);
       DateTime earliestTime = new DateTime.now_utc();
-      earliestTime = earliestTime.add_days (-Settings.instance.days_to_log);
-      prepared_select_statement.bind_int64(param_position, earliestTime.to_unix());
+      earliestTime = earliestTime.add_days(-Settings.instance.days_to_log);
+      try {
+        SqliteTools.put_text(select_statement , TABLE_USER,    myId);
+        SqliteTools.put_text(select_statement , TABLE_CONTACT, cId);
+        SqliteTools.put_int64(select_statement, TABLE_OLDEST,  earliestTime.to_unix()); 
+      } catch (SqliteError e) {
+        stderr.printf("Error retrieving logs from sqlite database: %s\n", e.message);
+        return null;
+      }
 
       List<Message> messages = new List<Message>();
 
-      while (prepared_select_statement.step () == Sqlite.ROW) {
-        string message = prepared_select_statement.column_text(3);
-        int64 timestamp = prepared_select_statement.column_int64(4);
-        bool issender = prepared_select_statement.column_int(5) != 0;
+      while (select_statement.step () == Sqlite.ROW) {
+        string message = select_statement.column_text(HistoryColumn.MESSAGE);
+        int64 timestamp = select_statement.column_int64(HistoryColumn.TIME);
+        bool issender = select_statement.column_int(HistoryColumn.SENDER) != 0;
+
         DateTime send_time = new DateTime.from_unix_utc (timestamp);
-        Message mess;
         if(issender) {
-          mess = new Message.outgoing(c, message, send_time);
+          messages.append(new Message.outgoing(c, message, send_time));
         } else {
-          mess = new Message.incoming(c, message, send_time);
+          messages.append(new Message.incoming(c, message, send_time));
         }
-        messages.append(mess);
       }
 
-      prepared_select_statement.reset ();
+      select_statement.reset ();
       return messages;
     }
 
@@ -194,16 +197,14 @@ namespace Venom {
       }
 
       //prepare insert statement for adding new history messages
-      const string prepared_insert_str = "INSERT INTO History (userHash, contactHash, message, timestamp, issent) VALUES ($USER, $CONTACT, $MESSAGE, $TIME, $SENDER);";
-      ec = db.prepare_v2 (prepared_insert_str, prepared_insert_str.length, out prepared_insert_statement);
+      ec = db.prepare_v2 (STATEMENT_INSERT, STATEMENT_INSERT.length, out insert_statement);
       if (ec != Sqlite.OK) {
         stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
         return -1;
       }
 
       //prepare select statement to get history. Will execute on indexed data
-      const string prepared_select_str = "SELECT * FROM History WHERE userHash = $USER AND contactHash = $CONTACT AND timestamp > $OLDEST;";
-      ec = db.prepare_v2 (prepared_select_str, prepared_select_str.length, out prepared_select_statement);
+      ec = db.prepare_v2 (STATEMENT_SELECT, STATEMENT_SELECT.length, out select_statement);
       if (ec != Sqlite.OK) {
         stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
         return -1;

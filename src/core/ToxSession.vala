@@ -765,6 +765,7 @@ namespace Venom {
       if(ret != 0)
         throw new IOError.FAILED("Error while loading messenger data.");
       init_contact_list();
+      local_storage.myId = Tools.bin_to_hexstring(get_address());
     }
 
     // Save messenger data from file

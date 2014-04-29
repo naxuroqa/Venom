@@ -96,6 +96,7 @@ SET( VENOM_SRC
   core/Message.vala
   core/ResourceFactory.vala
   core/Settings.vala
+  core/SqliteTools.vala
   core/Tools.vala
   core/ToxDns.vala
   core/ToxSession.vala
