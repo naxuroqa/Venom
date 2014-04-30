@@ -88,11 +88,12 @@ CONFIGURE_FILE( config.h.in config.h )
 SET( VENOM_SRC
   Main.vala
   core/Contact.vala
+  core/ContactStorage.vala
   core/DhtNode.vala
   core/FileTransfer.vala
   core/GroupChat.vala
   core/GroupChatContact.vala
-  core/LocalStorage.vala
+  core/MessageLog.vala
   core/Message.vala
   core/ResourceFactory.vala
   core/Settings.vala

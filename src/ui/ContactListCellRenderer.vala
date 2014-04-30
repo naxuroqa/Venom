@@ -114,11 +114,7 @@ namespace Venom {
 
       if(entry is Contact) {
         Contact contact = entry as Contact;
-        if(contact.name != null && contact.name != "") {
-          layout.set_text(contact.name, -1);
-        } else {
-          layout.set_text(Tools.bin_to_hexstring(contact.public_key), -1);
-        }
+        layout.set_markup(contact.get_name_string(), -1);
       } else {
         GroupChat groupchat = entry as GroupChat;
         layout.set_text("Groupchat #%i".printf(groupchat.group_id), -1);
@@ -150,15 +146,7 @@ namespace Venom {
       color.blue -= 0.4;
       if(entry is Contact) {
         Contact contact = entry as Contact;
-        if(!contact.online) {
-          if(contact.last_seen == null) {
-            layout.set_text("Offline", -1);
-          } else {
-            layout.set_text("Last seen: %s".printf(contact.last_seen.format("%c")), -1);
-          }
-        } else if(contact.status_message != null && contact.status_message != "") {
-          layout.set_text(contact.status_message, -1);
-        }
+        layout.set_markup(contact.get_status_string(), -1);
       } else if(entry is GroupChat) {
         GroupChat g = entry as GroupChat;
         if(g.peer_count > 0) {

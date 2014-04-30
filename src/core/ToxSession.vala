@@ -44,7 +44,10 @@ namespace Venom {
   // Wrapper class for accessing tox functions threadsafe
   public class ToxSession : Object {
     private Tox.Tox handle;
-    private ILocalStorage local_storage;
+    private IMessageLog message_log;
+    private IContactStorage contact_storage;
+    private Sqlite.Database db;
+
     private DhtNode[] dht_nodes = {};
     private GLib.HashTable<int, Contact> _contacts = new GLib.HashTable<int, Contact>(null, null);
     private GLib.HashTable<int, GroupChat> _groups = new GLib.HashTable<int, GroupChat>(null, null);
@@ -91,11 +94,19 @@ namespace Venom {
       handle = new Tox.Tox( ipv6 ? 1 : 0);
 
       //start local storage
-      if(Settings.instance.enable_logging) {
-        local_storage = new LocalStorage();
-        local_storage.connect_to(this);
-      } else {
-        local_storage = new DummyStorage();
+      try {
+        SqliteTools.open_db(ResourceFactory.instance.db_filename, out db);
+
+        if(Settings.instance.enable_logging) {
+          message_log = new SqliteMessageLog(db);
+          message_log.connect_to(this);
+        } else {
+          message_log = new DummyMessageLog();
+        }
+        contact_storage = new SqliteContactStorage(db);
+      } catch (Error e) {
+        stderr.printf("Error opening database: %s\n", e.message);
+        message_log = new DummyMessageLog();
       }
 
       init_dht_nodes();
@@ -173,6 +184,7 @@ namespace Venom {
         if(last_seen > 0) {
           c.last_seen = new DateTime.from_unix_local((int64)last_seen);
         }
+        contact_storage.load_contact_data(c);
         _contacts.set(friend_id, c);
       };
     }
@@ -369,7 +381,17 @@ namespace Venom {
       });
     }
 
-    ////////////////////////////// Wrapper functions ////////////////////////////////
+    ////////////////////////// Misc functions //////////////////////////////////
+
+    public void save_extended_contact_data(Contact c) {
+      contact_storage.save_contact_data(c);
+    }
+
+    public void load_extended_contact_data(Contact c) {
+      contact_storage.load_contact_data(c);
+    }
+
+    ///////////////////////// Wrapper functions ////////////////////////////////
 
     // Add a friend, returns Tox.FriendAddError on error and friend_number on success
     public Tox.FriendAddError add_friend(Contact c, string message)
@@ -765,7 +787,7 @@ namespace Venom {
       if(ret != 0)
         throw new IOError.FAILED("Error while loading messenger data.");
       init_contact_list();
-      local_storage.myId = Tools.bin_to_hexstring(get_address());
+      message_log.myId = Tools.bin_to_hexstring(get_address());
     }
 
     // Save messenger data from file
@@ -796,7 +818,7 @@ namespace Venom {
     public GLib.List<Message> load_history_for_contact(Contact c)
       requires(c != null)
     {
-      return local_storage.retrieve_history(c);
+      return message_log.retrieve_history(c);
     }
   }
 }

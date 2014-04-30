@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public interface ILocalStorage : GLib.Object {
+  public interface IMessageLog : GLib.Object {
     public abstract string myId {get; set;}
     public abstract void on_message(Contact c, string message, bool issender);
     public abstract GLib.List<Message>? retrieve_history(Contact c);
@@ -29,7 +29,7 @@ namespace Venom {
     public abstract void disconnect_from(ToxSession session);
   }
 
-  public class DummyStorage : ILocalStorage, GLib.Object {
+  public class DummyMessageLog : IMessageLog, GLib.Object {
     public string myId {get; set;}
     public void on_message(Contact c, string message, bool issender) {}
     public GLib.List<Message>? retrieve_history(Contact c) { return null; }
@@ -39,7 +39,7 @@ namespace Venom {
   }
 
 
-  public class LocalStorage : ILocalStorage, GLib.Object {
+  public class SqliteMessageLog : IMessageLog, GLib.Object {
     public string myId {get; set;}
 
     public enum HistoryColumn {
@@ -51,7 +51,7 @@ namespace Venom {
       SENDER
     }
 
-    private Sqlite.Database db;
+    private unowned Sqlite.Database db;
     private Sqlite.Statement insert_statement;
     private Sqlite.Statement select_statement;
 
@@ -62,10 +62,22 @@ namespace Venom {
     private static string TABLE_SENDER = "$SENDER";
     private static string TABLE_OLDEST = "$OLDEST";
 
-    private static string STATEMENT_INSERT = "INSERT INTO History (userHash, contactHash, message, timestamp, issent) VALUES (%s, %s, %s, %s, %s);".printf(TABLE_USER, TABLE_CONTACT, TABLE_MESSAGE, TABLE_TIME, TABLE_SENDER);
-    private static string STATEMENT_SELECT = "SELECT * FROM History WHERE userHash = %s AND contactHash = %s AND timestamp > %s;".printf(TABLE_USER, TABLE_CONTACT, TABLE_OLDEST);
+    private static string STATEMENT_INSERT_HISTORY = "INSERT INTO History (userHash, contactHash, message, timestamp, issent) VALUES (%s, %s, %s, %s, %s);".printf(TABLE_USER, TABLE_CONTACT, TABLE_MESSAGE, TABLE_TIME, TABLE_SENDER);
+    private static string STATEMENT_SELECT_HISTORY = "SELECT * FROM History WHERE userHash = %s AND contactHash = %s AND timestamp > %s;".printf(TABLE_USER, TABLE_CONTACT, TABLE_OLDEST);
 
-    public LocalStorage() {
+    private static string QUERY_TABLE_HISTORY = """
+      CREATE TABLE IF NOT EXISTS History (
+        id  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        userHash  TEXT  NOT NULL,
+        contactHash TEXT  NOT NULL,
+        message TEXT  NOT NULL,
+        timestamp INTEGER NOT NULL,
+        issent INTEGER NOT NULL
+      );
+    """;
+
+    public SqliteMessageLog(Sqlite.Database db) {
+      this.db = db;
       init_db ();
       stdout.printf ("SQLite database created.\n");
     }
@@ -102,7 +114,7 @@ namespace Venom {
         SqliteTools.put_text(insert_statement,  TABLE_MESSAGE, message);
         SqliteTools.put_int64(insert_statement, TABLE_TIME,    nowTime.to_unix());
         SqliteTools.put_int(insert_statement,   TABLE_SENDER,  issender ? 1 : 0);
-      } catch (SqliteError e) {
+      } catch (SqliteStatementError e) {
         stderr.printf("Error writing message to sqlite database: %s\n", e.message);
         return;
       }
@@ -119,7 +131,7 @@ namespace Venom {
         SqliteTools.put_text(select_statement , TABLE_USER,    myId);
         SqliteTools.put_text(select_statement , TABLE_CONTACT, cId);
         SqliteTools.put_int64(select_statement, TABLE_OLDEST,  earliestTime.to_unix()); 
-      } catch (SqliteError e) {
+      } catch (SqliteStatementError e) {
         stderr.printf("Error retrieving logs from sqlite database: %s\n", e.message);
         return null;
       }
@@ -151,36 +163,8 @@ namespace Venom {
 
       string errmsg;
 
-      // Open/Create a database:
-      string filepath = ResourceFactory.instance.db_filename;
-      File file = File.new_for_path(filepath);
-      if(file.query_exists()) {
-        GLib.FileUtils.chmod(filepath, 0600);
-      } else {
-        try{
-          file.create(GLib.FileCreateFlags.PRIVATE);
-        } catch (Error e) {
-        }
-      }
-      int ec = Sqlite.Database.open (filepath, out db);
-      if (ec != Sqlite.OK) {
-        stderr.printf ("Can't open database: %d: %s\n", db.errcode (), db.errmsg ());
-        return -1;
-      }
-
       //create table and index if needed
-      const string query = """
-      CREATE TABLE IF NOT EXISTS History (
-        id  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        userHash  TEXT  NOT NULL,
-        contactHash TEXT  NOT NULL,
-        message TEXT  NOT NULL,
-        timestamp INTEGER NOT NULL,
-        issent INTEGER NOT NULL
-      );
-      """;
-
-      ec = db.exec (query, null, out errmsg);
+      int ec = db.exec (QUERY_TABLE_HISTORY, null, out errmsg);
       if (ec != Sqlite.OK) {
         stderr.printf ("Error: %s\n", errmsg);
         return -1;
@@ -197,14 +181,14 @@ namespace Venom {
       }
 
       //prepare insert statement for adding new history messages
-      ec = db.prepare_v2 (STATEMENT_INSERT, STATEMENT_INSERT.length, out insert_statement);
+      ec = db.prepare_v2 (STATEMENT_INSERT_HISTORY, STATEMENT_INSERT_HISTORY.length, out insert_statement);
       if (ec != Sqlite.OK) {
         stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
         return -1;
       }
 
       //prepare select statement to get history. Will execute on indexed data
-      ec = db.prepare_v2 (STATEMENT_SELECT, STATEMENT_SELECT.length, out select_statement);
+      ec = db.prepare_v2 (STATEMENT_SELECT_HISTORY, STATEMENT_SELECT_HISTORY.length, out select_statement);
       if (ec != Sqlite.OK) {
         stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
         return -1;

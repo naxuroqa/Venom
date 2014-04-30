@@ -994,8 +994,9 @@ namespace Venom {
       groupchat_removed(g);
     }
 
-    private bool add_contact_real(string contact_id_string, string contact_message = ResourceFactory.instance.default_add_contact_message) {
+    private bool add_contact_real(string contact_id_string, string contact_alias = "", string contact_message = ResourceFactory.instance.default_add_contact_message) {
       string stripped_id = Tools.remove_whitespace(contact_id_string);
+      string alias = contact_alias;
 
       // Try to resolve the tox id from an address if the size does not match
       if(stripped_id.length != Tox.FRIEND_ADDRESS_SIZE * 2) {
@@ -1003,6 +1004,9 @@ namespace Venom {
           ToxDns dns_resolver = new ToxDns();
           dns_resolver.default_host = Settings.instance.default_host;
           string resolved_id = dns_resolver.resolve_id(stripped_id, open_get_pin_dialog);
+          if(alias == "") {
+            alias = dns_resolver.authority_user;
+          }
           if(resolved_id != null) {
             stripped_id = resolved_id;
           } else {
@@ -1023,6 +1027,10 @@ namespace Venom {
         return false;
       }
       Contact c = new Contact(contact_id);
+      stdout.printf("setting alias: %s\n", alias);
+      if(alias != "") {
+        c.alias = alias;
+      }
       Tox.FriendAddError ret = session.add_friend(c, contact_message);
       if(ret < 0) {
         string error_message = "Could not add friend: %s.\n".printf(Tools.friend_add_error_to_string(ret));
@@ -1031,6 +1039,7 @@ namespace Venom {
         return false;
       }
 
+      session.save_extended_contact_data(c);
       stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
       contact_added(c);
       return true;
@@ -1060,13 +1069,15 @@ namespace Venom {
       dialog.set_transient_for(this);
 
       string contact_id_string = "";
+      string contact_alias = "";
       string contact_message_string = "";
       int response = Gtk.ResponseType.CANCEL;
       do {
         response = dialog.run();
         contact_id_string = dialog.id;
+        contact_alias = dialog.contact_alias;
         contact_message_string = dialog.message;
-      } while(response == Gtk.ResponseType.OK && !add_contact_real(contact_id_string, contact_message_string));
+      } while(response == Gtk.ResponseType.OK && !add_contact_real(contact_id_string, contact_alias, contact_message_string));
 
       dialog.destroy();
     }

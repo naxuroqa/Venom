@@ -22,35 +22,97 @@
 
 namespace Venom {
   public class Contact : GLib.Object{
-
-    public uint8[] public_key    { get; set; }
-    public int friend_id         { get; set; }
-    public string name           { get; set; default = ""; }
-    // set a locally stored name/tag
-    //public string local_name     { get; set; default = ""; }
-    public string status_message { get; set; default = ""; }
-    public DateTime last_seen    { get; set; default = null; }
-    public uint8 user_status     { get; set; default = (uint8)Tox.UserStatus.INVALID; }
-    public bool online           { get; set; default = false; }
-    public Gdk.Pixbuf? image     { get; set; default = null; }
-    public int unread_messages   { get; set; default = 0; }
-    public bool is_typing        { get; set; default = false; }
+    // Saved in toxs savefile
+    public uint8[]     public_key      { get; set; }
+    public int         friend_id       { get; set; default = -1;}
+    public string      name            { get; set; default = ""; }
+    public string      status_message  { get; set; default = ""; }
+    public DateTime    last_seen       { get; set; default = null; }
+    public uint8       user_status     { get; set; default = (uint8)Tox.UserStatus.INVALID; }
+    // Saved in venoms savefile
+    public string      note            { get; set; default = ""; }
+    public string      alias           { get; set; default = ""; }
+    public bool        is_blocked      { get; set; default = false; }
+    public string      group           { get; set; default = ""; }
+    // Not saved
+    public bool        online          { get; set; default = false; }
+    public Gdk.Pixbuf? image           { get; set; default = null; }
+    public int         unread_messages { get; set; default = 0; }
+    public bool        is_typing       { get; set; default = false; }
 
     public Contact(uint8[] public_key, int friend_id = -1) {
       this.public_key = public_key;
       this.friend_id = friend_id;
     }
-    public string get_status_string() {
-      if(online) {
-        return status_message;
+
+    public string get_name_string() {
+      if(name != "") {
+        if(alias == "") {
+          return name;
+        } else {
+          return "%s <i>(%s)</i>".printf(Markup.escape_text(name), Markup.escape_text(alias));
+        }
+      } else if (alias != "") {
+        return "<i>%s</i>".printf(Markup.escape_text(alias));
       } else {
-        //if(last_seen != null) {
-        //  TimeSpan span = (new DateTime.now_local()).difference(last_seen);
-        //  return "last seen ";
-        //} else {
-          return "Offline";
-        //}
+        return Tools.bin_to_hexstring(public_key);
       }
+    }
+
+    public string get_name_string_with_hyperlinks() {
+      if(name != "") {
+        if(alias == "") {
+          return name;
+        } else {
+          return "%s <i>(%s)</i>".printf(Tools.markup_uris(name), Tools.markup_uris(alias));
+        }
+      } else if (alias != "") {
+        return "<i>%s</i>".printf(Tools.markup_uris(alias));
+      } else {
+        return Tools.bin_to_hexstring(public_key);
+      }
+    }
+
+    public string get_status_string() {
+      if(online || status_message != "") {
+        return Markup.escape_text(status_message);
+      } else if (last_seen != null) {
+        return get_last_seen_string();
+      } else {
+        return "Offline";
+      }
+    }
+
+    public string get_status_string_with_hyperlinks() {
+      if(online || status_message != "") {
+        return Tools.markup_uris(status_message);
+      } else if (last_seen != null) {
+        return get_last_seen_string();
+      } else {
+        return "Offline";
+      }
+    }
+
+    public string get_status_string_alt() {
+      return Tools.markup_uris(status_message);
+    }
+
+    public string get_last_seen_string() {
+      return last_seen != null ? "Last seen: %s".printf(last_seen.format("%c")) : "";
+    }
+
+    public string get_tooltip_string() {
+      StringBuilder b = new StringBuilder();
+      b.append(get_name_string_with_hyperlinks());
+      if(status_message != "") {
+        b.append_c('\n');
+        b.append(get_status_string_alt());
+      }
+      if(!online && last_seen != null) {
+        b.append_c('\n');
+        b.append(get_last_seen_string());
+      }
+      return b.str;
     }
   }
 }

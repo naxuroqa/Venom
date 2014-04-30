@@ -1,5 +1,5 @@
 /*
- *    LocalStorage.vala
+ *    SqliteTools.vala
  *
  *    Copyright (C) 2013-2014  Venom authors and contributors
  *
@@ -20,40 +20,59 @@
  */
 
 namespace Venom {
-  public errordomain SqliteError {
+  public errordomain SqliteStatementError {
     INDEX,
     BIND
+  }
+  public errordomain SqliteDbError {
+    OPEN,
+    QUERY
   }
   public class SqliteTools {
     private SqliteTools() {}
 
-    public static void put_int(Sqlite.Statement statement, string name, int value) throws SqliteError {
+    public static void put_int(Sqlite.Statement statement, string name, int value) throws SqliteStatementError {
       int index = statement.bind_parameter_index(name);
       if(index == 0) {
-        throw new SqliteError.INDEX(@"Index for \"$(name)\" not found.");
+        throw new SqliteStatementError.INDEX(@"Index for \"$(name)\" not found.");
       }
       if(statement.bind_int(index, value) != Sqlite.OK) {
-        throw new SqliteError.BIND(@"Could not bind int to \"$(name)\".");
+        throw new SqliteStatementError.BIND(@"Could not bind int to \"$(name)\".");
       }
     }
 
-    public static void put_int64(Sqlite.Statement statement, string name, int64 value) throws SqliteError {
+    public static void put_int64(Sqlite.Statement statement, string name, int64 value) throws SqliteStatementError {
       int index = statement.bind_parameter_index(name);
       if(index == 0) {
-        throw new SqliteError.INDEX(@"Index for \"$(name)\" not found.");
+        throw new SqliteStatementError.INDEX(@"Index for \"$(name)\" not found.");
       }
       if(statement.bind_int64(index, value) != Sqlite.OK) {
-        throw new SqliteError.BIND(@"Could not bind int64 to \"$(name)\".");
+        throw new SqliteStatementError.BIND(@"Could not bind int64 to \"$(name)\".");
       }
     }
 
-    public static void put_text(Sqlite.Statement statement, string name, string value) throws SqliteError {
+    public static void put_text(Sqlite.Statement statement, string name, string value) throws SqliteStatementError {
       int index = statement.bind_parameter_index(name);
       if(index == 0) {
-        throw new SqliteError.INDEX(@"Index for \"$(name)\" not found.");
+        throw new SqliteStatementError.INDEX(@"Index for \"$(name)\" not found.");
       }
       if(statement.bind_text(index, value) != Sqlite.OK) {
-        throw new SqliteError.BIND(@"Could not bind text to \"$(name)\".");
+        throw new SqliteStatementError.BIND(@"Could not bind text to \"$(name)\".");
+      }
+    }
+
+    public static void open_db(string filepath, out Sqlite.Database db) throws SqliteDbError, Error {
+
+      // Open/Create a database:
+      File file = File.new_for_path(filepath);
+      if(file.query_exists()) {
+        GLib.FileUtils.chmod(filepath, 0600);
+      } else {
+        file.create(GLib.FileCreateFlags.PRIVATE);
+      }
+
+      if(Sqlite.Database.open (filepath, out db) != Sqlite.OK) {
+        throw new SqliteDbError.OPEN("Can't open database: %d: %s\n", db.errcode (), db.errmsg ());
       }
     }
   }
