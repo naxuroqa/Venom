@@ -55,7 +55,7 @@ namespace Venom {
       image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_contact);
 
       if( contact.name != null )
-        conversation_view.is_typing_string = "%s is typing...".printf(contact.name);
+        conversation_view.is_typing_string = "%s is typing...".printf(Markup.escape_text(contact.name));
 
       button_send_file.sensitive = contact.online;
     }

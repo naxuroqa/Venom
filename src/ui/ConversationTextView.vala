@@ -27,6 +27,7 @@ namespace Venom {
     private Gtk.TextTag bold_tag;
     private Gtk.TextTag grey_tag;
     private Gtk.TextTag important_tag;
+    private Gtk.TextTag italic_tag;
     private Gtk.TextTag quotation_tag;
 
     private bool is_typing_status = false;
@@ -44,6 +45,7 @@ namespace Venom {
         "foreground", "white",
         "background", "darkgrey"
       );
+      italic_tag = buffer.create_tag(null, "style", Pango.Style.ITALIC);
       quotation_tag = buffer.create_tag(null, "foreground", "green");
       key_press_event.connect((e) => {
         switch(e.keyval) {
@@ -123,7 +125,8 @@ namespace Venom {
         return;
       }
       buffer.get_end_iter(out typing_status_iter);
-      buffer.insert(ref typing_status_iter, is_typing_string, is_typing_string.length);
+      buffer.insert_with_tags(typing_status_iter, is_typing_string, is_typing_string.length, italic_tag);
+      buffer.get_end_iter(out typing_status_iter);
       typing_status_iter.backward_chars(is_typing_string.length);
     }
 

@@ -49,8 +49,9 @@ namespace Venom {
       is_typing_label.xalign = 0;
       is_typing_label.no_show_all = true;
       is_typing_label.visible = false;
+      is_typing_label.set_use_markup(true);
       this.notify["is-typing-string"].connect(() => {
-        is_typing_label.label = is_typing_string;
+        is_typing_label.set_markup("<i>" + is_typing_string + "</i>");
       });
       conversation_list.pack_end(is_typing_label, false, false);
     }
