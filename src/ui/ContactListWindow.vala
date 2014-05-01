@@ -51,6 +51,8 @@ namespace Venom {
 
     private bool cleaned_up = false;
 
+    private string our_title = "";
+
     // Signals
     public signal void contact_added(Contact c);
     public signal void contact_changed(Contact c);
@@ -357,9 +359,10 @@ namespace Venom {
 
       //ComboboxStatus signals
       combobox_status.changed.connect(combobox_status_changed);
-      
+
       this.focus_in_event.connect((e)  => {
         this.set_urgency_hint(false);
+        this.set_title(this.our_title);
         return false;
       });
 
@@ -424,7 +427,12 @@ namespace Venom {
     }
 
     private void set_title_from_status(UserStatus status) {
-      set_title("Venom (%s)".printf(status.to_string()));
+      this.our_title = "Venom (%s)".printf(status.to_string());
+      string notify = "";
+      if (this.get_urgency_hint()) {
+        notify = "* ";
+      }
+      set_title(notify + this.our_title);
     }
 
     private void combobox_status_changed() {
@@ -535,6 +543,7 @@ namespace Venom {
     public void set_urgency () {
       if(!is_active && Settings.instance.enable_urgency_notification) {
         this.set_urgency_hint(true);
+        this.set_title("* " + this.our_title);
       }
     }
 
@@ -732,7 +741,7 @@ namespace Venom {
         on_group_peer_changed(g, friendgroupnumber, Tox.ChatChange.PEER_ADD);
       }
       /** END **/
-      
+
       if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
         g.unread_messages++;
         contact_list_tree_view.update_entry(g);
@@ -813,7 +822,7 @@ namespace Venom {
       } catch(IOError e) {
         stderr.printf("I/O error while trying to read file: %s\n",e.message);
       } catch(Error e) {
-        stderr.printf("Unknown error while trying to read file: %s\n",e.message); 
+        stderr.printf("Unknown error while trying to read file: %s\n",e.message);
       } finally {
         try {
           if(file_stream != null)
@@ -843,7 +852,7 @@ namespace Venom {
         } else if(ft.direction == FileTransferDirection.INCOMING) {
           ft.status = FileTransferStatus.RECEIVING_FAILED;
         }
-        stderr.printf("File transfer was rejected for file number %u", filenumber);   
+        stderr.printf("File transfer was rejected for file number %u", filenumber);
       }
       if(status == Tox.FileControlStatus.FINISHED && receive_send == 0) {
         ft.status = FileTransferStatus.DONE;
