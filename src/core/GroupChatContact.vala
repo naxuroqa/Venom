@@ -20,13 +20,37 @@
  */
 
 namespace Venom {
-  public class GroupChatContact : GLib.Object{
+  public class GroupChatContact : IContact, GLib.Object{
     public int group_contact_id { get; set; }
     public string name          { get; set; }
 
     public GroupChatContact(int group_contact_id, string? name = null) {
       this.group_contact_id = group_contact_id;
       this.name = name;
+    }
+
+    public string get_status_string() { return "Online"; }
+    public string get_status_string_with_hyperlinks() { return get_status_string(); }
+    public string get_status_string_alt() { return get_status_string(); }
+    public string get_last_seen_string() { return ""; }
+
+    public string get_name_string() {
+      if(name != null && name != "") {
+        return Markup.escape_text(name);
+      } else {
+        return "&lt;unknown&gt;";
+      }
+    }
+
+    public string get_name_string_with_hyperlinks() {
+      if(name != null && name != "") {
+        return Tools.markup_uris(name);
+      } else {
+        return "&lt;unknown&gt;";
+      }
+    }
+    public string get_tooltip_string() {
+      return get_name_string();
     }
   }
 }

@@ -21,7 +21,17 @@
 
 
 namespace Venom {
-  public class Contact : GLib.Object{
+  public interface IContact : GLib.Object {
+    public abstract string get_name_string();
+    public abstract string get_name_string_with_hyperlinks();
+    public abstract string get_status_string();
+    public abstract string get_status_string_with_hyperlinks();
+    public abstract string get_status_string_alt();
+    public abstract string get_last_seen_string();
+    public abstract string get_tooltip_string();
+  }
+
+  public class Contact : IContact, GLib.Object {
     // Saved in toxs savefile
     public uint8[]     public_key      { get; set; }
     public int         friend_id       { get; set; default = -1;}

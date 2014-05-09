@@ -549,12 +549,12 @@ namespace Venom {
 
     private bool on_treeview_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
       if(key.keyval == Gdk.Key.Delete) {
-        GLib.Object o = contact_list_tree_view.get_selected_entry();
-        if(o is Contact) {
-          remove_contact(o as Contact);
+        IContact c = contact_list_tree_view.get_selected_entry();
+        if(c is Contact) {
+          remove_contact(c as Contact);
           return true;
-        } else if(o is GroupChat) {
-          remove_groupchat(o as GroupChat);
+        } else if(c is GroupChat) {
+          remove_groupchat(c as GroupChat);
           return true;
         }
       }
@@ -925,18 +925,18 @@ namespace Venom {
     }
 
     // Contact doubleclicked in treeview
-    private void on_entry_activated(GLib.Object o) {
+    private void on_entry_activated(IContact ic) {
       Gtk.Widget conversation_widget = null;
-      if(o is Contact) {
-        Contact c = o as Contact;
+      if(ic is Contact) {
+        Contact c = ic as Contact;
         conversation_widget = open_conversation_with(c);
 
         if(c.unread_messages != 0) {
           c.unread_messages = 0;
           contact_list_tree_view.update_entry(c);
         }
-      } else if(o is GroupChat) {
-        GroupChat g = o as GroupChat;
+      } else if(ic is GroupChat) {
+        GroupChat g = ic as GroupChat;
         conversation_widget = open_group_conversation_with(g);
 
         if(g.unread_messages != 0) {

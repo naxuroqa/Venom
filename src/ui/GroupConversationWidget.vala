@@ -41,10 +41,10 @@ namespace Venom {
 
     public void update_groupchat_info() {
       // update groupchat name
-      label_groupchat_name.label = "<b>Groupchat #%i</b>".printf(groupchat.group_id);
+      label_groupchat_name.label = "<b>%s</b>".printf(groupchat.get_name_string_with_hyperlinks());
 
       // update groupchat status message
-      label_groupchat_statusmessage.label = "%i people connected".printf(groupchat.peer_count);
+      label_groupchat_statusmessage.label = groupchat.get_status_string_with_hyperlinks();
 
       // update groupchat image
       image_groupchat_image.set_from_pixbuf(groupchat.image != null ? groupchat.image : ResourceFactory.instance.default_groupchat);

@@ -46,7 +46,7 @@ namespace Venom {
 
     public void update_contact() {
       // update contact name
-      label_contact_name.label = contact.get_name_string_with_hyperlinks();
+      label_contact_name.label = "<b>%s</b>".printf(contact.get_name_string_with_hyperlinks());
 
       // update contact status message
       label_contact_statusmessage.label = contact.get_status_string_with_hyperlinks();
