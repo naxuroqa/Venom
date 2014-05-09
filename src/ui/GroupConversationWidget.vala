@@ -95,6 +95,7 @@ namespace Venom {
       Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
       MessageTextView message_textview = new MessageTextView();
       message_textview.border_width = 6;
+      message_textview.wrap_mode = Gtk.WrapMode.WORD_CHAR;
       message_textview.textview_activate.connect( () => {
         textview_activate(message_textview);
       });
