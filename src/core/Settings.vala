@@ -32,6 +32,7 @@ namespace Venom {
     public int  contactlist_height          { get; set; default = 600;  }
     public int  window_width                { get; set; default = 600;  }
     public int  window_height               { get; set; default = 600;  }
+    public bool enable_tray                 { get; set; default = false;}
 
     private static Settings? _instance;
     public static Settings instance {
