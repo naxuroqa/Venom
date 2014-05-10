@@ -22,10 +22,10 @@ namespace Venom {
     Gtk.ListStore list_store_contacts;
     Gtk.TreeViewColumn name_column;
 
-    public signal void entry_activated(GLib.Object o);
+    public signal void entry_activated(IContact c);
 
     public ContactListTreeView() {
-      list_store_contacts = new Gtk.ListStore (1, typeof(GLib.Object));
+      list_store_contacts = new Gtk.ListStore (1, typeof(IContact));
 
       name_column = new Gtk.TreeViewColumn();
       ContactListCellRenderer name_column_cell = new ContactListCellRenderer();
@@ -53,7 +53,7 @@ namespace Venom {
       model.get_iter(out iter, path);
       GLib.Value val;
       model.get_value(iter, 0, out val);
-      entry_activated(val as GLib.Object);
+      entry_activated(val as IContact);
       return true;
     }
 
@@ -68,16 +68,9 @@ namespace Venom {
       GLib.Value v;
       model.get_value(iter, 0, out v);
       GLib.Object o = v as Object;
-      if(o is Contact) {
-        Contact c = o as Contact;
-        string tooltip_string = "%s\n%s".printf(c.name, c.get_status_string());
-        if(!c.online && c.last_seen != null) {
-          tooltip_string += "\nLast seen: %s".printf(c.last_seen.format("%c"));
-        }
-        
-        tooltip.set_text(tooltip_string);
-      } else if (o is GroupChat) {
-        return false;
+      if(o is IContact) {
+        IContact c = o as IContact;
+        tooltip.set_markup(c.get_tooltip_string());
       } else {
         return false;
       }
@@ -85,27 +78,27 @@ namespace Venom {
       return true;
     }
 
-    public void add_entry(GLib.Object o) {
+    public void add_entry(IContact c) {
       Gtk.TreeIter iter;
       list_store_contacts.append(out iter);
-      list_store_contacts.set(iter, 0, o);
+      list_store_contacts.set(iter, 0, c);
       can_focus = true;
     }
 
-    public void update_entry(GLib.Object o) {
-      Gtk.TreeIter? iter = find_iter(o);
+    public void update_entry(IContact c) {
+      Gtk.TreeIter? iter = find_iter(c);
       list_store_contacts.row_changed(list_store_contacts.get_path(iter), iter);
     }
 
-    public void remove_entry(GLib.Object o) {
-      Gtk.TreeIter iter = find_iter(o);
+    public void remove_entry(IContact c) {
+      Gtk.TreeIter iter = find_iter(c);
       list_store_contacts.remove(iter);
       columns_changed();
       if(list_store_contacts.iter_n_children(null) == 0)
         can_focus = false;
     }
 
-    public Object? get_selected_entry() {
+    public IContact? get_selected_entry() {
       Gtk.TreeSelection selection = get_selection();
       if(selection == null)
         return null;
@@ -115,16 +108,16 @@ namespace Venom {
         return null;
       GLib.Value val;
       model.get_value(iter, 0, out val);
-      return val as GLib.Object;
+      return val as IContact;
     }
 
-    private Gtk.TreeIter? find_iter(GLib.Object o) {
+    private Gtk.TreeIter? find_iter(IContact c) {
       Gtk.TreeIter iter;
       list_store_contacts.get_iter_first(out iter);
       do {
         GLib.Value val;
         list_store_contacts.get_value(iter, 0, out val);
-        if(val.get_object() == o)
+        if(val.get_object() == c)
           return iter;
       } while( list_store_contacts.iter_next(ref iter) );
 

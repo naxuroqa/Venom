@@ -17,23 +17,36 @@
 #    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# Required cmake modules
 INCLUDE(FindVala)
 INCLUDE(${VALA_USE_FILE})
 INCLUDE(GResource)
 INCLUDE(PkgCheckModulesFullpath)
 
+# Validate version and availability through the previously defined modules
 FIND_PACKAGE(Vala "0.18.1" REQUIRED)
 FIND_PACKAGE(PkgConfig REQUIRED)
 
-SET(TARGET_GLIB 2.32)
-
+# Get dependencies through pkg-config
 PKG_CHECK_MODULES_FULLPATH(GTK    REQUIRED gtk+-3.0>=3.4)
-PKG_CHECK_MODULES_FULLPATH(GIO    REQUIRED gio-2.0>=${TARGET_GLIB})
-PKG_CHECK_MODULES_FULLPATH(GLIB   REQUIRED glib-2.0>=${TARGET_GLIB})
+PKG_CHECK_MODULES_FULLPATH(GIO    REQUIRED gio-2.0>=2.32)
+PKG_CHECK_MODULES_FULLPATH(GLIB   REQUIRED glib-2.0>=2.32)
 PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
 PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
 PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
 PKG_CHECK_MODULES_FULLPATH(NOTIFY REQUIRED libnotify>=0.7.3)
+
+# use djbdns as substitute for missing dns_txt in glib 2.32
+IF(${GLIB_VERSION_MINOR} LESS 34)
+  MESSAGE("GLIB < 2.34 detected, using djbdns for dns resolution")
+  INCLUDE(FindDJBDns)
+  INCLUDE_DIRECTORIES(${DJBDNS_INCLUDE_DIRS})
+  MESSAGE("DJBDNS_LIBRARIES: ${DJBDNS_LIBRARIES}")
+ENDIF()
+
+# Set a variable defining our minimal version of glib
+SET(TARGET_GLIB ${GLIB_VERSION_MAJOR}.${GLIB_VERSION_MINOR})
+
 # Workaround for libtoxcore and libsodium not providing info on
 # all needed static libraries in their pkg-config files
 # see https://github.com/irungentoo/ProjectTox-Core/issues/705
@@ -55,6 +68,7 @@ IF(LINK_GIO_STATIC)
   ENDIF(WIN32)
 ENDIF(LINK_GIO_STATIC)
 
+# add cflags and cflags_other of all dependencies to our cflags
 SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
                   ${GTK_CFLAGS}    ${GTK_CFLAGS_OTHER}
                   ${GIO_CFLAGS}    ${GIO_CFLAGS_OTHER}
@@ -69,20 +83,25 @@ SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
 # separated *_c_flags, we have to remove those
 STRING(REPLACE ";" " " CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 
+# replace the annotated variables in config.h.in and copy it to config.h
 CONFIGURE_FILE( config.h.in config.h )
 
+# define our source files
 SET( VENOM_SRC
   Main.vala
   core/Contact.vala
+  core/ContactStorage.vala
   core/DhtNode.vala
   core/FileTransfer.vala
   core/GroupChat.vala
   core/GroupChatContact.vala
-  core/LocalStorage.vala
+  core/MessageLog.vala
   core/Message.vala
   core/ResourceFactory.vala
   core/Settings.vala
+  core/SqliteTools.vala
   core/Tools.vala
+  core/ToxDns.vala
   core/ToxSession.vala
   core/User.vala
   ui/AboutDialog.vala
@@ -100,12 +119,14 @@ SET( VENOM_SRC
   ui/GroupConversationSidebar.vala
   ui/GroupConversationWidget.vala
   ui/MessageTextView.vala
+  ui/PinDialog.vala
   ui/SearchEntry.vala
   ui/UserInfoWindow.vala
   ui/UITools.vala
   ui/SettingsWindow.vala
 )
 
+# precompile all vala code to c via valac
 VALA_PRECOMPILE( VALA_C_VENOM
     ${VENOM_SRC}
   PACKAGES
@@ -117,65 +138,34 @@ VALA_PRECOMPILE( VALA_C_VENOM
     sqlite3
     tox-1.0
     config
+    djbdns
   OPTIONS
     --target-glib=${TARGET_GLIB}
     --thread
     --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
+    ${VENOM_VALA_FLAGS_EXTRA}
   CUSTOM_VAPIS
   GENERATE_VAPI
   GENERATE_HEADER
 )
 
-VALA_PRECOMPILE( VALA_C_TEST_DHT
-    testing/TestDht.vala
-    core/Tools.vala
-  PACKAGES
-    gio-2.0
-    tox-1.0
-  OPTIONS
-    --debug
-    --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
-  CUSTOM_VAPIS
-  GENERATE_VAPI
-  GENERATE_HEADER
-)
-
-VALA_PRECOMPILE( VALA_C_GROUP_BOT
-    testing/GroupBot.vala
-    core/Tools.vala
-  PACKAGES
-    gio-2.0
-    tox-1.0
-  OPTIONS
-    --debug
-    --target-glib=${TARGET_GLIB}
-    --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
-  CUSTOM_VAPIS
-  GENERATE_VAPI
-  GENERATE_HEADER
-)
-
+# compile glib resource files to c code
 GLIB_COMPILE_RESOURCES( GLIB_RESOURCES_VENOM
   SOURCE
     ui/venom.gresource.xml
     pixmaps/venom_pixmaps.gresource.xml
 )
 
+# compile the main executable
 ADD_EXECUTABLE( venom
   ${VALA_C_VENOM}
   ${GLIB_RESOURCES_VENOM}
   ${VENOM_RESOURCE_FILE}
 )
 
-ADD_EXECUTABLE( test_dht EXCLUDE_FROM_ALL
-  ${VALA_C_TEST_DHT}
-)
-
-ADD_EXECUTABLE( group_bot EXCLUDE_FROM_ALL
-  ${VALA_C_GROUP_BOT}
-)
-
+# link the main executable to our dependencies
 TARGET_LINK_LIBRARIES( venom
+                       ${DJBDNS_LIBRARIES}
                        ${TOX_LIBRARIES}
                        ${SQLITE_LIBRARIES}
                        ${GIO_LIBRARIES}
@@ -185,16 +175,9 @@ TARGET_LINK_LIBRARIES( venom
                        ${NOTIFY_LIBRARIES}
 )
 
-TARGET_LINK_LIBRARIES( test_dht
-                       ${TOX_LIBRARIES}
-                       ${GIO_LIBRARIES}
-)
-
-TARGET_LINK_LIBRARIES( group_bot
-                       ${TOX_LIBRARIES}
-                       ${GIO_LIBRARIES}
-)
-
 INSTALL(TARGETS venom RUNTIME DESTINATION ${CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION})
+
+# add tests
+ADD_SUBDIRECTORY(testing)
 
 # vim:set ts=2 sw=2 et:

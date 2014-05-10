@@ -77,20 +77,26 @@ namespace Venom {
       return b.str;
     }
 
-    // convert a string to a nullterminated uint8[]
-    public static uint8[] string_to_nullterm_uint (string input)
-    {
-      uint8[] clone = new uint8[input.data.length + 1];
-      Memory.copy(clone, input.data, input.data.length * sizeof(uint8));
-      clone[clone.length - 1] = '\0';
-      return clone;
-    }
+    public static string uint8_to_nullterm_string(uint8[] data) {
+      //TODO optimize this
+      uint8[] buf = new uint8[data.length + 1];
+      Memory.copy(buf, data, data.length);
+      string sbuf = (string)buf;
 
-    // clone the given array
-    public static uint8[] clone(uint8[] input, int length) {
-      uint8[] clone = new uint8[length];
-      Memory.copy(clone, input, length * sizeof(uint8));
-      return clone;
+      if(sbuf.validate()) {
+        return sbuf;
+      }
+      // Extract usable parts of the string
+      StringBuilder sb = new StringBuilder();
+      for (unowned string s = sbuf; s.get_char() != 0; s = s.next_char()) {
+        unichar u = s.get_char_validated();
+        if (u != (unichar) (-1)) {
+          sb.append_unichar(u);
+        } else {
+          stdout.printf("Invalid UTF-8 character detected\n");
+        }
+      }
+      return sb.str;
     }
 
     public static string shorten_name(string name) {
@@ -106,6 +112,18 @@ namespace Venom {
 		  } catch (GLib.RegexError e) {
 			  GLib.assert_not_reached ();
 		  }
+    }
+
+    public static string markup_uris(string text) {
+      string escaped_text = Markup.escape_text(text);
+      string ret;
+      try {
+        ret = Tools.uri_regex.replace(escaped_text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
+		  } catch (GLib.RegexError e) {
+			  stderr.printf("Error when doing uri markup: %s", e.message);
+			  return text;
+		  }
+		  return ret;
     }
 
     public static string friend_add_error_to_string(Tox.FriendAddError friend_add_error) {

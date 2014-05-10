@@ -41,10 +41,10 @@ namespace Venom {
 
     public void update_groupchat_info() {
       // update groupchat name
-      label_groupchat_name.set_text("Groupchat #%i".printf(groupchat.group_id));
+      label_groupchat_name.label = "<b>%s</b>".printf(groupchat.get_name_string_with_hyperlinks());
 
       // update groupchat status message
-      label_groupchat_statusmessage.set_text("%i people connected".printf(groupchat.peer_count));
+      label_groupchat_statusmessage.label = groupchat.get_status_string_with_hyperlinks();
 
       // update groupchat image
       image_groupchat_image.set_from_pixbuf(groupchat.image != null ? groupchat.image : ResourceFactory.instance.default_groupchat);
@@ -95,6 +95,7 @@ namespace Venom {
       Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
       MessageTextView message_textview = new MessageTextView();
       message_textview.border_width = 6;
+      message_textview.wrap_mode = Gtk.WrapMode.WORD_CHAR;
       message_textview.textview_activate.connect( () => {
         textview_activate(message_textview);
       });

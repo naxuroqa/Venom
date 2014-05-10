@@ -24,7 +24,6 @@ namespace Venom {
     private Gtk.Label label_contact_name;
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
-    private Gtk.Label label_contact_typing;
     private Gtk.Button button_send_file;
 
     private MessageTextView message_textview;
@@ -47,20 +46,16 @@ namespace Venom {
 
     public void update_contact() {
       // update contact name
-      if(contact.name == null || contact.name == "") {
-        label_contact_name.set_text(Tools.bin_to_hexstring(contact.public_key));
-      } else {
-        label_contact_name.set_text(contact.name);
-      }
+      label_contact_name.label = "<b>%s</b>".printf(contact.get_name_string_with_hyperlinks());
 
       // update contact status message
-      label_contact_statusmessage.set_text(contact.status_message);
+      label_contact_statusmessage.label = contact.get_status_string_with_hyperlinks();
 
       // update contact image
       image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_contact);
 
       if( contact.name != null )
-        label_contact_typing.label = "%s is typing...".printf(contact.name);
+        conversation_view.is_typing_string = "%s is typing...".printf(Markup.escape_text(contact.name));
 
       button_send_file.sensitive = contact.online;
     }
@@ -93,6 +88,7 @@ namespace Venom {
       Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
       message_textview = new MessageTextView();
       message_textview.border_width = 6;
+      message_textview.wrap_mode = Gtk.WrapMode.WORD_CHAR;
       message_textview.textview_activate.connect(textview_activate);
       message_textview.typing_status.connect((is_typing) => {
         typing_status(is_typing);
@@ -124,13 +120,6 @@ namespace Venom {
       conversation_view.register_search_entry(entry_search);
       overlay.add_overlay(entry_search);
 
-      label_contact_typing = new Gtk.Label(null);
-      label_contact_typing.get_style_context().add_class("typing_label");
-      label_contact_typing.halign = Gtk.Align.START;
-      label_contact_typing.valign = Gtk.Align.END;
-      label_contact_typing.no_show_all = true;
-      overlay.add_overlay(label_contact_typing);
-
       Gtk.Adjustment vadjustment = scrolled_window.get_vadjustment();
       bool scroll_to_bottom = true;
       conversation_view.size_allocate.connect( () => {
@@ -146,7 +135,7 @@ namespace Venom {
     }
 
     public void on_typing_changed(bool is_typing) {
-      label_contact_typing.visible = is_typing;
+      conversation_view.on_typing_changed(is_typing);
     }
 
     private void add_filetransfer(FileTransfer ft) {

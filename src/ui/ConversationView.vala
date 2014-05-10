@@ -22,20 +22,38 @@
 namespace Venom {
   public interface IConversationView : Gtk.Widget {
     public abstract bool short_names {get; set;}
+    public abstract string is_typing_string {get; set;}
     public abstract void add_message(IMessage message);
     public abstract void add_filetransfer(FileTransferChatEntry entry);
     public abstract void register_search_entry(Gtk.Entry entry);
+    public abstract void on_typing_changed(bool status);
   }
 
   public class ConversationView : IConversationView, Gtk.EventBox {
     public bool short_names {get; set; default = false;}
+    public string is_typing_string {get; set; default = "";}
     private Gtk.Box conversation_list;
+    private Gtk.Label is_typing_label;
     private IMessage last_message = null;
+
+    public void on_typing_changed(bool status) {
+      is_typing_label.visible = status;
+    }
 
     public ConversationView() {
       conversation_list = new Gtk.Box(Gtk.Orientation.VERTICAL, 3);
       this.get_style_context().add_class("conversation_view");
       this.add(conversation_list);
+
+      is_typing_label = new Gtk.Label(is_typing_string);
+      is_typing_label.xalign = 0;
+      is_typing_label.no_show_all = true;
+      is_typing_label.visible = false;
+      is_typing_label.set_use_markup(true);
+      this.notify["is-typing-string"].connect(() => {
+        is_typing_label.set_markup("<i>" + is_typing_string + "</i>");
+      });
+      conversation_list.pack_end(is_typing_label, false, false);
     }
 
     public void add_filetransfer(FileTransferChatEntry entry) {

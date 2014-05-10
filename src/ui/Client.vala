@@ -158,24 +158,8 @@ namespace Venom {
     protected override void open(GLib.File[] files, string hint) {
       hold();
       get_contact_list_window().present();
-
-      Regex r = null;
-      try {
-        r = new Regex("^.*tox:/?/?/(?P<contact_id>[[:xdigit:]]*)/?$");
-      } catch (GLib.RegexError e) {
-        stderr.printf("Can't create regex to parse uri: %s.\n", e.message);
-      }
-      string uri = files[0].get_uri();
-      stdout.printf("Matching uri \"%s\"\n", uri);
-      GLib.MatchInfo info = null;
-      if(r != null && r.match(uri, 0, out info)) {
-        string contact_id_string = info.fetch_named("contact_id");
-        stdout.printf("Adding contact \"%s\".\n", contact_id_string);
-        contact_list_window.add_contact(contact_id_string);
-      } else {
-        stdout.printf("Invalid uri or contact id: %s\n", uri);
-      }
-
+      //FIXME allow names without tox:// prefix on command line
+      contact_list_window.add_contact(files[0].get_uri());
       release();
     }
 
@@ -183,6 +167,7 @@ namespace Venom {
       if(settings_window == null) {
         settings_window = new SettingsWindow();
         settings_window.destroy.connect( () => {settings_window = null;});
+        settings_window.transient_for = contact_list_window;
         settings_window.show_all();
       } else {
         settings_window.present();

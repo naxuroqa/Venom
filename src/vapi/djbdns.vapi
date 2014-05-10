@@ -1,5 +1,5 @@
 /*
- *    SearchEntry.vala
+ *    djbdns.vapi
  *
  *    Copyright (C) 2013-2014  Venom authors and contributors
  *
@@ -19,11 +19,14 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Venom {
-  public class SearchEntry : Gtk.Entry {
-    public SearchEntry() {
-      primary_icon_name = "edit-find-symbolic";
-      margin = 6;
-    }
+[CCode (cprefix = "", cheader_filename = "dns.h")]
+namespace DJBDns {
+  [CCode (cname = "stralloc", destroy_function = "", has_type_id = false)]
+  public struct AllocatedString {
+    string s;
+    uint len;
+    uint a;
   }
+  [CCode (cname = "dns_txt")]
+  public static int dns_txt(out AllocatedString answer, AllocatedString fqdn);
 }

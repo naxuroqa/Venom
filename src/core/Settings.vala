@@ -22,17 +22,18 @@
 namespace Venom {
   public class Settings : Object {
 
-    public bool enable_logging              { get; set; default = false;}
-    public bool enable_urgency_notification { get; set; default = true; }
-    public int  days_to_log                 { get; set; default = 180;  }
-    public bool dec_binary_prefix           { get; set; default = true; }
-    public bool send_typing_status          { get; set; default = false;}
-    public bool show_typing_status          { get; set; default = true; }
-    public int  contactlist_width           { get; set; default = 200;  }
-    public int  contactlist_height          { get; set; default = 600;  }
-    public int  window_width                { get; set; default = 600;  }
-    public int  window_height               { get; set; default = 600;  }
-    public bool enable_tray                 { get; set; default = false;}
+    public bool   enable_logging              { get; set; default = false;     }
+    public bool   enable_urgency_notification { get; set; default = true;      }
+    public int    days_to_log                 { get; set; default = 180;       }
+    public bool   dec_binary_prefix           { get; set; default = true;      }
+    public bool   send_typing_status          { get; set; default = false;     }
+    public bool   show_typing_status          { get; set; default = true;      }
+    public int    contactlist_width           { get; set; default = 200;       }
+    public int    contactlist_height          { get; set; default = 600;       }
+    public int    window_width                { get; set; default = 600;       }
+    public int    window_height               { get; set; default = 600;       }
+    public string default_host                { get; set; default = "toxme.se";}
+    public bool enable_tray                   { get; set; default = false;}
 
     private static Settings? _instance;
     public static Settings instance {

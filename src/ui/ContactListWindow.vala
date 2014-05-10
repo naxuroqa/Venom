@@ -51,6 +51,8 @@ namespace Venom {
 
     private bool cleaned_up = false;
 
+    private string our_title = "";
+
     // Signals
     public signal void contact_added(Contact c);
     public signal void contact_changed(Contact c);
@@ -275,7 +277,7 @@ namespace Venom {
         }
         return false;
       });*/
-      button_add_contact.clicked.connect(button_add_contact_clicked);
+      button_add_contact.clicked.connect(() => { add_contact(); });
       button_group_chat.clicked.connect(button_group_chat_clicked);
 
       // Workaround for gtk+ 3.4 MenuItems not deriving from Gtk.Actionable
@@ -367,9 +369,10 @@ namespace Venom {
 
       //ComboboxStatus signals
       combobox_status.changed.connect(combobox_status_changed);
-      
+
       this.focus_in_event.connect((e)  => {
         this.set_urgency_hint(false);
+        this.set_title(this.our_title);
         return false;
       });
 
@@ -434,7 +437,12 @@ namespace Venom {
     }
 
     private void set_title_from_status(UserStatus status) {
-      set_title("Venom (%s)".printf(status.to_string()));
+      this.our_title = "Venom (%s)".printf(status.to_string());
+      string notify = "";
+      if (this.get_urgency_hint()) {
+        notify = "* ";
+      }
+      set_title(notify + this.our_title);
     }
 
     private void combobox_status_changed() {
@@ -545,17 +553,18 @@ namespace Venom {
     public void set_urgency () {
       if(!is_active && Settings.instance.enable_urgency_notification) {
         this.set_urgency_hint(true);
+        this.set_title("* " + this.our_title);
       }
     }
 
     private bool on_treeview_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
       if(key.keyval == Gdk.Key.Delete) {
-        GLib.Object o = contact_list_tree_view.get_selected_entry();
-        if(o is Contact) {
-          remove_contact(o as Contact);
+        IContact c = contact_list_tree_view.get_selected_entry();
+        if(c is Contact) {
+          remove_contact(c as Contact);
           return true;
-        } else if(o is GroupChat) {
-          remove_groupchat(o as GroupChat);
+        } else if(c is GroupChat) {
+          remove_groupchat(c as GroupChat);
           return true;
         }
       }
@@ -742,7 +751,7 @@ namespace Venom {
         on_group_peer_changed(g, friendgroupnumber, Tox.ChatChange.PEER_ADD);
       }
       /** END **/
-      
+
       if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
         g.unread_messages++;
         contact_list_tree_view.update_entry(g);
@@ -823,7 +832,7 @@ namespace Venom {
       } catch(IOError e) {
         stderr.printf("I/O error while trying to read file: %s\n",e.message);
       } catch(Error e) {
-        stderr.printf("Unknown error while trying to read file: %s\n",e.message); 
+        stderr.printf("Unknown error while trying to read file: %s\n",e.message);
       } finally {
         try {
           if(file_stream != null)
@@ -853,7 +862,7 @@ namespace Venom {
         } else if(ft.direction == FileTransferDirection.INCOMING) {
           ft.status = FileTransferStatus.RECEIVING_FAILED;
         }
-        stderr.printf("File transfer was rejected for file number %u", filenumber);   
+        stderr.printf("File transfer was rejected for file number %u", filenumber);
       }
       if(status == Tox.FileControlStatus.FINISHED && receive_send == 0) {
         ft.status = FileTransferStatus.DONE;
@@ -926,18 +935,18 @@ namespace Venom {
     }
 
     // Contact doubleclicked in treeview
-    private void on_entry_activated(GLib.Object o) {
+    private void on_entry_activated(IContact ic) {
       Gtk.Widget conversation_widget = null;
-      if(o is Contact) {
-        Contact c = o as Contact;
+      if(ic is Contact) {
+        Contact c = ic as Contact;
         conversation_widget = open_conversation_with(c);
 
         if(c.unread_messages != 0) {
           c.unread_messages = 0;
           contact_list_tree_view.update_entry(c);
         }
-      } else if(o is GroupChat) {
-        GroupChat g = o as GroupChat;
+      } else if(ic is GroupChat) {
+        GroupChat g = ic as GroupChat;
         conversation_widget = open_group_conversation_with(g);
 
         if(g.unread_messages != 0) {
@@ -1004,53 +1013,92 @@ namespace Venom {
       groupchat_removed(g);
     }
 
-    public void add_contact(string contact_id_string, string contact_message = ResourceFactory.instance.default_add_contact_message) {
-      string trimmed_id = Tools.remove_whitespace(contact_id_string);
+    private bool add_contact_real(string contact_id_string, string contact_alias = "", string contact_message = ResourceFactory.instance.default_add_contact_message) {
+      string stripped_id = Tools.remove_whitespace(contact_id_string);
+      string alias = contact_alias;
 
-      if(trimmed_id.length != Tox.FRIEND_ADDRESS_SIZE * 2) {
-        string error_message = "Could not add friend: Invalid ID\n";
-        stderr.printf(error_message);
-        UITools.ErrorDialog("Adding Friend failed", error_message, this);
-        return;
+      // Try to resolve the tox id from an address if the size does not match
+      if(stripped_id.length != Tox.FRIEND_ADDRESS_SIZE * 2) {
+        if (ToxDns.tox_uri_regex != null && ToxDns.tox_uri_regex.match(stripped_id)) {
+          ToxDns dns_resolver = new ToxDns();
+          dns_resolver.default_host = Settings.instance.default_host;
+          string resolved_id = dns_resolver.resolve_id(stripped_id, open_get_pin_dialog);
+          if(alias == "") {
+            alias = dns_resolver.authority_user;
+          }
+          if(resolved_id != null) {
+            stripped_id = resolved_id;
+          } else {
+            string error_message = "Could not resolve ID from DNS record\n";
+            stderr.printf(error_message);
+            UITools.ErrorDialog("Resolving ID failed", error_message, this);
+            return false;
+          }
+        }
       }
 
-      uint8[] contact_id = Tools.hexstring_to_bin(trimmed_id);
+      uint8[] contact_id = Tools.hexstring_to_bin(stripped_id);
       // add friend
       if(contact_id == null || contact_id.length != Tox.FRIEND_ADDRESS_SIZE) {
         string error_message = "Could not add friend: Invalid ID\n";
         stderr.printf(error_message);
         UITools.ErrorDialog("Adding Friend failed", error_message, this);
-        return;
+        return false;
       }
       Contact c = new Contact(contact_id);
+      stdout.printf("setting alias: %s\n", alias);
+      if(alias != "") {
+        c.alias = alias;
+      }
       Tox.FriendAddError ret = session.add_friend(c, contact_message);
       if(ret < 0) {
         string error_message = "Could not add friend: %s.\n".printf(Tools.friend_add_error_to_string(ret));
         stderr.printf(error_message);
         UITools.ErrorDialog("Adding Friend failed", error_message, this);
-        return;
+        return false;
       }
 
+      session.save_extended_contact_data(c);
       stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
       contact_added(c);
+      return true;
     }
 
-    // GUI Events
-    public void button_add_contact_clicked(Gtk.Button source) {
+    private string? open_get_pin_dialog(string? username) {
+      string pin = "";
+      PinDialog dialog = new PinDialog( username );
+      dialog.transient_for = this;
+      dialog.modal = true;
+      dialog.show_all();
+
+      int result = dialog.run();
+      if(result == Gtk.ResponseType.OK) {
+        pin = dialog.pin;
+      }
+      dialog.destroy();
+      return pin;
+    }
+
+    public void add_contact(string? contact_id = null, string contact_message = ResourceFactory.instance.default_add_contact_message) {
       AddContactDialog dialog = new AddContactDialog();
-      dialog.message = ResourceFactory.instance.default_add_contact_message;
-      dialog.set_modal(true);
+      dialog.message = contact_message;
+      if(contact_id != null) {
+        dialog.id = contact_id;
+      }
       dialog.set_transient_for(this);
 
-      int response = dialog.run();
-      string contact_id_string = dialog.id;
-      string contact_message = dialog.message;
+      string contact_id_string = "";
+      string contact_alias = "";
+      string contact_message_string = "";
+      int response = Gtk.ResponseType.CANCEL;
+      do {
+        response = dialog.run();
+        contact_id_string = dialog.id;
+        contact_alias = dialog.contact_alias;
+        contact_message_string = dialog.message;
+      } while(response == Gtk.ResponseType.OK && !add_contact_real(contact_id_string, contact_alias, contact_message_string));
+
       dialog.destroy();
-
-      if(response != Gtk.ResponseType.OK)
-          return;
-
-      add_contact(contact_id_string, contact_message);
     }
 
     public void button_group_chat_clicked(Gtk.Button source) {

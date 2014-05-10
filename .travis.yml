@@ -42,12 +42,19 @@ before_script:
   - make -j3 > /dev/null
   - sudo make install > /dev/null
   - popd
+  #compiling djbdns needed for glib < 2.34
+  - wget http://cr.yp.to/djbdns/djbdns-1.05.tar.gz
+  - tar -xzf djbdns-1.05.tar.gz
+  - pushd djbdns-1.05
+  - echo gcc -O2 -include /usr/include/errno.h > conf-cc
+  - make
+  - popd
   #creating libraries links and updating cache
   - sudo ldconfig > /dev/null
 
 script:
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake -DDJBDNS_DIRECTORY="../djbdns-1.05" ..
   - make -j3
   - sudo make install

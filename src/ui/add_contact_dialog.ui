@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
+<!-- Generated with glade 3.18.2 -->
 <interface>
   <requires lib="gtk+" version="3.4"/>
   <object class="GtkBox" id="box">
@@ -9,37 +9,65 @@
     <property name="margin_right">5</property>
     <property name="margin_top">5</property>
     <property name="orientation">vertical</property>
-    <property name="spacing">12</property>
+    <property name="spacing">6</property>
     <child>
-      <object class="GtkBox" id="box2">
+      <object class="GtkGrid" id="grid1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="spacing">12</property>
+        <property name="row_spacing">3</property>
+        <property name="column_spacing">12</property>
         <child>
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">ID:</property>
+            <property name="label" translatable="yes">_Tox ID:</property>
+            <property name="use_underline">True</property>
+            <property name="mnemonic_widget">entry_contact_id</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
           </packing>
         </child>
         <child>
           <object class="GtkEntry" id="entry_contact_id">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="tooltip_text" translatable="yes">Enter a Tox ID here or a Tox URI</property>
             <property name="hexpand">True</property>
-            <property name="invisible_char">●</property>
             <property name="activates_default">True</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">_Nickname (optional):</property>
+            <property name="use_underline">True</property>
+            <property name="mnemonic_widget">entry_contact_name</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="entry_contact_name">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="tooltip_text" translatable="yes">Set a custom nickname for the friend you are about to add</property>
+            <property name="hexpand">True</property>
+            <property name="activates_default">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">1</property>
           </packing>
         </child>
       </object>
@@ -50,18 +78,47 @@
       </packing>
     </child>
     <child>
-      <object class="GtkScrolledWindow" id="scrolledwindow1">
+      <object class="GtkBox" id="box1">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="shadow_type">in</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">3</property>
         <child>
-          <object class="GtkTextView" id="textview_contact_message">
+          <object class="GtkLabel" id="label3">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">_Message (optional):</property>
+            <property name="use_underline">True</property>
+            <property name="mnemonic_widget">textview_contact_message</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="vexpand">True</property>
-            <property name="border_width">6</property>
-            <property name="wrap_mode">word-char</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkTextView" id="textview_contact_message">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Send a custom message to be displayed to the friend you are adding</property>
+                <property name="vexpand">True</property>
+                <property name="border_width">6</property>
+                <property name="wrap_mode">word-char</property>
+              </object>
+            </child>
           </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
         </child>
       </object>
       <packing>

@@ -30,6 +30,7 @@ namespace Venom {
     private Gtk.CheckButton urgency_notification_checkbutton;
     private Gtk.ListStore filesize_prefix_liststore;
     private Gtk.ComboBox filesize_prefix_combobox;
+    private Gtk.Entry default_host_entry;
     private Gtk.CheckButton enable_tray_checkbutton;
 
     public bool keep_history {
@@ -47,12 +48,10 @@ namespace Venom {
         }
       }
     }
-    
     public bool enable_tray {
       get { return enable_tray_checkbutton.active; }
       set { enable_tray_checkbutton.active = value; }
     }
-    
     public bool send_typing {
       get { return send_typing_checkbutton.active; }
       set { send_typing_checkbutton.active = value; }
@@ -69,6 +68,11 @@ namespace Venom {
     public bool dec_binary_prefix {
       get { return filesize_prefix_combobox.active == 0; }
       set { filesize_prefix_combobox.active = value ? 0 : 1; }
+    }
+
+    public string default_host {
+      get { return default_host_entry.text; }
+      set { default_host_entry.text = value; }
     }
 
     public SettingsWindow() {
@@ -88,10 +92,12 @@ namespace Venom {
       history_delete_spinbutton = builder.get_object("history_delete_spinbutton") as Gtk.SpinButton;
       send_typing_checkbutton = builder.get_object("send_typing_checkbutton") as Gtk.CheckButton;
       show_typing_checkbutton = builder.get_object("show_typing_checkbutton") as Gtk.CheckButton;
+      urgency_notification_checkbutton = builder.get_object("urgency_notification_checkbutton") as Gtk.CheckButton;
       enable_tray_checkbutton = builder.get_object("urgency_notification_checkbutton") as Gtk.CheckButton;
       urgency_notification_checkbutton = builder.get_object("enable_tray_checkbutton") as Gtk.CheckButton;
       filesize_prefix_combobox = builder.get_object("filesize_prefix_combobox") as Gtk.ComboBox;
       filesize_prefix_liststore = builder.get_object("filesize_prefix_liststore") as Gtk.ListStore;
+      default_host_entry = builder.get_object("default_host_entry") as Gtk.Entry;
 
       Gtk.Box history_box = builder.get_object("history_box") as Gtk.Box;
       keep_history_checkbutton.toggled.connect( () => {
@@ -110,6 +116,7 @@ namespace Venom {
       send_typing = settings.send_typing_status;
       show_typing = settings.show_typing_status;
       dec_binary_prefix = settings.dec_binary_prefix;
+      default_host = settings.default_host;
       enable_tray = settings.enable_tray;
 
       add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Save", Gtk.ResponseType.OK, null);
@@ -123,6 +130,7 @@ namespace Venom {
           settings.show_typing_status = show_typing;
           settings.enable_urgency_notification = urgency_notification;
           settings.dec_binary_prefix = dec_binary_prefix;
+          settings.default_host = default_host;
           settings.enable_tray = enable_tray;
 
           settings.save_settings(ResourceFactory.instance.config_filename);
