@@ -63,5 +63,10 @@ namespace Venom {
         return "really big file";
       }
     }
+    public static void copy_string_clipboard(string str) {
+      Gdk.Display display = Gdk.Display.get_default();
+      Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD).set_text(str, -1);
+      Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_PRIMARY).set_text(str, -1);
+    }
   }
 }

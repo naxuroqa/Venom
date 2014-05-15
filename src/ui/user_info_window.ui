@@ -71,7 +71,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="action_name">app.copy-id</property>
                         <property name="image">image1</property>
                       </object>
                       <packing>

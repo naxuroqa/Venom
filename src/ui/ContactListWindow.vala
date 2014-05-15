@@ -471,9 +471,7 @@ namespace Venom {
 
     private void copy_id_to_clipboard() {
       string id_string = Tools.bin_to_hexstring(session.get_address());
-      Gdk.Display display = get_display();
-      Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD).set_text(id_string, -1);
-      Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_PRIMARY).set_text(id_string, -1);
+      UITools.copy_string_clipboard(id_string);
       stdout.printf("Copied Tox ID to clipboard\n");
     }
 
