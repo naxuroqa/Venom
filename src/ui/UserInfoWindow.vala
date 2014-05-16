@@ -70,9 +70,11 @@ namespace Venom {
       entry_statusmessage = builder.get_object("entry_statusmessage") as Gtk.Entry;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
       label_id = builder.get_object("label_id") as Gtk.Label;
+      Gtk.Button button_copy_id = builder.get_object("button_copy_id") as Gtk.Button;
 
       entry_username.changed.connect(on_entry_changed);
       entry_statusmessage.changed.connect(on_entry_changed);
+      button_copy_id.clicked.connect(() => {application.activate_action("copy-id",  null);});
 
       this.add_button("_Cancel", Gtk.ResponseType.CANCEL);
       button_apply = this.add_button("_Apply", Gtk.ResponseType.APPLY);
