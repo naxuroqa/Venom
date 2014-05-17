@@ -116,7 +116,14 @@ namespace Venom {
     }
 
     private string? lookup_dns_record(string hostname) throws GLib.Error {
-#if GLIB_2_34
+#if ENABLE_DJBDNS
+      DJBDns.AllocatedString answer = DJBDns.AllocatedString();
+      DJBDns.AllocatedString fqdn = {hostname, hostname.length, 0};
+      int ret = DJBDns.dns_txt(out answer, fqdn);
+      if(ret == 0) {
+        return answer.s[0:answer.len];
+      }
+#else
       GLib.Resolver resolver = GLib.Resolver.get_default();
       GLib.List<GLib.Variant> records = resolver.lookup_records(hostname, GLib.ResolverRecordType.TXT);
       if( records.length() > 0 ) {
@@ -126,13 +133,6 @@ namespace Venom {
         if(it.next("s", out s)) {
           return s;
         }
-      }
-#else
-      DJBDns.AllocatedString answer = DJBDns.AllocatedString();
-      DJBDns.AllocatedString fqdn = {hostname, hostname.length, 0};
-      int ret = DJBDns.dns_txt(out answer, fqdn);
-      if(ret == 0) {
-        return answer.s[0:answer.len];
       }
 #endif
       return null;

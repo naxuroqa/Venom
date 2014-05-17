@@ -36,6 +36,8 @@ MESSAGE("Venom version ${VENOM_VERSION}")
 
 OPTION( FORCE_32BIT "Set to ON to force 32bit build" OFF )
 OPTION( BUILD_STATIC_EXECUTABLES "" OFF)
+OPTION( ENABLE_QR_ENCODE "Set to ON to enable QR codes" OFF )
+OPTION( ENABLE_DJBDNS "Set to ON to use djbdns to resolve tox dns ids (mandatory for glib <= 2.32)" OFF )
 
 #check architecture
 IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
