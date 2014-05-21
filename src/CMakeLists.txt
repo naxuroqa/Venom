@@ -126,6 +126,7 @@ SET( VENOM_SRC
   ui/ConversationTextView.vala
   ui/ConversationView.vala
   ui/ConversationWidget.vala
+  ui/EditableLabel.vala
   ui/FileTransferChatEntry.vala
   ui/GroupConversationSidebar.vala
   ui/GroupConversationWidget.vala

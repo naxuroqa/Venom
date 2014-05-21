@@ -41,8 +41,8 @@ namespace Venom {
     private Gtk.Image image_status;
     private Gtk.Spinner spinner_status;
     private Gtk.Image image_userimage;
-    private Gtk.Label label_name;
-    private Gtk.Label label_status;
+    private EditableLabel label_name;
+    private EditableLabel label_status;
     private ContactListTreeView contact_list_tree_view;
     private Gtk.ComboBox combobox_status;
     private Gtk.Notebook notebook_conversations;
@@ -183,8 +183,17 @@ namespace Venom {
       image_status = builder.get_object("image_status") as Gtk.Image;
       spinner_status = builder.get_object("spinner_status") as Gtk.Spinner;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
-      label_name = builder.get_object("label_username") as Gtk.Label;
-      label_status = builder.get_object("label_userstatus") as Gtk.Label;
+
+      Gtk.Label label_name_child = builder.get_object("label_username") as Gtk.Label;
+      Gtk.Label label_status_child = builder.get_object("label_userstatus") as Gtk.Label;
+      Gtk.Box box_self_info_text = builder.get_object("box_self_info_text") as Gtk.Box;
+      box_self_info_text.remove(label_name_child);
+      box_self_info_text.remove(label_status_child);
+      label_name = new EditableLabel.with_label(label_name_child);
+      label_status = new EditableLabel.with_label(label_status_child);
+      box_self_info_text.pack_start(label_name, false);
+      box_self_info_text.pack_start(label_status, false);
+      box_self_info_text.show_all();
 
       combobox_status = builder.get_object("combobox_status") as Gtk.ComboBox;
       Gtk.ListStore liststore_status = new Gtk.ListStore (2, typeof(string), typeof(ContactFilter));
@@ -380,6 +389,17 @@ namespace Venom {
         }
         return false;
       });
+
+      label_name.label_changed.connect((str) => {
+        if(str != "") {
+          User.instance.name = str;
+        }
+      });
+      label_status.label_changed.connect((str) => {
+        if(str != "") {
+          User.instance.status_message = str;
+        }
+      });
     }
 
     private void init_save_session_hooks() {
@@ -402,24 +422,24 @@ namespace Venom {
       User.instance.name = session.get_self_name();
       User.instance.status_message = session.get_self_status_message();
 
-      label_name.label = User.instance.name;
-      label_name.tooltip_text = User.instance.name;
+      label_name.label.label = User.instance.name;
+      label_name.label.tooltip_text = User.instance.name;
 
-      label_status.label = User.instance.status_message;
-      label_status.tooltip_text = User.instance.status_message;
+      label_status.label.label = User.instance.status_message;
+      label_status.label.tooltip_text = User.instance.status_message;
 
       User.instance.notify["name"].connect(() => {
         if( session.set_name(User.instance.name) ) {
-          label_name.label = User.instance.name;
-          label_name.tooltip_text = User.instance.name;
+          label_name.label.label = User.instance.name;
+          label_name.label.tooltip_text = User.instance.name;
         } else {
           stderr.printf("Could not change user name!\n");
         }
       });
       User.instance.notify["status-message"].connect(() => {
         if( session.set_status_message(User.instance.status_message) ) {
-          label_status.label = User.instance.status_message;
-          label_status.tooltip_text = User.instance.status_message;
+          label_status.label.label = User.instance.status_message;
+          label_status.label.tooltip_text = User.instance.status_message;
         } else {
           stderr.printf("Could not change user statusmessage!\n");
         }
@@ -483,7 +503,7 @@ namespace Venom {
       w.application = application;
       w.user_name = User.instance.name;
       w.max_name_length = Tox.MAX_NAME_LENGTH;
-      w.user_status = label_status.get_text();
+      w.user_status = label_status.label.label;
       w.max_status_length = Tox.MAX_STATUSMESSAGE_LENGTH;
       w.user_image = image_userimage.get_pixbuf();
       w.user_id = Tools.bin_to_hexstring(session.get_address());
