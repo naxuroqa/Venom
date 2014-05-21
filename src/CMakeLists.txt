@@ -102,6 +102,7 @@ SET( VENOM_SRC
   core/Contact.vala
   core/ContactStorage.vala
   core/DhtNode.vala
+  core/DhtNodeStorage.vala
   core/FileTransfer.vala
   core/GroupChat.vala
   core/GroupChatContact.vala

@@ -46,6 +46,7 @@ namespace Venom {
     private Tox.Tox handle;
     private IMessageLog message_log;
     private IContactStorage contact_storage;
+    private IDhtNodeStorage dht_node_storage;
     private Sqlite.Database db;
 
     private DhtNode[] dht_nodes = {};
@@ -104,9 +105,13 @@ namespace Venom {
           message_log = new DummyMessageLog();
         }
         contact_storage = new SqliteContactStorage(db);
+        dht_node_storage = new DummyDhtNodeStorage();
+        //unfinished, so replaced with dummy storage
+        //dht_node_storage = new SqliteDhtNodeStorage(db);
       } catch (Error e) {
         stderr.printf("Error opening database: %s\n", e.message);
         message_log = new DummyMessageLog();
+        dht_node_storage = new DummyDhtNodeStorage();
       }
 
       init_dht_nodes();
@@ -119,22 +124,11 @@ namespace Venom {
     }
 
     private void init_dht_nodes() {
-      dht_nodes += new DhtNode.ipv4(
-        "192.254.75.98",
-        "951C88B7E75C867418ACDB5D273821372BB5BD652740BCDF623A4FA293E75D2F"
-      );
-      dht_nodes += new DhtNode.ipv6(
-        "2607:5600:284::2",
-        "951C88B7E75C867418ACDB5D273821372BB5BD652740BCDF623A4FA293E75D2F"
-      );
-      dht_nodes += new DhtNode.ipv4(
-        "66.175.223.88",
-        "B24E2FB924AE66D023FE1E42A2EE3B432010206F751A2FFD3E297383ACF1572E"
-      );
-      dht_nodes += new DhtNode.ipv4(
-        "192.210.149.121",
-        "F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67"
-      );
+      dht_nodes = dht_node_storage.get_dht_nodes();
+      if(dht_nodes.length == 0) {
+        DummyDhtNodeStorage dummy_storage = new DummyDhtNodeStorage();
+        dht_nodes = dummy_storage.get_dht_nodes();
+      }
     }
 
     private void init_callbacks() {
