@@ -95,6 +95,30 @@ namespace Venom {
       label_changed(entry.text);
     }
 
+    private bool check_focus() {
+      unowned Gtk.Widget w = get_toplevel();
+      if(!w.is_toplevel() || !(w is Gtk.Window)) {
+        //could not get window for some reason, abort
+        stderr.printf("Could not get reference to toplevel window\n");
+        return false;
+      }
+      unowned Gtk.Widget focus_widget = (w as Gtk.Window).get_focus();
+      if(focus_widget == null) {
+         // try again
+        return true;
+      }
+      if(focus_widget != entry && focus_widget != button_ok && focus_widget != button_cancel) {
+        // other widget focused
+        on_cancel();
+      }
+      return false;
+    }
+
+    private bool on_focus_out(Gdk.EventFocus focus) {
+      Idle.add(check_focus);
+      return false;
+    }
+
     private void init_signals() {
       button_press_event.connect((event) => {
         if(!box_entry.visible && event.button == Gdk.BUTTON_PRIMARY) {
@@ -115,10 +139,9 @@ namespace Venom {
         }
         return false;
       });
-      entry.focus_out_event.connect(() => {
-        on_cancel();
-        return false;
-      });
+      entry.focus_out_event.connect(on_focus_out);
+      button_ok.focus_out_event.connect(on_focus_out);
+      button_cancel.focus_out_event.connect(on_focus_out);
     }
   }
 }
