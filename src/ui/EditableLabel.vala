@@ -49,6 +49,10 @@ namespace Venom {
     }
 
     public void show_entry() {
+//FIXME define GTK_<MAJOR>_<MINOR> in cmake instead of using glib version
+#if GLIB_2_34
+      entry.attributes = label.attributes;
+#endif
       box_label.visible = false;
       box_entry.no_show_all = false;
       box_entry.show_all();
@@ -61,9 +65,10 @@ namespace Venom {
       button_cancel = new Gtk.Button();
 
       entry.has_frame = false;
+      entry.width_chars = 10;
 
-      button_ok.add(new Gtk.Image.from_icon_name("gtk-ok", Gtk.IconSize.MENU));
-      button_cancel.add(new Gtk.Image.from_icon_name("gtk-cancel", Gtk.IconSize.MENU));
+      button_ok.add(new Gtk.Image.from_pixbuf(ResourceFactory.instance.ok));
+      button_cancel.add(new Gtk.Image.from_pixbuf(ResourceFactory.instance.cancel));
 
       Gtk.Box box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
       box_label = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
@@ -71,8 +76,8 @@ namespace Venom {
 
       box_label.pack_start(label);
       box_entry.pack_start(entry);
-      box_entry.pack_start(button_ok);
-      box_entry.pack_start(button_cancel);
+      box_entry.pack_start(button_ok, false);
+      box_entry.pack_start(button_cancel, false);
       box.pack_start(box_label);
       box.pack_start(box_entry);
 

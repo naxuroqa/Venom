@@ -38,6 +38,9 @@ namespace Venom {
       string pixmaps_prefix = "/org/gtk/venom/pixmaps/";
       string theme_folder = Path.build_filename(Tools.find_data_dir(), "theme");
 
+      ok = load_image_from_resource(pixmaps_prefix + "ok.png");
+      cancel = load_image_from_resource(pixmaps_prefix + "cancel.png");
+
       away = load_image_from_resource(pixmaps_prefix + "away.png");
       away_glow = load_image_from_resource(pixmaps_prefix + "away_glow.png");
       busy = load_image_from_resource(pixmaps_prefix + "busy.png");
@@ -72,6 +75,8 @@ namespace Venom {
       default_statusmessage = "Toxing on Venom v.%s".printf(Config.VERSION);
     }
 
+    public Gdk.Pixbuf ok {get; private set;}
+    public Gdk.Pixbuf cancel {get; private set;}
 
     public Gdk.Pixbuf away {get; private set;}
     public Gdk.Pixbuf away_glow {get; private set;}
