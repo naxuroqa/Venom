@@ -104,8 +104,7 @@ namespace Venom {
       }
       unowned Gtk.Widget focus_widget = (w as Gtk.Window).get_focus();
       if(focus_widget == null) {
-         // try again
-        return true;
+        return false;
       }
       if(focus_widget != entry && focus_widget != button_ok && focus_widget != button_cancel) {
         // other widget focused
