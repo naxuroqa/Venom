@@ -20,7 +20,7 @@
 @define-color treeview-background #414042;
 @define-color treeview-selected #636466;
 @define-color background #231f20;
-@define-color foreground #f1f2f2;
+@define-color foreground #ffffff;
 @define-color border-color #636466;
 @define-color callbutton-color #6bc260;
 @define-color callbutton-selected lighter(@callbutton-color);
@@ -232,6 +232,8 @@
   border-radius: 0px;
 }
 
+GtkPaned,
+GtkEventBox,
 .conversation_widget,
 .conversation_widget .conversation_view,
 .conversation_widget .view {

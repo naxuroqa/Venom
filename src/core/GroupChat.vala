@@ -42,7 +42,7 @@ namespace Venom {
     }
 
     public string get_name_string() {
-      return "Groupchat #%i".printf(group_id);
+      return local_name == "" ? "Groupchat #%i".printf(group_id) : Markup.escape_text(local_name);
     }
     public string get_name_string_with_hyperlinks() {
       return get_name_string();

@@ -21,9 +21,10 @@
 
 namespace Venom {
   public class ConversationWidget : Gtk.EventBox {
-    private Gtk.Label label_contact_name;
+    private EditableLabel label_contact_name;
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
+    private Gtk.Button button_send;
     private Gtk.Button button_send_file;
 
     private MessageTextView message_textview;
@@ -36,6 +37,7 @@ namespace Venom {
     public signal void typing_status(bool typing);
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
+    public signal void contact_changed(Contact c);
 
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
@@ -46,7 +48,7 @@ namespace Venom {
 
     public void update_contact() {
       // update contact name
-      label_contact_name.label = "<b>%s</b>".printf(contact.get_name_string_with_hyperlinks());
+      label_contact_name.label.label = "<b>%s</b>".printf(contact.get_name_string_with_hyperlinks());
 
       // update contact status message
       label_contact_statusmessage.label = contact.get_status_string_with_hyperlinks();
@@ -58,6 +60,7 @@ namespace Venom {
         conversation_view.is_typing_string = "%s is typing...".printf(Markup.escape_text(contact.name));
 
       button_send_file.sensitive = contact.online;
+      button_send.sensitive = contact.online;
     }
 
     private void init_widgets() {
@@ -70,19 +73,37 @@ namespace Venom {
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.add(box);
       this.get_style_context().add_class("conversation_widget");
-      label_contact_name = builder.get_object("label_contact_name") as Gtk.Label;
       label_contact_statusmessage = builder.get_object("label_contact_statusmessage") as Gtk.Label;
       image_contact_image = builder.get_object("image_contact_image") as Gtk.Image;
 
+      Gtk.Image image_send = builder.get_object("image_send") as Gtk.Image;
       Gtk.Image image_call = builder.get_object("image_call") as Gtk.Image;
       Gtk.Image image_call_video = builder.get_object("image_call_video") as Gtk.Image;
       Gtk.Image image_send_file = builder.get_object("image_send_file") as Gtk.Image;
 
+      Gtk.Label label_contact_name_ = builder.get_object("label_contact_name") as Gtk.Label;
+      Gtk.Box box_user_info = builder.get_object("box_user_info") as Gtk.Box;
+      box_user_info.remove(label_contact_name_);
+      label_contact_name = new EditableLabel.with_label(label_contact_name_);
+      box_user_info.pack_start(label_contact_name, false);
+      label_contact_name.button_cancel.get_style_context().add_class("callbutton");
+      label_contact_name.button_ok.get_style_context().add_class("callbutton");
+      label_contact_name.show_all();
+      label_contact_name.show_entry.connect_after(() => {
+        label_contact_name.entry.text = contact.alias;
+      });
+      label_contact_name.label_changed.connect((new_alias) => {
+        contact.alias = new_alias;
+        contact_changed(contact);
+      });
+
       //TODO
       //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
       //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
+      button_send = builder.get_object("button_send") as Gtk.Button;
       button_send_file = builder.get_object("button_send_file") as Gtk.Button;
 
+      button_send.clicked.connect(() => {textview_activate();});
       button_send_file.clicked.connect(button_send_file_clicked);
 
       Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
@@ -96,6 +117,7 @@ namespace Venom {
 
       scrolled_window_message.add(message_textview);
 
+      image_send.set_from_pixbuf(ResourceFactory.instance.send);
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
@@ -176,8 +198,9 @@ namespace Venom {
 
     public void textview_activate() {
       string s = message_textview.buffer.text;
-      if(s == "")
+      if(!contact.online || message_textview.placeholder_visible || s == "") {
         return;
+      }
 
       GLib.MatchInfo info = null;
       if(Tools.action_regex.match(s, 0, out info) && info.fetch_named("action_name") == "me") {

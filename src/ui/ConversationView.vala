@@ -66,9 +66,6 @@ namespace Venom {
       if(last_message != null && last_message.compare_sender(message)) {
         cm = new ChatMessage(message, short_names, true);
       } else {
-        var sep = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-        conversation_list.pack_start(sep, false, false);
-        sep.show_all();
         cm = new ChatMessage(message, short_names, false);
       }
       conversation_list.pack_start(cm, false, false);

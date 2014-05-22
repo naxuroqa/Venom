@@ -30,6 +30,8 @@ namespace Venom {
     public Gtk.Label label { get; set; }
 
     public signal void label_changed(string label_text);
+    public signal void show_entry();
+    public signal void show_label();
 
     public EditableLabel(string label = "") {
       this.label = new Gtk.Label(label);
@@ -43,12 +45,12 @@ namespace Venom {
       init_signals();
     }
 
-    public void show_label() {
+    private void on_show_label() {
       box_label.visible = true;
       box_entry.visible = false;
     }
 
-    public void show_entry() {
+    private void on_show_entry() {
 //FIXME define GTK_<MAJOR>_<MINOR> in cmake instead of using glib version
 #if GLIB_2_34
       entry.attributes = label.attributes;
@@ -57,6 +59,7 @@ namespace Venom {
       box_entry.no_show_all = false;
       box_entry.show_all();
       box_entry.visible = true;
+      box_entry.no_show_all = true;
     }
 
     private void init_widgets() {
@@ -73,6 +76,7 @@ namespace Venom {
       Gtk.Box box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
       box_label = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
       box_entry = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+      box_entry.spacing = 1;
 
       box_label.pack_start(label);
       box_entry.pack_start(entry);
@@ -119,6 +123,8 @@ namespace Venom {
     }
 
     private void init_signals() {
+      show_entry.connect(on_show_entry);
+      show_label.connect(on_show_label);
       button_press_event.connect((event) => {
         if(!box_entry.visible && event.button == Gdk.BUTTON_PRIMARY) {
           entry.text = label.label;

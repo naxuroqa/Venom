@@ -17,13 +17,18 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
   </object>
+  <object class="GtkImage" id="image_send">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
   <object class="GtkBox" id="box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkBox" id="box2">
-        <property name="height_request">59</property>
+        <property name="height_request">76</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
@@ -56,7 +61,7 @@
                 <property name="margin_left">8</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkBox" id="box5">
+                  <object class="GtkBox" id="box_user_info">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -135,17 +140,15 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="border_width">8</property>
-            <property name="spacing">19</property>
+            <property name="spacing">12</property>
             <property name="homogeneous">True</property>
             <child>
               <object class="GtkButton" id="button_send_file">
-                <property name="width_request">51</property>
-                <property name="height_request">32</property>
+                <property name="width_request">64</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Send file</property>
-                <property name="valign">center</property>
                 <property name="image">image_send_file</property>
                 <style>
                   <class name="callbutton"/>
@@ -159,13 +162,11 @@
             </child>
             <child>
               <object class="GtkButton" id="button_call">
-                <property name="width_request">51</property>
-                <property name="height_request">32</property>
+                <property name="width_request">64</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="no_show_all">True</property>
                 <property name="tooltip_text" translatable="yes">Call contact</property>
-                <property name="valign">center</property>
                 <property name="image">image_call</property>
                 <style>
                   <class name="callbutton"/>
@@ -179,13 +180,11 @@
             </child>
             <child>
               <object class="GtkButton" id="button_call_video">
-                <property name="width_request">51</property>
-                <property name="height_request">32</property>
+                <property name="width_request">64</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="no_show_all">True</property>
                 <property name="tooltip_text" translatable="yes">Call contact with video</property>
-                <property name="valign">center</property>
                 <property name="image">image_call_video</property>
                 <style>
                   <class name="callbutton"/>
@@ -251,7 +250,7 @@
                 <property name="resize">True</property>
                 <property name="shrink">False</property>
               </packing>
-            </child>
+            </child>z
             <child>
               <placeholder/>
             </child>
@@ -262,13 +261,44 @@
           </packing>
         </child>
         <child>
-          <object class="GtkScrolledWindow" id="scrolled_window_message">
+          <object class="GtkBox" id="box6">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="shadow_type">in</property>
-            <property name="min_content_height">0</property>
+            <property name="can_focus">False</property>
+            <property name="border_width">12</property>
+            <property name="spacing">12</property>
             <child>
-              <placeholder/>
+              <object class="GtkScrolledWindow" id="scrolled_window_message">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="shadow_type">in</property>
+                <property name="min_content_height">0</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button_send">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <property name="image">image_send</property>
+                <property name="width_request">64</property>
+                <style>
+                  <class name="callbutton"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
             </child>
           </object>
           <packing>

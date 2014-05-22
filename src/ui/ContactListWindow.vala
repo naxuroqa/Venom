@@ -334,6 +334,7 @@ namespace Venom {
       groupchat_added.connect(contact_list_tree_view.add_entry);
 
       contact_changed.connect( (c) => {
+        session.save_extended_contact_data(c);
         contact_list_tree_view.update_entry(c);
         ConversationWidget w = conversation_widgets[c.friend_id];
         if(w != null)
@@ -923,6 +924,7 @@ namespace Venom {
         w.filetransfer_rejected.connect ( (ft) => {
           session.reject_file(ft.friend.friend_id,ft.filenumber);
         });
+        w.contact_changed.connect((contact) => {contact_changed(contact);});
         conversation_widgets[c.friend_id] = w;
         notebook_conversations.append_page(w, null);
       }
@@ -937,6 +939,7 @@ namespace Venom {
         incoming_group_action.connect(w.on_incoming_message);
         w.new_outgoing_message.connect(on_outgoing_group_message);
         w.new_outgoing_action.connect(on_outgoing_group_action);
+        w.groupchat_changed.connect((groupchat) => {groupchat_changed(groupchat);});
         group_conversation_widgets[g.group_id] = w;
         notebook_conversations.append_page(w, null);
       }
