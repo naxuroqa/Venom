@@ -35,6 +35,7 @@ namespace Venom {
     private Gtk.Box conversation_list;
     private Gtk.Label is_typing_label;
     private IMessage last_message = null;
+    private int last_width;
 
     public void on_typing_changed(bool status) {
       is_typing_label.visible = status;
@@ -59,17 +60,26 @@ namespace Venom {
     public void add_filetransfer(FileTransferChatEntry entry) {
       conversation_list.pack_start(entry, false, false, 0);
       entry.set_visible(true);
+
+      last_message = null;
     }
 
     public void add_message(IMessage message) {
+      bool same_sender = false;
       ChatMessage cm;
+
       if(last_message != null && last_message.compare_sender(message)) {
-        cm = new ChatMessage(message, short_names, true);
-      } else {
-        cm = new ChatMessage(message, short_names, false);
+        same_sender = true;
       }
+
+      cm = new ChatMessage(message, short_names, same_sender, last_width);
+
       conversation_list.pack_start(cm, false, false);
       cm.show_all();
+
+      if(!same_sender) {
+        last_width = cm.get_name_label_width();
+      }
       last_message = message;
     }
     public void register_search_entry(Gtk.Entry entry) {
