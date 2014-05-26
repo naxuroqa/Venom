@@ -553,7 +553,7 @@ namespace Venom {
       uint8 filenumber = session.send_file_request(ft.friend.friend_id,ft.file_size,ft.name);
       if(filenumber != -1) {
         ft.filenumber = filenumber;
-        GLib.HashTable<uint8, FileTransfer> transfers = session.get_filetransfers();
+        GLib.HashTable<uint8, FileTransfer> transfers = session.get_contact_list()[ft.friend.friend_id].get_filetransfers();
         transfers[filenumber] = ft;
       } else {
         stderr.printf("failed to send file %s to %s", ft.name, ft.friend.name);
@@ -787,7 +787,7 @@ namespace Venom {
       Contact contact = session.get_contact_list()[friendnumber];
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null);
       ft.filenumber = filenumber;
-      GLib.HashTable<uint8,FileTransfer> transfers = session.get_filetransfers();
+      GLib.HashTable<uint8,FileTransfer> transfers = session.get_contact_list()[friendnumber].get_filetransfers();
       transfers[filenumber] = ft;
       ConversationWidget w = conversation_widgets[friendnumber];
       w.on_incoming_filetransfer(ft);
@@ -796,7 +796,7 @@ namespace Venom {
 
     private void send_file(int friendnumber, uint8 filenumber) {
       int chunk_size =  session.get_recommended_data_size(friendnumber);
-      FileTransfer ft = session.get_filetransfers()[filenumber];
+      FileTransfer ft = session.get_contact_list()[friendnumber].get_filetransfers()[filenumber];
       ft.status = FileTransferStatus.IN_PROGRESS;
       if(ft == null) {
         stderr.printf("Trying to send unknown file");
@@ -857,7 +857,7 @@ namespace Venom {
     }
 
     private void on_file_control_request(int friendnumber,uint8 filenumber,uint8 receive_send,uint8 status, uint8[] data) {
-      FileTransfer ft = session.get_filetransfers()[filenumber];
+      FileTransfer ft = session.get_contact_list()[friendnumber].get_filetransfers()[filenumber];
       if(ft == null)
         return;
       if(status == Tox.FileControlStatus.ACCEPT && receive_send == 1) {
@@ -883,7 +883,7 @@ namespace Venom {
     }
 
     private void on_file_data(int friendnumber,uint8 filenumber,uint8[] data) {
-      FileTransfer ft = session.get_filetransfers()[filenumber];
+      FileTransfer ft = session.get_contact_list()[friendnumber].get_filetransfers()[filenumber];
       if(ft == null) {
         session.reject_file(friendnumber,filenumber);
         return;

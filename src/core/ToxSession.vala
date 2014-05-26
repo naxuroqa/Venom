@@ -52,7 +52,6 @@ namespace Venom {
     private DhtNode[] dht_nodes = {};
     private GLib.HashTable<int, Contact> _contacts = new GLib.HashTable<int, Contact>(null, null);
     private GLib.HashTable<int, GroupChat> _groups = new GLib.HashTable<int, GroupChat>(null, null);
-    private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
     private Thread<int> session_thread = null;
     private bool bootstrapped = false;
     private bool ipv6 = false;
@@ -641,10 +640,6 @@ namespace Venom {
 
     public unowned GLib.HashTable<int, Contact> get_contact_list() {
       return _contacts;
-    }
-
-    public unowned GLib.HashTable<uint8, FileTransfer> get_filetransfers() {
-      return _file_transfers;
     }
 
     public uint8 send_file_request(int friend_number, uint64 file_size, string filename)
