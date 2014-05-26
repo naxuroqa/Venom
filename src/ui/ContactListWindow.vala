@@ -808,15 +808,16 @@ namespace Venom {
         file_stream = file.read();
         var file_info = file.query_info ("*", FileQueryInfoFlags.NONE);
         uint64 file_size = file_info.get_size();
-        uint64 remaining_bytes_to_send = file_size;
+        uint64 remaining_bytes_to_send = file_size - ft.bytes_processed;
         uint8[] bytes = new uint8[chunk_size];
         bool read_more = true;
         while ( remaining_bytes_to_send > 0 ) {
-          if(ft.status == FileTransferStatus.SENDING_FAILED || ft.status == FileTransferStatus.CANCELED) {
+          if(ft.status == FileTransferStatus.SENDING_FAILED || ft.status == FileTransferStatus.CANCELED
+             || ft.status == FileTransferStatus.SENDING_BROKEN) {
             return;
           }
           if(ft.status == FileTransferStatus.PAUSED) {
-            Thread.usleep(2500);
+            Thread.usleep(1000);
             continue;
           }
           if(remaining_bytes_to_send < chunk_size) {
@@ -836,7 +837,7 @@ namespace Venom {
             read_more = true;
           } else {
             read_more = false;
-            Thread.usleep(25000);
+            Thread.usleep(1000);
           }
         }
         session.send_filetransfer_end(friendnumber,filenumber);
@@ -866,6 +867,11 @@ namespace Venom {
             send_file(friendnumber,filenumber);return true;
         });
       }
+
+      if(status == Tox.FileControlStatus.ACCEPT && receive_send == 0) {
+        ft.status = FileTransferStatus.IN_PROGRESS;
+      }
+
       if(status == Tox.FileControlStatus.KILL && receive_send == 1) {
         if(ft.status == FileTransferStatus.PENDING) {
           ft.status = FileTransferStatus.REJECTED;
@@ -879,6 +885,15 @@ namespace Venom {
       if(status == Tox.FileControlStatus.FINISHED && receive_send == 0) {
         ft.status = FileTransferStatus.DONE;
         stderr.printf("File transfer finished for file number %u",filenumber);
+      }
+
+      if(status == Tox.FileControlStatus.RESUME_BROKEN && receive_send == 1) {
+        ft.bytes_processed = ((uint64[])data)[0];
+        ft.status = FileTransferStatus.IN_PROGRESS;
+        session.accept_file_resume(friendnumber, filenumber);
+        new Thread<bool>(null, () => {
+            send_file(friendnumber,filenumber);return true;
+        });
       }
     }
 

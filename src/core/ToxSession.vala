@@ -265,8 +265,24 @@ namespace Venom {
         Contact contact = _contacts.get(friend_number);
         contact.online = (status != 0);
         contact.last_seen = new DateTime.now_local();
+
+        if(status == 0) {
+          contact.get_filetransfers().for_each((id, ft) => {
+              ft.status = (ft.direction == FileTransferDirection.INCOMING) ? FileTransferStatus.RECEIVING_BROKEN : FileTransferStatus.SENDING_BROKEN;
+            });
+        } else {
+          contact.get_filetransfers().for_each((id, ft) => {
+              if(ft.status == FileTransferStatus.RECEIVING_BROKEN) {
+                lock(handle) {
+                  uint64[] data = {ft.bytes_processed};
+                  handle.file_send_control(friend_number, 1, id, Tox.FileControlStatus.RESUME_BROKEN, (uint8[])data);
+                }
+              }
+            });
+        }
+
         on_connection_status(contact);
-        return false; 
+        return false;
       });
     }
 
@@ -653,6 +669,12 @@ namespace Venom {
     public void accept_file (int friendnumber, uint8 filenumber) {
       lock(handle) {
         handle.file_send_control(friendnumber, 1, filenumber, Tox.FileControlStatus.ACCEPT, null);
+      }
+    }
+
+    public void accept_file_resume (int friendnumber, uint8 filenumber) {
+      lock(handle) {
+        handle.file_send_control(friendnumber, 0, filenumber, Tox.FileControlStatus.ACCEPT, null);
       }
     }
 

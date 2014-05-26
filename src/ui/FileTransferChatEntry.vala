@@ -95,6 +95,8 @@ namespace Venom {
         } break; 
         case FileTransferStatus.IN_PROGRESS: {
           save_as_button.visible = false;
+          size_or_status_label.set_text( UITools.format_filesize( ft.file_size ) );
+          cancel_button.visible = true;
         } break;
         case FileTransferStatus.PAUSED: {
           size_or_status_label.set_text("Paused");
@@ -116,6 +118,15 @@ namespace Venom {
           progress_bar.visible = false;
           disable_buttons();
         } break; 
+
+        case FileTransferStatus.SENDING_BROKEN: {
+          size_or_status_label.set_text("Disconnected");
+        } break;
+
+        case FileTransferStatus.RECEIVING_BROKEN: {
+          size_or_status_label.set_text("Disconnected");
+        } break;
+
         default:
           GLib.assert_not_reached();
       }
