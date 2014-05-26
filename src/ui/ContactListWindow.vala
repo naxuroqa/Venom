@@ -552,7 +552,7 @@ namespace Venom {
       stdout.printf("sending file %s to %s\n",ft.name,ft.friend.name);
       uint8 filenumber = session.send_file_request(ft.friend.friend_id,ft.file_size,ft.name);
       if(filenumber != -1) {
-        //ft.filenumber = filenumber;
+        ft.filenumber = filenumber;
         GLib.HashTable<uint8, FileTransfer> transfers = session.get_filetransfers();
         transfers[filenumber] = ft;
       } else {
@@ -786,6 +786,7 @@ namespace Venom {
       stdout.printf ("received file send request friend: %i filenumber: %i filename: %s \n",friendnumber,filenumber,filename );
       Contact contact = session.get_contact_list()[friendnumber];
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null);
+      ft.filenumber = filenumber;
       GLib.HashTable<uint8,FileTransfer> transfers = session.get_filetransfers();
       transfers[filenumber] = ft;
       ConversationWidget w = conversation_widgets[friendnumber];
