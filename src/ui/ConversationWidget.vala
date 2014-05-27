@@ -122,7 +122,13 @@ namespace Venom {
           try {
             uint8[] data;
             pb.save_to_buffer(out data, "png");
-            prepare_send_data("clipboard.png", data);
+            if(data.length > 0x100000) {
+              pb.save_to_buffer(out data, "jpeg");
+              prepare_send_data("clipboard.jpg", data);
+            } else {
+              prepare_send_data("clipboard.png", data);
+            }
+
           } catch (Error error) {
           }
         }

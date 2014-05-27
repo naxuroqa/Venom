@@ -786,7 +786,7 @@ namespace Venom {
       stdout.printf ("received file send request friend: %i filenumber: %i filename: %s \n",friendnumber,filenumber,filename );
       Contact contact = session.get_contact_list()[friendnumber];
       FileTransfer ft;
-      if(filename.has_suffix(".png") && filesize <= 0x100000) {
+      if((filename.has_suffix(".png") || filename.has_suffix(".jpg") || filename.has_suffix(".jpeg")) && filesize <= 0x100000) {
         ft = new FileTransfer.recvdata(contact, filename, filesize);
       } else {
         ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null);

@@ -59,24 +59,23 @@ namespace Venom {
 
     public void add_filetransfer(FileTransferChatEntry entry) {
       entry.filetransfer_completed.connect((entry, ft) => {
-        if(ft.name.has_suffix(".png")) {
-          if(!ft.isfile) {
-            try {
-              Gdk.PixbufLoader loader = new Gdk.PixbufLoader.with_mime_type("image/png");
-              loader.write(ft.data);
-              loader.close();
+        if(!ft.isfile) {
+          try {
+            Gdk.PixbufLoader loader = new Gdk.PixbufLoader();
+            loader.write(ft.data);
+            loader.close();
 
-              int position;
-              conversation_list.child_get(entry, "position", out position);
+            int position;
+            conversation_list.child_get(entry, "position", out position);
 
-              Gtk.Image image = new Gtk.Image.from_pixbuf(loader.get_pixbuf());
-              conversation_list.pack_start(image, false, false, 0);
-              conversation_list.reorder_child(image, position + 1);
-              image.set_visible(true);
+            Gtk.Image image = new Gtk.Image.from_pixbuf(loader.get_pixbuf());
+            conversation_list.pack_start(image, false, false, 0);
+            conversation_list.reorder_child(image, position + 1);
+            image.set_alignment(0, 0);
+            image.set_visible(true);
 
-            } catch (Error error) {
-              stderr.printf("Error: %s\n", error.message);
-            }
+          } catch (Error error) {
+            stderr.printf("Error: %s\n", error.message);
           }
         }
       });
