@@ -953,6 +953,7 @@ namespace Venom {
         ByteArray buffer = new ByteArray.take(ft.data);
         buffer.append(data);
         ft.data = buffer.data;
+        ft.bytes_processed += data.length;
       }
 
     }
