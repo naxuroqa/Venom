@@ -115,6 +115,19 @@ namespace Venom {
         typing_status(is_typing);
       });
 
+      message_textview.paste_clipboard.connect(() => {
+        Gtk.Clipboard cb = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD);
+        if(cb.wait_is_image_available()) {
+          Gdk.Pixbuf pb = cb.wait_for_image();
+          try {
+            uint8[] data;
+            pb.save_to_buffer(out data, "png");
+            prepare_send_data("clipboard.png", data);
+          } catch (Error error) {
+          }
+        }
+      });
+
       scrolled_window_message.add(message_textview);
 
       image_send.set_from_pixbuf(ResourceFactory.instance.send);
@@ -254,6 +267,12 @@ namespace Venom {
         return;
       }
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.OUTGOING, file_size, file.get_basename(), file.get_path() );
+      new_outgoing_file(ft);
+      add_filetransfer(ft);
+    }
+
+    private void prepare_send_data(string name, uint8[] data) {
+      FileTransfer ft = new FileTransfer.senddata(contact, name, data);
       new_outgoing_file(ft);
       add_filetransfer(ft);
     }
