@@ -268,7 +268,9 @@ namespace Venom {
 
         if(status == 0) {
           contact.get_filetransfers().for_each((id, ft) => {
-              ft.status = (ft.direction == FileTransferDirection.INCOMING) ? FileTransferStatus.RECEIVING_BROKEN : FileTransferStatus.SENDING_BROKEN;
+              if(ft.status == FileTransferStatus.PENDING || ft.status == FileTransferStatus.IN_PROGRESS || ft.status == FileTransferStatus.PAUSED) {
+                ft.status = (ft.direction == FileTransferDirection.INCOMING) ? FileTransferStatus.RECEIVING_BROKEN : FileTransferStatus.SENDING_BROKEN;
+              }
             });
         } else {
           contact.get_filetransfers().for_each((id, ft) => {
