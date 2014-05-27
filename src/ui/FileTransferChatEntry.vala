@@ -29,6 +29,7 @@ namespace Venom {
 
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
+    public signal void filetransfer_completed(FileTransferChatEntry entry, FileTransfer ft);
 
     public FileTransferChatEntry(FileTransfer ft){
       this.ft = ft;
@@ -87,6 +88,7 @@ namespace Venom {
           }
           progress_bar.visible = false;
           disable_buttons();
+          filetransfer_completed(this, ft);
         } break;
         case FileTransferStatus.REJECTED: {
           size_or_status_label.set_text("File was rejected");
