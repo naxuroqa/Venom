@@ -552,8 +552,8 @@ namespace Venom {
       stdout.printf("sending file %s to %s\n",ft.name,ft.friend.name);
       uint8 filenumber = session.send_file_request(ft.friend.friend_id,ft.file_size,ft.name);
       if(filenumber != -1) {
-        //ft.filenumber = filenumber;
-        GLib.HashTable<uint8, FileTransfer> transfers = session.get_filetransfers();
+        ft.filenumber = filenumber;
+        GLib.HashTable<uint8, FileTransfer> transfers = session.get_contact_list()[ft.friend.friend_id].get_filetransfers();
         transfers[filenumber] = ft;
       } else {
         stderr.printf("failed to send file %s to %s", ft.name, ft.friend.name);
@@ -785,47 +785,79 @@ namespace Venom {
     private void on_file_sendrequest(int friendnumber, uint8 filenumber, uint64 filesize,string filename) {
       stdout.printf ("received file send request friend: %i filenumber: %i filename: %s \n",friendnumber,filenumber,filename );
       Contact contact = session.get_contact_list()[friendnumber];
-      FileTransfer ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null);
-      GLib.HashTable<uint8,FileTransfer> transfers = session.get_filetransfers();
+      FileTransfer ft;
+      if((filename.has_suffix(".png") || filename.has_suffix(".jpg") || filename.has_suffix(".jpeg")) && filesize <= 0x100000) {
+        ft = new FileTransfer.recvdata(contact, filename, filesize);
+      } else {
+        ft = new FileTransfer(contact, FileTransferDirection.INCOMING, filesize, filename, null);
+      }
+
+      ft.filenumber = filenumber;
+      GLib.HashTable<uint8,FileTransfer> transfers = session.get_contact_list()[friendnumber].get_filetransfers();
       transfers[filenumber] = ft;
       ConversationWidget w = conversation_widgets[friendnumber];
       w.on_incoming_filetransfer(ft);
+
+      if(!ft.isfile) {
+        session.accept_file(friendnumber, filenumber);
+        ft.status = FileTransferStatus.IN_PROGRESS;
+      }
+
       this.set_urgency();
     }
 
     private void send_file(int friendnumber, uint8 filenumber) {
       int chunk_size =  session.get_recommended_data_size(friendnumber);
-      FileTransfer ft = session.get_filetransfers()[filenumber];
+      FileTransfer ft = session.get_contact_list()[friendnumber].get_filetransfers()[filenumber];
       ft.status = FileTransferStatus.IN_PROGRESS;
       if(ft == null) {
         stderr.printf("Trying to send unknown file");
         return;
       }
-      File file = File.new_for_path(ft.path);
+
       GLib.FileInputStream file_stream = null;
+      File file = null;
+
+      if(ft.isfile) {
+        file = File.new_for_path(ft.path);
+      }
+
       try {
-        file_stream = file.read();
-        var file_info = file.query_info ("*", FileQueryInfoFlags.NONE);
-        uint64 file_size = file_info.get_size();
-        uint64 remaining_bytes_to_send = file_size;
+        uint64 file_size;
+
+        if(ft.isfile) {
+          file_stream = file.read();
+          var file_info = file.query_info ("*", FileQueryInfoFlags.NONE);
+          file_size = file_info.get_size();
+        } else {
+          file_size = ft.file_size;
+        }
+
+        uint64 remaining_bytes_to_send = file_size - ft.bytes_processed;
         uint8[] bytes = new uint8[chunk_size];
         bool read_more = true;
         while ( remaining_bytes_to_send > 0 ) {
-          if(ft.status == FileTransferStatus.SENDING_FAILED || ft.status == FileTransferStatus.CANCELED) {
+          if(ft.status == FileTransferStatus.SENDING_FAILED || ft.status == FileTransferStatus.CANCELED
+             || ft.status == FileTransferStatus.SENDING_BROKEN) {
             return;
           }
           if(ft.status == FileTransferStatus.PAUSED) {
-            Thread.usleep(2500);
+            Thread.usleep(1000);
             continue;
           }
+
           if(remaining_bytes_to_send < chunk_size) {
             chunk_size = (int) remaining_bytes_to_send;
             bytes = new uint8[chunk_size];
           }
           if(read_more) {
-            size_t res = file_stream.read(bytes);
-            if(res != chunk_size) {
-              stderr.printf("Read incorrect number of bytes from file\n");
+            if(ft.isfile) {
+              size_t res = file_stream.read(bytes);
+              if(res != chunk_size) {
+                stderr.printf("Read incorrect number of bytes from file\n");
+              }
+            } else {
+              Memory.copy(bytes, (uint8*)ft.data + ft.bytes_processed, chunk_size);
             }
           }
           int res = session.send_file_data(friendnumber,filenumber,bytes);
@@ -835,7 +867,7 @@ namespace Venom {
             read_more = true;
           } else {
             read_more = false;
-            Thread.usleep(25000);
+            Thread.usleep(1000);
           }
         }
         session.send_filetransfer_end(friendnumber,filenumber);
@@ -856,7 +888,7 @@ namespace Venom {
     }
 
     private void on_file_control_request(int friendnumber,uint8 filenumber,uint8 receive_send,uint8 status, uint8[] data) {
-      FileTransfer ft = session.get_filetransfers()[filenumber];
+      FileTransfer ft = session.get_contact_list()[friendnumber].get_filetransfers()[filenumber];
       if(ft == null)
         return;
       if(status == Tox.FileControlStatus.ACCEPT && receive_send == 1) {
@@ -865,6 +897,11 @@ namespace Venom {
             send_file(friendnumber,filenumber);return true;
         });
       }
+
+      if(status == Tox.FileControlStatus.ACCEPT && receive_send == 0) {
+        ft.status = FileTransferStatus.IN_PROGRESS;
+      }
+
       if(status == Tox.FileControlStatus.KILL && receive_send == 1) {
         if(ft.status == FileTransferStatus.PENDING) {
           ft.status = FileTransferStatus.REJECTED;
@@ -879,28 +916,46 @@ namespace Venom {
         ft.status = FileTransferStatus.DONE;
         stderr.printf("File transfer finished for file number %u",filenumber);
       }
+
+      if(status == Tox.FileControlStatus.RESUME_BROKEN && receive_send == 1) {
+        ft.bytes_processed = ((uint64[])data)[0];
+        ft.status = FileTransferStatus.IN_PROGRESS;
+        session.accept_file_resume(friendnumber, filenumber);
+        new Thread<bool>(null, () => {
+            send_file(friendnumber,filenumber);return true;
+        });
+      }
     }
 
     private void on_file_data(int friendnumber,uint8 filenumber,uint8[] data) {
-      FileTransfer ft = session.get_filetransfers()[filenumber];
+      FileTransfer ft = session.get_contact_list()[friendnumber].get_filetransfers()[filenumber];
       if(ft == null) {
         session.reject_file(friendnumber,filenumber);
         return;
       }
-      string path = ft.path;
-      File file = File.new_for_path(path);
-      try{
-        if(!file.query_exists())
-          file.create(FileCreateFlags.NONE);
-        FileOutputStream fos = file.append_to(FileCreateFlags.NONE);
-        size_t bytes_written;
-        fos.write_all(data,out bytes_written);
-        ft.bytes_processed += bytes_written;
-        fos.close();
-      } catch (Error e){
-        stderr.printf("Error while trying to write data to file\n");
-        ft.status = FileTransferStatus.RECEIVING_FAILED;
+
+      if(ft.isfile) {
+        string path = ft.path;
+        File file = File.new_for_path(path);
+        try{
+          if(!file.query_exists())
+            file.create(FileCreateFlags.NONE);
+          FileOutputStream fos = file.append_to(FileCreateFlags.NONE);
+          size_t bytes_written;
+          fos.write_all(data,out bytes_written);
+          ft.bytes_processed += bytes_written;
+          fos.close();
+        } catch (Error e){
+          stderr.printf("Error while trying to write data to file\n");
+          ft.status = FileTransferStatus.RECEIVING_FAILED;
+        }
+      } else {
+        ByteArray buffer = new ByteArray.take(ft.data);
+        buffer.append(data);
+        ft.data = buffer.data;
+        ft.bytes_processed += data.length;
       }
+
     }
 
     private ConversationWidget? open_conversation_with(Contact c) {

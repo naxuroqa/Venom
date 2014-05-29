@@ -50,6 +50,12 @@ namespace Venom {
     public int         unread_messages { get; set; default = 0; }
     public bool        is_typing       { get; set; default = false; }
 
+    private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
+
+    public unowned GLib.HashTable<uint8, FileTransfer> get_filetransfers() {
+      return _file_transfers;
+    }
+
     public Contact(uint8[] public_key, int friend_id = -1) {
       this.public_key = public_key;
       this.friend_id = friend_id;

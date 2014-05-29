@@ -52,7 +52,6 @@ namespace Venom {
     private DhtNode[] dht_nodes = {};
     private GLib.HashTable<int, Contact> _contacts = new GLib.HashTable<int, Contact>(null, null);
     private GLib.HashTable<int, GroupChat> _groups = new GLib.HashTable<int, GroupChat>(null, null);
-    private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
     private Thread<int> session_thread = null;
     private bool bootstrapped = false;
     private bool ipv6 = false;
@@ -266,8 +265,26 @@ namespace Venom {
         Contact contact = _contacts.get(friend_number);
         contact.online = (status != 0);
         contact.last_seen = new DateTime.now_local();
+
+        if(status == 0) {
+          contact.get_filetransfers().for_each((id, ft) => {
+              if(ft.status == FileTransferStatus.PENDING || ft.status == FileTransferStatus.IN_PROGRESS || ft.status == FileTransferStatus.PAUSED) {
+                ft.status = (ft.direction == FileTransferDirection.INCOMING) ? FileTransferStatus.RECEIVING_BROKEN : FileTransferStatus.SENDING_BROKEN;
+              }
+            });
+        } else {
+          contact.get_filetransfers().for_each((id, ft) => {
+              if(ft.status == FileTransferStatus.RECEIVING_BROKEN) {
+                lock(handle) {
+                  uint64[] data = {ft.bytes_processed};
+                  handle.file_send_control(friend_number, 1, id, Tox.FileControlStatus.RESUME_BROKEN, (uint8[])data);
+                }
+              }
+            });
+        }
+
         on_connection_status(contact);
-        return false; 
+        return false;
       });
     }
 
@@ -643,10 +660,6 @@ namespace Venom {
       return _contacts;
     }
 
-    public unowned GLib.HashTable<uint8, FileTransfer> get_filetransfers() {
-      return _file_transfers;
-    }
-
     public uint8 send_file_request(int friend_number, uint64 file_size, string filename)
       requires(filename != null)
     {
@@ -658,6 +671,12 @@ namespace Venom {
     public void accept_file (int friendnumber, uint8 filenumber) {
       lock(handle) {
         handle.file_send_control(friendnumber, 1, filenumber, Tox.FileControlStatus.ACCEPT, null);
+      }
+    }
+
+    public void accept_file_resume (int friendnumber, uint8 filenumber) {
+      lock(handle) {
+        handle.file_send_control(friendnumber, 0, filenumber, Tox.FileControlStatus.ACCEPT, null);
       }
     }
 
@@ -732,7 +751,7 @@ namespace Venom {
         lock(handle) {
           handle.do();
         }
-        Thread.usleep(25000);
+        Thread.usleep(1000);
       }
       stdout.printf("Background thread stopped.\n");
       return 0;
