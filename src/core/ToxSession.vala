@@ -44,11 +44,14 @@ namespace Venom {
   // Wrapper class for accessing tox functions threadsafe
   public class ToxSession : Object {
     private Tox.Tox handle;
-    private ILocalStorage local_storage;
+    private IMessageLog message_log;
+    private IContactStorage contact_storage;
+    private IDhtNodeStorage dht_node_storage;
+    private Sqlite.Database db;
+
     private DhtNode[] dht_nodes = {};
     private GLib.HashTable<int, Contact> _contacts = new GLib.HashTable<int, Contact>(null, null);
     private GLib.HashTable<int, GroupChat> _groups = new GLib.HashTable<int, GroupChat>(null, null);
-    private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
     private Thread<int> session_thread = null;
     private bool bootstrapped = false;
     private bool ipv6 = false;
@@ -91,11 +94,23 @@ namespace Venom {
       handle = new Tox.Tox( ipv6 ? 1 : 0);
 
       //start local storage
-      if(Settings.instance.enable_logging) {
-        local_storage = new LocalStorage();
-        local_storage.connect_to(this);
-      } else {
-        local_storage = new DummyStorage();
+      try {
+        SqliteTools.open_db(ResourceFactory.instance.db_filename, out db);
+
+        if(Settings.instance.enable_logging) {
+          message_log = new SqliteMessageLog(db);
+          message_log.connect_to(this);
+        } else {
+          message_log = new DummyMessageLog();
+        }
+        contact_storage = new SqliteContactStorage(db);
+        dht_node_storage = new DummyDhtNodeStorage();
+        //unfinished, so replaced with dummy storage
+        //dht_node_storage = new SqliteDhtNodeStorage(db);
+      } catch (Error e) {
+        stderr.printf("Error opening database: %s\n", e.message);
+        message_log = new DummyMessageLog();
+        dht_node_storage = new DummyDhtNodeStorage();
       }
 
       init_dht_nodes();
@@ -108,22 +123,11 @@ namespace Venom {
     }
 
     private void init_dht_nodes() {
-      dht_nodes += new DhtNode.ipv4(
-        "192.254.75.98",
-        "FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"
-      );
-      dht_nodes += new DhtNode.ipv6(
-        "2607:5600:284::2",
-        "FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"
-      );
-      dht_nodes += new DhtNode.ipv4(
-        "66.175.223.88",
-        "B24E2FB924AE66D023FE1E42A2EE3B432010206F751A2FFD3E297383ACF1572E"
-      );
-      dht_nodes += new DhtNode.ipv4(
-        "192.210.149.121",
-        "F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67"
-      );
+      dht_nodes = dht_node_storage.get_dht_nodes();
+      if(dht_nodes.length == 0) {
+        DummyDhtNodeStorage dummy_storage = new DummyDhtNodeStorage();
+        dht_nodes = dummy_storage.get_dht_nodes();
+      }
     }
 
     private void init_callbacks() {
@@ -173,6 +177,7 @@ namespace Venom {
         if(last_seen > 0) {
           c.last_seen = new DateTime.from_unix_local((int64)last_seen);
         }
+        contact_storage.load_contact_data(c);
         _contacts.set(friend_id, c);
       };
     }
@@ -260,8 +265,26 @@ namespace Venom {
         Contact contact = _contacts.get(friend_number);
         contact.online = (status != 0);
         contact.last_seen = new DateTime.now_local();
+
+        if(status == 0) {
+          contact.get_filetransfers().for_each((id, ft) => {
+              if(ft.status == FileTransferStatus.PENDING || ft.status == FileTransferStatus.IN_PROGRESS || ft.status == FileTransferStatus.PAUSED) {
+                ft.status = (ft.direction == FileTransferDirection.INCOMING) ? FileTransferStatus.RECEIVING_BROKEN : FileTransferStatus.SENDING_BROKEN;
+              }
+            });
+        } else {
+          contact.get_filetransfers().for_each((id, ft) => {
+              if(ft.status == FileTransferStatus.RECEIVING_BROKEN) {
+                lock(handle) {
+                  uint64[] data = {ft.bytes_processed};
+                  handle.file_send_control(friend_number, 1, id, Tox.FileControlStatus.RESUME_BROKEN, (uint8[])data);
+                }
+              }
+            });
+        }
+
         on_connection_status(contact);
-        return false; 
+        return false;
       });
     }
 
@@ -369,7 +392,17 @@ namespace Venom {
       });
     }
 
-    ////////////////////////////// Wrapper functions ////////////////////////////////
+    ////////////////////////// Misc functions //////////////////////////////////
+
+    public void save_extended_contact_data(Contact c) {
+      contact_storage.save_contact_data(c);
+    }
+
+    public void load_extended_contact_data(Contact c) {
+      contact_storage.load_contact_data(c);
+    }
+
+    ///////////////////////// Wrapper functions ////////////////////////////////
 
     // Add a friend, returns Tox.FriendAddError on error and friend_number on success
     public Tox.FriendAddError add_friend(Contact c, string message)
@@ -627,10 +660,6 @@ namespace Venom {
       return _contacts;
     }
 
-    public unowned GLib.HashTable<uint8, FileTransfer> get_filetransfers() {
-      return _file_transfers;
-    }
-
     public uint8 send_file_request(int friend_number, uint64 file_size, string filename)
       requires(filename != null)
     {
@@ -642,6 +671,12 @@ namespace Venom {
     public void accept_file (int friendnumber, uint8 filenumber) {
       lock(handle) {
         handle.file_send_control(friendnumber, 1, filenumber, Tox.FileControlStatus.ACCEPT, null);
+      }
+    }
+
+    public void accept_file_resume (int friendnumber, uint8 filenumber) {
+      lock(handle) {
+        handle.file_send_control(friendnumber, 0, filenumber, Tox.FileControlStatus.ACCEPT, null);
       }
     }
 
@@ -716,7 +751,7 @@ namespace Venom {
         lock(handle) {
           handle.do();
         }
-        Thread.usleep(25000);
+        Thread.usleep(1000);
       }
       stdout.printf("Background thread stopped.\n");
       return 0;
@@ -765,6 +800,7 @@ namespace Venom {
       if(ret != 0)
         throw new IOError.FAILED("Error while loading messenger data.");
       init_contact_list();
+      message_log.myId = Tools.bin_to_hexstring(get_address());
     }
 
     // Save messenger data from file
@@ -795,7 +831,7 @@ namespace Venom {
     public GLib.List<Message> load_history_for_contact(Contact c)
       requires(c != null)
     {
-      return local_storage.retrieve_history(c);
+      return message_log.retrieve_history(c);
     }
   }
 }
