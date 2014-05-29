@@ -28,6 +28,8 @@ namespace Venom {
     PENDING,
     SENDING_FAILED,
     RECEIVING_FAILED,
+    SENDING_BROKEN,
+    RECEIVING_BROKEN,
     REJECTED,
     IN_PROGRESS,
     PAUSED,
@@ -62,6 +64,8 @@ namespace Venom {
         _bytes_processed = value;
       }
     }
+    public bool isfile { get; set; }
+    public uint8[] data { get; set; }
     public string name { get; set; }
     public string path { get; set; }
     public DateTime time_sent { get; set; }
@@ -71,7 +75,34 @@ namespace Venom {
       this.send_receive = send_receive;
       this.file_size = file_size;
       this.name = name;
+      this.isfile = true;
       this.path = path;
+      this.time_sent = new DateTime.now_local();
+      this.status = FileTransferStatus.PENDING;
+      this.bytes_processed = 0;
+    }
+
+    public FileTransfer.senddata(Contact friend, string name, uint8[] data) {
+      this.friend = friend;
+      this.direction = FileTransferDirection.OUTGOING;
+      this.send_receive = 0;
+      this.file_size = data.length;
+      this.name = name;
+      this.isfile = false;
+      this.data = data;
+      this.time_sent = new DateTime.now_local();
+      this.status = FileTransferStatus.PENDING;
+      this.bytes_processed = 0;
+    }
+
+    public FileTransfer.recvdata(Contact friend, string name, uint64 file_size) {
+      this.friend = friend;
+      this.direction = FileTransferDirection.INCOMING;
+      this.send_receive = 1;
+      this.file_size = file_size;
+      this.name = name;
+      this.isfile = false;
+      this.data = {};
       this.time_sent = new DateTime.now_local();
       this.status = FileTransferStatus.PENDING;
       this.bytes_processed = 0;

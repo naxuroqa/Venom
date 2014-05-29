@@ -29,6 +29,7 @@ namespace Venom {
 
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
+    public signal void filetransfer_completed(FileTransferChatEntry entry, FileTransfer ft);
 
     public FileTransferChatEntry(FileTransfer ft){
       this.ft = ft;
@@ -87,6 +88,7 @@ namespace Venom {
           }
           progress_bar.visible = false;
           disable_buttons();
+          filetransfer_completed(this, ft);
         } break;
         case FileTransferStatus.REJECTED: {
           size_or_status_label.set_text("File was rejected");
@@ -95,6 +97,8 @@ namespace Venom {
         } break; 
         case FileTransferStatus.IN_PROGRESS: {
           save_as_button.visible = false;
+          size_or_status_label.set_text( UITools.format_filesize( ft.file_size ) );
+          cancel_button.visible = true;
         } break;
         case FileTransferStatus.PAUSED: {
           size_or_status_label.set_text("Paused");
@@ -116,6 +120,15 @@ namespace Venom {
           progress_bar.visible = false;
           disable_buttons();
         } break; 
+
+        case FileTransferStatus.SENDING_BROKEN: {
+          size_or_status_label.set_text("Disconnected");
+        } break;
+
+        case FileTransferStatus.RECEIVING_BROKEN: {
+          size_or_status_label.set_text("Disconnected");
+        } break;
+
         default:
           GLib.assert_not_reached();
       }
