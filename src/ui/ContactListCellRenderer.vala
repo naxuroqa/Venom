@@ -21,7 +21,7 @@
 
 namespace Venom {
   public class ContactListCellRenderer : Gtk.CellRenderer {
-    public GLib.Object entry { get; set; }
+    public IContact entry { get; set; }
     private static Gdk.RGBA unread_message_bgcolor = Gdk.RGBA() { red = 0.419607843, green = 0.760784314, blue = 0.376470588, alpha = 1.0 };
     private static Gdk.RGBA unread_message_fgcolor = Gdk.RGBA() { red = 0, green = 0, blue = 0, alpha = 1.0 };
 
@@ -112,17 +112,7 @@ namespace Venom {
       Gtk.StateFlags state = widget.get_state_flags();
       Gdk.RGBA color = widget.get_style_context().get_color(state);
 
-      if(entry is Contact) {
-        Contact contact = entry as Contact;
-        if(contact.name != null && contact.name != "") {
-          layout.set_text(contact.name, -1);
-        } else {
-          layout.set_text(Tools.bin_to_hexstring(contact.public_key), -1);
-        }
-      } else {
-        GroupChat groupchat = entry as GroupChat;
-        layout.set_text("Groupchat #%i".printf(groupchat.group_id), -1);
-      }
+      layout.set_markup(entry.get_name_string(), -1);
       layout.set_ellipsize(Pango.EllipsizeMode.END);
       layout.set_width((cell_area.width - 58 - 26) * Pango.SCALE);
       layout.get_pixel_extents(out ink_rect, out logical_rect);
@@ -148,25 +138,7 @@ namespace Venom {
       color.red -= 0.4;
       color.green -= 0.4;
       color.blue -= 0.4;
-      if(entry is Contact) {
-        Contact contact = entry as Contact;
-        if(!contact.online) {
-          if(contact.last_seen == null) {
-            layout.set_text("Offline", -1);
-          } else {
-            layout.set_text("Last seen: %s".printf(contact.last_seen.format("%c")), -1);
-          }
-        } else if(contact.status_message != null && contact.status_message != "") {
-          layout.set_text(contact.status_message, -1);
-        }
-      } else if(entry is GroupChat) {
-        GroupChat g = entry as GroupChat;
-        if(g.peer_count > 0) {
-          layout.set_text("%i user%s in chat".printf(g.peer_count, g.peer_count > 1 ? "s" : ""), -1);
-        } else{
-          layout.set_text("Offline", -1);
-        }
-      }
+      layout.set_markup(entry.get_status_string(), -1);
       layout.set_ellipsize(Pango.EllipsizeMode.END);
       layout.set_width((cell_area.width - 58 - 26) * Pango.SCALE);
       layout.get_pixel_extents(out ink_rect, out logical_rect);

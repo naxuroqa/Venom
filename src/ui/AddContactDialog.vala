@@ -25,6 +25,10 @@ namespace Venom {
       get { return entry_contact_id.text; }
       set { entry_contact_id.text = value; }
     }
+    public string contact_alias {
+      get { return entry_contact_alias.text; }
+      set { entry_contact_alias.text = value; }
+    }
     public string message {
       owned get { return textview_contact_message.buffer.text; }
       set { textview_contact_message.buffer.text = value; }
@@ -32,6 +36,7 @@ namespace Venom {
     public int max_message_length { get; set; default = -1;}
 
     private Gtk.Entry entry_contact_id;
+    private Gtk.Entry entry_contact_alias;
     private Gtk.TextView textview_contact_message;
 
     private GLib.Regex id_regex;
@@ -52,6 +57,7 @@ namespace Venom {
       this.get_content_area().add(box);
 
       entry_contact_id = builder.get_object("entry_contact_id") as Gtk.Entry;
+      entry_contact_alias = builder.get_object("entry_contact_name") as Gtk.Entry;
       textview_contact_message = builder.get_object("textview_contact_message") as Gtk.TextView;
       entry_contact_id.changed.connect(on_entry_changed);
 

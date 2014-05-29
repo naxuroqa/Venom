@@ -23,17 +23,21 @@ using Tox;
 namespace Venom {
   public class DhtNode : GLib.Object {
     public string host {get; set;}
-    public uint16 port {get; set;}
     public uint8[] pub_key {get; set;}
-    public bool is_ipv6 {get; set;}
+    public uint16 port {get; set;}
+    public string maintainer {get; set;}
+    public string location {get; set;}
+    public bool is_blocked {get; set;}
 
-    public DhtNode.ipv4(string host, string pub_key, uint16 port = 33445) {
+    public bool is_ipv6 {get; private set;}
+
+    public DhtNode.ipv4(string host, string pub_key, uint16 port = 33445, bool is_blocked = false, string maintainer = "", string location = "") {
       this.host = host;
       this.port = port;
       this.pub_key = Tools.hexstring_to_bin(pub_key);
       this.is_ipv6 = false;
     }
-    public DhtNode.ipv6(string host, string pub_key, uint16 port = 33445) {
+    public DhtNode.ipv6(string host, string pub_key, uint16 port = 33445, bool is_blocked = false, string maintainer = "", string location = "") {
       this.host = host;
       this.port = port;
       this.pub_key = Tools.hexstring_to_bin(pub_key);

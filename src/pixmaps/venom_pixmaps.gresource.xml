@@ -9,14 +9,17 @@
     <file>busy_glow.png</file>
     <file>call.png</file>
     <file>call_video.png</file>
-    <file>send_file.png</file>
+    <file>cancel.png</file>
     <file>default_contact.png</file>
     <file>default_groupchat.png</file>
     <file>groupchat.png</file>
     <file>offline.png</file>
     <file>offline_glow.png</file>
+    <file>ok.png</file>
     <file>online.png</file>
     <file>online_glow.png</file>
+    <file>send.png</file>
+    <file>send_file.png</file>
     <file>settings.png</file>
   </gresource>
 </gresources>

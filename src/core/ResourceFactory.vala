@@ -38,6 +38,9 @@ namespace Venom {
       string pixmaps_prefix = "/org/gtk/venom/pixmaps/";
       string theme_folder = Path.build_filename(Tools.find_data_dir(), "theme");
 
+      ok = load_image_from_resource(pixmaps_prefix + "ok.png");
+      cancel = load_image_from_resource(pixmaps_prefix + "cancel.png");
+
       away = load_image_from_resource(pixmaps_prefix + "away.png");
       away_glow = load_image_from_resource(pixmaps_prefix + "away_glow.png");
       busy = load_image_from_resource(pixmaps_prefix + "busy.png");
@@ -49,6 +52,7 @@ namespace Venom {
 
       call = load_image_from_resource(pixmaps_prefix + "call.png");
       call_video = load_image_from_resource(pixmaps_prefix + "call_video.png");
+      send = load_image_from_resource(pixmaps_prefix + "send.png");
       send_file = load_image_from_resource(pixmaps_prefix + "send_file.png");
 
       add = load_image_from_resource(pixmaps_prefix + "add.png");
@@ -72,6 +76,8 @@ namespace Venom {
       default_statusmessage = "Toxing on Venom v.%s".printf(Config.VERSION);
     }
 
+    public Gdk.Pixbuf ok {get; private set;}
+    public Gdk.Pixbuf cancel {get; private set;}
 
     public Gdk.Pixbuf away {get; private set;}
     public Gdk.Pixbuf away_glow {get; private set;}
@@ -84,6 +90,7 @@ namespace Venom {
 
     public Gdk.Pixbuf call {get; private set;}
     public Gdk.Pixbuf call_video {get; private set;}
+    public Gdk.Pixbuf send {get; private set;}
     public Gdk.Pixbuf send_file {get; private set;}
 
     public Gdk.Pixbuf add {get; private set;}

@@ -44,16 +44,36 @@ namespace Venom {
       set_model (sort);
 
       insert_column_with_attributes (-1, "Name", new Gtk.CellRendererText(),
-                                         "text", TreeModelColumn.NAME);
+                                         "markup", TreeModelColumn.NAME);
       init_contacts();
+      
+      query_tooltip.connect_after(modify_tooltip);
+      has_tooltip = true;
     }
 
     private void init_contacts() {
       listmodel.clear();
       groupchat.peers.foreach ((key, val) => {
         GroupChatContact gcc = val as GroupChatContact;
-        add_contact(gcc.group_contact_id, gcc.name);
+        add_contact(gcc.group_contact_id, gcc.get_name_string());
 	    });
+    }
+
+    private bool modify_tooltip(int x, int y, bool keyboard_tooltip, Gtk.Tooltip tooltip) {
+      Gtk.TreeModel model;
+      Gtk.TreePath path;
+      Gtk.TreeIter iter;
+      if(!get_tooltip_context(ref x, ref y, keyboard_tooltip, out model, out path, out iter))
+        return false;
+      if(model == null)
+        return false;
+      GLib.Value v;
+      model.get_value(iter, TreeModelColumn.ID, out v);
+      GroupChatContact c = groupchat.peers.get(v.get_int());
+      tooltip.set_markup(c.get_tooltip_string());
+
+      set_tooltip_row(tooltip, path);
+      return true;
     }
 
     private int sort_name(Gtk.TreeModel model, Gtk.TreeIter a, Gtk.TreeIter b) {
@@ -72,11 +92,10 @@ namespace Venom {
       return ret;
     }
 
-    private void set_contact(Gtk.TreeIter iter, int id, string? name) {
-      string name_str = name ?? "<unknown>";
-      string collate_key = name_str.casefold().collate_key();
+    private void set_contact(Gtk.TreeIter iter, int id, string name) {
+      string collate_key = name.casefold().collate_key();
       listmodel.set(iter, TreeModelColumn.ID, id,
-                          TreeModelColumn.NAME, name_str,
+                          TreeModelColumn.NAME, name,
                           TreeModelColumn.COLLATE_KEY, collate_key);
     }
 
@@ -123,11 +142,11 @@ namespace Venom {
 
     public void update_contact(int peernumber, Tox.ChatChange change) {
       if(change == Tox.ChatChange.PEER_ADD) {
-        add_contact(peernumber, groupchat.peers.get(peernumber).name);
+        add_contact(peernumber, groupchat.peers.get(peernumber).get_name_string());
       } else if(change == Tox.ChatChange.PEER_DEL) {
         delete_contact(peernumber);
       } else if(change == Tox.ChatChange.PEER_NAME) {
-        update_contact_name(peernumber, groupchat.peers.get(peernumber).name);
+        update_contact_name(peernumber, groupchat.peers.get(peernumber).get_name_string());
       } else {
         GLib.assert_not_reached();
       }

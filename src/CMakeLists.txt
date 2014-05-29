@@ -51,10 +51,21 @@ ENDIF(APPLE)
 
 # use djbdns as substitute for missing dns_txt in glib 2.32
 IF(${GLIB_VERSION_MINOR} LESS 34)
-  MESSAGE("GLIB < 2.34 detected, using djbdns for dns resolution")
+  SET(ENABLE_DJBDNS ON)
+ENDIF()
+
+IF(${ENABLE_QR_ENCODE})
+  PKG_CHECK_MODULES_FULLPATH(QR_ENCODE REQUIRED libqrencode>=3.1.1)
+  SET(VENOM_CFLAGS_OPT ${VENOM_CFLAGS_OPT} ${QR_ENCODE_CFLAGS} ${QR_ENCODE_CFLAGS_OTHER})
+  SET(VENOM_VALA_FLAGS_OPT ${VENOM_VALA_FLAGS_OPT} -D ENABLE_QR_ENCODE)
+  SET(VENOM_LIBRARIES_OPT ${VENOM_LIBRARIES_OPT} ${QR_ENCODE_LIBRARIES})
+ENDIF()
+
+IF(${ENABLE_DJBDNS})
   INCLUDE(FindDJBDns)
-  INCLUDE_DIRECTORIES(${DJBDNS_INCLUDE_DIRS})
-  MESSAGE("DJBDNS_LIBRARIES: ${DJBDNS_LIBRARIES}")
+  SET(VENOM_CFLAGS_OPT ${VENOM_CFLAGS_OPT} ${DJBDNS_CFLAGS})
+  SET(VENOM_VALA_FLAGS_OPT ${VENOM_VALA_FLAGS_OPT} -D ENABLE_DJBDNS)
+  SET(VENOM_LIBRARIES_OPT ${VENOM_LIBRARIES_OPT} ${DJBDNS_LIBRARIES})
 ENDIF()
 
 # Set a variable defining our minimal version of glib
@@ -92,6 +103,7 @@ SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
                   ${JSON_CFLAGS}   ${JSON_CFLAGS_OTHER}
                   ${TOX_CFLAGS}    ${TOX_CFLAGS_OTHER}
                   ${TOXAV_CFLAGS}  ${TOXAV_CFLAGS_OTHER}
+                  ${VENOM_CFLAGS_OPT}
 )
 
 # since pkg_check_modules returns semicolon
@@ -105,14 +117,17 @@ CONFIGURE_FILE( config.h.in config.h )
 SET( VENOM_SRC
   Main.vala
   core/Contact.vala
+  core/ContactStorage.vala
   core/DhtNode.vala
+  core/DhtNodeStorage.vala
   core/FileTransfer.vala
   core/GroupChat.vala
   core/GroupChatContact.vala
-  core/LocalStorage.vala
+  core/MessageLog.vala
   core/Message.vala
   core/ResourceFactory.vala
   core/Settings.vala
+  core/SqliteTools.vala
   core/Tools.vala
   core/ToxDns.vala
   core/ToxSession.vala
@@ -128,6 +143,7 @@ SET( VENOM_SRC
   ui/ConversationTextView.vala
   ui/ConversationView.vala
   ui/ConversationWidget.vala
+  ui/EditableLabel.vala
   ui/FileTransferChatEntry.vala
   ui/GroupConversationSidebar.vala
   ui/GroupConversationWidget.vala
@@ -143,20 +159,21 @@ SET( VENOM_SRC
 VALA_PRECOMPILE( VALA_C_VENOM
     ${VENOM_SRC}
   PACKAGES
-    gtk+-3.0
-    glib-2.0
-    gio-2.0
-    json-glib-1.0
-    sqlite3
-    tox-1.0
     config
     djbdns
+    gio-2.0
+    glib-2.0
+    gtk+-3.0
+    json-glib-1.0
+    libqrencode
+    sqlite3
+    tox-1.0
   OPTIONS
     --target-glib=${TARGET_GLIB}
     --thread
     --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
-    ${VENOM_VALA_FLAGS_EXTRA}
-    -D ${OS_DEFINES}
+    ${VENOM_VALA_FLAGS_OPT}
+     -D ${OS_DEFINES}
   CUSTOM_VAPIS
   GENERATE_VAPI
   GENERATE_HEADER
@@ -201,7 +218,7 @@ ADD_EXECUTABLE( toxav_test EXCLUDE_FROM_ALL
 
 # link the main executable to our dependencies
 TARGET_LINK_LIBRARIES( venom
-                       ${DJBDNS_LIBRARIES}
+                       ${VENOM_LIBRARIES_OPT}
                        ${TOX_LIBRARIES}
                        ${SQLITE_LIBRARIES}
                        ${GIO_LIBRARIES}
@@ -223,4 +240,18 @@ INSTALL(TARGETS venom RUNTIME DESTINATION ${CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINA
 # add tests
 ADD_SUBDIRECTORY(testing)
 
+# Summary of optional features
+MESSAGE("Optional features / dependencies:")
+SET(DJBDNS_DESCRIPTION "ENABLE_DJBDNS - resolve tox dns ids using djbdns (required for glib <= 2.32)")
+IF(${ENABLE_DJBDNS})
+  MESSAGE("   [X] ${DJBDNS_DESCRIPTION}")
+ELSE()
+  MESSAGE("   [ ] ${DJBDNS_DESCRIPTION}")
+ENDIF()
+SET(QR_ENCODE_DESCRIPTION "ENABLE_QR_ENCODE - show QR codes (requires libqrencode)")
+IF(${ENABLE_QR_ENCODE})
+  MESSAGE("   [X] ${QR_ENCODE_DESCRIPTION}")
+ELSE()
+  MESSAGE("   [ ] ${QR_ENCODE_DESCRIPTION}")
+ENDIF()
 # vim:set ts=2 sw=2 et:

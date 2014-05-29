@@ -63,5 +63,23 @@ namespace Venom {
         return "really big file";
       }
     }
+#if ENABLE_QR_ENCODE
+    public static Gdk.Pixbuf? qr_encode(string content) {
+      QR.Code code = QR.Code.encode_string(content, 0, QR.ECLevel.M, QR.Mode.EIGHT_BIT, false);
+      if(code == null) {
+        return null;
+      }
+      Gdk.Pixbuf pb = new Gdk.Pixbuf(Gdk.Colorspace.RGB, false, 8, code.width, code.width);
+      unowned uint8[] buf = pb.get_pixels();
+      for(int y = 0; y < code.width; y++) {
+        for(int x = 0; x < code.width; x++) {
+          buf[y * pb.rowstride + x * pb.n_channels + 0] = code.get(x, y) ? 0 : 255;
+          buf[y * pb.rowstride + x * pb.n_channels + 1] = code.get(x, y) ? 0 : 255;
+          buf[y * pb.rowstride + x * pb.n_channels + 2] = code.get(x, y) ? 0 : 255;
+        }
+      }
+      return pb.scale_simple(code.width * 4, code.width * 4, Gdk.InterpType.NEAREST);
+    }
+#endif
   }
 }

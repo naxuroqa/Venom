@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class GroupChat : GLib.Object{
+  public class GroupChat : IContact, GLib.Object{
 
     public uint8[] public_key  { get; set; default = null; }
     public int group_id        { get; set; default = -1;   }
@@ -39,6 +39,38 @@ namespace Venom {
     public GroupChat.from_id(int group_id) {
       this.group_id = group_id;
       this.peers = new GLib.HashTable<int, GroupChatContact>(null, null);
+    }
+
+    public string get_name_string() {
+      return local_name == "" ? "Groupchat #%i".printf(group_id) : Markup.escape_text(local_name);
+    }
+    public string get_name_string_with_hyperlinks() {
+      return get_name_string();
+    }
+    public string get_status_string() {
+      if(peer_count > 1) {
+        return "%i people connected".printf(peer_count);
+      } else if(peer_count > 0) {
+        return "%i person connected".printf(peer_count);
+      } else {
+        return "no one connected";
+      }
+    }
+    public string get_status_string_with_hyperlinks() {
+      return get_status_string();
+    }
+    public string get_status_string_alt() {
+      return get_status_string();
+    }
+    public string get_last_seen_string() {
+      return "";
+    }
+    public string get_tooltip_string() {
+      StringBuilder b = new StringBuilder();
+      b.append(get_name_string_with_hyperlinks());
+      b.append_c('\n');
+      b.append(get_status_string_alt());
+      return b.str;
     }
   }
 }

@@ -26,6 +26,7 @@ namespace Venom {
 
     public string placeholder_text { get; set; default = "Type your message here..."; }
     public Gtk.TextTag placeholder_tag { get; set; }
+    public bool placeholder_visible { get; protected set; default = true; }
 
     private Gtk.TreeModel _completion_model;
     public Gtk.TreeModel completion_model {
@@ -40,7 +41,6 @@ namespace Venom {
     public int completion_column { get; set; }
 
     private bool is_typing = false;
-    private bool placeholder_visible = true;
     private Gtk.TreeModelFilter completion_filtered;
     private string filter_string;
 
