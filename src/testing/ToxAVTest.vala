@@ -69,9 +69,21 @@ public class VideoSample : Window {
     private void setup_gst_pipeline () {
         this.pipeline = new Pipeline ("mypipeline");
 #if OSX
-        GLib.assert_not_reached();
+        this.src = ElementFactory.make ("osxvideosrc", "video");
+        this.asrc = ElementFactory.make("pulsesrc", "audio");
+        //this.src = ElementFactory.make ("videotestsrc", "video");
+        //this.asrc = ElementFactory.make("audiotestsrc", "audio");
+        this.sink = ElementFactory.make ("xvimagesink", "sink");
+        this.asink = ElementFactory.make("autoaudiosink", "asink");
+
 #elif WIN32
-        GLib.assert_not_reached();
+        this.src = ElementFactory.make ("ksvideosrc", "video");
+        this.asrc = ElementFactory.make("pulsesrc", "audio");
+        //this.src = ElementFactory.make ("videotestsrc", "video");
+        //this.asrc = ElementFactory.make("audiotestsrc", "audio");
+        this.sink = ElementFactory.make ("xvimagesink", "sink");
+        this.asink = ElementFactory.make("autoaudiosink", "asink");
+
 #elif UNIX
         this.src = ElementFactory.make ("v4l2src", "video");
         this.asrc = ElementFactory.make("pulsesrc", "audio");

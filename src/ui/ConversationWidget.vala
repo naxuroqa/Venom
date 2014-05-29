@@ -38,6 +38,7 @@ namespace Venom {
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
     public signal void contact_changed(Contact c);
+    public int audioOn = 0;
 
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
@@ -98,13 +99,15 @@ namespace Venom {
       });
 
       //TODO
-      //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
+      Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
       //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
       button_send = builder.get_object("button_send") as Gtk.Button;
       button_send_file = builder.get_object("button_send_file") as Gtk.Button;
 
       button_send.clicked.connect(() => {textview_activate();});
       button_send_file.clicked.connect(button_send_file_clicked);
+
+      button_call.clicked.connect(button_call_clicked);
 
       Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
       message_textview = new MessageTextView();
@@ -252,6 +255,25 @@ namespace Venom {
       File file = file_selection_dialog.get_file();
       file_selection_dialog.destroy();
       prepare_send_file(file);
+    }
+
+    public void call_button_clicked(Gtk.Button source) { 
+        if(!audioOn) { 
+            build_audio_pipeline();
+            audioOn = 1;
+        } else { 
+            destroy_audio_pipeline();
+            audioOn = 0;
+        }
+    }
+
+    public void build_audio_pipeline() { 
+     
+
+    }
+
+    public void destroy_audio_pipeline() { 
+
     }
 
     private void on_drag_data_received(Gtk.Widget sender, Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData data, uint info, uint time) {
