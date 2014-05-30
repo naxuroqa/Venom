@@ -38,7 +38,7 @@ namespace Venom {
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
     public signal void contact_changed(Contact c);
-    public int audioOn = 0;
+    public bool audio_on = false;
 
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
@@ -260,10 +260,10 @@ namespace Venom {
     public void call_button_clicked(Gtk.Button source) { 
         if(!audioOn) { 
             build_audio_pipeline();
-            audioOn = 1;
+            audioOn = true;
         } else { 
             destroy_audio_pipeline();
-            audioOn = 0;
+            audioOn = false;
         }
     }
 
