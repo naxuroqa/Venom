@@ -168,6 +168,9 @@ VALA_PRECOMPILE( VALA_C_VENOM
     libqrencode
     sqlite3
     tox-1.0
+    gstreamer-0.10
+    gstreamer-interfaces-0.10
+    gdk-x11-3.0
   OPTIONS
     --target-glib=${TARGET_GLIB}
     --thread
@@ -222,6 +225,8 @@ TARGET_LINK_LIBRARIES( venom
                        ${TOX_LIBRARIES}
                        ${SQLITE_LIBRARIES}
                        ${GIO_LIBRARIES}
+                       ${GSTREAMER_LIBRARIES}
+                       ${OVERLAY_LIBRARIES}
                        ${GLIB_LIBRARIES}
                        ${GTK_LIBRARIES}
                        ${JSON_LIBRARIES}
