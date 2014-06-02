@@ -99,9 +99,8 @@ namespace Venom {
 
     private void on_preferences(GLib.SimpleAction action, GLib.Variant? parameter) {
       if(settings_window == null) {
-        settings_window = new SettingsWindow();
+        settings_window = new SettingsWindow(contact_list_window);
         settings_window.destroy.connect( () => {settings_window = null;});
-        settings_window.transient_for = contact_list_window;
         settings_window.show_all();
       } else {
         settings_window.present();

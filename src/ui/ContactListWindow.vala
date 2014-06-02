@@ -608,8 +608,10 @@ namespace Venom {
       contact_added(c);
     }
     private void on_typing_change(Contact c, bool is_typing) {
-      ConversationWidget w = open_conversation_with(c);
-      w.on_typing_changed(is_typing);
+      if(Settings.instance.show_typing_status) {
+        ConversationWidget w = open_conversation_with(c);
+        w.on_typing_changed(is_typing);
+      }
     }
     private void on_friendmessage(Contact c, string message) {
       stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name != null ? c.name : "<%i>".printf(c.friend_id), message);

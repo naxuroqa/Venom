@@ -22,6 +22,14 @@
 namespace Venom {
   public class Settings : Object {
 
+    public const string MESSAGE_LOGGING_KEY = "enable-logging";
+    public const string DAYS_TO_LOG_KEY = "days-to-log";
+    public const string URGENCY_NOTIFICATION_KEY = "enable-urgency-notification";
+    public const string DEC_BINARY_PREFIX_KEY = "dec-binary-prefix";
+    public const string SEND_TYPING_STATUS_KEY = "send-typing-status";
+    public const string SHOW_TYPING_STATUS_KEY = "show-typing-status";
+    public const string DEFAULT_HOST_KEY = "default-host";
+
     public bool   enable_logging              { get; set; default = false;     }
     public bool   enable_urgency_notification { get; set; default = true;      }
     public int    days_to_log                 { get; set; default = 180;       }
