@@ -25,8 +25,6 @@ namespace Venom {
     private static Gdk.RGBA unread_message_bgcolor = Gdk.RGBA() { red = 0.419607843, green = 0.760784314, blue = 0.376470588, alpha = 1.0 };
     private static Gdk.RGBA unread_message_fgcolor = Gdk.RGBA() { red = 0, green = 0, blue = 0, alpha = 1.0 };
 
-    private bool is_selected = false;
-
     public override void get_size(Gtk.Widget widget, Gdk.Rectangle? cell_area, out int x_offset, out int y_offset, out int width, out int height) {
       x_offset = 0;
       y_offset = 0;
@@ -35,9 +33,9 @@ namespace Venom {
     }
 
     public override void render(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags) {
-      is_selected = (widget as ContactListTreeView).get_selected_entry() == entry;
       int y = 6 + cell_area.y;
-      Pango.Rectangle ink_rect = render_name(ctx, widget, background_area, cell_area, y);
+      Gtk.StateFlags state_flags = get_state(widget, flags);
+      Pango.Rectangle ink_rect = render_name(ctx, widget, background_area, cell_area, y, state_flags);
       y += ink_rect.height;
       render_status(ctx, widget, background_area, cell_area, y);
       render_image(ctx, widget, background_area, cell_area, y);
@@ -103,16 +101,12 @@ namespace Venom {
 		  }
     }
 
-    private Pango.Rectangle? render_name(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
+    private Pango.Rectangle? render_name(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset, Gtk.StateFlags state_flags) {
       Pango.Rectangle? ink_rect, logical_rect;
       Pango.FontDescription font = new Pango.FontDescription();
       Pango.Layout layout = widget.create_pango_layout(null);
       layout.set_font_description(font);
-      Gtk.StateFlags state = widget.get_state_flags();
-      if(is_selected) {
-        state |= Gtk.StateFlags.SELECTED;
-      }
-      Gdk.RGBA color = widget.get_style_context().get_color(state);
+      Gdk.RGBA color = widget.get_style_context().get_color(state_flags);
 
       layout.set_markup(entry.get_name_string(), -1);
       layout.set_ellipsize(Pango.EllipsizeMode.END);
@@ -134,8 +128,7 @@ namespace Venom {
       Pango.FontDescription font = new Pango.FontDescription();
       Pango.Layout layout = widget.create_pango_layout(null);
       layout.set_font_description(font);
-      Gtk.StateFlags state = widget.get_state_flags();
-      Gdk.RGBA color = widget.get_style_context().get_color(state);
+      Gdk.RGBA color = widget.get_style_context().get_color(Gtk.StateFlags.NORMAL);
       //FIXME find a better way for this (css styling if possible)
       color.red -= 0.4;
       color.green -= 0.4;
