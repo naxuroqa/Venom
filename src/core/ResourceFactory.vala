@@ -53,11 +53,14 @@ namespace Venom {
       call = load_image_from_resource(pixmaps_prefix + "call.png");
       call_video = load_image_from_resource(pixmaps_prefix + "call_video.png");
       send = load_image_from_resource(pixmaps_prefix + "send.png");
+
       send_file = load_image_from_resource(pixmaps_prefix + "send_file.png");
+      smiley = load_image_from_resource(pixmaps_prefix + "smiley.png");
 
       add = load_image_from_resource(pixmaps_prefix + "add.png");
       groupchat = load_image_from_resource(pixmaps_prefix + "groupchat.png");
       settings = load_image_from_resource(pixmaps_prefix + "settings.png");
+      filetransfer = load_image_from_resource(pixmaps_prefix + "filetransfer.png");
 
       default_contact = load_image_from_resource(pixmaps_prefix + "default_contact.png");
       default_groupchat = load_image_from_resource(pixmaps_prefix + "default_groupchat.png");
@@ -91,11 +94,14 @@ namespace Venom {
     public Gdk.Pixbuf call {get; private set;}
     public Gdk.Pixbuf call_video {get; private set;}
     public Gdk.Pixbuf send {get; private set;}
+
     public Gdk.Pixbuf send_file {get; private set;}
+    public Gdk.Pixbuf smiley {get; private set;}
 
     public Gdk.Pixbuf add {get; private set;}
     public Gdk.Pixbuf groupchat {get; private set;}
     public Gdk.Pixbuf settings {get; private set;}
+    public Gdk.Pixbuf filetransfer {get; private set;}
 
     public Gdk.Pixbuf default_contact {get; private set;}
     public Gdk.Pixbuf default_groupchat {get; private set;}

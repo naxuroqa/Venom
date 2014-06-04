@@ -125,7 +125,7 @@ namespace Venom {
     private void init_theme() {
       Gtk.CssProvider provider = new Gtk.CssProvider();
       try {
-      provider.load_from_path(ResourceFactory.instance.default_theme_filename);
+        provider.load_from_path(ResourceFactory.instance.default_theme_filename);
       } catch (Error e) {
         string message = "Could not read theme from \"%s\"".printf(ResourceFactory.instance.default_theme_filename);
         stderr.printf("%s: %s\n", message,  e.message);
@@ -218,6 +218,7 @@ namespace Venom {
       Gtk.Image image_add_contact = builder.get_object("image_add_contact") as Gtk.Image;
       Gtk.Image image_group_chat  = builder.get_object("image_group_chat") as Gtk.Image;
       Gtk.Image image_preferences = builder.get_object("image_preferences") as Gtk.Image;
+      Gtk.Image image_filetransfer = builder.get_object("image_filetransfer") as Gtk.Image;
 
       Gtk.ImageMenuItem menuitem_edit_info = builder.get_object("menuitem_edit_info") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_copy_id   = builder.get_object("menuitem_copy_id") as Gtk.ImageMenuItem;
@@ -243,9 +244,7 @@ namespace Venom {
       image_add_contact.set_from_pixbuf(ResourceFactory.instance.add);
       image_group_chat.set_from_pixbuf(ResourceFactory.instance.groupchat);
       image_preferences.set_from_pixbuf(ResourceFactory.instance.settings);
-
-      Gtk.Image image_arrow = builder.get_object("image_arrow") as Gtk.Image;
-      image_arrow.set_from_pixbuf(ResourceFactory.instance.arrow);
+      image_filetransfer.set_from_pixbuf(ResourceFactory.instance.filetransfer);
 
       // Create and add custom treeview
       contact_list_tree_view = new ContactListTreeView();
@@ -401,6 +400,17 @@ namespace Venom {
           User.instance.status_message = str;
         }
       });
+
+#if DEBUG
+      key_press_event.connect((source, key) => {
+        if(key.keyval == Gdk.Key.F5) {
+          init_theme();
+          stdout.printf("Theme refreshed\n");
+          return true;
+        }
+        return false;
+      });
+#endif
     }
 
     private void init_save_session_hooks() {

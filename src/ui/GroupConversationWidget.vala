@@ -78,6 +78,7 @@ namespace Venom {
       Gtk.Image image_call = builder.get_object("image_call") as Gtk.Image;
       Gtk.Image image_call_video = builder.get_object("image_call_video") as Gtk.Image;
       Gtk.Image image_send_file = builder.get_object("image_send_file") as Gtk.Image;
+      Gtk.Image image_insert_smiley = builder.get_object("image_insert_smiley") as Gtk.Image;
 
       Gtk.Label label_groupchat_name_ = builder.get_object("label_contact_name") as Gtk.Label;
       Gtk.Box box_user_info = builder.get_object("box_user_info") as Gtk.Box;
@@ -99,9 +100,7 @@ namespace Venom {
       //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
       //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
       Gtk.Button button_send = builder.get_object("button_send") as Gtk.Button;
-      Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
-      button_send_file.visible = false;
-      button_send_file.no_show_all = true;
+      //Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
 
       //button_send_file.clicked.connect(button_send_file_clicked);
 
@@ -127,6 +126,7 @@ namespace Venom {
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
+      image_insert_smiley.set_from_pixbuf(ResourceFactory.instance.smiley);
 
       Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
 

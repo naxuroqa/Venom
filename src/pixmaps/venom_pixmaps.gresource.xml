@@ -12,6 +12,7 @@
     <file>cancel.png</file>
     <file>default_contact.png</file>
     <file>default_groupchat.png</file>
+    <file>filetransfer.png</file>
     <file>groupchat.png</file>
     <file>offline.png</file>
     <file>offline_glow.png</file>
@@ -21,5 +22,6 @@
     <file>send.png</file>
     <file>send_file.png</file>
     <file>settings.png</file>
+    <file>smiley.png</file>
   </gresource>
 </gresources>
