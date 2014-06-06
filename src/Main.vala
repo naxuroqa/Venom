@@ -53,7 +53,7 @@ public class Main : GLib.Object {
 
 	    if(datafile != null) {
 	      stdout.printf("Using data file \"%s\"\n", datafile);
-        ResourceFactory.instance.data_filename = datafile;
+              ResourceFactory.instance.data_filename = datafile;
 	    }
 
 	    if(textview) {

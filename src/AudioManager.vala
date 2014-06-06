@@ -28,6 +28,10 @@ namespace Venom {
         private Element asrc;
         private Element asink;
 
+        public AudioManager(string[] fakeArgs) { 
+            Gst.init(ref fakeArgs);
+        }
+
         public void build_audio_pipeline() { 
             this.pipeline = new Pipeline("audioPipeline");
             this.asrc = ElementFactory.make("autoaudiosrc", "audio");
