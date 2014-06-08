@@ -37,7 +37,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/chat_filetransfer.ui");
       } catch (GLib.Error e) {
-        stderr.printf("Loading message widget failed!\n");
+        stderr.printf(_("Loading message widget failed!\n"));
       }
       this.get_style_context().add_class("filetransfer_entry");
       //Gtk.Box box = builder.get_object("box1") as Gtk.Box;
@@ -91,7 +91,7 @@ namespace Venom {
           filetransfer_completed(this, ft);
         } break;
         case FileTransferStatus.REJECTED: {
-          size_or_status_label.set_text("File was rejected");
+          size_or_status_label.set_text(_("File was rejected"));
           progress_bar.visible = false;
           disable_buttons();
         } break; 
@@ -101,32 +101,32 @@ namespace Venom {
           cancel_button.visible = true;
         } break;
         case FileTransferStatus.PAUSED: {
-          size_or_status_label.set_text("Paused");
+          size_or_status_label.set_text(_("Paused"));
         } break;
         case FileTransferStatus.SENDING_FAILED: {
-          size_or_status_label.set_text("Sending failed");
+          size_or_status_label.set_text(_("Sending failed"));
           size_or_status_label.get_style_context().add_class("error");
           progress_bar.visible = false;
           disable_buttons();
         } break;
         case FileTransferStatus.RECEIVING_FAILED: {
-          size_or_status_label.set_text("Receiving failed");
+          size_or_status_label.set_text(_("Receiving failed"));
           size_or_status_label.get_style_context().add_class("error");
           progress_bar.visible = false;
           disable_buttons();
         } break;
         case FileTransferStatus.CANCELED: {
-          size_or_status_label.set_text("Canceled");
+          size_or_status_label.set_text(_("Canceled"));
           progress_bar.visible = false;
           disable_buttons();
         } break; 
 
         case FileTransferStatus.SENDING_BROKEN: {
-          size_or_status_label.set_text("Disconnected");
+          size_or_status_label.set_text(_("Disconnected"));
         } break;
 
         case FileTransferStatus.RECEIVING_BROKEN: {
-          size_or_status_label.set_text("Disconnected");
+          size_or_status_label.set_text(_("Disconnected"));
         } break;
 
         default:
@@ -152,23 +152,23 @@ namespace Venom {
         return;
       }
       
-      Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog("Save file",null,
+      Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog(_("Save file"),null,
                                                                               Gtk.FileChooserAction.SAVE,
-                                                                              "Cancel", Gtk.ResponseType.CANCEL,
-                                                                              "Save", Gtk.ResponseType.ACCEPT);
+                                                                              "_Cancel", Gtk.ResponseType.CANCEL,
+                                                                              _("Save"), Gtk.ResponseType.ACCEPT);
       file_selection_dialog.do_overwrite_confirmation = true;
       file_selection_dialog.set_current_name(ft.name);
       int res = file_selection_dialog.run();
       if(res  == Gtk.ResponseType.ACCEPT) {
         string path = file_selection_dialog.get_filename();
         file_selection_dialog.destroy();  
-        stdout.printf("Saving to: %s\n",path);
+        stdout.printf(_("Saving to: %s\n"),path);
         File file = File.new_for_path(path);
         if(file.query_exists()){
           try {
             file.replace(null,false,FileCreateFlags.REPLACE_DESTINATION);
           } catch(Error e) {
-            stderr.printf("Error while trying to create file: %s\n", e.message);
+            stderr.printf(_("Error while trying to create file: %s\n"), e.message);
           }            
         }
         filetransfer_accepted(ft);

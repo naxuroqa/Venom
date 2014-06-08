@@ -50,7 +50,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/add_contact_dialog.ui");
       } catch (GLib.Error e) {
-        stderr.printf("Loading add contact window failed!\n");
+        stderr.printf(_("Loading add contact window failed!\n"));
       }
 
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
@@ -93,11 +93,11 @@ namespace Venom {
         string stripped_id = Tools.remove_whitespace(id);
         if (stripped_id.length == Tox.FRIEND_ADDRESS_SIZE * 2) {
           if (id_regex != null && !id_regex.match(stripped_id)) {
-            entry_contact_id.secondary_icon_tooltip_text = "ID contains invalid characters";
+            entry_contact_id.secondary_icon_tooltip_text = _("ID contains invalid characters");
             entry_contact_id.secondary_icon_name = "emblem-important-symbolic";
           } else {
             entry_contact_id.secondary_icon_name = "emblem-ok-symbolic";
-            entry_contact_id.secondary_icon_tooltip_text = "Valid ID size";
+            entry_contact_id.secondary_icon_tooltip_text = _("Valid ID size");
           }
         } else {
           entry_contact_id.secondary_icon_pixbuf = null;

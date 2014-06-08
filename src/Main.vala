@@ -18,6 +18,7 @@
  *    You should have received a copy of the GNU General Public License
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
+const string GETTEXT_PACKAGE = "venom";
 
 namespace Venom {
 
@@ -35,14 +36,18 @@ public class Main : GLib.Object {
 	  };
 
     public static int main (string[] args) {
+           GLib.Intl.setlocale(GLib.LocaleCategory.MESSAGES, "");
+           GLib.Intl.textdomain(GETTEXT_PACKAGE); 
+           GLib.Intl.bind_textdomain_codeset(GETTEXT_PACKAGE, "utf-8"); 
+           GLib.Intl.bindtextdomain(GETTEXT_PACKAGE, "../locale");
       try {
 		    GLib.OptionContext option_context = new GLib.OptionContext("");
 		    option_context.set_help_enabled(true);
 		    option_context.add_main_entries(options, null);
 		    option_context.parse(ref args);
 	    } catch (GLib.OptionError e) {
-		    stdout.printf("error: %s\n", e.message);
-		    stdout.printf("Run '%s --help' to see a full list of available command line options.\n", args[0]);
+		    stdout.printf(_("error: %s\n"), e.message);
+		    stdout.printf(_("Run '%s --help' to see a full list of available command line options.\n"), args[0]);
 		    return -1;
 	    }
 
@@ -52,17 +57,17 @@ public class Main : GLib.Object {
 	    }
 
 	    if(datafile != null) {
-	      stdout.printf("Using data file \"%s\"\n", datafile);
+	      stdout.printf(_("Using data file \"%s\"\n"), datafile);
         ResourceFactory.instance.data_filename = datafile;
 	    }
 
 	    if(textview) {
-	      stdout.printf("Using Gtk.TextView to display messages\n");
+	      stdout.printf(_("Using Gtk.TextView to display messages\n"));
 	      ResourceFactory.instance.textview_mode = true;
 	    }
 
 	    if(offline) {
-	      stdout.printf("Starting in offline mode\n");
+	      stdout.printf(_("Starting in offline mode\n"));
 	      ResourceFactory.instance.offline_mode = true;
 	    }
 

@@ -44,7 +44,7 @@ namespace Venom {
       this.is_ipv6 = true;
     }
     public string to_string() {
-      return "%s:%u%s %s".printf(host, port, is_ipv6 ? " (ipv6)" : "", Tools.bin_to_hexstring(pub_key));
+      return _("%s:%u%s %s").printf(host, port, is_ipv6 ? _(" (ipv6)") : "", Tools.bin_to_hexstring(pub_key));
     }
   }
 }

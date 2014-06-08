@@ -48,7 +48,7 @@ namespace Venom {
 
     public void update_contact() {
       // update contact name
-      label_contact_name.label.label = "<b>%s</b>".printf(contact.get_name_string_with_hyperlinks());
+      label_contact_name.label.label = _("<b>%s</b>").printf(contact.get_name_string_with_hyperlinks());
 
       // update contact status message
       label_contact_statusmessage.label = contact.get_status_string_with_hyperlinks();
@@ -57,7 +57,7 @@ namespace Venom {
       image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_contact);
 
       if( contact.name != null )
-        conversation_view.is_typing_string = "%s is typing...".printf(Markup.escape_text(contact.name));
+        conversation_view.is_typing_string = _("%s is typing...").printf(Markup.escape_text(contact.name));
 
       button_send_file.sensitive = contact.online;
       button_send.sensitive = contact.online;
@@ -68,7 +68,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/conversation_window.ui");
       } catch (GLib.Error e) {
-        stderr.printf("Loading conversation window failed!\n");
+        stderr.printf(_("Loading conversation window failed!\n"));
       }
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.add(box);
@@ -244,10 +244,10 @@ namespace Venom {
 
     //GUI events
     public void button_send_file_clicked(Gtk.Button source){
-      Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog("Select a file to send",null,
+      Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog(_("Select a file to send"),null,
                                                                               Gtk.FileChooserAction.OPEN,
-                                                                              "Cancel", Gtk.ResponseType.CANCEL,
-                                                                              "Select", Gtk.ResponseType.ACCEPT);
+                                                                              "_Cancel", Gtk.ResponseType.CANCEL,
+                                                                              _("Select"), Gtk.ResponseType.ACCEPT);
       int response = file_selection_dialog.run();
       if(response != Gtk.ResponseType.ACCEPT){
         file_selection_dialog.destroy();
@@ -273,7 +273,7 @@ namespace Venom {
       try {
         file_size = file.query_info ("*", FileQueryInfoFlags.NONE).get_size ();
       } catch (Error e) {
-        stderr.printf("Error occured while getting file size: %s",e.message);
+        stderr.printf(_("Error occured while getting file size: %s"),e.message);
         return;
       }
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.OUTGOING, file_size, file.get_basename(), file.get_path() );

@@ -96,10 +96,10 @@ namespace Venom {
         DataOutputStream os = new DataOutputStream(file.replace(null, false, FileCreateFlags.PRIVATE | FileCreateFlags.REPLACE_DESTINATION ));
         generator.to_stream(os);
       } catch (Error e) {
-        stderr.printf("Error saving configs:%s\n", e.message);
+        stderr.printf(_("Error saving configs:%s\n"), e.message);
         return;
       }
-      stdout.printf("Settings saved.\n");
+      stdout.printf(_("Settings saved.\n"));
     }
 
     public static Settings? load_settings(string path) {
@@ -109,7 +109,7 @@ namespace Venom {
         parser.load_from_file(path);
         node = parser.get_root();
       } catch (Error e) {
-        stderr.printf("Error reading configs:%s\n",e.message);
+        stderr.printf(_("Error reading configs:%s\n"),e.message);
         return null;
       }
       return Json.gobject_deserialize (typeof (Settings), node) as Settings;

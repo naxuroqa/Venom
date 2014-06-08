@@ -34,7 +34,7 @@ namespace Venom {
       content_box.margin_right = 5;
       content_box.margin_top = 5;
 
-      Gtk.Label label_pin = new Gtk.Label("Please insert PIN for \n<b>%s</b>".printf(Markup.escape_text( username )));
+      Gtk.Label label_pin = new Gtk.Label(_("Please insert PIN for \n<b>%s</b>").printf(Markup.escape_text( username )));
       label_pin.use_markup = true;
       content_box.pack_start(label_pin, false, false, 0);
 
@@ -46,7 +46,7 @@ namespace Venom {
       get_content_area().add(content_box);
 
       add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Ok", Gtk.ResponseType.OK, null);
-      title = "Please insert PIN...";
+      title = _("Please insert PIN...");
       pin = "000000";
 
       set_default_response(Gtk.ResponseType.OK);

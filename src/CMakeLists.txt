@@ -83,8 +83,10 @@ IF(LINK_GIO_STATIC)
   ENDIF(WIN32)
 ENDIF(LINK_GIO_STATIC)
 
+SET(GETTEXT_CFLAGS "-DGETTEXT_PACKAGE=\\\"venom\\\"")
+
 # add cflags and cflags_other of all dependencies to our cflags
-SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
+SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GETTEXT_CFLAGS}
                   ${GTK_CFLAGS}    ${GTK_CFLAGS_OTHER}
                   ${GIO_CFLAGS}    ${GIO_CFLAGS_OTHER}
                   ${GLIB_CFLAGS}   ${GLIB_CFLAGS_OTHER}

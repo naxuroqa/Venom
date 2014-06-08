@@ -44,7 +44,7 @@ namespace Venom {
 
     public void update_groupchat_info() {
       // update groupchat name
-      label_groupchat_name.label.label = "<b>%s</b>".printf(groupchat.get_name_string_with_hyperlinks());
+      label_groupchat_name.label.label = _("<b>%s</b>").printf(groupchat.get_name_string_with_hyperlinks());
 
       // update groupchat status message
       label_groupchat_statusmessage.label = groupchat.get_status_string_with_hyperlinks();
