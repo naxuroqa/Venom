@@ -19,39 +19,59 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Gst;
-
 namespace Venom { 
-    public class AudioManager { 
-        
-        private Pipeline pipeline;
-        private Element asrc;
-        private Element asink;
+  public errordomain AudioManagerError {
+    INIT
+  }
 
-        public AudioManager(string[] fakeArgs) { 
-            Gst.init(ref fakeArgs);
-        }
+  public class AudioManager { 
 
-        public void build_audio_pipeline() { 
-            this.pipeline = new Pipeline("audioPipeline");
-            this.asrc = ElementFactory.make("autoaudiosrc", "audio");
-            this.asink = ElementFactory.make("autoaudiosink", "asink");
-            this.pipeline.add_many(this.asrc, this.asink);
-            this.asrc.link(this.asink);
-        }
+    private const string PIPELINE = "audioPipeline";
+    private const string AUDIO_SOURCE = "audioSource";
+    private const string AUDIO_SINK = "audioSink";
 
-        public void destroy_audio_pipeline() { 
-            this.pipeline.set_state(Gst.State.NULL);
-        }
+    private Gst.Pipeline pipeline;
+    private Gst.Element audio_source;
+    private Gst.Element audio_sink;
 
-        public void set_pipeline_ready() { 
-            this.pipeline.set_state(State.READY);
-        }
+    public static AudioManager instance {get; private set;}
 
-        public void set_pipeline_playing() { 
-            this.pipeline.set_state(State.PLAYING);
-        }
-
+    public static void init() throws AudioManagerError {
+      instance = new AudioManager({""});
     }
+
+    private AudioManager(string[] args) throws AudioManagerError {
+      // Initialize Gstreamer
+      try {
+        if(!Gst.init_check(ref args)) {
+          throw new AudioManagerError.INIT("Gstreamer initialization failed.");
+        }
+      } catch (Error e) {
+        throw new AudioManagerError.INIT(e.message);
+      }
+      stdout.printf("Gstreamer initialized\n");
+
+      pipeline = new Gst.Pipeline(PIPELINE);
+      audio_source = Gst.ElementFactory.make("autoaudiosrc", AUDIO_SOURCE);
+      audio_sink = Gst.ElementFactory.make("autoaudiosink", AUDIO_SINK);
+      pipeline.add_many(audio_source, audio_sink);
+      audio_source.link(audio_sink);
+    }
+
+    public void destroy_audio_pipeline() {
+      pipeline.set_state(Gst.State.NULL);
+    }
+
+    public void set_pipeline_paused() {
+      pipeline.set_state(Gst.State.PAUSED);
+      stdout.printf("Pipeline set to paused\n");
+    }
+
+    public void set_pipeline_playing() {
+      pipeline.set_state(Gst.State.PLAYING);
+      stdout.printf("Pipeline set to playing\n");
+    }
+
+  }
 }
 

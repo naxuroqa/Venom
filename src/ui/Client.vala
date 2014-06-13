@@ -79,6 +79,11 @@ namespace Venom {
 
     protected override void startup() {
       add_action_entries(app_entries, this);
+      try {
+        AudioManager.init();
+      } catch (AudioManagerError e) {
+        stderr.printf("Error creating Audio Pipeline: %s\n", e.message);      
+      }
 
       base.startup();
     }

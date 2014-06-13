@@ -21,6 +21,13 @@
 
 
 namespace Venom {
+  public enum AudioCallState {
+    RINGING,
+    STARTING,
+    ENDING
+  }
+
+
   public interface IContact : GLib.Object {
     public abstract string get_name_string();
     public abstract string get_name_string_with_hyperlinks();
@@ -33,22 +40,23 @@ namespace Venom {
 
   public class Contact : IContact, GLib.Object {
     // Saved in toxs savefile
-    public uint8[]     public_key      { get; set; }
-    public int         friend_id       { get; set; default = -1;}
-    public string      name            { get; set; default = ""; }
-    public string      status_message  { get; set; default = ""; }
-    public DateTime    last_seen       { get; set; default = null; }
-    public uint8       user_status     { get; set; default = (uint8)Tox.UserStatus.INVALID; }
+    public uint8[]        public_key       { get; set; }
+    public int            friend_id        { get; set; default = -1;}
+    public string         name             { get; set; default = ""; }
+    public string         status_message   { get; set; default = ""; }
+    public DateTime       last_seen        { get; set; default = null; }
+    public uint8          user_status      { get; set; default = (uint8)Tox.UserStatus.INVALID; }
     // Saved in venoms savefile
-    public string      note            { get; set; default = ""; }
-    public string      alias           { get; set; default = ""; }
-    public bool        is_blocked      { get; set; default = false; }
-    public string      group           { get; set; default = ""; }
+    public string         note             { get; set; default = ""; }
+    public string         alias            { get; set; default = ""; }
+    public bool           is_blocked       { get; set; default = false; }
+    public string         group            { get; set; default = ""; }
     // Not saved
-    public bool        online          { get; set; default = false; }
-    public Gdk.Pixbuf? image           { get; set; default = null; }
-    public int         unread_messages { get; set; default = 0; }
-    public bool        is_typing       { get; set; default = false; }
+    public bool           online           { get; set; default = false; }
+    public Gdk.Pixbuf?    image            { get; set; default = null; }
+    public int            unread_messages  { get; set; default = 0; }
+    public bool           is_typing        { get; set; default = false; }
+    public AudioCallState audio_call_state { get; set; default = AudioCallState.ENDING; }
 
     private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
 
