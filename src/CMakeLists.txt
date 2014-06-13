@@ -116,7 +116,7 @@ CONFIGURE_FILE( config.h.in config.h )
 # define our source files
 SET( VENOM_SRC
   Main.vala
-  AudioManager.vala
+  core/AudioManager.vala
   core/Contact.vala
   core/ContactStorage.vala
   core/DhtNode.vala
