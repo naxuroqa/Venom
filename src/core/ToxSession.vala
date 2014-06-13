@@ -56,7 +56,6 @@ namespace Venom {
     private DhtNode[] dht_nodes = {};
     private GLib.HashTable<int, Contact> _contacts = new GLib.HashTable<int, Contact>(null, null);
     private GLib.HashTable<int, GroupChat> _groups = new GLib.HashTable<int, GroupChat>(null, null);
-    private GLib.HashTable<int, Contact> _call_indices = new GLib.HashTable<int, Contact>(null, null);
     private Thread<int> session_thread = null;
     private bool bootstrapped = false;
     private bool ipv6 = false;
@@ -867,68 +866,79 @@ namespace Venom {
 
     // TOXAV functions
     private void on_av_invite_callback(int32 call_index) {
+      int friend_id = toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
-        on_av_invite(_call_indices.get(call_index));
+        on_av_invite(_contacts.get(friend_id));
         return false;
       });
     }
     private void on_av_start_callback(int32 call_index) {
+       int friend_id = toxav_handle.get_peer_id(call_index, 0);
        Idle.add(() => {
-        on_av_start(_call_indices.get(call_index));
+        on_av_start(_contacts.get(friend_id));
         return false;
       });
     }
     private void on_av_cancel_callback(int32 call_index) {
+       int friend_id = toxav_handle.get_peer_id(call_index, 0);
        Idle.add(() => {
-        on_av_cancel(_call_indices.get(call_index));
+        on_av_cancel(_contacts.get(friend_id));
         return false;
       });
     }
     private void on_av_reject_callback(int32 call_index) {
+       int friend_id = toxav_handle.get_peer_id(call_index, 0);
        Idle.add(() => {
-        on_av_reject(_call_indices.get(call_index));
+        on_av_reject(_contacts.get(friend_id));
         return false;
       });
     }
     private void on_av_end_callback(int32 call_index) {
+       int friend_id = toxav_handle.get_peer_id(call_index, 0);
        Idle.add(() => {
-        on_av_end(_call_indices.get(call_index));
+        on_av_end(_contacts.get(friend_id));
         return false;
       });
     }
     private void on_av_ringing_callback(int32 call_index) {
+       int friend_id = toxav_handle.get_peer_id(call_index, 0);
        Idle.add(() => {
-        on_av_ringing(_call_indices.get(call_index));
+        on_av_ringing(_contacts.get(friend_id));
         return false;
       });
     }
     private void on_av_starting_callback(int32 call_index) {
+       int friend_id = toxav_handle.get_peer_id(call_index, 0);
        Idle.add(() => {
-        on_av_starting(_call_indices.get(call_index));
+        on_av_starting(_contacts.get(friend_id));
         return false;
       });
     }
     private void on_av_ending_callback(int32 call_index) {
+       int friend_id = toxav_handle.get_peer_id(call_index, 0);
        Idle.add(() => {
-        on_av_ending(_call_indices.get(call_index));
+        on_av_ending(_contacts.get(friend_id));
         return false;
       });
     }
     private void on_av_error_callback(int32 call_index) {
+       int friend_id = toxav_handle.get_peer_id(call_index, 0);
        Idle.add(() => {
-        on_av_error(_call_indices.get(call_index));
+        on_av_error(_contacts.get(friend_id));
         return false;
       });
     }
     private void on_av_request_timeout_callback(int32 call_index) {
+       int friend_id = toxav_handle.get_peer_id(call_index, 0);
        Idle.add(() => {
-        on_av_request_timeout(_call_indices.get(call_index));
+        on_av_request_timeout(_contacts.get(friend_id));
         return false;
       });
     }
     private void on_av_peer_timeout_callback(int32 call_index) {
+       int friend_id = toxav_handle.get_peer_id(call_index, 0);
        Idle.add(() => {
-        on_av_peer_timeout(_call_indices.get(call_index));
+        on_av_peer_timeout(_contacts.get(friend_id));
         return false;
       });
     }

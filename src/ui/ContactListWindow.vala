@@ -800,48 +800,48 @@ namespace Venom {
       groupchat_changed(g);
     }
 
-    private void on_av_invite(Contact c) { 
-
+    private void on_av_invite(Contact c) {
+      stdout.printf("[LOG] on_toxav_invite from %s\n", c.get_name_string());
     }
 
-    private void on_av_start(Contact c) { 
-
+    private void on_av_start(Contact c) {
+      stdout.printf("[LOG] on_toxav_start from %s\n", c.get_name_string());
     }
 
-    private void on_av_cancel(Contact c) { 
-
+    private void on_av_cancel(Contact c) {
+      stdout.printf("[LOG] on_toxav_cancel from %s\n", c.get_name_string());
     }
 
-    private void on_av_reject(Contact c) { 
-
+    private void on_av_reject(Contact c) {
+      stdout.printf("[LOG] on_toxav_reject from %s\n", c.get_name_string());
     }
 
-    private void on_av_end(Contact c) { 
-
+    private void on_av_end(Contact c) {
+      stdout.printf("[LOG] on_toxav_end from %s\n", c.get_name_string());
     }
 
-    private void on_av_ringing(Contact c) { 
-
+    private void on_av_ringing(Contact c) {
+      stdout.printf("[LOG] on_toxav_ringing from %s\n", c.get_name_string());
     }
 
-    private void on_av_starting(Contact c) { 
-
+    private void on_av_starting(Contact c) {
+      stdout.printf("[LOG] on_toxav_starting from %s\n", c.get_name_string());
     }
 
-    private void on_av_ending(Contact c) { 
-
+    private void on_av_ending(Contact c) {
+      stdout.printf("[LOG] on_toxav_ending from %s\n", c.get_name_string());
     }
 
-    private void on_av_error(Contact c) { 
-
+    private void on_av_error(Contact c) {
+      stdout.printf("[LOG] on_toxav_error from %s\n", c.get_name_string());
     }
 
-    private void on_av_request_timeout(Contact c) { 
-
+    private void on_av_request_timeout(Contact c) {
+      stdout.printf("[LOG] on_toxav_request_timeout from %s\n", c.get_name_string());
     }
 
-    private void on_av_peer_timeout(Contact c) { 
-
+    private void on_av_peer_timeout(Contact c) {
+      stdout.printf("[LOG] on_toxav_peer_timeout from %s\n", c.get_name_string());
     }
 
     private void on_start_audio_call(Contact c) {
@@ -878,29 +878,7 @@ namespace Venom {
 
     private void send_file(int friendnumber, uint8 filenumber) {
       int chunk_size =  session.get_recommended_data_size(friendnumber);
-      FileTransfer f://github.com/irungentoo/ProjectTox-Core/blob/master/toxav/toxav.h#L48-62   /*
-       ===NOT SURE IF NEEDED LATER, COMMENTING OUT INSTEAD OF DELETING===
-
-      //av call type 
-      session.on_av_type_audio.connect(this.on_av_type_audio);
-      session.on_av_type_video.connect(this.on_av_type_video);
-
-      //av error indicators
-      session.on_av_error_none.connect(this.on_av_error_none);
-      session.on_av_error_internal.connect(this.on_av_error_internal);
-      session.on_av_error_already_in_call.connect(this.on_av_error_already_in_call);
-      session.on_av_error_no_call.connect(this.on_av_error_no_call);
-      session.on_av_error_invalid_state.connect(this.on_av_error_invalid_state);
-      session.on_av_error_no_rtp_session.connect(this.on_av_error_no_rtp_session);
-      session.on_av_error_audio_packet_lost.connect(this.on_av_error_audio_packet_lost);
-      session.on_av_error_starting_audio_rtp.connect(this.on_av_error_starting_audio_rtp);
-      session.on_av_error_starting_video_rtp.connect(this.on_av_error_starting_video_rtp);
-      session.on_av_error_terminating_audio_rtp.connect(this.on_av_error_terminating_audio_rtp);
-      session.on_av_error_terminating_video_rtp.connect(this.on_av_error_terminating_video_rtp);
-      session.on_av_error_packet_too_large.connect(this.on_av_error_packet_too_large);
-    */
-
-t = session.get_contact_list()[friendnumber].get_filetransfers()[filenumber];
+      FileTransfer ft = session.get_contact_list()[friendnumber].get_filetransfers()[filenumber];
       ft.status = FileTransferStatus.IN_PROGRESS;
       if(ft == null) {
         stderr.printf("Trying to send unknown file");
