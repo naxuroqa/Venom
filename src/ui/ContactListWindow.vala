@@ -324,6 +324,42 @@ namespace Venom {
       session.on_group_action.connect(this.on_group_action);
       session.on_group_peer_changed.connect(this.on_group_peer_changed);
 
+      /*=== AV signals ===*/
+      //av requests
+      session.on_av_invite.connect(this.on_av_invite);
+      session.on_av_start.connect(this.on_av_start);
+      session.on_av_cancel.connect(this.on_av_cancel);
+      session.on_av_reject.connect(this.on_av_reject);
+      session.on_av_end.connect(this.on_av_end);
+
+      //av responses
+      session.on_av_ringing.connect(this.on_av_ringing);
+      session.on_av_starting.connect(this.on_av_starting);
+      session.on_av_ending.connect(this.on_av_ending);
+
+      //av protocol
+      session.on_av_error.connect(this.on_av_error);
+      session.on_av_request_timeout.connect(this.on_av_request_timeout);
+      session.on_av_peer_timeout.connect(this.on_av_peer_timeout);
+
+      //av call type 
+      session.on_av_type_audio.connect(this.on_av_type_audio);
+      session.on_av_type_video.connect(this.on_av_type_video);
+
+      //av error indicators
+      session.on_av_error_none.connect(this.on_av_error_none);
+      session.on_av_error_internal.connect(this.on_av_error_internal);
+      session.on_av_error_already_in_call.connect(this.on_av_error_already_in_call);
+      session.on_av_error_no_call.connect(this.on_av_error_no_call);
+      session.on_av_error_invalid_state.connect(this.on_av_error_invalid_state);
+      session.on_av_error_no_rtp_session.connect(this.on_av_error_no_rtp_session);
+      session.on_av_error_audio_packet_lost.connect(this.on_av_error_audio_packet_lost);
+      session.on_av_error_starting_audio_rtp.connect(this.on_av_error_starting_audio_rtp);
+      session.on_av_error_starting_video_rtp.connect(this.on_av_error_starting_video_rtp);
+      session.on_av_error_terminating_audio_rtp.connect(this.on_av_error_terminating_audio_rtp);
+      session.on_av_error_terminating_video_rtp.connect(this.on_av_error_terminating_video_rtp);
+      session.on_av_error_packet_too_large.connect(this.on_av_error_packet_too_large);
+
       //file signals
       session.on_file_sendrequest.connect(this.on_file_sendrequest);
       session.on_file_control.connect(this.on_file_control_request);
