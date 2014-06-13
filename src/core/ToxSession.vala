@@ -43,7 +43,11 @@ namespace Venom {
 
   // Wrapper class for accessing tox functions threadsafe
   public class ToxSession : Object {
+
+    public const int MAX_NUMBER_OF_CALLS = 1;
+
     private Tox.Tox handle;
+    private ToxAV.ToxAV toxav_handle;
     private IMessageLog message_log;
     private IContactStorage contact_storage;
     private IDhtNodeStorage dht_node_storage;
@@ -52,6 +56,7 @@ namespace Venom {
     private DhtNode[] dht_nodes = {};
     private GLib.HashTable<int, Contact> _contacts = new GLib.HashTable<int, Contact>(null, null);
     private GLib.HashTable<int, GroupChat> _groups = new GLib.HashTable<int, GroupChat>(null, null);
+    private GLib.HashTable<int, Contact> _call_indices = new GLib.HashTable<int, Contact>(null, null);
     private Thread<int> session_thread = null;
     private bool bootstrapped = false;
     private bool ipv6 = false;
@@ -81,17 +86,30 @@ namespace Venom {
     public signal void on_group_peer_changed(GroupChat g, int peernumber, Tox.ChatChange change);
 
     // File sending callbacks
-
     public signal void on_file_sendrequest(int friendnumber,uint8 filenumber,uint64 filesize,string filename);
     public signal void on_file_control(int friendnumber, uint8 filenumber,uint8 receive_send,uint8 status,uint8[] data);
     public signal void on_file_data(int friendnumber,uint8 filenumber,uint8[] data);
 
+    // ToxAV callbacks
+    public signal void on_av_invite(Contact c);
+    public signal void on_av_start(Contact c);
+    public signal void on_av_cancel(Contact c);
+    public signal void on_av_reject(Contact c);
+    public signal void on_av_end(Contact c);
+    public signal void on_av_ringing(Contact c);
+    public signal void on_av_starting(Contact c);
+    public signal void on_av_ending(Contact c);
+    public signal void on_av_error(Contact c);
+    public signal void on_av_request_timeout(Contact c);
+    public signal void on_av_peer_timeout(Contact c);
 
     public ToxSession( bool ipv6 = false ) {
       this.ipv6 = ipv6;
 
       // create handle
       handle = new Tox.Tox( ipv6 ? 1 : 0);
+
+      toxav_handle = new ToxAV.ToxAV(handle, MAX_NUMBER_OF_CALLS);
 
       //start local storage
       try {
@@ -132,26 +150,39 @@ namespace Venom {
 
     private void init_callbacks() {
       // setup callbacks
-      handle.callback_friend_request(this.on_friend_request_callback);
-      handle.callback_friend_message(this.on_friend_message_callback);
-      handle.callback_friend_action(this.on_friend_action_callback);
-      handle.callback_name_change(this.on_name_change_callback);
-      handle.callback_status_message(this.on_status_message_callback);
-      handle.callback_user_status(this.on_user_status_callback);
-      handle.callback_read_receipt(this.on_read_receipt_callback);
-      handle.callback_connection_status(this.on_connection_status_callback);
-      handle.callback_typing_change(this.on_typing_change_callback);
+      handle.callback_friend_request(on_friend_request_callback);
+      handle.callback_friend_message(on_friend_message_callback);
+      handle.callback_friend_action(on_friend_action_callback);
+      handle.callback_name_change(on_name_change_callback);
+      handle.callback_status_message(on_status_message_callback);
+      handle.callback_user_status(on_user_status_callback);
+      handle.callback_read_receipt(on_read_receipt_callback);
+      handle.callback_connection_status(on_connection_status_callback);
+      handle.callback_typing_change(on_typing_change_callback);
 
       // Groupchat callbacks
-      handle.callback_group_invite(this.on_group_invite_callback);
-      handle.callback_group_message(this.on_group_message_callback);
-      handle.callback_group_action(this.on_group_action_callback);
-      handle.callback_group_namelist_change(this.on_group_namelist_change_callback);
+      handle.callback_group_invite(on_group_invite_callback);
+      handle.callback_group_message(on_group_message_callback);
+      handle.callback_group_action(on_group_action_callback);
+      handle.callback_group_namelist_change(on_group_namelist_change_callback);
 
       // File sending callbacks
-      handle.callback_file_send_request(this.on_file_sendrequest_callback);
-      handle.callback_file_control(this.on_file_control_callback);
-      handle.callback_file_data(this.on_file_data_callback);
+      handle.callback_file_send_request(on_file_sendrequest_callback);
+      handle.callback_file_control(on_file_control_callback);
+      handle.callback_file_data(on_file_data_callback);
+
+      // ToxAV callbacks
+      ToxAV.register_callstate_callback(on_av_invite_callback         , ToxAV.CallbackID.INVITE);
+      ToxAV.register_callstate_callback(on_av_start_callback          , ToxAV.CallbackID.START);
+      ToxAV.register_callstate_callback(on_av_cancel_callback         , ToxAV.CallbackID.CANCEL);
+      ToxAV.register_callstate_callback(on_av_reject_callback         , ToxAV.CallbackID.REJECT);
+      ToxAV.register_callstate_callback(on_av_end_callback            , ToxAV.CallbackID.END);
+      ToxAV.register_callstate_callback(on_av_ringing_callback        , ToxAV.CallbackID.RINGING);
+      ToxAV.register_callstate_callback(on_av_starting_callback       , ToxAV.CallbackID.STARTING);
+      ToxAV.register_callstate_callback(on_av_ending_callback         , ToxAV.CallbackID.ENDING);
+      ToxAV.register_callstate_callback(on_av_error_callback          , ToxAV.CallbackID.ERROR);
+      ToxAV.register_callstate_callback(on_av_request_timeout_callback, ToxAV.CallbackID.REQUEST_TIMEOUT);
+      ToxAV.register_callstate_callback(on_av_peer_timeout_callback   , ToxAV.CallbackID.PEER_TIMEOUT);
     }
 
     private void init_contact_list() {
@@ -832,6 +863,74 @@ namespace Venom {
       requires(c != null)
     {
       return message_log.retrieve_history(c);
+    }
+
+    // TOXAV functions
+    private void on_av_invite_callback(int32 call_index) {
+      Idle.add(() => {
+        on_av_invite(_call_indices.get(call_index));
+        return false;
+      });
+    }
+    private void on_av_start_callback(int32 call_index) {
+       Idle.add(() => {
+        on_av_start(_call_indices.get(call_index));
+        return false;
+      });
+    }
+    private void on_av_cancel_callback(int32 call_index) {
+       Idle.add(() => {
+        on_av_cancel(_call_indices.get(call_index));
+        return false;
+      });
+    }
+    private void on_av_reject_callback(int32 call_index) {
+       Idle.add(() => {
+        on_av_reject(_call_indices.get(call_index));
+        return false;
+      });
+    }
+    private void on_av_end_callback(int32 call_index) {
+       Idle.add(() => {
+        on_av_end(_call_indices.get(call_index));
+        return false;
+      });
+    }
+    private void on_av_ringing_callback(int32 call_index) {
+       Idle.add(() => {
+        on_av_ringing(_call_indices.get(call_index));
+        return false;
+      });
+    }
+    private void on_av_starting_callback(int32 call_index) {
+       Idle.add(() => {
+        on_av_starting(_call_indices.get(call_index));
+        return false;
+      });
+    }
+    private void on_av_ending_callback(int32 call_index) {
+       Idle.add(() => {
+        on_av_ending(_call_indices.get(call_index));
+        return false;
+      });
+    }
+    private void on_av_error_callback(int32 call_index) {
+       Idle.add(() => {
+        on_av_error(_call_indices.get(call_index));
+        return false;
+      });
+    }
+    private void on_av_request_timeout_callback(int32 call_index) {
+       Idle.add(() => {
+        on_av_request_timeout(_call_indices.get(call_index));
+        return false;
+      });
+    }
+    private void on_av_peer_timeout_callback(int32 call_index) {
+       Idle.add(() => {
+        on_av_peer_timeout(_call_indices.get(call_index));
+        return false;
+      });
     }
   }
 }
