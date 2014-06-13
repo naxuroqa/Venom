@@ -41,6 +41,7 @@ namespace Venom {
     }
   }
 
+
   // Wrapper class for accessing tox functions threadsafe
   public class ToxSession : Object {
 
@@ -865,80 +866,118 @@ namespace Venom {
     }
 
     // TOXAV functions
+    public void start_audio_call(Contact c) {
+      // start audio thread, ...
+      int call_index = 0;
+      toxav_handle.call(ref call_index, c.friend_id, ToxAV.CallType.AUDIO, 10);
+    }
+
+    public void hangup_call(Contact c) {
+      toxav_handle.hangup(c.call_index);
+    }
+
+    public void cancel_call(Contact c) {
+      toxav_handle.cancel(c.call_index, c.friend_id, "do not want");
+    }
+
+    // TOXAV callbacks
     private void on_av_invite_callback(int32 call_index) {
       int friend_id = toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
-        on_av_invite(_contacts.get(friend_id));
+        Contact c = _contacts.get(friend_id);
+        c.call_index = call_index;
+        on_av_invite(c);
         return false;
       });
     }
     private void on_av_start_callback(int32 call_index) {
-       int friend_id = toxav_handle.get_peer_id(call_index, 0);
-       Idle.add(() => {
-        on_av_start(_contacts.get(friend_id));
+      int friend_id = toxav_handle.get_peer_id(call_index, 0);
+      Idle.add(() => {
+        Contact c = _contacts.get(friend_id);
+        c.audio_call_state = AudioCallState.STARTED;
+        on_av_start(c);
         return false;
       });
     }
     private void on_av_cancel_callback(int32 call_index) {
-       int friend_id = toxav_handle.get_peer_id(call_index, 0);
-       Idle.add(() => {
-        on_av_cancel(_contacts.get(friend_id));
+      int friend_id = toxav_handle.get_peer_id(call_index, 0);
+      Idle.add(() => {
+        Contact c = _contacts.get(friend_id);
+        c.audio_call_state = AudioCallState.ENDED;
+        on_av_cancel(c);
         return false;
       });
     }
     private void on_av_reject_callback(int32 call_index) {
-       int friend_id = toxav_handle.get_peer_id(call_index, 0);
-       Idle.add(() => {
-        on_av_reject(_contacts.get(friend_id));
+      int friend_id = toxav_handle.get_peer_id(call_index, 0);
+      Idle.add(() => {
+        Contact c = _contacts.get(friend_id);
+        c.audio_call_state = AudioCallState.ENDED;
+        on_av_reject(c);
         return false;
       });
     }
     private void on_av_end_callback(int32 call_index) {
-       int friend_id = toxav_handle.get_peer_id(call_index, 0);
-       Idle.add(() => {
-        on_av_end(_contacts.get(friend_id));
+      int friend_id = toxav_handle.get_peer_id(call_index, 0);
+      Idle.add(() => {
+        Contact c = _contacts.get(friend_id);
+        c.audio_call_state = AudioCallState.ENDED;
+        on_av_end(c);
         return false;
       });
     }
     private void on_av_ringing_callback(int32 call_index) {
-       int friend_id = toxav_handle.get_peer_id(call_index, 0);
-       Idle.add(() => {
-        on_av_ringing(_contacts.get(friend_id));
+      int friend_id = toxav_handle.get_peer_id(call_index, 0);
+      Idle.add(() => {
+        Contact c = _contacts.get(friend_id);
+        c.call_index = call_index;
+        c.audio_call_state = AudioCallState.RINGING;
+        on_av_ringing(c);
         return false;
       });
     }
     private void on_av_starting_callback(int32 call_index) {
-       int friend_id = toxav_handle.get_peer_id(call_index, 0);
-       Idle.add(() => {
-        on_av_starting(_contacts.get(friend_id));
+      int friend_id = toxav_handle.get_peer_id(call_index, 0);
+      Idle.add(() => {
+        Contact c = _contacts.get(friend_id);
+        c.audio_call_state = AudioCallState.STARTED;
+        on_av_starting(c);
         return false;
       });
     }
     private void on_av_ending_callback(int32 call_index) {
-       int friend_id = toxav_handle.get_peer_id(call_index, 0);
-       Idle.add(() => {
+      int friend_id = toxav_handle.get_peer_id(call_index, 0);
+      Idle.add(() => {
+        Contact c = _contacts.get(friend_id);
+        c.audio_call_state = AudioCallState.ENDED;
         on_av_ending(_contacts.get(friend_id));
         return false;
       });
     }
     private void on_av_error_callback(int32 call_index) {
-       int friend_id = toxav_handle.get_peer_id(call_index, 0);
-       Idle.add(() => {
-        on_av_error(_contacts.get(friend_id));
+      int friend_id = toxav_handle.get_peer_id(call_index, 0);
+      Idle.add(() => {
+        Contact c = _contacts.get(friend_id);
+        c.audio_call_state = AudioCallState.ENDED;
+        on_av_error(c);
         return false;
       });
     }
     private void on_av_request_timeout_callback(int32 call_index) {
-       int friend_id = toxav_handle.get_peer_id(call_index, 0);
-       Idle.add(() => {
-        on_av_request_timeout(_contacts.get(friend_id));
+      int friend_id = toxav_handle.get_peer_id(call_index, 0);
+      Idle.add(() => {
+        Contact c = _contacts.get(friend_id);
+        c.audio_call_state = AudioCallState.ENDED;
+        on_av_request_timeout(c);
         return false;
       });
     }
     private void on_av_peer_timeout_callback(int32 call_index) {
-       int friend_id = toxav_handle.get_peer_id(call_index, 0);
-       Idle.add(() => {
-        on_av_peer_timeout(_contacts.get(friend_id));
+      int friend_id = toxav_handle.get_peer_id(call_index, 0);
+      Idle.add(() => {
+        Contact c = _contacts.get(friend_id);
+        c.audio_call_state = AudioCallState.ENDED;
+        on_av_peer_timeout(c);
         return false;
       });
     }

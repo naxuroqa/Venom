@@ -845,11 +845,22 @@ namespace Venom {
     }
 
     private void on_start_audio_call(Contact c) {
-      AudioManager.instance.set_pipeline_playing();
+      session.start_audio_call(c);
     }
 
     private void on_stop_audio_call(Contact c) {
-      AudioManager.instance.set_pipeline_paused();
+      switch(c.audio_call_state) {
+        case AudioCallState.RINGING:
+          session.cancel_call(c);
+          break;
+        case AudioCallState.STARTED:
+          session.hangup_call(c);
+          break;
+        case AudioCallState.ENDED:
+          break;
+        default:
+          assert_not_reached();
+      }
     }
 
     private void on_file_sendrequest(int friendnumber, uint8 filenumber, uint64 filesize,string filename) {
