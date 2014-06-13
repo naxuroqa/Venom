@@ -342,6 +342,9 @@ namespace Venom {
       session.on_av_request_timeout.connect(this.on_av_request_timeout);
       session.on_av_peer_timeout.connect(this.on_av_peer_timeout);
 
+    /*
+       ===NOT SURE IF NEEDED LATER, COMMENTING OUT INSTEAD OF DELETING===
+
       //av call type 
       session.on_av_type_audio.connect(this.on_av_type_audio);
       session.on_av_type_video.connect(this.on_av_type_video);
@@ -359,6 +362,7 @@ namespace Venom {
       session.on_av_error_terminating_audio_rtp.connect(this.on_av_error_terminating_audio_rtp);
       session.on_av_error_terminating_video_rtp.connect(this.on_av_error_terminating_video_rtp);
       session.on_av_error_packet_too_large.connect(this.on_av_error_packet_too_large);
+    */
 
       //file signals
       session.on_file_sendrequest.connect(this.on_file_sendrequest);
