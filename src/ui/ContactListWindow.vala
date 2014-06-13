@@ -342,28 +342,6 @@ namespace Venom {
       session.on_av_request_timeout.connect(this.on_av_request_timeout);
       session.on_av_peer_timeout.connect(this.on_av_peer_timeout);
 
-    /*
-       ===NOT SURE IF NEEDED LATER, COMMENTING OUT INSTEAD OF DELETING===
-
-      //av call type 
-      session.on_av_type_audio.connect(this.on_av_type_audio);
-      session.on_av_type_video.connect(this.on_av_type_video);
-
-      //av error indicators
-      session.on_av_error_none.connect(this.on_av_error_none);
-      session.on_av_error_internal.connect(this.on_av_error_internal);
-      session.on_av_error_already_in_call.connect(this.on_av_error_already_in_call);
-      session.on_av_error_no_call.connect(this.on_av_error_no_call);
-      session.on_av_error_invalid_state.connect(this.on_av_error_invalid_state);
-      session.on_av_error_no_rtp_session.connect(this.on_av_error_no_rtp_session);
-      session.on_av_error_audio_packet_lost.connect(this.on_av_error_audio_packet_lost);
-      session.on_av_error_starting_audio_rtp.connect(this.on_av_error_starting_audio_rtp);
-      session.on_av_error_starting_video_rtp.connect(this.on_av_error_starting_video_rtp);
-      session.on_av_error_terminating_audio_rtp.connect(this.on_av_error_terminating_audio_rtp);
-      session.on_av_error_terminating_video_rtp.connect(this.on_av_error_terminating_video_rtp);
-      session.on_av_error_packet_too_large.connect(this.on_av_error_packet_too_large);
-    */
-
       //file signals
       session.on_file_sendrequest.connect(this.on_file_sendrequest);
       session.on_file_control.connect(this.on_file_control_request);
