@@ -224,6 +224,7 @@ ADD_EXECUTABLE( toxav_test EXCLUDE_FROM_ALL
 TARGET_LINK_LIBRARIES( venom
                        ${VENOM_LIBRARIES_OPT}
                        ${TOX_LIBRARIES}
+                       ${TOXAV_LIBRARIES}
                        ${SQLITE_LIBRARIES}
                        ${GIO_LIBRARIES}
                        ${GSTREAMER_LIBRARIES}
