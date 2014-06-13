@@ -19,9 +19,8 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Gst;
-
 namespace Venom {
+
   public class ConversationWidget : Gtk.EventBox {
     private EditableLabel label_contact_name;
     private Gtk.Label label_contact_statusmessage;
@@ -40,12 +39,10 @@ namespace Venom {
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
     public signal void contact_changed(Contact c);
-    public bool pipe_built = false;
-    public bool audio_on = false;
+    public signal void start_audio_call(Contact c);
+    public signal void stop_audio_call(Contact c);
 
-    private Pipeline pipeline;
-    private Element asrc;
-    private Element asink;
+    private bool audio_on = false;
 
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
@@ -264,40 +261,13 @@ namespace Venom {
       prepare_send_file(file);
     }
 
-    public void button_call_clicked(Gtk.Button source) { 
-        if(!pipe_built){ 
-            string[] hackArgs = {"\0"};
-            build_audio_pipeline(hackArgs);
-            pipe_built = true;
+    public void button_call_clicked(Gtk.Button source) {
+        if(!audio_on) {
+          start_audio_call(contact);
+        } else {
+          stop_audio_call(contact);
         }
-
-        if(!audio_on) { 
-            set_play();
-            audio_on = true;
-        } else { 
-            set_ready();
-            audio_on = false;
-        }
-    }
-
-    public void build_audio_pipeline(string[] hackArgs) { 
-        Gst.init(ref hackArgs);
-        this.pipeline = new Pipeline("mypipeline");
-        this.asrc = ElementFactory.make("autoaudiosrc", "audio");
-        this.asink = ElementFactory.make("autoaudiosink", "asink");
-        this.pipeline.add_many(this.asrc, this.asink);
-        this.asrc.link(this.asink);
-        return;
-    }
-
-    public void set_play() { 
-        this.pipeline.set_state(State.PLAYING);
-        return;
-    }
-
-    public void set_ready() { 
-        this.pipeline.set_state(State.READY);
-        return;
+        audio_on = !audio_on;
     }
 
     private void on_drag_data_received(Gtk.Widget sender, Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData data, uint info, uint time) {

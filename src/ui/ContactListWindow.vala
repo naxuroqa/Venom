@@ -782,6 +782,14 @@ namespace Venom {
       groupchat_changed(g);
     }
 
+    private void on_start_audio_call(Contact c) {
+      AudioManager.instance.set_pipeline_playing();
+    }
+
+    private void on_stop_audio_call(Contact c) {
+      AudioManager.instance.set_pipeline_paused();
+    }
+
     private void on_file_sendrequest(int friendnumber, uint8 filenumber, uint64 filesize,string filename) {
       stdout.printf ("received file send request friend: %i filenumber: %i filename: %s \n",friendnumber,filenumber,filename );
       Contact contact = session.get_contact_list()[friendnumber];
@@ -968,6 +976,8 @@ namespace Venom {
         w.new_outgoing_message.connect(on_outgoing_message);
         w.new_outgoing_action.connect(on_outgoing_action);
         w.new_outgoing_file.connect(on_outgoing_file);
+        w.start_audio_call.connect(on_start_audio_call);
+        w.stop_audio_call.connect(on_stop_audio_call);
         w.typing_status.connect( (is_typing) => {
           if(Settings.instance.send_typing_status) {
             session.set_user_is_typing(c.friend_id, is_typing);
