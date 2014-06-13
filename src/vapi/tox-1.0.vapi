@@ -798,7 +798,9 @@ namespace ToxAV {
     [CCode (cname = "ErrorTerminatingAudioRtp")]
     TERMINATING_AUDIO_RTP,
     [CCode (cname = "ErrorTerminatingVideoRtp")]
-    TERMINATING_VIDEO_RTP
+    TERMINATING_VIDEO_RTP,
+    [CCode (cname = "ErrorPacketTooLarge")]
+    PACKET_TOO_LARGE
   }
 
   /**
@@ -807,8 +809,6 @@ namespace ToxAV {
   [Flags]
   [CCode (cname = "ToxAvCapabilities", cprefix = "", has_type_id = false)]
   public enum Capabilities {
-    [CCode (cname = "None")]
-    NONE,
     [CCode (cname = "AudioEnconding")]
     AUDIO_ENCODING,
     [CCode (cname = "AudioDecoding")]
@@ -848,7 +848,7 @@ namespace ToxAV {
    */
   //typedef void ( *ToxAVCallback ) ( void *arg );
   [CCode (cname = "ToxAVCallback", has_type_id = false)]
-  public delegate void CallstateCallback ();
+  public delegate void CallstateCallback(int32 call_index);
   //FIXME
   [CCode (cname = "toxav_register_callstate_callback", has_type_id = false)]
   public static void register_callstate_callback ([CCode( delegate_target_pos = 3 )] CallstateCallback callback, CallbackID id);
@@ -869,7 +869,7 @@ namespace ToxAV {
      * @retval NULL On error.
      */
     [CCode (cname = "toxav_new")]
-    public ToxAV(Tox.Tox messenger, CodecSettings codec_settings);
+    public ToxAV(Tox.Tox messenger, int32 max_calls);
 
     /* #### only here for completeness #### */
     ///**
@@ -891,7 +891,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error call(int user, CallType call_type, int ringing_seconds);
+    public AV_Error call(ref int32 call_index, int user, CallType call_type, int ringing_seconds);
 
     /**
      * @brief Hangup active call.
@@ -901,7 +901,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error hangup();
+    public AV_Error hangup(int32 call_index);
 
     /**
      * @brief Answer incomming call.
@@ -912,7 +912,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error answer(CallType call_type );
+    public AV_Error answer(int32 call_index, CallType call_type );
 
     /**
      * @brief Reject incomming call.
@@ -923,7 +923,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error reject(string reason);
+    public AV_Error reject(int32 call_index,  string reason);
 
     /**
      * @brief Cancel outgoing request.
@@ -935,7 +935,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error cancel(int peer_id, string reason);
+    public AV_Error cancel(int32 call_index, int peer_id, string reason);
 
     /**
      * @brief Terminate transmission. Note that transmission will be terminated without informing remote peer.
@@ -945,7 +945,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error stop_call();
+    public AV_Error stop_call(int32 call_index);
 
     /**
      * @brief Must be call before any RTP transmission occurs.
@@ -956,7 +956,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error prepare_transmission(int support_video);
+    public AV_Error prepare_transmission(int32 call_index, CodecSettings codec_settings, int support_video);
 
     /**
      * @brief Call this at the end of the transmission.
@@ -966,7 +966,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error kill_transmission();
+    public AV_Error kill_transmission(int32 call_index);
 
     /**
      * @brief Receive decoded video packet.
@@ -977,7 +977,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On Error.
      */
-    public AV_Error recv_video ( out Vpx.Image output);
+    public AV_Error recv_video (int32 call_index, ref Vpx.Image output);
 
     /**
      * @brief Receive decoded audio frame.
@@ -990,10 +990,10 @@ namespace ToxAV {
      * @retval >=0 Size of received packet.
      * @retval ToxAvError On error.
      */
-    public AV_Error recv_audio( int frame_size, [CCode(array_length=false)] int16[] dest );
+    public AV_Error recv_audio(int32 call_index, int frame_size, [CCode(array_length=false)] int16[] dest );
 
     /**
-     * @brief Encode and send video packet.
+     * @brief Send video packet.
      *
      * @param av Handler.
      * @param input The packet.
@@ -1001,10 +1001,10 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error send_video ( Vpx.Image input);
+    public AV_Error send_video (int32 call_index, uint8[] frame);
 
     /**
-     * @brief Encode and send audio frame.
+     * @brief Send audio frame.
      *
      * @param av Handler.
      * @param frame The frame.
@@ -1013,7 +1013,34 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error send_audio ( [CCode(array_length_type="int")] int16[] frame);
+    public AV_Error send_audio (int32 call_index, uint8[] frame);
+
+    /**
+     * @brief Encode video frame
+     *
+     * @param av Handler
+     * @param dest Where to
+     * @param dest_max Max size
+     * @param input What to encode
+     * @return int
+     * @retval ToxAvError On error.
+     * @retval >0 On success
+     */
+    public AV_Error prepare_video_frame(int32 call_index, uint8[] dest, Vpx.Image input);
+
+    /**
+     * @brief Encode audio frame
+     *
+     * @param av Handler
+     * @param dest dest
+     * @param dest_max Max dest size
+     * @param frame The frame
+     * @param frame_size The frame size
+     * @return int
+     * @retval ToxAvError On error.
+     * @retval >0 On success
+     */
+    public AV_Error prepare_audio_frame(int32 call_index, uint8[] dest, int16[] frame);
 
     /**
      * @brief Get peer transmission type. It can either be audio or video.
@@ -1024,7 +1051,7 @@ namespace ToxAV {
      * @retval ToxAvCallType On success.
      * @retval ToxAvError On error.
      */
-    public AV_Error get_peer_transmission_type ( int peer );
+    public AV_Error get_peer_transmission_type (int32 call_index, int peer);
 
     /**
      * @brief Get id of peer participating in conversation
@@ -1034,7 +1061,7 @@ namespace ToxAV {
      * @return int
      * @retval ToxAvError No peer id
      */
-    public AV_Error get_peer_id ( int peer );
+    public AV_Error get_peer_id ( int32 call_index, int peer );
 
     /**
      * @brief Is certain capability supported
@@ -1044,7 +1071,27 @@ namespace ToxAV {
      * @retval 1 Yes.
      * @retval 0 No.
      */
-    public int capability_supported ( Capabilities capability );
+    public int capability_supported ( int32 call_index, Capabilities capability );
+
+    /**
+     * @brief Set queue limit
+     *
+     * @param av Handler
+     * @param call_index index
+     * @param limit the limit
+     * @return void
+     */
+    public int set_audio_queue_limit ( int32 call_index, uint64 limit );
+
+    /**
+     * @brief Set queue limit
+     *
+     * @param av Handler
+     * @param call_index index
+     * @param limit the limit
+     * @return void
+     */
+    public int set_video_queue_limit ( int32 call_index, uint64 limit );
 
     /**
      * @brief Get messenger handle

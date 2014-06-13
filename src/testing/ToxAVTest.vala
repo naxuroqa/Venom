@@ -114,7 +114,7 @@ public class VideoSample : Window {
       tox = new Tox.Tox(0);
       tox.callback_friend_request(on_friend_request);
       ToxAV.CodecSettings settings = ToxAV.DefaultCodecSettings;
-      tox_av = new ToxAV.ToxAV(tox, settings);
+      tox_av = new ToxAV.ToxAV(tox, 1);
 
       ToxAV.register_callstate_callback(on_toxav_invite         , ToxAV.CallbackID.INVITE);
       ToxAV.register_callstate_callback(on_toxav_start          , ToxAV.CallbackID.START);
@@ -170,37 +170,37 @@ public class VideoSample : Window {
       }
     }
 
-    private void on_toxav_invite() {
+    private void on_toxav_invite(int32 call_index) {
       print("[LOG] on_toxav_invite\n");
     }
-    private void on_toxav_start() {
+    private void on_toxav_start(int32 call_index) {
       print("[LOG] on_toxav_start\n");
     }
-    private void on_toxav_cancel() {
+    private void on_toxav_cancel(int32 call_index) {
       print("[LOG] on_toxav_cancel\n");
     }
-    private void on_toxav_reject() {
+    private void on_toxav_reject(int32 call_index) {
       print("[LOG] on_toxav_reject\n");
     }
-    private void on_toxav_end() {
+    private void on_toxav_end(int32 call_index) {
       print("[LOG] on_toxav_end\n");
     }
-    private void on_toxav_ringing() {
+    private void on_toxav_ringing(int32 call_index) {
       print("[LOG] on_toxav_ringing\n");
     }
-    private void on_toxav_starting() {
+    private void on_toxav_starting(int32 call_index) {
       print("[LOG] on_toxav_starting\n");
     }
-    private void on_toxav_ending() {
+    private void on_toxav_ending(int32 call_index) {
       print("[LOG] on_toxav_ending\n");
     }
-    private void on_toxav_error() {
+    private void on_toxav_error(int32 call_index) {
       print("[LOG] on_toxav_error\n");
     }
-    private void on_toxav_request_timeout() {
+    private void on_toxav_request_timeout(int32 call_index) {
       print("[LOG] on_toxav_request_timeout\n");
     }
-    private void on_toxav_peer_timeout() {
+    private void on_toxav_peer_timeout(int32 call_index) {
       print("[LOG] on_toxav_peer_timeout\n");
     }
 
