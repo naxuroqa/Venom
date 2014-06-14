@@ -24,7 +24,7 @@ namespace Venom {
     public signal void textview_activate();
     public signal void typing_status(bool typing);
 
-    public string placeholder_text { get; set; default = "Type your message here..."; }
+    public string placeholder_text { get; set; default = _("Type your message here..."); }
     public Gtk.TextTag placeholder_tag { get; set; }
     public bool placeholder_visible { get; protected set; default = true; }
 

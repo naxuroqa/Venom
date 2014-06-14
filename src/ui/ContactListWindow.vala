@@ -83,7 +83,7 @@ namespace Venom {
 
       on_ownconnectionstatus(false);
 
-      stdout.printf("ID: %s\n", Tools.bin_to_hexstring(session.get_address()));
+      stdout.printf(_("ID: %s\n"), Tools.bin_to_hexstring(session.get_address()));
       if(ResourceFactory.instance.offline_mode) {
         set_userstatus(UserStatus.OFFLINE);
       } else {
@@ -99,7 +99,7 @@ namespace Venom {
     public void cleanup() {
       if(cleaned_up)
         return;
-      stdout.printf("Ending session...\n");
+      stdout.printf(_("Ending session...\n"));
       // Stop background thread
       session.stop();
       // wait for background thread to finish
@@ -108,16 +108,16 @@ namespace Venom {
       // Save session before shutdown
       save_session();
 
-      stdout.printf("Session ended gracefully.\n");
+      stdout.printf(_("Session ended gracefully.\n"));
       cleaned_up = true;
     }
 
     private void save_session() {
-      stdout.printf("Saving tox session data\n");
+      stdout.printf(_("Saving tox session data\n"));
       try {
         session.save_to_file(ResourceFactory.instance.data_filename);
       } catch (Error e) {
-        stderr.printf("Saving session file failed: %s\n", e.message);
+        stderr.printf(_("Saving session file failed: %s\n"), e.message);
       }
 
     }
@@ -127,8 +127,8 @@ namespace Venom {
       try {
         provider.load_from_path(ResourceFactory.instance.default_theme_filename);
       } catch (Error e) {
-        string message = "Could not read theme from \"%s\"".printf(ResourceFactory.instance.default_theme_filename);
-        stderr.printf("%s: %s\n", message,  e.message);
+        string message = _("Could not read theme from \"%s\"").printf(ResourceFactory.instance.default_theme_filename);
+        stderr.printf(_("%s: %s\n"), message,  e.message);
         UITools.ErrorDialog(message, e.message, this);
         return;
       }
@@ -143,7 +143,7 @@ namespace Venom {
       try {
         session.load_from_file(ResourceFactory.instance.data_filename);
       } catch (Error e) {
-          stdout.printf("Could not load session data (%s), creating new one.\n", e.message);
+          stdout.printf(_("Could not load session data (%s), creating new one.\n"), e.message);
 
           session.set_name(ResourceFactory.instance.default_username);
           session.set_status_message(ResourceFactory.instance.default_statusmessage);
@@ -165,7 +165,7 @@ namespace Venom {
         theme.append_search_path(Path.build_filename("..", "share", "pixmaps"));
         set_default_icon(Gtk.IconTheme.get_default().load_icon("venom", 48, 0));
       } catch (Error e) {
-        stderr.printf("Error while loading icon: %s\n", e.message );
+        stderr.printf(_("Error while loading icon: %s\n"), e.message );
       }
       set_title_from_status(user_status);
 
@@ -205,9 +205,9 @@ namespace Venom {
       // Add our connection status to the treeview
       Gtk.TreeIter iter;
       liststore_status.append(out iter);
-      liststore_status.set(iter, 0, "Online", 1, filter_online, -1);
+      liststore_status.set(iter, 0, _("Online"), 1, filter_online, -1);
       liststore_status.append(out iter);
-      liststore_status.set(iter, 0, "All", 1, filter_all, -1);
+      liststore_status.set(iter, 0, _("All"), 1, filter_all, -1);
       combobox_status.set_active_iter(iter);
 
       // Add cellrenderer
@@ -405,7 +405,7 @@ namespace Venom {
       key_press_event.connect((source, key) => {
         if(key.keyval == Gdk.Key.F5) {
           init_theme();
-          stdout.printf("Theme refreshed\n");
+          stdout.printf(_("Theme refreshed\n"));
           return true;
         }
         return false;
@@ -424,7 +424,7 @@ namespace Venom {
     private void init_contacts() {
       GLib.HashTable<int, Contact> contacts = session.get_contact_list();
       contacts.foreach((key, val) => {
-        stdout.printf("Retrieved contact %s from savefile.\n", Tools.bin_to_hexstring(val.public_key));
+        stdout.printf(_("Retrieved contact %s from savefile.\n"), Tools.bin_to_hexstring(val.public_key));
         contact_added(val);
       });
     }
@@ -444,7 +444,7 @@ namespace Venom {
           label_name.label.label = User.instance.name;
           label_name.label.tooltip_text = User.instance.name;
         } else {
-          stderr.printf("Could not change user name!\n");
+          stderr.printf(_("Could not change user name!\n"));
         }
       });
       User.instance.notify["status-message"].connect(() => {
@@ -452,13 +452,13 @@ namespace Venom {
           label_status.label.label = User.instance.status_message;
           label_status.label.tooltip_text = User.instance.status_message;
         } else {
-          stderr.printf("Could not change user statusmessage!\n");
+          stderr.printf(_("Could not change user statusmessage!\n"));
         }
       });
     }
 
     private void set_title_from_status(UserStatus status) {
-      this.our_title = "Venom (%s)".printf(status.to_string());
+      this.our_title = _("Venom (%s)").printf(status.to_string());
       string notify = "";
       if (this.get_urgency_hint()) {
         notify = "* ";
@@ -505,7 +505,7 @@ namespace Venom {
       Gdk.Display display = get_display();
       Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD).set_text(id_string, -1);
       Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_PRIMARY).set_text(id_string, -1);
-      stdout.printf("Copied Tox ID to clipboard\n");
+      stdout.printf(_("Copied Tox ID to clipboard\n"));
     }
 
     private void edit_user_information() {
@@ -559,14 +559,14 @@ namespace Venom {
     }
 
     private void on_outgoing_file(FileTransfer ft) {
-      stdout.printf("sending file %s to %s\n",ft.name,ft.friend.name);
+      stdout.printf(_("sending file %s to %s\n"),ft.name,ft.friend.name);
       uint8 filenumber = session.send_file_request(ft.friend.friend_id,ft.file_size,ft.name);
       if(filenumber != -1) {
         ft.filenumber = filenumber;
         GLib.HashTable<uint8, FileTransfer> transfers = session.get_contact_list()[ft.friend.friend_id].get_filetransfers();
         transfers[filenumber] = ft;
       } else {
-        stderr.printf("failed to send file %s to %s", ft.name, ft.friend.name);
+        stderr.printf(_("failed to send file %s to %s"), ft.name, ft.friend.name);
         ft.status = FileTransferStatus.SENDING_FAILED;
       }
     }
@@ -574,7 +574,7 @@ namespace Venom {
     public void set_urgency () {
       if(!is_active && Settings.instance.enable_urgency_notification) {
         this.set_urgency_hint(true);
-        this.set_title("* " + this.our_title);
+        this.set_title(_("* %s").printf(this.our_title));
       }
     }
 
@@ -595,13 +595,13 @@ namespace Venom {
     // Session Signal callbacks
     private void on_friendrequest(Contact c, string message) {
       string public_key_string = Tools.bin_to_hexstring(c.public_key);
-      stdout.printf("[fr] %s:%s\n", public_key_string, message);
+      stdout.printf(_("[fr] %s:%s\n"), public_key_string, message);
 
       Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
                                   Gtk.ButtonsType.NONE,
-                                  "New friend request from '%s'.\nDo you want to accept?", public_key_string);
+                                  _("New friend request from '%s'.\nDo you want to accept?"), public_key_string);
       message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
       message_dialog.secondary_text = message;
           int response = message_dialog.run();
@@ -611,10 +611,10 @@ namespace Venom {
 
       int friend_add_error = session.add_friend_norequest(c);
       if(friend_add_error < 0) {
-        stderr.printf("Friend could not be added.\n");
+        stderr.printf(_("Friend could not be added.\n"));
         return;
       }
-      stdout.printf("Added new friend #%i\n", c.friend_id);
+      stdout.printf(_("Added new friend #%i\n"), c.friend_id);
       contact_added(c);
     }
     private void on_typing_change(Contact c, bool is_typing) {
@@ -624,7 +624,7 @@ namespace Venom {
       }
     }
     private void on_friendmessage(Contact c, string message) {
-      stdout.printf("<%s> %s:%s\n", new DateTime.now_local().format("%F"), c.name != null ? c.name : "<%i>".printf(c.friend_id), message);
+      stdout.printf(_("<%s> %s:%s\n"), new DateTime.now_local().format(_("%F")), c.name != null ? c.name : _("<%i>").printf(c.friend_id), message);
 
       ConversationWidget w = open_conversation_with(c);
       incoming_message(new Message.incoming(c, message));
@@ -635,7 +635,7 @@ namespace Venom {
       this.set_urgency();
     }
     private void on_action(Contact c, string action) {
-      stdout.printf("[ac] %i:%s\n", c.friend_id, action);
+      stdout.printf(_("[ac] %i:%s\n"), c.friend_id, action);
       ConversationWidget w = open_conversation_with(c);
       incoming_action(new ActionMessage.incoming(c, action));
       if(notebook_conversations.get_current_page() != notebook_conversations.page_num(w)) {
@@ -645,32 +645,32 @@ namespace Venom {
       this.set_urgency();
     }
     private void on_namechange(Contact c, string? old_name) {
-      stdout.printf("%s changed his name to %s\n", old_name, c.name);
+      stdout.printf(_("%s changed his name to %s\n"), old_name, c.name);
       contact_changed(c);
     }
     private void on_statusmessage(Contact c, string? old_status) {
-      stdout.printf("%s changed his status to %s\n", c.name, c.status_message);
+      stdout.printf(_("%s changed his status to %s\n"), c.name, c.status_message);
       contact_changed(c);
     }
     private void on_userstatus(Contact c, uint8 old_status) {
-      stdout.printf("[us] %s:%i\n", c.name, c.user_status);
+      stdout.printf(_("[us] %s:%i\n"), c.name, c.user_status);
       contact_changed(c);
     }
     private void on_read_receipt(Contact c, uint32 receipt) {
-      stdout.printf("[rr] %s:%u\n", c.name, receipt);
+      stdout.printf(_("[rr] %s:%u\n"), c.name, receipt);
     }
     private void on_connectionstatus(Contact c) {
-      stdout.printf("%s is now %s.\n", c.name, c.online ? "online" : "offline");
+      stdout.printf(_("%s is now %s.\n"), c.name, c.online ? _("online") : _("offline"));
       contact_changed(c);
     }
 
     private void on_ownconnectionstatus(bool status) {
-      stdout.printf("Connection to DHT %s.\n", status ? "established" : "lost");
+      stdout.printf(_("Connection to DHT %s.\n"), status ? _("established") : _("lost"));
       if(status) {
-        image_status.set_tooltip_text("Connected to the network");
+        image_status.set_tooltip_text(_("Connected to the network"));
         session.set_user_status(user_status);
       } else {
-        image_status.set_tooltip_text("Disconnected from the network");
+        image_status.set_tooltip_text(_("Disconnected from the network"));
         on_ownuserstatus(UserStatus.OFFLINE);
       }
       image_status.show();
@@ -705,13 +705,13 @@ namespace Venom {
     }
 
     private void on_group_invite(Contact c, GroupChat g) {
-      stdout.printf("Group invite from %s with public key %s\n", c.name, Tools.bin_to_hexstring(g.public_key));
+      stdout.printf(_("Group invite from %s with public key %s\n"), c.name, Tools.bin_to_hexstring(g.public_key));
       this.set_urgency();
       Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
                                   Gtk.ButtonsType.NONE,
-                                  "'%s' has invited you to a groupchat, do you want to accept?",
+                                  _("'%s' has invited you to a groupchat, do you want to accept?"),
                                     (c.name != null && c.name != "") ? c.name : Tools.bin_to_hexstring(c.public_key));
       message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
 
@@ -722,16 +722,16 @@ namespace Venom {
 
       bool ret = session.join_groupchat(c, g);
       if(ret == false) {
-        stderr.printf("Could not join groupchat.\n");
+        stderr.printf(_("Could not join groupchat.\n"));
         return;
       }
-      stdout.printf("Joined Groupchat #%i\n", g.group_id);
+      stdout.printf(_("Joined Groupchat #%i\n"), g.group_id);
       groupchat_added(g);
     }
 
     private void on_group_message(GroupChat g, int friendgroupnumber, string message) {
       string from_name = session.group_peername(g, friendgroupnumber);
-      stdout.printf("[gm] %s [%i]@%i: %s\n", from_name, friendgroupnumber, g.group_id, message);
+      stdout.printf(_("[gm] %s [%i]@%i: %s\n"), from_name, friendgroupnumber, g.group_id, message);
 
       GroupConversationWidget w = open_group_conversation_with(g);
 
@@ -739,7 +739,7 @@ namespace Venom {
       /** BEGIN **/
       GroupChatContact gcc = g.peers.get(friendgroupnumber);
       if(gcc == null) {
-        stderr.printf("Group message from unknown contact #%i [%i]\n", friendgroupnumber, g.group_id);
+        stderr.printf(_("Group message from unknown contact #%i [%i]\n"), friendgroupnumber, g.group_id);
         gcc = new GroupChatContact(friendgroupnumber);
         g.peers.set(friendgroupnumber, gcc);
         on_group_peer_changed(g, friendgroupnumber, Tox.ChatChange.PEER_ADD);
@@ -760,7 +760,7 @@ namespace Venom {
 
     private void on_group_action(GroupChat g, int friendgroupnumber, string message) {
       string from_name = session.group_peername(g, friendgroupnumber);
-      stdout.printf("[ga] %s [%i]@%i: %s\n", from_name, friendgroupnumber, g.group_id, message);
+      stdout.printf(_("[ga] %s [%i]@%i: %s\n"), from_name, friendgroupnumber, g.group_id, message);
 
       GroupConversationWidget w = open_group_conversation_with(g);
 
@@ -768,7 +768,7 @@ namespace Venom {
       /** BEGIN **/
       GroupChatContact gcc = g.peers.get(friendgroupnumber);
       if(gcc == null) {
-        stderr.printf("Group action from unknown contact #%i [%i]\n", friendgroupnumber, g.group_id);
+        stderr.printf(_("Group action from unknown contact #%i [%i]\n"), friendgroupnumber, g.group_id);
         gcc = new GroupChatContact(friendgroupnumber);
         g.peers.set(friendgroupnumber, gcc);
         on_group_peer_changed(g, friendgroupnumber, Tox.ChatChange.PEER_ADD);
@@ -795,7 +795,7 @@ namespace Venom {
     }
 
     private void on_file_sendrequest(int friendnumber, uint8 filenumber, uint64 filesize,string filename) {
-      stdout.printf ("received file send request friend: %i filenumber: %i filename: %s \n",friendnumber,filenumber,filename );
+      stdout.printf (_("received file send request friend: %i filenumber: %i filename: %s \n"),friendnumber,filenumber,filename );
       Contact contact = session.get_contact_list()[friendnumber];
       FileTransfer ft;
       if((filename.has_suffix(".png") || filename.has_suffix(".jpg") || filename.has_suffix(".jpeg")) && filesize <= 0x100000) {
@@ -823,7 +823,7 @@ namespace Venom {
       FileTransfer ft = session.get_contact_list()[friendnumber].get_filetransfers()[filenumber];
       ft.status = FileTransferStatus.IN_PROGRESS;
       if(ft == null) {
-        stderr.printf("Trying to send unknown file");
+        stderr.printf(_("Trying to send unknown file"));
         return;
       }
 
@@ -866,7 +866,7 @@ namespace Venom {
             if(ft.isfile) {
               size_t res = file_stream.read(bytes);
               if(res != chunk_size) {
-                stderr.printf("Read incorrect number of bytes from file\n");
+                stderr.printf(_("Read incorrect number of bytes from file\n"));
               }
             } else {
               Memory.copy(bytes, (uint8*)ft.data + ft.bytes_processed, chunk_size);
@@ -885,18 +885,18 @@ namespace Venom {
         session.send_filetransfer_end(friendnumber,filenumber);
         ft.status = FileTransferStatus.DONE;
       } catch(IOError e) {
-        stderr.printf("I/O error while trying to read file: %s\n",e.message);
+        stderr.printf(_("I/O error while trying to read file: %s\n"),e.message);
       } catch(Error e) {
-        stderr.printf("Unknown error while trying to read file: %s\n",e.message);
+        stderr.printf(_("Unknown error while trying to read file: %s\n"),e.message);
       } finally {
         try {
           if(file_stream != null)
             file_stream.close();
         } catch(IOError e) {
-          stderr.printf("I/O error while trying to close file stream: %s\n",e.message);
+          stderr.printf(_("I/O error while trying to close file stream: %s\n"),e.message);
         }
       }
-      stdout.printf("Ended file transfer for %s to %s\n",ft.name, (session.get_contact_list()[friendnumber]).name );
+      stdout.printf(_("Ended file transfer for %s to %s\n"),ft.name, (session.get_contact_list()[friendnumber]).name );
     }
 
     private void on_file_control_request(int friendnumber,uint8 filenumber,uint8 receive_send,uint8 status, uint8[] data) {
@@ -904,7 +904,7 @@ namespace Venom {
       if(ft == null)
         return;
       if(status == Tox.FileControlStatus.ACCEPT && receive_send == 1) {
-        stdout.printf("Contact accepted file sending request\n");
+        stdout.printf(_("Contact accepted file sending request\n"));
         new Thread<bool>(null, () => {
             send_file(friendnumber,filenumber);return true;
         });
@@ -922,11 +922,11 @@ namespace Venom {
         } else if(ft.direction == FileTransferDirection.INCOMING) {
           ft.status = FileTransferStatus.RECEIVING_FAILED;
         }
-        stderr.printf("File transfer was rejected for file number %u", filenumber);
+        stderr.printf(_("File transfer was rejected for file number %u"), filenumber);
       }
       if(status == Tox.FileControlStatus.FINISHED && receive_send == 0) {
         ft.status = FileTransferStatus.DONE;
-        stderr.printf("File transfer finished for file number %u",filenumber);
+        stderr.printf(_("File transfer finished for file number %u"),filenumber);
       }
 
       if(status == Tox.FileControlStatus.RESUME_BROKEN && receive_send == 1) {
@@ -958,7 +958,7 @@ namespace Venom {
           ft.bytes_processed += bytes_written;
           fos.close();
         } catch (Error e){
-          stderr.printf("Error while trying to write data to file\n");
+          stderr.printf(_("Error while trying to write data to file\n"));
           ft.status = FileTransferStatus.RECEIVING_FAILED;
         }
       } else {
@@ -1057,7 +1057,7 @@ namespace Venom {
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.WARNING,
                                   Gtk.ButtonsType.NONE,
-                                  "Are you sure you want to delete '%s' from your contact list?", name);
+                                  _("Are you sure you want to delete '%s' from your contact list?"), name);
       message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Delete", Gtk.ResponseType.OK, null);
       int response = message_dialog.run();
       message_dialog.destroy();
@@ -1065,7 +1065,7 @@ namespace Venom {
         return;
 
       if(!session.del_friend(c)) {
-        stderr.printf("Could not remove contact %i.\n", c.friend_id);
+        stderr.printf(_("Could not remove contact %i.\n"), c.friend_id);
         return;
       }
       contact_removed(c);
@@ -1074,12 +1074,12 @@ namespace Venom {
     public void remove_groupchat(GroupChat g) {
       if(g == null)
         return;
-      string name = "groupchat #%i".printf(g.group_id);
+      string name = _("groupchat #%i").printf(g.group_id);
       Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.WARNING,
                                   Gtk.ButtonsType.NONE,
-                                  "Are you sure you want to delete '%s' from your contact list?", name);
+                                  _("Are you sure you want to delete '%s' from your contact list?"), name);
       message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Delete", Gtk.ResponseType.OK, null);
       int response = message_dialog.run();
       message_dialog.destroy();
@@ -1087,7 +1087,7 @@ namespace Venom {
         return;
 
       if(!session.del_groupchat(g)) {
-        stderr.printf("Could not remove %s.\n", name);
+        stderr.printf(_("Could not remove %s.\n"), name);
         return;
       }
       groupchat_removed(g);
@@ -1109,9 +1109,9 @@ namespace Venom {
           if(resolved_id != null) {
             stripped_id = resolved_id;
           } else {
-            string error_message = "Could not resolve ID from DNS record\n";
+            string error_message = _("Could not resolve ID from DNS record\n");
             stderr.printf(error_message);
-            UITools.ErrorDialog("Resolving ID failed", error_message, this);
+            UITools.ErrorDialog(_("Resolving ID failed"), error_message, this);
             return false;
           }
         }
@@ -1120,26 +1120,26 @@ namespace Venom {
       uint8[] contact_id = Tools.hexstring_to_bin(stripped_id);
       // add friend
       if(contact_id == null || contact_id.length != Tox.FRIEND_ADDRESS_SIZE) {
-        string error_message = "Could not add friend: Invalid ID\n";
+        string error_message = _("Could not add friend: Invalid ID\n");
         stderr.printf(error_message);
-        UITools.ErrorDialog("Adding Friend failed", error_message, this);
+        UITools.ErrorDialog(_("Adding Friend failed"), error_message, this);
         return false;
       }
       Contact c = new Contact(contact_id);
-      stdout.printf("setting alias: %s\n", alias);
+      stdout.printf(_("setting alias: %s\n"), alias);
       if(alias != "") {
         c.alias = alias;
       }
       Tox.FriendAddError ret = session.add_friend(c, contact_message);
       if(ret < 0) {
-        string error_message = "Could not add friend: %s.\n".printf(Tools.friend_add_error_to_string(ret));
+        string error_message = _("Could not add friend: %s.\n").printf(Tools.friend_add_error_to_string(ret));
         stderr.printf(error_message);
-        UITools.ErrorDialog("Adding Friend failed", error_message, this);
+        UITools.ErrorDialog(_("Adding Friend failed"), error_message, this);
         return false;
       }
 
       session.save_extended_contact_data(c);
-      stdout.printf("Friend request successfully sent. Friend added as %i.\n", (int)ret);
+      stdout.printf(_("Friend request successfully sent. Friend added as %i.\n"), (int)ret);
       contact_added(c);
       return true;
     }
@@ -1184,7 +1184,7 @@ namespace Venom {
     public void button_group_chat_clicked(Gtk.Button source) {
       GroupChat g = session.add_groupchat();
       if(g == null) {
-        stderr.printf("Could not create a new groupchat.\n");
+        stderr.printf(_("Could not create a new groupchat.\n"));
         return;
       }
       groupchat_added(g);

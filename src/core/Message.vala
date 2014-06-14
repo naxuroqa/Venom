@@ -44,7 +44,7 @@ namespace Venom {
      *  Get plain time string
      */
     public virtual string get_time_plain() {
-      return timestamp.format("%R:%S");
+      return timestamp.format(_("%R:%S"));
     }
 
     /*
@@ -149,7 +149,7 @@ namespace Venom {
         if(this.message_direction == MessageDirection.OUTGOING) {
           return User.instance.name;
         }
-        return from_contact.name != null ? from_contact.name : "<unknown>";
+        return from_contact.name != null ? from_contact.name : _("<unknown>");
       }
     }
     public virtual string get_message_plain() {
@@ -188,7 +188,7 @@ namespace Venom {
     public override string get_message_plain() {
       string name_string;
       if(message_direction == MessageDirection.INCOMING) {
-        name_string = from_contact.name != null ? from_contact.name : "<unknown>";
+        name_string = from_contact.name != null ? from_contact.name : _("<unknown>");
       } else {
         name_string = User.instance.name;
       }

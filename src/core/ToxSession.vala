@@ -28,13 +28,13 @@ namespace Venom {
     public string to_string() {
       switch (this) {
         case ONLINE:
-          return "Online";
+          return _("Online");
         case AWAY:
-          return "Away";
+          return _("Away");
         case BUSY:
-          return "Busy";
+          return _("Busy");
         case OFFLINE:
-          return "Offline";
+          return _("Offline");
         default:
           assert_not_reached();
       }
@@ -108,7 +108,7 @@ namespace Venom {
         //unfinished, so replaced with dummy storage
         //dht_node_storage = new SqliteDhtNodeStorage(db);
       } catch (Error e) {
-        stderr.printf("Error opening database: %s\n", e.message);
+        stderr.printf(_("Error opening database: %s\n"), e.message);
         message_log = new DummyMessageLog();
         dht_node_storage = new DummyDhtNodeStorage();
       }
@@ -339,7 +339,7 @@ namespace Venom {
       } else {
         chat_change_string = "NAME";
       }
-      stdout.printf("[gnc] <%s> [%i] #%i\n", chat_change_string, peernumber, groupnumber);
+      stdout.printf(_("[gnc] <%s> [%i] #%i\n"), chat_change_string, peernumber, groupnumber);
 */
       Idle.add(() => {
         GroupChat g = _groups.get(groupnumber);
@@ -349,7 +349,7 @@ namespace Venom {
           g.peer_count++;
         } else if (change == Tox.ChatChange.PEER_DEL) {
           if(!g.peers.remove(peernumber)) {
-            stderr.printf("Could not remove peer [%i] from groupchat #%i (no such peer)\n", peernumber, groupnumber);
+            stderr.printf(_("Could not remove peer [%i] from groupchat #%i (no such peer)\n"), peernumber, groupnumber);
           }
           g.peer_count--;
         } else { // change == PEER_NAME
@@ -714,15 +714,15 @@ namespace Venom {
 
     // Background thread main function
     private int run() {
-      stdout.printf("Background thread started.\n");
+      stdout.printf(_("Background thread started.\n"));
 
       if(!bootstrapped) {
-        stdout.printf("Connecting to DHT Nodes:\n");
+        stdout.printf(_("Connecting to DHT Nodes:\n"));
         for(int i = 0; i < dht_nodes.length; ++i) {
           // skip ipv6 nodes if we don't support them
           if(dht_nodes[i].is_ipv6 && !ipv6)
             continue;
-          stdout.printf("  %s\n", dht_nodes[i].to_string());
+          stdout.printf(_("  %s\n"), dht_nodes[i].to_string());
           lock(handle) {
             handle.bootstrap_from_address(
               dht_nodes[i].host,
@@ -753,7 +753,7 @@ namespace Venom {
         }
         Thread.usleep(1000);
       }
-      stdout.printf("Background thread stopped.\n");
+      stdout.printf(_("Background thread stopped.\n"));
       return 0;
     }
 
@@ -785,20 +785,20 @@ namespace Venom {
     {
       File f = File.new_for_path(filename);
       if(!f.query_exists())
-        throw new IOError.NOT_FOUND("File \"" + filename + "\" does not exist.");
+        throw new IOError.NOT_FOUND(_("File \"%d\" does not exist.").printf(filename));
       FileInfo file_info = f.query_info("*", FileQueryInfoFlags.NONE);
       int64 size = file_info.get_size();
       var data_stream = new DataInputStream(f.read());
       uint8[] buf = new uint8 [size];
 
       if(data_stream.read(buf) != size)
-        throw new IOError.FAILED("Error while reading from stream.");
+        throw new IOError.FAILED(_("Error while reading from stream."));
       int ret = -1;
       lock(handle) {
         ret = handle.load(buf);
       }
       if(ret != 0)
-        throw new IOError.FAILED("Error while loading messenger data.");
+        throw new IOError.FAILED(_("Error while loading messenger data."));
       init_contact_list();
       message_log.myId = Tools.bin_to_hexstring(get_address());
     }
@@ -825,7 +825,7 @@ namespace Venom {
       assert(size != 0);
 
       if(os.write(buf) != size)
-        throw new IOError.FAILED("Error while writing to stream.");
+        throw new IOError.FAILED(_("Error while writing to stream."));
     }
 
     public GLib.List<Message> load_history_for_contact(Contact c)

@@ -169,17 +169,17 @@ namespace Venom {
 
       //create table and index if needed
       if(db.exec (QUERY_TABLE_NODES, null, out errmsg) != Sqlite.OK) {
-        throw new SqliteDbError.QUERY("Error creating dht nodes table: %s\n", errmsg);
+        throw new SqliteDbError.QUERY(_("Error creating dht nodes table: %s\n"), errmsg);
       }
 
       //prepare insert statement for adding new history messages
       if(db.prepare_v2 (STATEMENT_INSERT_NODES, STATEMENT_INSERT_NODES.length, out insert_statement) != Sqlite.OK) {
-        throw new SqliteDbError.QUERY("Error creating dht nodes insert statement: %d: %s\n", db.errcode (), db.errmsg());
+        throw new SqliteDbError.QUERY(_("Error creating dht nodes insert statement: %d: %s\n"), db.errcode (), db.errmsg());
       }
 
       //prepare select statement to get history. Will execute on indexed data
       if(db.prepare_v2 (STATEMENT_SELECT_NODES, STATEMENT_SELECT_NODES.length, out select_statement) != Sqlite.OK) {
-        throw new SqliteDbError.QUERY("Error creating dht nodes select statement: %d: %s\n", db.errcode (), db.errmsg());
+        throw new SqliteDbError.QUERY(_("Error creating dht nodes select statement: %d: %s\n"), db.errcode (), db.errmsg());
       }
     }
   }

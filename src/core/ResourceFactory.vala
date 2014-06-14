@@ -74,9 +74,9 @@ namespace Venom {
       db_filename = Path.build_filename(tox_config_dir, "tox.db");
       config_filename = Path.build_filename(tox_config_dir, "config.json");
 
-      default_add_contact_message = "Please let me add you to my contact list.";
-      default_username = "Tox User";
-      default_statusmessage = "Toxing on Venom v.%s".printf(Config.VERSION);
+      default_add_contact_message = _("Please let me add you to my contact list.");
+      default_username = _("Tox User");
+      default_statusmessage = _("Toxing on Venom v.%s").printf(Config.VERSION);
     }
 
     public Gdk.Pixbuf ok {get; private set;}
@@ -125,7 +125,7 @@ namespace Venom {
       try {
         buf = new Gdk.Pixbuf.from_resource( resourcename );
       } catch (Error e) {
-        stderr.printf("Error while loading image from \"%s\":%s\n", resourcename, e.message );
+        stderr.printf(_("Error while loading image from \"%s\":%s\n"), resourcename, e.message );
       }
       return buf;
     }

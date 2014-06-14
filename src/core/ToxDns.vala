@@ -33,7 +33,7 @@ namespace Venom {
           try {
             _tox_dns_record_regex = new GLib.Regex("^v=(?P<v>[^\\W;]+);(id=(?P<id>[^\\W;]+)|pub=(?P<pub>[^\\W;]+);check=(?P<check>[^\\W;]+))");
           } catch (GLib.Error e) {
-            stderr.printf("Error creating tox dns regex: %s\n", e.message);
+            stderr.printf(_("Error creating tox dns regex: %s\n"), e.message);
           }
         }
         return _tox_dns_record_regex;
@@ -48,7 +48,7 @@ namespace Venom {
           //TODO support message pin and xname (ignored for now)
             _tox_uri_regex = new GLib.Regex("^((?P<scheme>tox)://)?((?P<tox_id>[[:xdigit:]]{%i})|(?P<authority_user>[[:digit:][:alpha:]]+)(@(?P<authority_host>[[:digit:][:alpha:]]+(\\.[[:digit:][:alpha:]]+)+))?)".printf(Tox.FRIEND_ADDRESS_SIZE * 2));
           } catch (GLib.Error e) {
-            stderr.printf("Error creating tox uri regex: %s\n", e.message);
+            stderr.printf(_("Error creating tox uri regex: %s\n"), e.message);
           }
         }
         return _tox_uri_regex;
@@ -61,14 +61,14 @@ namespace Venom {
 
       GLib.MatchInfo info = null;
       if(tox_uri_regex == null || !tox_uri_regex.match(tox_uri, 0, out info)) {
-        stderr.printf("Invalid tox uri\n");
+        stderr.printf(_("Invalid tox uri\n"));
         return null;
       }
 
       authority_user = info.fetch_named("authority_user");
       if(authority_user == null) {
         // must be tox://<tox_id> in this case
-        return info.fetch_named("tox_id");
+        return info.fetch_named(_("tox_id"));
       }
 
       string authority_host = info.fetch_named("authority_host") ?? default_host;
@@ -78,7 +78,7 @@ namespace Venom {
       try {
         record = lookup_dns_record(hostname);
       } catch (GLib.Error e) {
-        stderr.printf("Error resolving name: %s\n", e.message);
+        stderr.printf(_("Error resolving name: %s\n"), e.message);
         return null;
       }
 
@@ -92,15 +92,15 @@ namespace Venom {
         switch(v) {
           case "tox1":
             string id = info.fetch_named("id");
-            stdout.printf("tox 1 ID found: %s\n", id);
+            stdout.printf(_("tox 1 ID found: %s\n"), id);
             return id;
           case "tox2":
             string pub = info.fetch_named("pub");
             string check = info.fetch_named("check");
-            stdout.printf("tox 2 ID found: %s %s\n", pub, check);
+            stdout.printf(_("tox 2 ID found: %s %s\n"), pub, check);
             string pin = pin_request(tox_dns_id);
             if(pin == null || pin == "") {
-              stderr.printf("No pin privided, aborting...\n");
+              stderr.printf(_("No pin privided, aborting...\n"));
               return null;
             }
             string decoded = pub + Venom.Tools.bin_to_hexstring(Base64.decode(pin + "==")) + check;
@@ -110,7 +110,7 @@ namespace Venom {
             assert_not_reached();
         }
       } else {
-        stderr.printf("Invalid record\n");
+        stderr.printf(_("Invalid record\n"));
       }
       return null;
     }
