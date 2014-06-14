@@ -74,7 +74,6 @@ namespace Venom {
       db_filename = Path.build_filename(tox_config_dir, "tox.db");
       config_filename = Path.build_filename(tox_config_dir, "config.json");
 
-      default_add_contact_message = _("Please let me add you to my contact list.");
       default_username = _("Tox User");
       default_statusmessage = _("Toxing on Venom v.%s").printf(Config.VERSION);
     }
@@ -113,7 +112,6 @@ namespace Venom {
     public string data_filename {get; set;}
     public string db_filename {get; set;}
     public string config_filename {get; set;}
-    public string default_add_contact_message {get; private set;}
     public string default_username {get; private set;}
     public string default_statusmessage {get; private set;}
 

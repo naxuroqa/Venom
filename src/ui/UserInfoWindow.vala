@@ -83,7 +83,7 @@ namespace Venom {
       button_apply = this.add_button("_Apply", Gtk.ResponseType.APPLY);
 
       this.set_default_response(Gtk.ResponseType.APPLY);
-      this.title = "Edit user information";
+      this.title = _("Edit user information");
       // set dialog to minimal size
       set_default_size(0, 0);
     }
