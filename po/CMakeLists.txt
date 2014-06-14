@@ -1,5 +1,5 @@
 #
-#    Copyright (C) 2013 Venom authors and contributors
+#    Copyright (C) 2013-2014 Venom authors and contributors
 #
 #    This file is part of Venom.
 #
@@ -17,7 +17,13 @@
 #    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-SET(VENOM_THEMES
-  default.css
+SET(TRANSLATIONS
+  de
 )
-INSTALL(FILES ${VENOM_THEMES} DESTINATION "${COMMON_DATA_DIR}/venom/theme")
+
+IF (XGETTEXT_FOUND)
+  GETTEXT_CREATE_TRANSLATIONS(${GETTEXT_PACKAGE}.pot ALL ${TRANSLATIONS} COMMENT "Creating translations.")
+ELSE ()
+  message(STATUS "xgettext not found")
+ENDIF()
+

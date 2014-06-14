@@ -83,7 +83,7 @@ IF(LINK_GIO_STATIC)
   ENDIF(WIN32)
 ENDIF(LINK_GIO_STATIC)
 
-SET(GETTEXT_CFLAGS "-DGETTEXT_PACKAGE=\\\"venom\\\"")
+SET(GETTEXT_CFLAGS "-DGETTEXT_PACKAGE=\\\"${GETTEXT_PACKAGE}\\\"")
 
 # add cflags and cflags_other of all dependencies to our cflags
 SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GETTEXT_CFLAGS}
@@ -144,6 +144,20 @@ SET( VENOM_SRC
   ui/UITools.vala
   ui/SettingsWindow.vala
 )
+
+SET( VENOM_GLADE
+  src/ui/add_contact_dialog.ui
+  src/ui/chat_filetransfer.ui
+  src/ui/contact_list.ui
+  src/ui/conversation_window.ui
+  src/ui/settings_window.ui
+  src/ui/user_info_window.ui
+)
+
+IF (XGETTEXT_FOUND)
+  # create new pot file with "make pot_file"
+  GETTEXT_CREATE_POT(${GETTEXT_PACKAGE}.pot OPTION ${XGETTEXT_OPTIONS} SRC ${VENOM_SRC} GLADE ${VENOM_GLADE})
+ENDIF()
 
 # precompile all vala code to c via valac
 VALA_PRECOMPILE( VALA_C_VENOM
