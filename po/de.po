@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-14 18:04+0200\n"
-"PO-Revision-Date: 2014-06-08 02:40+0100\n"
+"PO-Revision-Date: 2014-06-14 18:59+0100\n"
 "Last-Translator:  <spxmar@gmail.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.6.5\n"
 
 #: core/ToxSession.vala:725
 #, c-format
@@ -1036,4 +1036,4 @@ msgstr ""
 
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
-msgstr ""
+msgstr "Marius <marius.spix@web.de>"

@@ -38,7 +38,8 @@ public class Main : GLib.Object {
       GLib.Intl.setlocale(GLib.LocaleCategory.MESSAGES, "");
       GLib.Intl.textdomain(Config.GETTEXT_PACKAGE); 
       GLib.Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "utf-8");
-      GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.GETTEXT_PATH);
+      //FIXME see if this is needed on windows
+      //GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.GETTEXT_PATH);
       try {
 		    GLib.OptionContext option_context = new GLib.OptionContext("");
 		    option_context.set_help_enabled(true);

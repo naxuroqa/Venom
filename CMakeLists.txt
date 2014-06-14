@@ -66,8 +66,9 @@ SET(COMMON_DATA_DIR share)
 
 #i18n
 INCLUDE(Gettext)
-SET(GETTEXT_PACKAGE "venom")
-SET(GETTEXT_PATH "${COMMON_DATA_DIR}/locale")
+SET(GETTEXT_PACKAGE "Venom")
+#FIXME make this work for portable installations at runtime
+SET(GETTEXT_PATH "${CMAKE_INSTALL_PREFIX}/${COMMON_DATA_DIR}/locale")
 
 ADD_SUBDIRECTORY(misc)
 ADD_SUBDIRECTORY(icons)
