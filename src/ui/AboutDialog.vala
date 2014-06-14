@@ -41,10 +41,11 @@ namespace Venom {
       this.add_credit_section("Packagers", (string) packagers);
       comments = Config.SHORT_DESCRIPTION;
       copyright = Config.COPYRIGHT_NOTICE;
+      license_type = Gtk.License.GPL_3_0;
       program_name = "Venom";
+      translator_credits = _("translator-credits");
       version = Config.VERSION;
       website = Config.WEBSITE;
-      license_type = Gtk.License.GPL_3_0;
     }
   }
 }

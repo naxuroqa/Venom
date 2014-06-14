@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Venom \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-14 17:56+0200\n"
+"POT-Creation-Date: 2014-06-14 18:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -836,6 +836,10 @@ msgstr ""
 #: core/ToxDns.vala:100
 #, c-format
 msgid "tox 2 ID found: %s %s\n"
+msgstr ""
+
+#: ui/AboutDialog.vala:46
+msgid "translator-credits"
 msgstr ""
 
 #: ui/add_contact_dialog.ui:6
