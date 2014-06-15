@@ -254,7 +254,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error prepare_transmission(int32 call_index, CodecSettings codec_settings, int support_video);
+    public AV_Error prepare_transmission(int32 call_index, ref CodecSettings codec_settings, int support_video);
 
     /**
      * @brief Call this at the end of the transmission.

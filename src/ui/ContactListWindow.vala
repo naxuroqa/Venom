@@ -802,6 +802,23 @@ namespace Venom {
 
     private void on_av_invite(Contact c) {
       stdout.printf("[LOG] on_toxav_invite from %s\n", c.get_name_string());
+      this.set_urgency();
+      Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
+                                  Gtk.DialogFlags.MODAL,
+                                  Gtk.MessageType.QUESTION,
+                                  Gtk.ButtonsType.NONE,
+                                  "'%s' is calling ...",
+                                  c.get_name_string());
+      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
+
+      int response = message_dialog.run();
+      message_dialog.destroy();
+
+      if(response != Gtk.ResponseType.ACCEPT) {
+        session.reject_call(c);
+      } else {
+        session.answer_audio_call(c);
+      }
     }
 
     private void on_av_start(Contact c) {
