@@ -21,12 +21,12 @@
 
 
 namespace Venom {
+
   public enum AudioCallState {
     RINGING,
-    STARTING,
-    ENDING
+    STARTED,
+    ENDED
   }
-
 
   public interface IContact : GLib.Object {
     public abstract string get_name_string();
@@ -56,7 +56,9 @@ namespace Venom {
     public Gdk.Pixbuf?    image            { get; set; default = null; }
     public int            unread_messages  { get; set; default = 0; }
     public bool           is_typing        { get; set; default = false; }
-    public AudioCallState audio_call_state { get; set; default = AudioCallState.ENDING; }
+    // ToxAV stuff
+    public int            call_index       { get; set; default = -1; }
+    public AudioCallState audio_call_state { get; set; default = AudioCallState.ENDED; }
 
     private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
 

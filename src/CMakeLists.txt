@@ -162,16 +162,18 @@ VALA_PRECOMPILE( VALA_C_VENOM
   PACKAGES
     config
     djbdns
+    gdk-x11-3.0
     gio-2.0
     glib-2.0
+    gstreamer-0.10
+    gstreamer-interfaces-0.10
     gtk+-3.0
     json-glib-1.0
     libqrencode
     sqlite3
     tox-1.0
-    gstreamer-0.10
-    gstreamer-interfaces-0.10
-    gdk-x11-3.0
+    toxav-1.0
+    vpx
   OPTIONS
     --target-glib=${TARGET_GLIB}
     --thread
@@ -187,11 +189,13 @@ VALA_PRECOMPILE( VALA_C_TOXAV_TEST
     testing/ToxAVTest.vala
     core/Tools.vala
   PACKAGES
+    gdk-x11-3.0
     gstreamer-0.10
     gstreamer-interfaces-0.10
-    gdk-x11-3.0
-    tox-1.0
     gtk+-3.0
+    tox-1.0
+    toxav-1.0
+    vpx
   OPTIONS
     --debug
     --target-glib=${TARGET_GLIB}
