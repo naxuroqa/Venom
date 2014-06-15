@@ -872,12 +872,37 @@ namespace Venom {
       toxav_handle.call(ref call_index, c.friend_id, ToxAV.CallType.AUDIO, 10);
     }
 
+    public void answer_audio_call(Contact c) {
+      toxav_handle.answer(c.call_index, ToxAV.CallType.AUDIO);
+    }
+
+    public void reject_call(Contact c) {
+       toxav_handle.reject(c.call_index, "no");
+    }
+
     public void hangup_call(Contact c) {
       toxav_handle.hangup(c.call_index);
     }
 
     public void cancel_call(Contact c) {
-      toxav_handle.cancel(c.call_index, c.friend_id, "do not want");
+      toxav_handle.cancel(c.call_index, 0, "do not want");
+    }
+
+    public void receive_audio(Contact c, int frame_size, int16[] dest ) {
+      toxav_handle.recv_audio(c.call_index, frame_size, dest);
+    }
+
+    public void prepare_audio_transmission(Contact c) {
+      ToxAV.CodecSettings default_settings = ToxAV.DefaultCodecSettings;
+      toxav_handle.prepare_transmission(c.call_index, ref default_settings, 0);
+    }
+
+    public void prepare_audio_frame(Contact c, uint8[] dest, int16[] frame) {
+      toxav_handle.prepare_audio_frame(c.call_index, dest, frame);
+    }
+
+    public void send_audio(Contact c, uint8[] frame) {
+      toxav_handle.send_audio(c.call_index, frame);
     }
 
     // TOXAV callbacks
