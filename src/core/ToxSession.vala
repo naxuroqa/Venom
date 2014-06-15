@@ -950,7 +950,7 @@ namespace Venom {
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
         c.audio_call_state = AudioCallState.ENDED;
-        on_av_ending(_contacts.get(friend_id));
+        on_av_ending(c);
         return false;
       });
     }
