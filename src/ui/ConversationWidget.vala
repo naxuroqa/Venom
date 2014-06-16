@@ -179,7 +179,39 @@ namespace Venom {
       delete_event.connect(hide_on_delete);
     }
 
+    bool is_typing = false;
+    // changes typing status to false after >= 15 seconds of inactivity
+    bool is_typing_timeout_fn_running = false;
+    Timer is_typing_timer = new Timer();
+    private bool is_typing_timeout_fn() {
+      if(is_typing) {
+        if(is_typing_timer.elapsed() > 15) {
+          is_typing = false;
+          conversation_view.on_typing_changed(is_typing);
+          is_typing_timeout_fn_running = false;
+          return false;
+        } else {
+          // wait another second
+          return true;
+        }
+      }
+      // abort timeout function when is_typing is already false
+      is_typing_timeout_fn_running = false;
+      return false;
+    }
+
     public void on_typing_changed(bool is_typing) {
+      is_typing_timer.start();
+      if(this.is_typing == is_typing) {
+        return;
+      }
+      this.is_typing = is_typing;
+
+      if(is_typing && !is_typing_timeout_fn_running) {
+        is_typing_timeout_fn_running = true;
+        Timeout.add(1, is_typing_timeout_fn);
+      }
+
       conversation_view.on_typing_changed(is_typing);
     }
 
