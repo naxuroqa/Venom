@@ -1,7 +1,7 @@
 # Italian translation for PACKAGE package.
 # Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# Ansa89, 2014.
 #
 msgid ""
 msgstr ""
@@ -9,8 +9,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-14 18:04+0200\n"
 "PO-Revision-Date: 2014-06-16 9:22+0100\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Italian\n"
+"Last-Translator: Ansa89\n"
+"Language-Team: Italiano\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -97,7 +97,7 @@ msgstr "<%i>"
 #: ui/ContactListWindow.vala:627
 #, c-format
 msgid "<%s> %s:%s\n"
-msgstr "<%s> %s:%s\n"
+msgstr "<%s> %s: %s\n"
 
 #: ui/ConversationWidget.vala:51 ui/GroupConversationWidget.vala:47
 #, c-format
@@ -1020,4 +1020,4 @@ msgstr "Trovato Tox ID v2: %s %s\n"
 
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
-msgstr "translator-credits"
+msgstr "Ansa89"
