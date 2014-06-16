@@ -92,6 +92,7 @@ namespace Venom {
       is_typing_timeout_fn_running = false;
       return false;
     }
+    Timer continuous_typing_timeout = new Timer();
     private void on_buffer_changed() {
       is_typing_timer.start();
       if(placeholder_visible || buffer.text._chug() == "") {
@@ -99,7 +100,8 @@ namespace Venom {
           is_typing = false;
           typing_status(is_typing);
         }
-      } else if(!is_typing) {
+      } else if(!is_typing || continuous_typing_timeout.elapsed() > 2) {
+        continuous_typing_timeout.start();
         is_typing = true;
         typing_status(is_typing);
         if(!is_typing_timeout_fn_running) {
