@@ -1093,7 +1093,7 @@ namespace Venom {
       groupchat_removed(g);
     }
 
-    private bool add_contact_real(string contact_id_string, string contact_alias = "", string contact_message = ResourceFactory.instance.default_add_contact_message) {
+    private bool add_contact_real(string contact_id_string, string contact_message = "", string contact_alias = "") {
       string stripped_id = Tools.remove_whitespace(contact_id_string);
       string alias = contact_alias;
 
@@ -1159,11 +1159,13 @@ namespace Venom {
       return pin;
     }
 
-    public void add_contact(string? contact_id = null, string contact_message = ResourceFactory.instance.default_add_contact_message) {
+    public void add_contact(string? contact_id = null, string? contact_message = null) {
       AddContactDialog dialog = new AddContactDialog();
-      dialog.message = contact_message;
       if(contact_id != null) {
         dialog.id = contact_id;
+      }
+      if(contact_message != null) {
+        dialog.message = contact_message;
       }
       dialog.set_transient_for(this);
 
@@ -1176,7 +1178,7 @@ namespace Venom {
         contact_id_string = dialog.id;
         contact_alias = dialog.contact_alias;
         contact_message_string = dialog.message;
-      } while(response == Gtk.ResponseType.OK && !add_contact_real(contact_id_string, contact_alias, contact_message_string));
+      } while(response == Gtk.ResponseType.OK && !add_contact_real(contact_id_string, contact_message_string, contact_alias));
 
       dialog.destroy();
     }

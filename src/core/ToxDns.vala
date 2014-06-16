@@ -68,7 +68,7 @@ namespace Venom {
       authority_user = info.fetch_named("authority_user");
       if(authority_user == null) {
         // must be tox://<tox_id> in this case
-        return info.fetch_named(_("tox_id"));
+        return info.fetch_named("tox_id");
       }
 
       string authority_host = info.fetch_named("authority_host") ?? default_host;

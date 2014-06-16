@@ -18,7 +18,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
-const string GETTEXT_PACKAGE = "venom";
 
 namespace Venom {
 
@@ -36,10 +35,11 @@ public class Main : GLib.Object {
 	  };
 
     public static int main (string[] args) {
-           GLib.Intl.setlocale(GLib.LocaleCategory.MESSAGES, "");
-           GLib.Intl.textdomain(GETTEXT_PACKAGE); 
-           GLib.Intl.bind_textdomain_codeset(GETTEXT_PACKAGE, "utf-8"); 
-           GLib.Intl.bindtextdomain(GETTEXT_PACKAGE, "../locale");
+      GLib.Intl.setlocale(GLib.LocaleCategory.MESSAGES, "");
+      GLib.Intl.textdomain(Config.GETTEXT_PACKAGE); 
+      GLib.Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "utf-8");
+      //FIXME see if this is needed on windows
+      //GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.GETTEXT_PATH);
       try {
 		    GLib.OptionContext option_context = new GLib.OptionContext("");
 		    option_context.set_help_enabled(true);

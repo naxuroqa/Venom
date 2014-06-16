@@ -73,7 +73,7 @@ namespace Venom {
 
       this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Ok", Gtk.ResponseType.OK, null);
       this.set_default_response(Gtk.ResponseType.OK);
-      this.title = "Add contact";
+      this.title = _("Add contact");
       this.set_default_size(400, 250);
     }
 
@@ -87,7 +87,7 @@ namespace Venom {
 
     private void on_entry_changed() {
       if(id == null || id == "") {
-        entry_contact_id.secondary_icon_tooltip_text = "No ID given";
+        entry_contact_id.secondary_icon_tooltip_text = _("No ID given");
         entry_contact_id.secondary_icon_name = "emblem-important-symbolic";
       } else {
         string stripped_id = Tools.remove_whitespace(id);
