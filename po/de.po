@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-14 18:04+0200\n"
-"PO-Revision-Date: 2014-06-14 18:59+0100\n"
-"Last-Translator:  <spxmar@gmail.com>\n"
+"PO-Revision-Date: 2014-06-16 22:24+0100\n"
+"Last-Translator: Spixi <spxmar@gmail.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -69,7 +69,7 @@ msgstr "%s ist jetzt %s.\n"
 #: ui/ConversationWidget.vala:60
 #, c-format
 msgid "%s is typing..."
-msgstr "%s tippt gerade..."
+msgstr "%s tippt gerade…"
 
 #: ui/ContactListWindow.vala:131
 #, c-format
@@ -109,14 +109,12 @@ msgid "<b>%s</b>"
 msgstr "<b>%s</b>"
 
 #: ui/user_info_window.ui:119
-#, fuzzy
 msgid "<b>Tox</b>"
-msgstr "<b>%s</b>"
+msgstr "<b>Tox</b>"
 
 #: ui/user_info_window.ui:282
-#, fuzzy
 msgid "<b>User</b>"
-msgstr "<b>%s</b>"
+msgstr "<b>User</b>"
 
 #: core/Contact.vala:72 core/Contact.vala:86 ui/ConversationView.vala:55
 #, c-format
@@ -129,7 +127,7 @@ msgstr "<unbekannt>"
 
 #: ui/AddContactDialog.vala:76
 msgid "Add contact"
-msgstr ""
+msgstr "Kontakt hinzufügen"
 
 #: ui/ContactListWindow.vala:617
 #, c-format
@@ -174,16 +172,16 @@ msgstr "Beschäftigt"
 
 #: ui/conversation_window.ui:156
 msgid "Call contact"
-msgstr ""
+msgstr "Kontakt anrufen"
 
 #: ui/conversation_window.ui:174
 msgid "Call contact with video"
-msgstr ""
+msgstr "Kontakt mit Video anrufen"
 
 #: core/Tools.vala:158 core/Tools.vala:171
-#, fuzzy, c-format
+#, c-format
 msgid "Can't create action regex: %s.\n"
-msgstr "Konnte den Aktions-Regex %s nicht erstellen\n"
+msgstr "Konnte den Aktions-Regex nicht erstellen: %s\n"
 
 #: core/SqliteTools.vala:75
 #, c-format
@@ -200,7 +198,7 @@ msgstr "Abgebrochen"
 
 #: ui/contact_list.ui:72
 msgid "Change _Status"
-msgstr ""
+msgstr "_Status ändern"
 
 #: ui/ContactListWindow.vala:670
 msgid "Connected to the network"
@@ -229,24 +227,24 @@ msgstr "Tox-ID wurde in die Zwischenablage kopiert\n"
 #: ui/ContactListWindow.vala:1135
 #, c-format
 msgid "Could not add friend: %s.\n"
-msgstr "Konnte Freund nicht  hinzufügen: %s.\n"
+msgstr "Konnte Freund nicht hinzufügen: %s.\n"
 
 #: ui/ContactListWindow.vala:1123
 msgid "Could not add friend: Invalid ID\n"
-msgstr "Konnte Freund nicht  hinzufügen: Ungültige ID\n"
+msgstr "Konnte Freund nicht hinzufügen: Ungültige ID\n"
 
 #: core/SqliteTools.vala:40
-#, fuzzy, c-format
+#, c-format
 msgid "Could not bind int to %s."
 msgstr "Konnte int nicht auf %s binden."
 
 #: core/SqliteTools.vala:50
-#, fuzzy, c-format
+#, c-format
 msgid "Could not bind int64 to %s."
 msgstr "Konnte int64 nicht auf %s binden."
 
 #: core/SqliteTools.vala:60
-#, fuzzy, c-format
+#, c-format
 msgid "Could not bind text to %s"
 msgstr "Konnte text nicht auf %s binden."
 
@@ -301,13 +299,12 @@ msgid "Could not resolve ID from DNS record\n"
 msgstr "Konnte ID nicht aus dem DNS-Record ermitteln\n"
 
 #: ui/contact_list.ui:416
-#, fuzzy
 msgid "Create groupchat"
-msgstr "Konnte keinen neuen Gruppenchat erstellen.\n"
+msgstr "Gruppenchat erstellen"
 
 #: ui/settings_window.ui:301
 msgid "Default Tox DNS ID suffix:"
-msgstr ""
+msgstr "Standard-DNS-Suffix für Tox:"
 
 #: ui/FileTransferChatEntry.vala:125 ui/FileTransferChatEntry.vala:129
 msgid "Disconnected"
@@ -319,7 +316,7 @@ msgstr "Vom Netz getrennt"
 
 #: ui/UserInfoWindow.vala:86
 msgid "Edit user information"
-msgstr ""
+msgstr "Benutzerinformationen bearbeiten"
 
 #: ui/ContactListWindow.vala:899
 #, c-format
@@ -333,7 +330,7 @@ msgstr "Beende Sitzung...\n"
 
 #: ui/add_contact_dialog.ui:40
 msgid "Enter a Tox ID here or a Tox URI"
-msgstr ""
+msgstr "Gib eine Tox-ID oder eine Tox-URI ein"
 
 #: core/ContactStorage.vala:108
 #, c-format
@@ -386,89 +383,89 @@ msgstr "Fehler bei der Erstellung des Tox-URI-Regex: %s\n"
 #: ui/ConversationTextView.vala:184
 #, c-format
 msgid "Error matching uri regex: %s\n"
-msgstr ""
+msgstr "Fehler beim Matchen des URI-Regex: %s\n"
 
 #: ui/ConversationWidget.vala:276
 #, c-format
 msgid "Error occured while getting file size: %s"
-msgstr ""
+msgstr "Fehler beim Ermitteln der Dateigröße: %s"
 
 #: core/ToxSession.vala:111
 #, c-format
 msgid "Error opening database: %s\n"
-msgstr ""
+msgstr "Feher beim Öffnen der Datenbank: %s\n"
 
 #: core/Settings.vala:112
 #, c-format
 msgid "Error reading configs:%s\n"
-msgstr ""
+msgstr "Fehler beim Lesen der Konfigurationsdateien:%s\n"
 
 #: core/ToxDns.vala:81
 #, c-format
 msgid "Error resolving name: %s\n"
-msgstr ""
+msgstr "Fehler bei der Namensauflösung: %s\n"
 
 #: core/MessageLog.vala:135
 #, c-format
 msgid "Error retrieving logs from sqlite database: %s\n"
-msgstr ""
+msgstr "Fehler beim Holen der Logs von der SQLite-Datenbank: %s\n"
 
 #: core/Settings.vala:99
 #, c-format
 msgid "Error saving configs:%s\n"
-msgstr ""
+msgstr "Fehler beim Speichern der Konfigurationsdateien: %s\n"
 
 #: core/Tools.vala:123
 #, c-format
 msgid "Error when doing uri markup: %s"
-msgstr ""
+msgstr "Fehler bei der Erstellung des URI-Markups: %s"
 
 #: ui/ConversationTextView.vala:245
 #, c-format
 msgid "Error when showing uri: %s\n"
-msgstr ""
+msgstr "Fehler bei der Anzeige der URI: %s\n"
 
 #: ui/ContactListWindow.vala:168
 #, c-format
 msgid "Error while loading icon: %s\n"
-msgstr ""
+msgstr "Fehler beim Laden des Symbols: %s\n"
 
 #: core/ResourceFactory.vala:126
 #, c-format
 msgid "Error while loading image from \"%s\":%s\n"
-msgstr ""
+msgstr "Fehler beim Laden der Grafik von \"%s\":%s\n"
 
 #: core/ToxSession.vala:801
 msgid "Error while loading messenger data."
-msgstr ""
+msgstr "Fehler beim Laden der Messenger-Daten."
 
 #: core/ToxSession.vala:795
 msgid "Error while reading from stream."
-msgstr ""
+msgstr "Fehler beim Lesen vom Datenstrom."
 
 #: ui/FileTransferChatEntry.vala:171
 #, c-format
 msgid "Error while trying to create file: %s\n"
-msgstr ""
+msgstr "Fehler bei der Erstellung der Datei: %s\n"
 
 #: ui/ContactListWindow.vala:961
 #, c-format
 msgid "Error while trying to write data to file\n"
-msgstr ""
+msgstr "Fehler beim Schreiben der Daten in die Datei\n"
 
 #: core/ToxSession.vala:828
 msgid "Error while writing to stream."
-msgstr ""
+msgstr "Fehler beim Schreiben vom Datenstrom."
 
 #: core/ContactStorage.vala:88
 #, c-format
 msgid "Error writing contact to sqlite database: %s\n"
-msgstr ""
+msgstr "Fehler beim Schreiben des Kontakts in die SQLite-Datenbank: %s\n"
 
 #: core/MessageLog.vala:118
 #, c-format
 msgid "Error writing message to sqlite database: %s\n"
-msgstr ""
+msgstr "Fehler beim Schreiben der Mitteilung in die SQLite-Datenbank: %s\n"
 
 #: core/MessageLog.vala:186 core/MessageLog.vala:193
 #, c-format
@@ -489,12 +486,12 @@ msgstr "Datei \"%d\"  existiert nicht."
 #: ui/ContactListWindow.vala:929
 #, c-format
 msgid "File transfer finished for file number %u"
-msgstr ""
+msgstr "Transfer für Datei Nr. %u abgeschlossen"
 
 #: ui/ContactListWindow.vala:925
 #, c-format
 msgid "File transfer was rejected for file number %u"
-msgstr ""
+msgstr "Transfer wurde für Datei Nr. %u abgelehnt"
 
 #: ui/FileTransferChatEntry.vala:94
 msgid "File was rejected"
@@ -502,7 +499,7 @@ msgstr "Datei wurde abgelehnt"
 
 #: ui/settings_window.ui:236
 msgid "Flash window when a new message arrives"
-msgstr ""
+msgstr "Flackern, wenn eine neue Mitteilung ankommt"
 
 #: ui/ContactListWindow.vala:614
 #, c-format
@@ -526,17 +523,17 @@ msgstr ""
 #: ui/ContactListWindow.vala:771
 #, c-format
 msgid "Group action from unknown contact #%i [%i]\n"
-msgstr ""
+msgstr "Gruppenaktion von unbekanntem Kontakt #%i [%i]\n"
 
 #: ui/ContactListWindow.vala:708
 #, c-format
 msgid "Group invite from %s with public key %s\n"
-msgstr ""
+msgstr "Gruppeneinladung von %s mit öffentlichem Schlüssel %s\n"
 
 #: ui/ContactListWindow.vala:742
 #, c-format
 msgid "Group message from unknown contact #%i [%i]\n"
-msgstr ""
+msgstr "Gruppenmitteilung von unbekanntem Kontakt #%i [%i]\n"
 
 #: core/GroupChat.vala:45
 #, c-format
@@ -546,21 +543,20 @@ msgstr "Gruppenchat #%i"
 #: ui/ContactListWindow.vala:896
 #, c-format
 msgid "I/O error while trying to close file stream: %s\n"
-msgstr ""
+msgstr "E/A-Fehler beim Schließen des Datenstroms: %s\n"
 
 #: ui/ContactListWindow.vala:888
 #, c-format
 msgid "I/O error while trying to read file: %s\n"
-msgstr ""
+msgstr "E/A-Fehler beim Lesen der Datei: %s\n"
 
 #: ui/AddContactDialog.vala:96
 msgid "ID contains invalid characters"
 msgstr "ID enthält ungültige Zeichen"
 
 #: ui/user_info_window.ui:40
-#, fuzzy
 msgid "ID:"
-msgstr "ID: %s\n"
+msgstr "ID:"
 
 #: ui/ContactListWindow.vala:86
 #, c-format
@@ -569,7 +565,7 @@ msgstr "ID: %s\n"
 
 #: ui/user_info_window.ui:222
 msgid "Icon:"
-msgstr ""
+msgstr "Symbol:"
 
 #: core/SqliteTools.vala:37 core/SqliteTools.vala:47 core/SqliteTools.vala:57
 #, c-format
@@ -578,7 +574,7 @@ msgstr "Index für %s nicht gefunden."
 
 #: ui/conversation_window.ui:290
 msgid "Insert Smiley"
-msgstr ""
+msgstr "Smiley einfügen"
 
 #: core/ToxDns.vala:113
 #, c-format
@@ -597,15 +593,15 @@ msgstr "Gruppenchat #%i beigetreten\n"
 
 #: ui/settings_window.ui:18
 msgid "KB/MB"
-msgstr ""
+msgstr "KB/MB"
 
 #: ui/settings_window.ui:78
 msgid "Keep history"
-msgstr ""
+msgstr "Verlauf beibehalten"
 
 #: ui/settings_window.ui:14
 msgid "KiB/MiB"
-msgstr ""
+msgstr "KiB/MiB"
 
 #: core/Contact.vala:117
 #, c-format
@@ -615,29 +611,29 @@ msgstr "Zuletzt gesehen: %s"
 #: ui/AddContactDialog.vala:53
 #, c-format
 msgid "Loading add contact window failed!\n"
-msgstr ""
+msgstr "Laden des Kontakt-hinzufügen-Fensters fehlgeschlagen!\n"
 
 #: ui/ConversationWidget.vala:71 ui/SettingsWindow.vala:32
 #, c-format
 msgid "Loading conversation window failed!\n"
-msgstr ""
+msgstr "Laden des Unterhaltungsfensters fehlgeschlagen!\n"
 
 #: ui/FileTransferChatEntry.vala:40
 #, c-format
 msgid "Loading message widget failed!\n"
-msgstr ""
+msgstr "Laden des Mitteilungs-Widgets fehlgeschlagen!\n"
 
 #: core/Tools.vala:132
 msgid "Message too long"
-msgstr "Nachricht zu lang"
+msgstr "Mitteilung zu lang"
 
 #: ui/settings_window.ui:337
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Verschiedenes"
 
 #: ui/user_info_window.ui:192
 msgid "Name:"
-msgstr ""
+msgstr "Name:"
 
 #: ui/ContactListWindow.vala:604
 #, c-format
@@ -645,24 +641,25 @@ msgid ""
 "New friend request from '%s'.\n"
 "Do you want to accept?"
 msgstr ""
+"Neue Freundschaftsanfrage von '%s'.\n"
+"Möchtest du annehmen?"
 
 #: ui/AddContactDialog.vala:90
 msgid "No ID given"
-msgstr ""
+msgstr "Keine ID angegeben"
 
 #: core/Tools.vala:134
 msgid "No message included"
-msgstr ""
+msgstr "Keine Mitteilung enthalten"
 
 #: core/ToxDns.vala:103
 #, c-format
 msgid "No pin privided, aborting...\n"
-msgstr ""
+msgstr "Keine PIN angegeben, Abbruch …\n"
 
 #: ui/contact_list.ui:118
-#, fuzzy
 msgid "O_ffline"
-msgstr "Offline"
+msgstr "O_ffline"
 
 #: core/Contact.vala:98 core/Contact.vala:108 core/ToxSession.vala:37
 msgid "Offline"
@@ -675,7 +672,7 @@ msgstr "Online"
 
 #: ui/contact_list.ui:449
 msgid "Open preferences"
-msgstr ""
+msgstr "Einstellungen öffnen"
 
 #: core/Tools.vala:146
 msgid "Out of memory"
@@ -683,7 +680,7 @@ msgstr "Nicht genügend Speicher"
 
 #: ui/FileTransferChatEntry.vala:104
 msgid "Paused"
-msgstr ""
+msgstr "In Pause"
 
 #: ui/PinDialog.vala:37
 #, c-format
@@ -700,16 +697,16 @@ msgstr "Bitte PIN eingeben..."
 
 #: ui/add_contact_dialog.ui:6
 msgid "Please let me add you to my contact list."
-msgstr ""
+msgstr "Bitte lass mich dich meiner Kontaktliste hinzufügen."
 
 #: ui/settings_window.ui:221
 msgid "Privacy"
-msgstr ""
+msgstr "Privatsphäre"
 
 #: ui/ContactListWindow.vala:869
 #, c-format
 msgid "Read incorrect number of bytes from file\n"
-msgstr ""
+msgstr "Fehlerhafte Anzahl Bytes von Datei gelesen\n"
 
 #: ui/FileTransferChatEntry.vala:113
 msgid "Receiving failed"
@@ -722,12 +719,14 @@ msgstr "ID konnte nicht aufgelöst werden"
 #: ui/ContactListWindow.vala:427
 #, c-format
 msgid "Retrieved contact %s from savefile.\n"
-msgstr ""
+msgstr "Kontakt %s wurde aus der Sicherungsdatei wiederhergestellt.\n"
 
 #: Main.vala:49
 #, c-format
 msgid "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
+"Führe '%s --help' aus, um eine vollständige Liste der verfügbaren "
+"Kommandozeilenoptionen zu sehen.\n"
 
 #: core/MessageLog.vala:86
 #, c-format
@@ -750,17 +749,17 @@ msgstr "Datei speichern"
 #: ui/ContactListWindow.vala:120
 #, c-format
 msgid "Saving session file failed: %s\n"
-msgstr ""
+msgstr "Speichern der Sitzungsdatei fehlgeschlagen: %s\n"
 
 #: ui/FileTransferChatEntry.vala:165
 #, c-format
 msgid "Saving to: %s\n"
-msgstr ""
+msgstr "Speichere nach: %s\n"
 
 #: ui/ContactListWindow.vala:116
 #, c-format
 msgid "Saving tox session data\n"
-msgstr ""
+msgstr "Speichere Tox-Sitzungsdaten\n"
 
 #: ui/ConversationWidget.vala:250
 msgid "Select"
@@ -773,11 +772,12 @@ msgstr "Wähle eine Datei zum Versenden aus"
 #: ui/add_contact_dialog.ui:113
 msgid "Send a custom message to be displayed to the friend you are adding"
 msgstr ""
+"Sende eine benutzerdefinierte Mitteilung, die dem Freund, den du hinzufügen "
+"möchtest, angezeigt wird."
 
 #: ui/conversation_window.ui:308
-#, fuzzy
 msgid "Send file"
-msgstr "Senden fehlgeschlagen"
+msgstr "Datei senden"
 
 #: ui/FileTransferChatEntry.vala:107
 msgid "Sending failed"
@@ -790,16 +790,15 @@ msgstr "Sitzung dankbar beendet.\n"
 
 #: ui/add_contact_dialog.ui:67
 msgid "Set a custom nickname for the friend you are about to add"
-msgstr ""
+msgstr "Gib deinem Freund einen Spitznamen"
 
 #: core/Tools.vala:144
 msgid "Set new nospam"
-msgstr ""
+msgstr "Neuen NoSPAM-Wert setzen"
 
 #: ui/settings_window.ui:30
-#, fuzzy
 msgid "Settings"
-msgstr "Einstellungen gespeichert.\n"
+msgstr "Einstellungen"
 
 #: core/Settings.vala:102
 #, c-format
@@ -808,33 +807,33 @@ msgstr "Einstellungen gespeichert.\n"
 
 #: ui/settings_window.ui:186
 msgid "Show _others when I am typing"
-msgstr ""
+msgstr "A_nderen anzeigen, wenn du tippst"
 
 #: ui/settings_window.ui:258
 msgid "Show filesize in"
-msgstr ""
+msgstr "Dateigröße anzeigen in"
 
 #: ui/settings_window.ui:202
 msgid "Show me when others are typing"
-msgstr ""
+msgstr "Anzeigen, wenn andere tippen"
 
 #: Main.vala:69
 #, c-format
 msgid "Starting in offline mode\n"
-msgstr ""
+msgstr "Im Offline-Modus starten\n"
 
 #: ui/user_info_window.ui:178
 msgid "Status message:"
-msgstr ""
+msgstr "Statusmitteilung:"
 
 #: ui/ContactListWindow.vala:408
 #, c-format
 msgid "Theme refreshed\n"
-msgstr ""
+msgstr "Design neu geladen\n"
 
 #: ui/Client.vala:116
 msgid "There is currently no help available"
-msgstr ""
+msgstr "Es ist zurzeit keine Hilfe verfügbar"
 
 #: core/ResourceFactory.vala:77
 msgid "Tox User"
@@ -843,7 +842,7 @@ msgstr "Tox-Benutzer"
 #: core/ResourceFactory.vala:78
 #, c-format
 msgid "Toxing on Venom v.%s"
-msgstr ""
+msgstr "Toxen mit Venom v.%s"
 
 #: ui/ContactListWindow.vala:826
 #, c-format
@@ -852,7 +851,7 @@ msgstr "Versuche, unbekannte Datei zu senden"
 
 #: ui/MessageTextView.vala:27
 msgid "Type your message here..."
-msgstr ""
+msgstr "Gib hier deine Mitteilung ein …"
 
 #: core/Tools.vala:140
 msgid "Unknown error"
@@ -866,16 +865,16 @@ msgstr "Unbekannter Fehler beim Lesen der Datei %s\n"
 #: Main.vala:64
 #, c-format
 msgid "Using Gtk.TextView to display messages\n"
-msgstr ""
+msgstr "Verwende Gtk.TextView, um Mitteilungen anzuzeigen\n"
 
 #: Main.vala:59
-#, fuzzy, c-format
+#, c-format
 msgid "Using data file \"%s\"\n"
-msgstr "Sende Datei %s an %s\n"
+msgstr "Verwende Datendatei \"%s\"\n"
 
 #: ui/AddContactDialog.vala:100
 msgid "Valid ID size"
-msgstr ""
+msgstr "Gültige ID-Größe"
 
 #: ui/ContactListWindow.vala:461
 #, c-format
@@ -890,88 +889,83 @@ msgstr "[%s] "
 #: ui/ContactListWindow.vala:638
 #, c-format
 msgid "[ac] %i:%s\n"
-msgstr ""
+msgstr "[ac] %i:%s\n"
 
 #: ui/ContactListWindow.vala:598
 #, c-format
 msgid "[fr] %s:%s\n"
-msgstr ""
+msgstr "[fr] %s:%s\n"
 
 #: ui/ContactListWindow.vala:763
 #, c-format
 msgid "[ga] %s [%i]@%i: %s\n"
-msgstr ""
+msgstr "[ga] %s [%i]@%i: %s\n"
 
 #: ui/ContactListWindow.vala:734
 #, c-format
 msgid "[gm] %s [%i]@%i: %s\n"
-msgstr ""
+msgstr "[gm] %s [%i]@%i: %s\n"
 
 #: ui/ContactListWindow.vala:660
 #, c-format
 msgid "[rr] %s:%u\n"
-msgstr ""
+msgstr "[rr] %s:%u\n"
 
 #: ui/ContactListWindow.vala:656
 #, c-format
 msgid "[us] %s:%i\n"
-msgstr ""
+msgstr "[us] %s:%i\n"
 
 #: ui/contact_list.ui:96
-#, fuzzy
 msgid "_Away"
-msgstr "Abwesend"
+msgstr "_Abwesend"
 
 #: ui/user_info_window.ui:254
 msgid "_Browse..."
-msgstr ""
+msgstr "_Durchsuchen…"
 
 #: ui/contact_list.ui:107
-#, fuzzy
 msgid "_Busy"
-msgstr "Beschäftigt"
+msgstr "_Beschäftigt"
 
 #: ui/contact_list.ui:61
-#, fuzzy
 msgid "_Copy ID to clipboard"
-msgstr "Tox-ID wurde in die Zwischenablage kopiert\n"
+msgstr "Tox-ID in die Zwis_chenablage kopieren"
 
 #: ui/contact_list.ui:50
 msgid "_Edit user"
-msgstr ""
+msgstr "_Benutzer bearbeiten"
 
 #: ui/add_contact_dialog.ui:94
-#, fuzzy
 msgid "_Message (optional):"
-msgstr "Nachricht zu lang"
+msgstr "_Mitteilung (optional):"
 
 #: ui/add_contact_dialog.ui:54
 msgid "_Nickname (optional):"
-msgstr ""
+msgstr "_Spitzname (optional):"
 
 #: ui/contact_list.ui:85
-#, fuzzy
 msgid "_Online"
-msgstr "Online"
+msgstr "_Online"
 
 #: ui/add_contact_dialog.ui:27
 msgid "_Tox ID:"
-msgstr ""
+msgstr "_Tox-ID:"
 
 #: ui/contact_list.ui:278
 msgid "connecting..."
-msgstr ""
+msgstr "verbinden …"
 
 #: ui/settings_window.ui:160
 msgid "days"
-msgstr ""
+msgstr "Tagen"
 
 #: ui/settings_window.ui:127
 msgid "delete after"
-msgstr ""
+msgstr "Löschen nach"
 
 #: Main.vala:48
-#, fuzzy, c-format
+#, c-format
 msgid "error: %s\n"
 msgstr "Fehler: %s\n"
 
@@ -991,7 +985,7 @@ msgstr "Gruppenchat #%i"
 
 #: ui/settings_window.ui:104
 msgid "indefinitely"
-msgstr ""
+msgstr "unbegrenzt"
 
 #: ui/ContactListWindow.vala:668
 msgid "lost"
@@ -1012,7 +1006,7 @@ msgstr "online"
 #: ui/ContactListWindow.vala:798
 #, c-format
 msgid "received file send request friend: %i filenumber: %i filename: %s \n"
-msgstr ""
+msgstr "Sendeanfrage erhalten; Freund: %i; Dateinummer: %i; Dateiname: %s \n"
 
 #: ui/ContactListWindow.vala:562
 #, c-format
@@ -1022,18 +1016,27 @@ msgstr "Sende Datei %s an %s\n"
 #: ui/ContactListWindow.vala:1129
 #, c-format
 msgid "setting alias: %s\n"
-msgstr "Setze alias: %s\n"
+msgstr "Setze Alias: %s\n"
 
 #: core/ToxDns.vala:95
 #, c-format
 msgid "tox 1 ID found: %s\n"
-msgstr ""
+msgstr "Tox-1-ID gefunden: %s\n"
 
 #: core/ToxDns.vala:100
 #, c-format
 msgid "tox 2 ID found: %s %s\n"
-msgstr ""
+msgstr "Tox-2-ID gefunden: %s %s\n"
 
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
-msgstr "Marius <marius.spix@web.de>"
+msgstr "Spixi <spxmar@gmail.com>"
+
+#: ui/AddContactDialog.vala:71
+#, c-format
+#This string is not translatable in the original file yet 
+msgid "Failed to compile regex: %s\n"
+msgstr ""
+
+#We don't need to translate
+#"_Ok", "_Cancel", "_Abort", "_Apply" when we are using the Gtk defaults
