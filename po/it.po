@@ -1,7 +1,7 @@
 # Italian translation for PACKAGE package.
 # Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Ansa89 <not@contact.me>, 2014.
+# Ansa89, 2014.
 #
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-14 18:04+0200\n"
 "PO-Revision-Date: 2014-06-16 9:22+0100\n"
-"Last-Translator: Ansa89 <not@contact.me>\n"
+"Last-Translator: Ansa89\n"
 "Language-Team: Italiano\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -843,7 +843,7 @@ msgstr "Trovato Tox ID v2: %s %s\n"
 
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
-msgstr "Ansa89 <not@contact.me>"
+msgstr "Ansa89"
 
 #: ui/add_contact_dialog.ui:6
 msgid "Please let me add you to my contact list."
