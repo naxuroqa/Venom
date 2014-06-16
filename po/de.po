@@ -69,7 +69,7 @@ msgstr "%s ist jetzt %s.\n"
 #: ui/ConversationWidget.vala:60
 #, c-format
 msgid "%s is typing..."
-msgstr "%s tippt gerade…"
+msgstr "%s tippt gerade..."
 
 #: ui/ContactListWindow.vala:131
 #, c-format
@@ -655,7 +655,7 @@ msgstr "Keine Mitteilung enthalten"
 #: core/ToxDns.vala:103
 #, c-format
 msgid "No pin privided, aborting...\n"
-msgstr "Keine PIN angegeben, Abbruch …\n"
+msgstr "Keine PIN angegeben, Abbruch ...\n"
 
 #: ui/contact_list.ui:118
 msgid "O_ffline"
@@ -851,7 +851,7 @@ msgstr "Versuche, unbekannte Datei zu senden"
 
 #: ui/MessageTextView.vala:27
 msgid "Type your message here..."
-msgstr "Gib hier deine Mitteilung ein …"
+msgstr "Gib hier deine Mitteilung ein ..."
 
 #: core/Tools.vala:140
 msgid "Unknown error"
@@ -922,7 +922,7 @@ msgstr "_Abwesend"
 
 #: ui/user_info_window.ui:254
 msgid "_Browse..."
-msgstr "_Durchsuchen…"
+msgstr "_Durchsuchen..."
 
 #: ui/contact_list.ui:107
 msgid "_Busy"
@@ -954,7 +954,7 @@ msgstr "_Tox-ID:"
 
 #: ui/contact_list.ui:278
 msgid "connecting..."
-msgstr "verbinden …"
+msgstr "verbinden ..."
 
 #: ui/settings_window.ui:160
 msgid "days"
