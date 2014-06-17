@@ -70,20 +70,46 @@ namespace Venom {
         return false;
       });
 
-      buffer.changed.connect( () => {
-        if(placeholder_visible || buffer.text == "") {
-          if(is_typing) {
-            is_typing = false;
-            typing_status(is_typing);
-          }
-        } else {
-          if(!is_typing) {
-            is_typing = true;
-            typing_status(is_typing);
-          }
-        }
-      });
+      buffer.changed.connect(on_buffer_changed);
     }
+
+    // changes typing status to false after >= 5 seconds of inactivity
+    bool is_typing_timeout_fn_running = false;
+    Timer is_typing_timer = new Timer();
+    private bool is_typing_timeout_fn() {
+      if(is_typing) {
+        if(is_typing_timer.elapsed() > 5) {
+          is_typing = false;
+          typing_status(is_typing);
+          is_typing_timeout_fn_running = false;
+          return false;
+        } else {
+          // wait another second
+          return true;
+        }
+      }
+      // abort timeout function when is_typing is already false
+      is_typing_timeout_fn_running = false;
+      return false;
+    }
+    Timer continuous_typing_timeout = new Timer();
+    private void on_buffer_changed() {
+      is_typing_timer.start();
+      if(placeholder_visible || buffer.text._chug() == "") {
+        if(is_typing) {
+          is_typing = false;
+          typing_status(is_typing);
+        }
+      } else if(!is_typing || continuous_typing_timeout.elapsed() > 2) {
+        continuous_typing_timeout.start();
+        is_typing = true;
+        typing_status(is_typing);
+        if(!is_typing_timeout_fn_running) {
+          is_typing_timeout_fn_running = true;
+          Timeout.add(1, is_typing_timeout_fn);
+        }
+      }
+    }    
 
     private bool visible_function(Gtk.TreeModel model, Gtk.TreeIter iter) {
       string str;
