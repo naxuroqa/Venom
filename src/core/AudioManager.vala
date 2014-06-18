@@ -32,15 +32,15 @@ namespace Venom {
     private const string AUDIO_SINK_IN = "audioSourceIn";
     private const string AUDIO_SINK_OUT = "audioSinkOut";
 
-    private const int CHUNK_SIZE 1024; 
+    private const int CHUNK_SIZE = 1024; 
     private const int SAMPLE_RATE = 44100;
-    private const string AUDIO_CAPS = "audio/x-raw-int,channels=1,rate=%d,signed=(boolean)true,width=16,depth=16,endianness=BYTE_ORDER";
+    private const string AUDIO_CAPS = "audio/x-raw-int,channels=1,rate=44100,signed=(boolean)true,width=16,depth=16,endianness=BYTE_ORDER";
 
     private Gst.Pipeline pipeline;
     private Gst.Element audio_source_in;
     private Gst.Element audio_source_out;
     private Gst.Element audio_sink_in;
-    private Gst.Element audio_sink_out;
+    private Gst.App.Src audio_sink_out;
 
     public static AudioManager instance {get; private set;}
 
@@ -67,8 +67,9 @@ namespace Venom {
       pipeline.add_many(audio_source_out, audio_sink_out, audio_source_in, audio_sink_in);
       audio_source_in.link(audio_sink_in);
       audio_source_out.link(audio_sink_out);
-
+        
       
+       
     }
 
     public void destroy_audio_pipeline() {
