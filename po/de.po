@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-14 18:04+0200\n"
-"PO-Revision-Date: 2014-06-16 22:24+0100\n"
+"POT-Creation-Date: 2014-06-17 21:05+0200\n"
+"PO-Revision-Date: 2014-06-17 21:09+0100\n"
 "Last-Translator: Spixi <spxmar@gmail.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -385,7 +385,7 @@ msgstr "Fehler bei der Erstellung des Tox-URI-Regex: %s\n"
 msgid "Error matching uri regex: %s\n"
 msgstr "Fehler beim Matchen des URI-Regex: %s\n"
 
-#: ui/ConversationWidget.vala:276
+#: ui/ConversationWidget.vala:308
 #, c-format
 msgid "Error occured while getting file size: %s"
 msgstr "Fehler beim Ermitteln der Dateigröße: %s"
@@ -721,7 +721,7 @@ msgstr "ID konnte nicht aufgelöst werden"
 msgid "Retrieved contact %s from savefile.\n"
 msgstr "Kontakt %s wurde aus der Sicherungsdatei wiederhergestellt.\n"
 
-#: Main.vala:49
+#: Main.vala:50
 #, c-format
 msgid "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
@@ -761,11 +761,11 @@ msgstr "Speichere nach: %s\n"
 msgid "Saving tox session data\n"
 msgstr "Speichere Tox-Sitzungsdaten\n"
 
-#: ui/ConversationWidget.vala:250
+#: ui/ConversationWidget.vala:282
 msgid "Select"
 msgstr "Auswählen"
 
-#: ui/ConversationWidget.vala:247
+#: ui/ConversationWidget.vala:279
 msgid "Select a file to send"
 msgstr "Wähle eine Datei zum Versenden aus"
 
@@ -778,6 +778,10 @@ msgstr ""
 #: ui/conversation_window.ui:308
 msgid "Send file"
 msgstr "Datei senden"
+
+#: ui/conversation_window.ui:341
+msgid "Send message"
+msgstr "Nachricht senden"
 
 #: ui/FileTransferChatEntry.vala:107
 msgid "Sending failed"
@@ -817,7 +821,7 @@ msgstr "Dateigröße anzeigen in"
 msgid "Show me when others are typing"
 msgstr "Anzeigen, wenn andere tippen"
 
-#: Main.vala:69
+#: Main.vala:70
 #, c-format
 msgid "Starting in offline mode\n"
 msgstr "Im Offline-Modus starten\n"
@@ -862,12 +866,12 @@ msgstr "Unbekannter Fehler"
 msgid "Unknown error while trying to read file: %s\n"
 msgstr "Unbekannter Fehler beim Lesen der Datei %s\n"
 
-#: Main.vala:64
+#: Main.vala:65
 #, c-format
 msgid "Using Gtk.TextView to display messages\n"
 msgstr "Verwende Gtk.TextView, um Mitteilungen anzuzeigen\n"
 
-#: Main.vala:59
+#: Main.vala:60
 #, c-format
 msgid "Using data file \"%s\"\n"
 msgstr "Verwende Datendatei \"%s\"\n"
@@ -964,7 +968,7 @@ msgstr "Tagen"
 msgid "delete after"
 msgstr "Löschen nach"
 
-#: Main.vala:48
+#: Main.vala:49
 #, c-format
 msgid "error: %s\n"
 msgstr "Fehler: %s\n"
@@ -1031,12 +1035,3 @@ msgstr "Tox-2-ID gefunden: %s %s\n"
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
 msgstr "Spixi <spxmar@gmail.com>"
-
-#: ui/AddContactDialog.vala:71
-#, c-format
-#This string is not translatable in the original file yet 
-msgid "Failed to compile regex: %s\n"
-msgstr ""
-
-#We don't need to translate
-#"_Ok", "_Cancel", "_Abort", "_Apply" when we are using the Gtk defaults
