@@ -20,7 +20,7 @@ msgstr ""
 #: core/ToxSession.vala:725
 #, c-format
 msgid "  %s\n"
-msgstr "  %s\n"
+msgstr " %s\n"
 
 #: core/DhtNode.vala:47
 msgid " (ipv6)"
@@ -769,7 +769,7 @@ msgstr "Invia file"
 
 #: ui/conversation_window.ui:341
 msgid "Send message"
-msgstr ""
+msgstr "Invia messaggio"
 
 #: ui/FileTransferChatEntry.vala:107
 msgid "Sending failed"
