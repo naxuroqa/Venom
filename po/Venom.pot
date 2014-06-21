@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Venom \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-14 18:04+0200\n"
+"POT-Creation-Date: 2014-06-17 21:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -340,7 +340,7 @@ msgstr ""
 msgid "Error matching uri regex: %s\n"
 msgstr ""
 
-#: ui/ConversationWidget.vala:276
+#: ui/ConversationWidget.vala:308
 #, c-format
 msgid "Error occured while getting file size: %s"
 msgstr ""
@@ -619,7 +619,7 @@ msgstr ""
 msgid "Retrieved contact %s from savefile.\n"
 msgstr ""
 
-#: Main.vala:49
+#: Main.vala:50
 #, c-format
 msgid "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
@@ -657,11 +657,11 @@ msgstr ""
 msgid "Saving tox session data\n"
 msgstr ""
 
-#: ui/ConversationWidget.vala:250
+#: ui/ConversationWidget.vala:282
 msgid "Select"
 msgstr ""
 
-#: ui/ConversationWidget.vala:247
+#: ui/ConversationWidget.vala:279
 msgid "Select a file to send"
 msgstr ""
 
@@ -683,7 +683,7 @@ msgstr ""
 msgid "Settings saved.\n"
 msgstr ""
 
-#: Main.vala:69
+#: Main.vala:70
 #, c-format
 msgid "Starting in offline mode\n"
 msgstr ""
@@ -724,12 +724,12 @@ msgstr ""
 msgid "Unknown error while trying to read file: %s\n"
 msgstr ""
 
-#: Main.vala:64
+#: Main.vala:65
 #, c-format
 msgid "Using Gtk.TextView to display messages\n"
 msgstr ""
 
-#: Main.vala:59
+#: Main.vala:60
 #, c-format
 msgid "Using data file \"%s\"\n"
 msgstr ""
@@ -778,7 +778,7 @@ msgstr ""
 msgid "[us] %s:%i\n"
 msgstr ""
 
-#: Main.vala:48
+#: Main.vala:49
 #, c-format
 msgid "error: %s\n"
 msgstr ""
@@ -924,6 +924,10 @@ msgstr ""
 
 #: ui/conversation_window.ui:308
 msgid "Send file"
+msgstr ""
+
+#: ui/conversation_window.ui:341
+msgid "Send message"
 msgstr ""
 
 #: ui/settings_window.ui:14
