@@ -63,6 +63,56 @@ namespace Venom {
         return "really big file";
       }
     }
+
+    public static Gtk.Menu show_contact_context_menu( ContactListWindow w,  Contact c ) {
+      Gtk.Menu menu = new Gtk.Menu();
+/*
+      Gtk.MenuItem item = new Gtk.MenuItem.with_mnemonic("_Show");
+      item.activate.connect(() => { print("name: %s\n", c.get_name_string()); });
+      menu.append(item);*/
+
+      Gtk.MenuItem item = new Gtk.MenuItem.with_mnemonic(_("_Unfriend"));
+      item.activate.connect(() => { w.remove_contact(c); });
+      menu.append(item);
+/*
+      item = new Gtk.MenuItem.with_mnemonic("_Block");
+      item.activate.connect(() => { w.block_contact(c); });
+      menu.append(item);*/
+
+      GLib.HashTable<int, GroupChat> groupchats = w.get_groupchats();
+      if(groupchats.size() > 0) {
+        Gtk.MenuItem groupchat_item = new Gtk.MenuItem.with_mnemonic(_("_Invite to ..."));
+        Gtk.Menu groupchat_submenu = new Gtk.Menu();
+
+        item = new Gtk.MenuItem.with_mnemonic(_("_New groupchat"));
+        item.activate.connect(() => { w.invite_to_groupchat(c); });
+        groupchat_submenu.append(item);
+
+        groupchats.foreach((key, val) => {
+          item = new Gtk.MenuItem.with_label(val.get_name_string());
+          item.activate.connect(() => { w.invite_to_groupchat(c, key); });
+          groupchat_submenu.append(item);
+        });
+        groupchat_item.submenu = groupchat_submenu;
+        menu.append(groupchat_item);
+      } else {
+        item = new Gtk.MenuItem.with_mnemonic(_("_Invite to new groupchat"));
+        item.activate.connect(() => { w.invite_to_groupchat(c); });
+        menu.append(item);
+      }
+      return menu;
+    }
+
+    public static Gtk.Menu show_groupchat_context_menu( ContactListWindow w,  GroupChat g ) {
+      Gtk.Menu menu = new Gtk.Menu();
+
+      Gtk.MenuItem item = new Gtk.MenuItem.with_mnemonic(_("_Leave groupchat"));
+      item.activate.connect(() => { w.remove_groupchat(g ); });
+      menu.append(item);
+
+      return menu;
+    }
+
 #if ENABLE_QR_ENCODE
     public static Gdk.Pixbuf? qr_encode(string content) {
       QR.Code code = QR.Code.encode_string(content, 0, QR.ECLevel.M, QR.Mode.EIGHT_BIT, false);

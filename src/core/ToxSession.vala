@@ -452,8 +452,9 @@ namespace Venom {
       lock(handle) {
         ret = handle.join_groupchat(c.friend_id, g.public_key);
       }
-      if(ret < 0)
+      if(ret < 0) {
         return false;
+      }
       g.group_id = ret;
       _groups.set(ret, g);
       return true;
@@ -497,9 +498,9 @@ namespace Venom {
       return ret == 0;
     }
 
-    public int invite_friend(int group_id, int friendnumber) {
+    public int invite_friend(Contact c, GroupChat g) {
       lock(handle){
-        return handle.invite_friend(friendnumber, group_id);
+        return handle.invite_friend(c.friend_id, g.group_id);
       }
     }
 
@@ -658,6 +659,10 @@ namespace Venom {
 
     public unowned GLib.HashTable<int, Contact> get_contact_list() {
       return _contacts;
+    }
+
+    public unowned GLib.HashTable<int, GroupChat> get_groupchats() {
+      return _groups;
     }
 
     public uint8 send_file_request(int friend_number, uint64 file_size, string filename)
