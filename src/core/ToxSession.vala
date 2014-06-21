@@ -751,7 +751,7 @@ namespace Venom {
         lock(handle) {
           handle.do();
         }
-        Thread.usleep(25000);
+        Thread.usleep(handle.do_interval() * 1000);
       }
       stdout.printf(_("Background thread stopped.\n"));
       return 0;
