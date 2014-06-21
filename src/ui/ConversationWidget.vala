@@ -61,6 +61,11 @@ namespace Venom {
 
       button_send_file.sensitive = contact.online;
       button_send.sensitive = contact.online;
+
+      // remove is_typing notification for offline contacts
+      if(!contact.online){
+        on_typing_changed(false);
+      }
     }
 
     private void init_widgets() {
