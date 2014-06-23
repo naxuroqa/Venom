@@ -365,6 +365,8 @@ namespace Venom {
 
       contact_list_tree_view.entry_activated.connect(on_entry_activated);
       contact_list_tree_view.key_press_event.connect(on_treeview_key_pressed);
+      contact_list_tree_view.button_release_event.connect(
+        on_treeview_button_release);
 
       //ComboboxStatus signals
       combobox_status.changed.connect(combobox_status_changed);
@@ -457,6 +459,27 @@ namespace Venom {
       });
     }
 
+    private bool on_treeview_button_release (Gdk.EventButton event) {
+      if(event.button == Gdk.BUTTON_SECONDARY) {
+        GLib.Object o = contact_list_tree_view.get_selected_entry();
+        Gtk.Menu menu = null;
+        if(o is Contact) {
+          menu = UITools.show_contact_context_menu(this, (Contact)o);
+        } else if(o is GroupChat) {
+          menu = UITools.show_groupchat_context_menu(this, (GroupChat)o);
+        } else {
+          // empty treeview clicked
+          return false;
+        }
+        menu.show_all();
+        menu.attach_to_widget(this, null);
+        menu.hide.connect(() => {menu.detach();});
+        menu.popup(null, null, null, 0, 0);
+        return false;
+      }
+      return false;
+    }
+
     private void set_title_from_status(UserStatus status) {
       this.our_title = _("Venom (%s)").printf(status.to_string());
       string notify = "";
@@ -539,6 +562,10 @@ namespace Venom {
       button_user.get_allocation(out allocation);
       y += allocation.height;
       push_in = true;
+    }
+
+    public unowned GLib.HashTable<int, GroupChat> get_groupchats() {
+      return session.get_groupchats();
     }
 
     private void on_outgoing_message(Message message) {
@@ -1069,6 +1096,21 @@ namespace Venom {
         return;
       }
       contact_removed(c);
+    }
+
+    public void invite_to_groupchat(Contact c, int groupchat_number = -1) {
+      GroupChat g = null;
+      if(groupchat_number < 0) {
+        g = session.add_groupchat();
+        if(g == null) {
+          stderr.printf(_("Could not create a new groupchat.\n"));
+          return;
+        }
+        groupchat_added(g);
+      } else {
+        g = get_groupchats().get(groupchat_number);
+      }
+      session.invite_friend(c, g);
     }
 
     public void remove_groupchat(GroupChat g) {
