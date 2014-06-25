@@ -88,6 +88,18 @@ namespace Venom {
       stdout.printf("Pipeline set to playing\n");
     }
 
+    public void buffer_in() { 
+ 
+    }
+
+    public void buffer_out() { 
+        uint8[] buf = new uint8[20];
+       
+        //THIS LINE IS NOT WORKING 
+        //Gst.Buffer gst_buf = new Gst.Buffer.wrapped(buf);
+
+    } 
+
 
   }
 }
