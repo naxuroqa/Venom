@@ -24,6 +24,11 @@ namespace Venom {
     INIT
   }
 
+  public struct CallInfo {
+    bool active;
+    bool video;
+  }
+
   public class AudioManager { 
 
     private const string PIPELINE = "audioPipeline";
@@ -36,11 +41,21 @@ namespace Venom {
     private const int SAMPLE_RATE = 44100;
     private const string AUDIO_CAPS = "audio/x-raw-int,channels=1,rate=44100,signed=(boolean)true,width=16,depth=16,endianness=BYTE_ORDER";
 
+    private const int MAX_CALLS = 16;
+
+    private CallInfo[] calls = new CallInfo[MAX_CALLS];
+
     private Gst.Pipeline pipeline;
     private Gst.AppSrc audio_source_in;
     private Gst.Element audio_source_out;
     private Gst.Element audio_sink_in;
     private Gst.AppSink audio_sink_out;
+
+    private Thread<int> av_thread = null;
+    private bool running = false;
+    private int number_of_calls = 0;
+
+    public ToxSession tox_session {get; set;}
 
     public static AudioManager instance {get; private set;}
 
@@ -69,9 +84,10 @@ namespace Venom {
       audio_source_out.link(audio_sink_out);
 
       Gst.Caps caps = Gst.Caps.from_string(AUDIO_CAPS);
-      audio_source_in.set_caps(caps);      
+/*
+      audio_source_in.set_caps(caps);    
       audio_sink_out.set_caps(caps);
-       
+*/
     }
 
     public void destroy_audio_pipeline() {
@@ -100,6 +116,50 @@ namespace Venom {
 
     } 
 
+    private int av_thread_fun() {
+      stdout.printf("starting av thread...\n");
+      while(running) {
+        //do something here
+
+
+        Thread.usleep(5000);
+      }
+      stdout.printf("stopping av thread...\n");
+      return 0;
+    }
+
+    public void on_start_call(Contact c) {
+      ToxAV.CallType call_type = tox_session.get_peer_transmission_type(c);
+
+      if(!tox_session.prepare_transmission(c, call_type)) {
+        stderr.printf("Could not prepare AV transmission!\n");
+        return;
+      }
+
+      calls[c.call_index].active = true;
+      calls[c.call_index].video = false;
+      number_of_calls++;
+
+      if(!running) {
+        running = true;
+        av_thread = new GLib.Thread<int>("toxavthread", this.av_thread_fun);
+      }
+    }
+
+    public void on_end_call(Contact c) {
+      if(!running) {
+        stdout.printf("No av thread running\n");
+        return;
+      }
+
+      calls[c.call_index].active = false;
+      number_of_calls--;
+
+      if(number_of_calls == 0) {
+        stdout.printf("number of calls is 0, stopping av thread...\n");
+        running = false;
+      }
+    }
 
   }
 }
