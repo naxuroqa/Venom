@@ -104,20 +104,30 @@ namespace Venom {
       stdout.printf("Pipeline set to playing\n");
     }
 
-/*    public void buffer_in(uint8 inbuf[]) { 
+    public void buffer_in(uint8 inbuf[]) { 
         Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(inbuf.length);
         Memory.copy(gst_buf.data, inbuf, inbuf.length); 
+        audio_source_in.push_buffer(gst_buf);
+	return;
     }
 
-    public uint8* buffer_out() { 
-        uint8 buf[] = new uint8[20];
+    public uint8[] buffer_out() { 
+        Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
+        uint8[] buf = new uint8[gst_buf.data.length];
+	Memory.copy(buf, gst_buf.data, gst_buf.data.length);
+	return buf;
     } 
-*/
+
 
     private int av_thread_fun() {
       stdout.printf("starting av thread...\n");
+      int perframe = (int)(ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000;
+      int r=0;
       while(running) {
-        //do something here
+        
+	if((r = tox_session.prepare_audio_frame(i, dest, frame) < 0) { 
+	  stdout.printf("toxav_prepare_audio_frame error %i\n", r);
+	}
 
 
         Thread.usleep(5000);
