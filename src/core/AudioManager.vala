@@ -40,7 +40,7 @@ namespace Venom {
     private Gst.Element audio_source_in;
     private Gst.Element audio_source_out;
     private Gst.Element audio_sink_in;
-    private Gst.App.Src audio_sink_out;
+    private Gst.Element audio_sink_out;
 
     public static AudioManager instance {get; private set;}
 
@@ -67,8 +67,8 @@ namespace Venom {
       pipeline.add_many(audio_source_out, audio_sink_out, audio_source_in, audio_sink_in);
       audio_source_in.link(audio_sink_in);
       audio_source_out.link(audio_sink_out);
-        
-      
+
+      audio_source_in.set("caps", AUDIO_CAPS);      
        
     }
 

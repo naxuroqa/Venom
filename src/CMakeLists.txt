@@ -176,6 +176,7 @@ VALA_PRECOMPILE( VALA_C_VENOM
     toxav-1.0
     vpx
   OPTIONS
+    --debug
     --target-glib=${TARGET_GLIB}
     --thread
     --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
