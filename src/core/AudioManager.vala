@@ -69,8 +69,9 @@ namespace Venom {
       audio_source_out.link(audio_sink_out);
 
       Gst.Caps caps = Gst.Caps.from_string(AUDIO_CAPS);
-      audio_source_in.set_caps(caps);      
-      audio_sink_out.set_caps(caps);
+      //stdout.printf("Caps is [%s]\n", caps.to_string());
+      audio_source_in.caps = caps;      
+      audio_sink_out.caps = caps;
        
     }
 
@@ -88,18 +89,15 @@ namespace Venom {
       stdout.printf("Pipeline set to playing\n");
     }
 
-    public void buffer_in() { 
- 
+/*    public void buffer_in(uint8 inbuf[]) { 
+        Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(inbuf.length);
+        Memory.copy(gst_buf.data, inbuf, inbuf.length); 
     }
 
-    public void buffer_out() { 
-        uint8[] buf = new uint8[20];
-       
-        //THIS LINE IS NOT WORKING 
-        //Gst.Buffer gst_buf = new Gst.Buffer.wrapped(buf);
-
+    public uint8* buffer_out() { 
+        uint8 buf[] = new uint8[20];
     } 
-
+*/
 
   }
 }
