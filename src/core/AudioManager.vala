@@ -68,7 +68,8 @@ namespace Venom {
       audio_source_in.link(audio_sink_in);
       audio_source_out.link(audio_sink_out);
 
-      audio_source_in.set("caps", AUDIO_CAPS);      
+      Gst.Caps caps = Gst.Caps.from_string(AUDIO_CAPS);
+      audio_source_in.set("caps", caps);      
        
     }
 
