@@ -42,8 +42,6 @@ namespace Venom {
     public signal void start_audio_call(Contact c);
     public signal void stop_audio_call(Contact c);
 
-    private bool audio_on = false;
-
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
       init_widgets();
@@ -262,12 +260,11 @@ namespace Venom {
     }
 
     public void button_call_clicked(Gtk.Button source) {
-        if(!audio_on) {
-          start_audio_call(contact);
-        } else {
-          stop_audio_call(contact);
-        }
-        audio_on = !audio_on;
+      if(contact.audio_call_state != AudioCallState.ENDED) {
+        stop_audio_call(contact);
+      } else {
+        start_audio_call(contact);
+      }
     }
 
     private void on_drag_data_received(Gtk.Widget sender, Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData data, uint info, uint time) {

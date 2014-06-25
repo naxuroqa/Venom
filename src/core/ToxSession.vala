@@ -892,9 +892,9 @@ namespace Venom {
       toxav_handle.recv_audio(c.call_index, frame_size, dest);
     }
 
-    public void prepare_audio_transmission(Contact c) {
-      ToxAV.CodecSettings default_settings = ToxAV.DefaultCodecSettings;
-      toxav_handle.prepare_transmission(c.call_index, ref default_settings, 0);
+    public bool prepare_transmission(Contact c, ToxAV.CallType call_type, ToxAV.CodecSettings settings = ToxAV.DefaultCodecSettings) {
+      ToxAV.CodecSettings t_settings = settings;
+      return toxav_handle.prepare_transmission(c.call_index, ref t_settings, call_type) == 0;
     }
 
     public void prepare_audio_frame(Contact c, uint8[] dest, int16[] frame) {
@@ -903,6 +903,10 @@ namespace Venom {
 
     public void send_audio(Contact c, uint8[] frame) {
       toxav_handle.send_audio(c.call_index, frame);
+    }
+
+    public ToxAV.CallType get_peer_transmission_type (Contact c) {
+      return (ToxAV.CallType)toxav_handle.get_peer_transmission_type(c.call_index, 0);
     }
 
     // TOXAV callbacks

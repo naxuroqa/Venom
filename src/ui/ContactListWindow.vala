@@ -140,6 +140,7 @@ namespace Venom {
     // Create a new session, load/create session data
     private void init_session() {
       session = new ToxSession();
+      AudioManager.instance.tox_session = session;
       try {
         session.load_from_file(ResourceFactory.instance.data_filename);
       } catch (Error e) {
@@ -328,14 +329,18 @@ namespace Venom {
       //av requests
       session.on_av_invite.connect(this.on_av_invite);
       session.on_av_start.connect(this.on_av_start);
+      session.on_av_start.connect(AudioManager.instance.on_start_call);
       session.on_av_cancel.connect(this.on_av_cancel);
       session.on_av_reject.connect(this.on_av_reject);
       session.on_av_end.connect(this.on_av_end);
+      session.on_av_end.connect(AudioManager.instance.on_end_call);
 
       //av responses
       session.on_av_ringing.connect(this.on_av_ringing);
       session.on_av_starting.connect(this.on_av_starting);
+      session.on_av_starting.connect(AudioManager.instance.on_start_call);
       session.on_av_ending.connect(this.on_av_ending);
+      session.on_av_ending.connect(AudioManager.instance.on_end_call);
 
       //av protocol
       session.on_av_error.connect(this.on_av_error);
