@@ -29,7 +29,7 @@ namespace Venom {
     private const string PIPELINE = "audioPipeline";
     private const string AUDIO_SOURCE_IN = "audioSourceIn";
     private const string AUDIO_SOURCE_OUT = "audioSourceOut";
-    private const string AUDIO_SINK_IN = "audioSourceIn";
+    private const string AUDIO_SINK_IN = "audioSinkIn";
     private const string AUDIO_SINK_OUT = "audioSinkOut";
 
     private const int CHUNK_SIZE = 1024; 
@@ -37,10 +37,10 @@ namespace Venom {
     private const string AUDIO_CAPS = "audio/x-raw-int,channels=1,rate=44100,signed=(boolean)true,width=16,depth=16,endianness=BYTE_ORDER";
 
     private Gst.Pipeline pipeline;
-    private Gst.Element audio_source_in;
+    private Gst.AppSrc audio_source_in;
     private Gst.Element audio_source_out;
     private Gst.Element audio_sink_in;
-    private Gst.Element audio_sink_out;
+    private Gst.AppSink audio_sink_out;
 
     public static AudioManager instance {get; private set;}
 
@@ -61,15 +61,16 @@ namespace Venom {
 
       pipeline = new Gst.Pipeline(PIPELINE);
       audio_source_out = Gst.ElementFactory.make("autoaudiosrc", AUDIO_SOURCE_OUT);
-      audio_sink_out = Gst.ElementFactory.make("appsink", AUDIO_SINK_OUT);
-      audio_source_in = Gst.ElementFactory.make("appsrc", AUDIO_SOURCE_IN);
+      audio_sink_out = (Gst.AppSink)Gst.ElementFactory.make("appsink", AUDIO_SINK_OUT);
+      audio_source_in = (Gst.AppSrc)Gst.ElementFactory.make("appsrc", AUDIO_SOURCE_IN);
       audio_sink_in = Gst.ElementFactory.make("autoaudiosink", AUDIO_SINK_IN);
       pipeline.add_many(audio_source_out, audio_sink_out, audio_source_in, audio_sink_in);
       audio_source_in.link(audio_sink_in);
       audio_source_out.link(audio_sink_out);
 
       Gst.Caps caps = Gst.Caps.from_string(AUDIO_CAPS);
-      audio_source_in.set("caps", caps);      
+      audio_source_in.set_caps(caps);      
+      audio_sink_out.set_caps(caps);
        
     }
 
@@ -86,6 +87,7 @@ namespace Venom {
       pipeline.set_state(Gst.State.PLAYING);
       stdout.printf("Pipeline set to playing\n");
     }
+
 
   }
 }
