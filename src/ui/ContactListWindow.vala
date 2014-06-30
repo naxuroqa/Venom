@@ -395,11 +395,13 @@ namespace Venom {
       label_name.label_changed.connect((str) => {
         if(str != "") {
           User.instance.name = str;
+          save_session();
         }
       });
       label_status.label_changed.connect((str) => {
         if(str != "") {
           User.instance.status_message = str;
+          save_session();
         }
       });
 
