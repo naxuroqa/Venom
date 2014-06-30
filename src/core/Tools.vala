@@ -166,7 +166,7 @@ namespace Venom {
       get {
         if(_uri_regex == null) {
           try {
-          _uri_regex = new GLib.Regex("(?<u>[a-z]\\S*://\\S*)");
+          _uri_regex = new GLib.Regex("(?<u>[a-z]+://\\S*)");
           } catch (GLib.RegexError e) {
             stderr.printf(_("Can't create action regex: %s.\n"), e.message);
           }
