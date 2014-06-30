@@ -416,10 +416,12 @@ namespace Venom {
     }
 
     private void init_save_session_hooks() {
-      contact_added.connect(    () => {save_session();});
-      contact_removed.connect(  () => {save_session();});
-      groupchat_added.connect(  () => {save_session();});
-      groupchat_removed.connect(() => {save_session();});
+      contact_added.connect(             () => {save_session();});
+      contact_removed.connect(           () => {save_session();});
+      groupchat_added.connect(           () => {save_session();});
+      groupchat_removed.connect(         () => {save_session();});
+      label_name.label_changed.connect(  () => {save_session();});
+      label_status.label_changed.connect(() => {save_session();});
     }
 
     // Restore friends from datafile
