@@ -586,7 +586,7 @@ msgstr "KB/MB"
 
 #: ui/settings_window.ui:78
 msgid "Keep history"
-msgstr "Salva cronologia"
+msgstr "Salva cronologia delle chat"
 
 #: ui/settings_window.ui:14
 msgid "KiB/MiB"
@@ -800,7 +800,7 @@ msgstr "Impostazioni salvate.\n"
 
 #: ui/settings_window.ui:186
 msgid "Show _others when I am typing"
-msgstr "Mostra quando sto scrivendo"
+msgstr "Mostra agli altri quando sto scrivendo"
 
 #: ui/settings_window.ui:258
 msgid "Show filesize in"
@@ -964,7 +964,7 @@ msgstr "errore: %s\n"
 
 #: ui/ContactListWindow.vala:668
 msgid "established"
-msgstr "stabilito"
+msgstr "stabilita"
 
 #: ui/ContactListWindow.vala:569
 #, c-format
@@ -978,11 +978,11 @@ msgstr "chat di gruppo #%i"
 
 #: ui/settings_window.ui:104
 msgid "indefinitely"
-msgstr "indefinito"
+msgstr "per sempre"
 
 #: ui/ContactListWindow.vala:668
 msgid "lost"
-msgstr "perso"
+msgstr "persa"
 
 #: core/GroupChat.vala:56
 msgid "no one connected"
