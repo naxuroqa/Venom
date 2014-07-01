@@ -21,7 +21,7 @@
 
 namespace Venom {
   public class UITools : GLib.Object {
-    public static void ErrorDialog(string message, string? secondary_text = null, Gtk.Window? parent = null) {
+    public static void show_error_dialog(string message, string? secondary_text = null, Gtk.Window? parent = null) {
       Gtk.MessageDialog dialog = new Gtk.MessageDialog(
         parent,
         Gtk.DialogFlags.MODAL,
@@ -111,6 +111,39 @@ namespace Venom {
       menu.append(item);
 
       return menu;
+    }
+
+    public static void export_datafile(Gtk.Window parent, ToxSession s) {
+      Gtk.FileChooserDialog dialog = new Gtk.FileChooserDialog(
+        _("Export tox data file"),
+        parent,
+        Gtk.FileChooserAction.SAVE,
+        "_Cancel",
+				Gtk.ResponseType.CANCEL,
+				"_Save",
+				Gtk.ResponseType.ACCEPT
+      );
+      dialog.set_filename(ResourceFactory.instance.data_filename);
+      dialog.transient_for = parent;
+      int ret = dialog.run();
+      string filename = dialog.get_filename();
+      dialog.destroy();
+
+      if(ret != Gtk.ResponseType.ACCEPT) {
+        return;
+      }
+      Logger.log(LogLevel.INFO, "Exporting data file to " + filename);
+      try {
+        s.save_to_file(filename);
+      } catch (GLib.Error e) {
+        Logger.log(LogLevel.ERROR, "Could not export data file: " + e.message);
+        show_error_dialog(_("Exporting data file failed"), _("Could not export data file: ") + e.message, parent);        
+      }
+    }
+
+    public static void import_datafile(Gtk.Window parent, ToxSession s) {
+      //TODO
+      show_error_dialog(_("Importing data files is currently not supported"), "", parent); 
     }
 
 #if ENABLE_QR_ENCODE

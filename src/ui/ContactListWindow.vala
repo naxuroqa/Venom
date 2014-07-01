@@ -129,7 +129,7 @@ namespace Venom {
       } catch (Error e) {
         string message = _("Could not read theme from \"%s\"").printf(ResourceFactory.instance.default_theme_filename);
         Logger.log(LogLevel.ERROR, message);
-        UITools.ErrorDialog(message, e.message, this);
+        UITools.show_error_dialog(message, e.message, this);
         return;
       }
 
@@ -235,6 +235,9 @@ namespace Venom {
       (menuitem_status_busy.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.busy);
       (menuitem_status_offline.image as Gtk.Image).set_from_pixbuf(ResourceFactory.instance.offline);
 
+      Gtk.MenuItem menuitem_export = builder.get_object("menuitem_export") as Gtk.MenuItem;
+      Gtk.MenuItem menuitem_import = builder.get_object("menuitem_import") as Gtk.MenuItem;
+
       Gtk.ImageMenuItem menuitem_about = builder.get_object("menuitem_about") as Gtk.ImageMenuItem;
       Gtk.ImageMenuItem menuitem_quit  = builder.get_object("menuitem_quit") as Gtk.ImageMenuItem;
 
@@ -291,6 +294,8 @@ namespace Venom {
       // Workaround for gtk+ 3.4 MenuItems not deriving from Gtk.Actionable
       menuitem_copy_id.activate.connect(  () => {application.activate_action("copy-id",  null);});
       menuitem_edit_info.activate.connect(() => {activate_action("edit-user",  null);});
+      menuitem_export.activate.connect(() => {UITools.export_datafile(this, session);});
+      menuitem_import.activate.connect(() => {UITools.import_datafile(this, session);});
       menuitem_about.activate.connect(() => {application.activate_action("about", null);});
       menuitem_quit.activate.connect( () => {application.activate_action("quit",  null);});
 
@@ -1154,7 +1159,7 @@ namespace Venom {
             stripped_id = resolved_id;
           } else {
             Logger.log(LogLevel.ERROR, "Could not resolve ID from DNS record");
-            UITools.ErrorDialog(_("Resolving ID failed"), _("Could not resolve ID from DNS record\n"), this);
+            UITools.show_error_dialog(_("Resolving ID failed"), _("Could not resolve ID from DNS record\n"), this);
             return false;
           }
         }
@@ -1164,7 +1169,7 @@ namespace Venom {
       // add friend
       if(contact_id == null || contact_id.length != Tox.FRIEND_ADDRESS_SIZE) {
         Logger.log(LogLevel.INFO, "Could not add friend: Invalid ID");
-        UITools.ErrorDialog(_("Adding Friend failed"), _("Could not add friend: Invalid ID\n"), this);
+        UITools.show_error_dialog(_("Adding Friend failed"), _("Could not add friend: Invalid ID\n"), this);
         return false;
       }
       Contact c = new Contact(contact_id);
@@ -1175,7 +1180,7 @@ namespace Venom {
       Tox.FriendAddError ret = session.add_friend(c, contact_message);
       if(ret < 0) {
         Logger.log(LogLevel.ERROR, "Could not add friend: %s.".printf(Tools.friend_add_error_to_string(ret)));
-        UITools.ErrorDialog(_("Adding Friend failed"), _("Could not add friend: %s.\n").printf(Tools.friend_add_error_to_string(ret)), this);
+        UITools.show_error_dialog(_("Adding Friend failed"), _("Could not add friend: %s.\n").printf(Tools.friend_add_error_to_string(ret)), this);
         return false;
       }
 
