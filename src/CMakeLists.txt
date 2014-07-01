@@ -113,6 +113,7 @@ SET( VENOM_SRC
   core/FileTransfer.vala
   core/GroupChat.vala
   core/GroupChatContact.vala
+  core/Logger.vala
   core/MessageLog.vala
   core/Message.vala
   core/ResourceFactory.vala

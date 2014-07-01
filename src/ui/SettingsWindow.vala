@@ -29,7 +29,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/settings_window.ui");
       } catch (GLib.Error e) {
-        stderr.printf(_("Loading conversation window failed!\n"));
+        Logger.log(LogLevel.FATAL, "Loading conversation window failed: " + e.message);
       }
       dialog = builder.get_object("dialog") as Gtk.Dialog;
       dialog.set_transient_for(parent);

@@ -108,7 +108,7 @@ namespace Venom {
         //unfinished, so replaced with dummy storage
         //dht_node_storage = new SqliteDhtNodeStorage(db);
       } catch (Error e) {
-        stderr.printf(_("Error opening database: %s\n"), e.message);
+        Logger.log(LogLevel.ERROR, "Error opening database: " + e.message);
         message_log = new DummyMessageLog();
         dht_node_storage = new DummyDhtNodeStorage();
       }
@@ -349,7 +349,7 @@ namespace Venom {
           g.peer_count++;
         } else if (change == Tox.ChatChange.PEER_DEL) {
           if(!g.peers.remove(peernumber)) {
-            stderr.printf(_("Could not remove peer [%i] from groupchat #%i (no such peer)\n"), peernumber, groupnumber);
+            Logger.log(LogLevel.ERROR, "Could not remove peer [%i] from groupchat #%i (no such peer)".printf(peernumber, groupnumber));
           }
           g.peer_count--;
         } else { // change == PEER_NAME
@@ -719,15 +719,15 @@ namespace Venom {
 
     // Background thread main function
     private int run() {
-      stdout.printf(_("Background thread started.\n"));
+      Logger.log(LogLevel.INFO, "Background thread started.");
 
       if(!bootstrapped) {
-        stdout.printf(_("Connecting to DHT Nodes:\n"));
+        Logger.log(LogLevel.INFO, "Connecting to DHT Nodes:");
         for(int i = 0; i < dht_nodes.length; ++i) {
           // skip ipv6 nodes if we don't support them
           if(dht_nodes[i].is_ipv6 && !ipv6)
             continue;
-          stdout.printf(_("  %s\n"), dht_nodes[i].to_string());
+          Logger.log(LogLevel.INFO, "  " + dht_nodes[i].to_string());
           lock(handle) {
             handle.bootstrap_from_address(
               dht_nodes[i].host,
@@ -758,7 +758,7 @@ namespace Venom {
         }
         Thread.usleep(handle.do_interval() * 1000);
       }
-      stdout.printf(_("Background thread stopped.\n"));
+      Logger.log(LogLevel.INFO, "Background thread stopped.");
       return 0;
     }
 

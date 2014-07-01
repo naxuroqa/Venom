@@ -127,7 +127,7 @@ namespace Venom {
       if(iter != null) {
         set_contact(iter, peernumber, new_name);
       } else {
-        stderr.printf("Sidebar could not update peer #%i\n", peernumber);
+        Logger.log(LogLevel.ERROR, "Sidebar could not update peer #%i".printf(peernumber));
       }
     }
 
@@ -136,7 +136,7 @@ namespace Venom {
       if(iter != null) {
         listmodel.remove(iter);
       } else {
-        stderr.printf("Sidebar could not remove peer #%i\n", peernumber);
+        Logger.log(LogLevel.ERROR, "Sidebar could not remove peer #%i".printf(peernumber));
       }
     }
 

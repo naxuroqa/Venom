@@ -73,7 +73,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/conversation_window.ui");
       } catch (GLib.Error e) {
-        stderr.printf(_("Loading conversation window failed!\n"));
+        Logger.log(LogLevel.FATAL, "Loading conversation window failed: " + e.message);
       }
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.add(box);
@@ -310,7 +310,7 @@ namespace Venom {
       try {
         file_size = file.query_info ("*", FileQueryInfoFlags.NONE).get_size ();
       } catch (Error e) {
-        stderr.printf(_("Error occured while getting file size: %s"),e.message);
+        Logger.log(LogLevel.ERROR, "Error occured while getting file size: " + e.message);
         return;
       }
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.OUTGOING, file_size, file.get_basename(), file.get_path() );

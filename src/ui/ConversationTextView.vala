@@ -181,7 +181,7 @@ namespace Venom {
           try {
             match_info.next();
           } catch (GLib.RegexError e) {
-            stderr.printf(_("Error matching uri regex: %s\n"), e.message);
+            Logger.log(LogLevel.ERROR, "Error matching uri regex: " + e.message);
             break;
           }
         }
@@ -242,7 +242,7 @@ namespace Venom {
       try {
         Gtk.show_uri(null, uri, 0);
       } catch (Error e) {
-        stderr.printf(_("Error when showing uri: %s\n"), e.message);
+        Logger.log(LogLevel.ERROR, "Error when showing uri: " + e.message);
       }
     }
 

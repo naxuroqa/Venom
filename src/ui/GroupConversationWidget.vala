@@ -66,7 +66,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/conversation_window.ui");
       } catch (GLib.Error e) {
-        stderr.printf("Loading conversation window failed!\n");
+        Logger.log(LogLevel.FATAL, "Loading conversation window failed: " + e.message);
       }
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.add(box);

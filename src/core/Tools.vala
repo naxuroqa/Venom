@@ -51,7 +51,7 @@ namespace Venom {
       File path = File.new_for_path(pathname);
       if(!path.query_exists()) {
         DirUtils.create_with_parents(pathname, mode);
-        stdout.printf("created directory %s\n", pathname);
+        Logger.log(LogLevel.INFO, "created directory " + pathname);
       }
     }
 
@@ -93,7 +93,7 @@ namespace Venom {
         if (u != (unichar) (-1)) {
           sb.append_unichar(u);
         } else {
-          stdout.printf("Invalid UTF-8 character detected\n");
+          Logger.log(LogLevel.WARNING, "Invalid UTF-8 character detected");
         }
       }
       return sb.str;
@@ -120,7 +120,7 @@ namespace Venom {
       try {
         ret = Tools.uri_regex.replace(escaped_text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
 		  } catch (GLib.RegexError e) {
-			  stderr.printf(_("Error when doing uri markup: %s"), e.message);
+		    Logger.log(LogLevel.ERROR, "Error when doing uri markup: " + e.message);
 			  return text;
 		  }
 		  return ret;
@@ -155,7 +155,7 @@ namespace Venom {
           try {
             _action_regex = new GLib.Regex("^/(?P<action_name>\\S+)(\\s+(?P<action_string>.+))?$");
           } catch (GLib.RegexError e) {
-            stderr.printf(_("Can't create action regex: %s.\n"), e.message);
+            Logger.log(LogLevel.ERROR, "Can't create action regex: " + e.message);
           }
         }
         return _action_regex;
@@ -168,7 +168,7 @@ namespace Venom {
           try {
           _uri_regex = new GLib.Regex("(?<u>[a-z]+://\\S*)");
           } catch (GLib.RegexError e) {
-            stderr.printf(_("Can't create action regex: %s.\n"), e.message);
+            Logger.log(LogLevel.ERROR, "Can't create uri regex: " + e.message);
           }
         }
         return _uri_regex;

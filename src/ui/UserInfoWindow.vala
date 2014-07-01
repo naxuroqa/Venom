@@ -62,7 +62,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/user_info_window.ui");
       } catch (GLib.Error e) {
-        stderr.printf("Loading user info window failed!\n");
+        Logger.log(LogLevel.FATAL, "Loading user info window failed: " + e.message);
       }
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.get_content_area().add(box);

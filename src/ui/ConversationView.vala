@@ -75,7 +75,7 @@ namespace Venom {
             image.set_visible(true);
 
           } catch (Error error) {
-            stderr.printf(_("Error: %s\n"), error.message);
+            Logger.log(LogLevel.ERROR, "Adding filetransfer failed: " + error.message);
           }
         }
       });

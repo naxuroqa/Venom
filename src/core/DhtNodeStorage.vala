@@ -154,7 +154,7 @@ namespace Venom {
         SqliteTools.put_text(insert_statement,  TABLE_LOCATION,   node.location);
         SqliteTools.put_int (insert_statement,  TABLE_ISBLOCKED,  node.is_blocked ? 1 : 0);
       } catch (SqliteStatementError e) {
-        stderr.printf("Error writing dht node to sqlite database: %s\n", e.message);
+        Logger.log(LogLevel.ERROR, "Error writing dht node to sqlite database: " + e.message);
         return;
       }
 

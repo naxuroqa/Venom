@@ -123,7 +123,7 @@ namespace Venom {
       try {
         buf = new Gdk.Pixbuf.from_resource( resourcename );
       } catch (Error e) {
-        stderr.printf(_("Error while loading image from \"%s\":%s\n"), resourcename, e.message );
+        Logger.log(LogLevel.ERROR, "Error while loading image from \"" + resourcename + "\": " + e.message);
       }
       return buf;
     }

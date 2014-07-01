@@ -37,7 +37,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/chat_filetransfer.ui");
       } catch (GLib.Error e) {
-        stderr.printf(_("Loading message widget failed!\n"));
+        Logger.log(LogLevel.FATAL, "Loading message widget failed: " + e.message);
       }
       this.get_style_context().add_class("filetransfer_entry");
       //Gtk.Box box = builder.get_object("box1") as Gtk.Box;
@@ -82,9 +82,9 @@ namespace Venom {
       switch (status) {
         case FileTransferStatus.DONE: {
           if(direction == FileTransferDirection.INCOMING) {
-            size_or_status_label.set_text("File received");
+            size_or_status_label.set_text(_("File received"));
           } else if (direction == FileTransferDirection.OUTGOING) {
-            size_or_status_label.set_text("File sent");
+            size_or_status_label.set_text(_("File sent"));
           }
           progress_bar.visible = false;
           disable_buttons();
@@ -161,14 +161,14 @@ namespace Venom {
       int res = file_selection_dialog.run();
       if(res  == Gtk.ResponseType.ACCEPT) {
         string path = file_selection_dialog.get_filename();
-        file_selection_dialog.destroy();  
-        stdout.printf(_("Saving to: %s\n"),path);
+        file_selection_dialog.destroy();
+        Logger.log(LogLevel.INFO, "Saving to: " + path);
         File file = File.new_for_path(path);
         if(file.query_exists()){
           try {
             file.replace(null,false,FileCreateFlags.REPLACE_DESTINATION);
           } catch(Error e) {
-            stderr.printf(_("Error while trying to create file: %s\n"), e.message);
+            Logger.log(LogLevel.ERROR, "Error while trying to create file: " + e.message);
           }            
         }
         filetransfer_accepted(ft);

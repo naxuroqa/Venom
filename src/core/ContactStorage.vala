@@ -62,7 +62,7 @@ namespace Venom {
       try {
         SqliteTools.put_text(select_statement, TABLE_KEY, key);
       } catch (SqliteStatementError e) {
-        stderr.printf("Error retrieving contact from sqlite database: %s\n", e.message);
+        Logger.log(LogLevel.ERROR, "Error retrieving contact from sqlite database: " + e.message);
         return;
       }
 
@@ -85,7 +85,7 @@ namespace Venom {
         SqliteTools.put_int (insert_statement,  TABLE_ISBLOCKED, c.is_blocked ? 1 : 0);
         SqliteTools.put_text(insert_statement,  TABLE_GROUP,     c.group);
       } catch (SqliteStatementError e) {
-        stderr.printf(_("Error writing contact to sqlite database: %s\n"), e.message);
+        Logger.log(LogLevel.ERROR, "Error writing contact to sqlite database: " + e.message);
         return;
       }
 

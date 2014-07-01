@@ -103,7 +103,7 @@ namespace Venom {
       unowned Gtk.Widget w = get_toplevel();
       if(!w.is_toplevel() || !(w is Gtk.Window)) {
         //could not get window for some reason, abort
-        stderr.printf("Could not get reference to toplevel window\n");
+        Logger.log(LogLevel.ERROR, "Could not get reference to toplevel window");
         return false;
       }
       unowned Gtk.Widget focus_widget = (w as Gtk.Window).get_focus();

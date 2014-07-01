@@ -50,7 +50,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/add_contact_dialog.ui");
       } catch (GLib.Error e) {
-        stderr.printf(_("Loading add contact window failed!\n"));
+        Logger.log(LogLevel.FATAL, "Loading add contact window failed: " + e.message);
       }
 
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
@@ -68,7 +68,7 @@ namespace Venom {
       try {
         id_regex = new GLib.Regex("^[[:xdigit:]]*$");
       } catch (RegexError re) {
-        stderr.printf("Failed to compile regex: %s\n", re.message);
+        Logger.log(LogLevel.FATAL, "Failed to compile regex:" + re.message);
       }
 
       this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Ok", Gtk.ResponseType.OK, null);
