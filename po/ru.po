@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-17 21:05+0200\n"
-"PO-Revision-Date: 2014-07-02 23:29+1200\n"
+"PO-Revision-Date: 2014-07-02 23:56+1200\n"
 "Last-Translator: Ackermann Yuriy <ackermann.yuriy@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -186,7 +186,7 @@ msgstr "Не могу открыть базу данных : %d: %s\n"
 
 #: core/Tools.vala:136
 msgid "Can't send to own key"
-msgstr "Impossibile inviare alla propria chiave"
+msgstr "Нельзя отправить сообщение себе самому."
 
 #: ui/FileTransferChatEntry.vala:119
 msgid "Canceled"
@@ -232,17 +232,17 @@ msgstr "Не удалось добавить друга: Недействите�
 #: core/SqliteTools.vala:40
 #, c-format
 msgid "Could not bind int to %s."
-msgstr "Impossibile collegare int a %s."
+msgstr "Не удалось привязать int к %s."
 
 #: core/SqliteTools.vala:50
 #, c-format
 msgid "Could not bind int64 to %s."
-msgstr "Impossibile collegare int64 a %s."
+msgstr "Не удалось привязать int64 к %s."
 
 #: core/SqliteTools.vala:60
 #, c-format
 msgid "Could not bind text to %s"
-msgstr "Impossibile collegare text a %s"
+msgstr "Не удалось привязать текст к %s."
 
 #: ui/ContactListWindow.vala:447
 #, c-format
@@ -358,17 +358,17 @@ msgstr "Errore nel create lo statement di selezione server DHT: %d: %s\n"
 #: core/DhtNodeStorage.vala:172
 #, c-format
 msgid "Error creating dht nodes table: %s\n"
-msgstr "Errore nel creare la tabella dei server DHT: %s\n"
+msgstr "Ошибка при создании таблицы DHT нод: %s\n"
 
 #: core/ToxDns.vala:36
 #, c-format
 msgid "Error creating tox dns regex: %s\n"
-msgstr "Errore nel creare l'espressione regolare dei DNS tox: %s\n"
+msgstr "Не удалось создать tox DNS регулярное выражение: %s\n"
 
 #: core/ToxDns.vala:51
 #, c-format
 msgid "Error creating tox uri regex: %s\n"
-msgstr "Errore nel creare l'espressione regolare degli URI tox: %s\n"
+msgstr "Не удалось создать tox URI регулярное выражение: %s\n"
 
 #: ui/ConversationTextView.vala:184
 #, c-format
@@ -408,12 +408,12 @@ msgstr "Ошибка при попытке сохранении настроек
 #: core/Tools.vala:123
 #, c-format
 msgid "Error when doing uri markup: %s"
-msgstr "Errore durante il markup dell'URI: %s"
+msgstr "Ошибка разметки URI: %s"
 
 #: ui/ConversationTextView.vala:245
 #, c-format
 msgid "Error when showing uri: %s\n"
-msgstr "Errore nel mostrare l'URI: %s\n"
+msgstr "Ошибка отображения URI: %s\n"
 
 #: ui/ContactListWindow.vala:168
 #, c-format
@@ -476,12 +476,12 @@ msgstr "Файл \"%d\" не существует."
 #: ui/ContactListWindow.vala:929
 #, c-format
 msgid "File transfer finished for file number %u"
-msgstr "Отправка файла была завершена для файла: %u"
+msgstr "Отправка была завершена для %u файлов."
 
 #: ui/ContactListWindow.vala:925
 #, c-format
 msgid "File transfer was rejected for file number %u"
-msgstr "Trasferimento file rifiutato per il file numero %u"
+msgstr "%u файлов было отклонено."
 
 #: ui/FileTransferChatEntry.vala:94
 msgid "File was rejected"
@@ -661,7 +661,7 @@ msgstr "В сети"
 
 #: ui/contact_list.ui:449
 msgid "Open preferences"
-msgstr "Открыть настройки"
+msgstr "Настройки"
 
 #: core/Tools.vala:146
 msgid "Out of memory"
@@ -714,7 +714,8 @@ msgstr "Контакт %s был успешно извлечен из сохра
 #, c-format
 msgid "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
-"Esegui '%s --help' per vedere la lista completa delle opzioni disponibili.\n"
+"Используйте '%s --help' чтобы увидеть полный список доступных параметров "
+"командной строки.\n"
 
 #: core/MessageLog.vala:86
 #, c-format
@@ -996,29 +997,27 @@ msgstr "в сети"
 #: ui/ContactListWindow.vala:798
 #, c-format
 msgid "received file send request friend: %i filenumber: %i filename: %s \n"
-msgstr ""
-"ricevuta richiesta di trasferimento file contatto: %i numero file: %i nome "
-"file: %s \n"
+msgstr "получен запрос от %i на передачу %i файлов %s \n"
 
 #: ui/ContactListWindow.vala:562
 #, c-format
 msgid "sending file %s to %s\n"
-msgstr "invio file %s a %s\n"
+msgstr "отправка файла %s к %s\n"
 
 #: ui/ContactListWindow.vala:1129
 #, c-format
 msgid "setting alias: %s\n"
-msgstr "impostazione alias: %s\n"
+msgstr "установка алиаса: %s\n"
 
 #: core/ToxDns.vala:95
 #, c-format
 msgid "tox 1 ID found: %s\n"
-msgstr "Trovato Tox ID v1: %s\n"
+msgstr "Tox IDv1 найден: %s\n"
 
 #: core/ToxDns.vala:100
 #, c-format
 msgid "tox 2 ID found: %s %s\n"
-msgstr "Trovato Tox ID v2: %s %s\n"
+msgstr "Tox IDv2 найден: %s %s\n"
 
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
