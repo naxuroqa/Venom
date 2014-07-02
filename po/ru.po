@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-17 21:05+0200\n"
-"PO-Revision-Date: 2014-07-02 17:17+1200\n"
+"PO-Revision-Date: 2014-07-02 18:07+1200\n"
 "Last-Translator: Ackermann Yuriy <ackermann.yuriy@gmail.com>\n"
-"Language-Team: Italiano\n"
-"Language: it\n"
+"Language-Team: Russians\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -38,12 +38,12 @@ msgstr "%R:%S"
 #: core/GroupChat.vala:52
 #, c-format
 msgid "%i people connected"
-msgstr "%i persone connesse"
+msgstr "%i человек подключено."
 
 #: core/GroupChat.vala:54
 #, c-format
 msgid "%i person connected"
-msgstr "%i persona connessa"
+msgstr "%i человек подключен."
 
 #: core/Contact.vala:69 core/Contact.vala:83
 #, c-format
@@ -53,22 +53,22 @@ msgstr "%s <i>(%s)</i>"
 #: ui/ContactListWindow.vala:648
 #, c-format
 msgid "%s changed his name to %s\n"
-msgstr "%s ha cambiato il suo nome in %s\n"
+msgstr "%s сменил имя на %s\n"
 
 #: ui/ContactListWindow.vala:652
 #, c-format
 msgid "%s changed his status to %s\n"
-msgstr "%s ha cambiato il suo stato in %s\n"
+msgstr "%s сменил статус на %s\n"
 
 #: ui/ContactListWindow.vala:663
 #, c-format
 msgid "%s is now %s.\n"
-msgstr "%s ora è %s.\n"
+msgstr "%s сейчас %s.\n"
 
 #: ui/ConversationWidget.vala:60
 #, c-format
 msgid "%s is typing..."
-msgstr "%s sta scrivendo..."
+msgstr "%s пишет..."
 
 #: ui/ContactListWindow.vala:131
 #, c-format
@@ -83,7 +83,7 @@ msgstr "%s:%u%s %s"
 #: ui/ContactListWindow.vala:714
 #, c-format
 msgid "'%s' has invited you to a groupchat, do you want to accept?"
-msgstr "'%s' ti ha invitato in una chat di gruppo. Vuoi accettare?"
+msgstr "'%s' пригласил вас в групповой чат. Принять?"
 
 #: ui/ContactListWindow.vala:577
 #, c-format
@@ -111,7 +111,7 @@ msgstr "<b>Tox</b>"
 
 #: ui/user_info_window.ui:282
 msgid "<b>User</b>"
-msgstr "<b>Utente</b>"
+msgstr "<b>Пользователь</b>"
 
 #: core/Contact.vala:72 core/Contact.vala:86 ui/ConversationView.vala:55
 #, c-format
@@ -120,43 +120,43 @@ msgstr "<i>%s</i>"
 
 #: core/Message.vala:152 core/Message.vala:191
 msgid "<unknown>"
-msgstr "<sconosciuto>"
+msgstr "<неизвестно>"
 
 #: ui/AddContactDialog.vala:76
 msgid "Add contact"
-msgstr "Aggiungi contatto"
+msgstr "Добавить контакт"
 
 #: ui/ContactListWindow.vala:617
 #, c-format
 msgid "Added new friend #%i\n"
-msgstr "Aggiunto nuovo amico #%i\n"
+msgstr "Добавлен новый контакт: #%i\n"
 
 #: ui/ContactListWindow.vala:1125 ui/ContactListWindow.vala:1137
 msgid "Adding Friend failed"
-msgstr "Errore durante l'aggiunta del nuovo contattto"
+msgstr "При добавлении в друзья произошла ошибка."
 
 #: ui/ContactListWindow.vala:210
 msgid "All"
-msgstr "Tutti"
+msgstr "Все"
 
 #: ui/ContactListWindow.vala:1060 ui/ContactListWindow.vala:1082
 #, c-format
 msgid "Are you sure you want to delete '%s' from your contact list?"
-msgstr "Sei sicuro di voler eliminare '%s' dalla tua lista dei contatti?"
+msgstr "Вы уверены что хотите удалить '%s' из друзей?"
 
 #: core/ToxSession.vala:33
 msgid "Away"
-msgstr "Assente"
+msgstr "Отошел"
 
 #: core/ToxSession.vala:717
 #, c-format
 msgid "Background thread started.\n"
-msgstr "Thread in background avviato.\n"
+msgstr "Запустился фоновый процесс.\n"
 
 #: core/ToxSession.vala:756
 #, c-format
 msgid "Background thread stopped.\n"
-msgstr "Фоновый процесс упал.\n"
+msgstr "Упал фоновый процесс.\n"
 
 #: core/Tools.vala:142
 msgid "Bad checksum"
@@ -172,17 +172,17 @@ msgstr "Звонить"
 
 #: ui/conversation_window.ui:174
 msgid "Call contact with video"
-msgstr "Videochiama contatto"
+msgstr "Звонок с видео"
 
 #: core/Tools.vala:158 core/Tools.vala:171
 #, c-format
 msgid "Can't create action regex: %s.\n"
-msgstr "Impossibile creare l'espressione regolare: %s.\n"
+msgstr "Не удалось выполнить регулярное выражение: %s.\n"
 
 #: core/SqliteTools.vala:75
 #, c-format
 msgid "Can't open database: %d: %s\n"
-msgstr "Impossibile accedere al database: %d: %s\n"
+msgstr "Не могу открыть базу данных : %d: %s\n"
 
 #: core/Tools.vala:136
 msgid "Can't send to own key"
@@ -190,30 +190,30 @@ msgstr "Impossibile inviare alla propria chiave"
 
 #: ui/FileTransferChatEntry.vala:119
 msgid "Canceled"
-msgstr "Annullato"
+msgstr "Отменено"
 
 #: ui/contact_list.ui:72
 msgid "Change _Status"
-msgstr "Cambia _Stato"
+msgstr "Изменить _Статус"
 
 #: ui/ContactListWindow.vala:670
 msgid "Connected to the network"
-msgstr "Connesso alla rete"
+msgstr "Подключен"
 
 #: core/ToxSession.vala:720
 #, c-format
 msgid "Connecting to DHT Nodes:\n"
-msgstr "Connessione ai server DHT:\n"
+msgstr "Подключение к DHT нодам:\n"
 
 #: ui/ContactListWindow.vala:668
 #, c-format
 msgid "Connection to DHT %s.\n"
-msgstr "Connessione al server DHT %s.\n"
+msgstr "Подключение к DHT %s.\n"
 
 #: ui/ContactListWindow.vala:907
 #, c-format
 msgid "Contact accepted file sending request\n"
-msgstr "Il contatto ha accettato la richiesta di invio file\n"
+msgstr "Началась передача файла.\n"
 
 #: ui/ContactListWindow.vala:508
 #, c-format
@@ -223,11 +223,11 @@ msgstr "Tox ID copiato negli appunti\n"
 #: ui/ContactListWindow.vala:1135
 #, c-format
 msgid "Could not add friend: %s.\n"
-msgstr "Impossibile aggiungere il contatto: %s.\n"
+msgstr "Ошибка при добавлении друга: %s.\n"
 
 #: ui/ContactListWindow.vala:1123
 msgid "Could not add friend: Invalid ID\n"
-msgstr "Impossibile aggiungere il contatto: ID non valido\n"
+msgstr "Ошибка при добавлении друга: Недействительный ID\n"
 
 #: core/SqliteTools.vala:40
 #, c-format
@@ -652,12 +652,12 @@ msgstr "O_ffline"
 
 #: core/Contact.vala:98 core/Contact.vala:108 core/ToxSession.vala:37
 msgid "Offline"
-msgstr "Offline"
+msgstr "Не в сети"
 
 #: core/GroupChatContact.vala:32 core/ToxSession.vala:31
 #: ui/ContactListWindow.vala:208
 msgid "Online"
-msgstr "Online"
+msgstr "В сети"
 
 #: ui/contact_list.ui:449
 msgid "Open preferences"
@@ -751,11 +751,11 @@ msgstr "Salvataggio dei dati di sessione\n"
 
 #: ui/ConversationWidget.vala:282
 msgid "Select"
-msgstr "Seleziona"
+msgstr "Выбрано"
 
 #: ui/ConversationWidget.vala:279
 msgid "Select a file to send"
-msgstr "Seleziona un file da inviare"
+msgstr "Выберите файл для отправки"
 
 #: ui/add_contact_dialog.ui:113
 msgid "Send a custom message to be displayed to the friend you are adding"
@@ -765,7 +765,7 @@ msgstr ""
 
 #: ui/conversation_window.ui:308
 msgid "Send file"
-msgstr "Invia file"
+msgstr "Отправить файл"
 
 #: ui/conversation_window.ui:341
 msgid "Send message"
@@ -791,7 +791,7 @@ msgstr "Imposta un nuovo valore nospam"
 
 #: ui/settings_window.ui:30
 msgid "Settings"
-msgstr "Impostazioni"
+msgstr "Настройки"
 
 #: core/Settings.vala:102
 #, c-format
