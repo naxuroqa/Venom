@@ -1,14 +1,14 @@
-# Italian translation for PACKAGE package.
+# Russian translation for PACKAGE package.
 # Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Ansa89, 2014.
+# herrniemand, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-17 21:05+0200\n"
-"PO-Revision-Date: 2014-07-02 23:56+1200\n"
+"PO-Revision-Date: 2014-07-03 00:00+1200\n"
 "Last-Translator: Ackermann Yuriy <ackermann.yuriy@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
