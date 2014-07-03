@@ -1,14 +1,14 @@
-# Russian translation for PACKAGE package.
+# Italian translation for PACKAGE package.
 # Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# herrniemand, 2014.
+# Ansa89, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-17 21:05+0200\n"
-"PO-Revision-Date: 2014-07-03 00:00+1200\n"
+"PO-Revision-Date: 2014-07-03 12:42+1200\n"
 "Last-Translator: Ackermann Yuriy <ackermann.yuriy@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -156,7 +156,7 @@ msgstr "Запустился фоновый процесс.\n"
 #: core/ToxSession.vala:756
 #, c-format
 msgid "Background thread stopped.\n"
-msgstr "Упал фоновый процесс.\n"
+msgstr "Фоновый процесс упал.\n"
 
 #: core/Tools.vala:142
 msgid "Bad checksum"
@@ -485,11 +485,11 @@ msgstr "%u файлов было отклонено."
 
 #: ui/FileTransferChatEntry.vala:94
 msgid "File was rejected"
-msgstr "Прием файла был отклонен."
+msgstr "Пользователь отклонил прием файла."
 
 #: ui/settings_window.ui:236
 msgid "Flash window when a new message arrives"
-msgstr "Мигать окном когда "
+msgstr "Оповещать о приходе нового сообщения."
 
 #: ui/ContactListWindow.vala:614
 #, c-format
