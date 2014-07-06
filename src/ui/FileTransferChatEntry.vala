@@ -29,6 +29,7 @@ namespace Venom {
 
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
+    public signal void filetransfer_completed(FileTransferChatEntry entry, FileTransfer ft);
 
     public FileTransferChatEntry(FileTransfer ft){
       this.ft = ft;
@@ -36,7 +37,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/chat_filetransfer.ui");
       } catch (GLib.Error e) {
-        stderr.printf("Loading message widget failed!\n");
+        Logger.log(LogLevel.FATAL, "Loading message widget failed: " + e.message);
       }
       this.get_style_context().add_class("filetransfer_entry");
       //Gtk.Box box = builder.get_object("box1") as Gtk.Box;
@@ -81,41 +82,53 @@ namespace Venom {
       switch (status) {
         case FileTransferStatus.DONE: {
           if(direction == FileTransferDirection.INCOMING) {
-            size_or_status_label.set_text("File received");
+            size_or_status_label.set_text(_("File received"));
           } else if (direction == FileTransferDirection.OUTGOING) {
-            size_or_status_label.set_text("File sent");
+            size_or_status_label.set_text(_("File sent"));
           }
           progress_bar.visible = false;
           disable_buttons();
+          filetransfer_completed(this, ft);
         } break;
         case FileTransferStatus.REJECTED: {
-          size_or_status_label.set_text("File was rejected");
+          size_or_status_label.set_text(_("File was rejected"));
           progress_bar.visible = false;
           disable_buttons();
         } break; 
         case FileTransferStatus.IN_PROGRESS: {
           save_as_button.visible = false;
+          size_or_status_label.set_text( UITools.format_filesize( ft.file_size ) );
+          cancel_button.visible = true;
         } break;
         case FileTransferStatus.PAUSED: {
-          size_or_status_label.set_text("Paused");
+          size_or_status_label.set_text(_("Paused"));
         } break;
         case FileTransferStatus.SENDING_FAILED: {
-          size_or_status_label.set_text("Sending failed");
+          size_or_status_label.set_text(_("Sending failed"));
           size_or_status_label.get_style_context().add_class("error");
           progress_bar.visible = false;
           disable_buttons();
         } break;
         case FileTransferStatus.RECEIVING_FAILED: {
-          size_or_status_label.set_text("Receiving failed");
+          size_or_status_label.set_text(_("Receiving failed"));
           size_or_status_label.get_style_context().add_class("error");
           progress_bar.visible = false;
           disable_buttons();
         } break;
         case FileTransferStatus.CANCELED: {
-          size_or_status_label.set_text("Canceled");
+          size_or_status_label.set_text(_("Canceled"));
           progress_bar.visible = false;
           disable_buttons();
         } break; 
+
+        case FileTransferStatus.SENDING_BROKEN: {
+          size_or_status_label.set_text(_("Disconnected"));
+        } break;
+
+        case FileTransferStatus.RECEIVING_BROKEN: {
+          size_or_status_label.set_text(_("Disconnected"));
+        } break;
+
         default:
           GLib.assert_not_reached();
       }
@@ -139,23 +152,23 @@ namespace Venom {
         return;
       }
       
-      Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog("Save file",null,
+      Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog(_("Save file"),null,
                                                                               Gtk.FileChooserAction.SAVE,
-                                                                              "Cancel", Gtk.ResponseType.CANCEL,
-                                                                              "Save", Gtk.ResponseType.ACCEPT);
+                                                                              "_Cancel", Gtk.ResponseType.CANCEL,
+                                                                              _("Save"), Gtk.ResponseType.ACCEPT);
       file_selection_dialog.do_overwrite_confirmation = true;
       file_selection_dialog.set_current_name(ft.name);
       int res = file_selection_dialog.run();
       if(res  == Gtk.ResponseType.ACCEPT) {
         string path = file_selection_dialog.get_filename();
-        file_selection_dialog.destroy();  
-        stdout.printf("Saving to: %s\n",path);
+        file_selection_dialog.destroy();
+        Logger.log(LogLevel.INFO, "Saving to: " + path);
         File file = File.new_for_path(path);
         if(file.query_exists()){
           try {
             file.replace(null,false,FileCreateFlags.REPLACE_DESTINATION);
           } catch(Error e) {
-            stderr.printf("Error while trying to create file: %s\n", e.message);
+            Logger.log(LogLevel.ERROR, "Error while trying to create file: " + e.message);
           }            
         }
         filetransfer_accepted(ft);

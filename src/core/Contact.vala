@@ -50,6 +50,12 @@ namespace Venom {
     public int         unread_messages { get; set; default = 0; }
     public bool        is_typing       { get; set; default = false; }
 
+    private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
+
+    public unowned GLib.HashTable<uint8, FileTransfer> get_filetransfers() {
+      return _file_transfers;
+    }
+
     public Contact(uint8[] public_key, int friend_id = -1) {
       this.public_key = public_key;
       this.friend_id = friend_id;
@@ -60,10 +66,10 @@ namespace Venom {
         if(alias == "") {
           return name;
         } else {
-          return "%s <i>(%s)</i>".printf(Markup.escape_text(name), Markup.escape_text(alias));
+          return _("%s <i>(%s)</i>").printf(Markup.escape_text(name), Markup.escape_text(alias));
         }
       } else if (alias != "") {
-        return "<i>%s</i>".printf(Markup.escape_text(alias));
+        return _("<i>%s</i>").printf(Markup.escape_text(alias));
       } else {
         return Tools.bin_to_hexstring(public_key);
       }
@@ -74,10 +80,10 @@ namespace Venom {
         if(alias == "") {
           return name;
         } else {
-          return "%s <i>(%s)</i>".printf(Tools.markup_uris(name), Tools.markup_uris(alias));
+          return _("%s <i>(%s)</i>").printf(Tools.markup_uris(name), Tools.markup_uris(alias));
         }
       } else if (alias != "") {
-        return "<i>%s</i>".printf(Tools.markup_uris(alias));
+        return _("<i>%s</i>").printf(Tools.markup_uris(alias));
       } else {
         return Tools.bin_to_hexstring(public_key);
       }
@@ -89,7 +95,7 @@ namespace Venom {
       } else if (last_seen != null) {
         return get_last_seen_string();
       } else {
-        return "Offline";
+        return _("Offline");
       }
     }
 
@@ -99,7 +105,7 @@ namespace Venom {
       } else if (last_seen != null) {
         return get_last_seen_string();
       } else {
-        return "Offline";
+        return _("Offline");
       }
     }
 
@@ -108,7 +114,7 @@ namespace Venom {
     }
 
     public string get_last_seen_string() {
-      return last_seen != null ? "Last seen: %s".printf(last_seen.format("%c")) : "";
+      return last_seen != null ? _("Last seen: %s").printf(last_seen.format("%c")) : "";
     }
 
     public string get_tooltip_string() {

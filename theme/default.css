@@ -18,9 +18,10 @@
  */
 
 @define-color treeview-background #414042;
-@define-color treeview-selected #636466;
-@define-color background #231f20;
-@define-color foreground #f1f2f2;
+@define-color treeview-selected white;
+@define-color widget-selected #636466;
+@define-color background #1c1c1c;
+@define-color foreground #ffffff;
 @define-color border-color #636466;
 @define-color callbutton-color #6bc260;
 @define-color callbutton-selected lighter(@callbutton-color);
@@ -119,21 +120,17 @@
   color: @foreground;
 }
 
-.contact_list .arrow {
-  color: @foreground;
-}
-
 .contact_list .bottombutton:active,
 .contact_list .bottombutton:hover:active,
 .contact_list .bottombutton:focus:active{
-  background-color: lighter (@treeview-selected);
+  background-color: lighter (@widget-selected);
   background-image: none;
   border-style: none;
 }
 
 .contact_list .bottombutton:selected,
 .contact_list .bottombutton:hover {
-  background-color: @treeview-selected;
+  background-color: @widget-selected;
   background-image: none;
   border-style: none;
 }
@@ -145,6 +142,7 @@
   border-style: none;
 }
 
+.contact_list .statuscombo .button:hover,
 .contact_list .statuscombo *:active,
 .contact_list .statuscombo *:hover,
 .contact_list .statuscombo *:focus:active{
@@ -153,31 +151,31 @@
   border-style: none;
 }
 
-.contact_list .statuscombo * {
+.contact_list .statuscombo .button {
   font-weight: bold;
   text-shadow: none;
-  background-color: @border-color;
+  background-color: @background;
   background-image: none;
   border-image: none;
   border-style: none;
-  border-radius: 0px;
+  border-radius: 7px;
 }
 
 .contact_list .userbutton:active,
 .contact_list .userbutton:hover,
 .contact_list .userbutton:focus:active{
-  background-color: @treeview-selected;
+  background-color: @widget-selected;
   background-image: none;
   border-style: none;
 }
 
 .contact_list .userbutton {
-  background-color: @treeview-background;
+  background-color: @widget-selected;
   background-image: none;
   border-image: none;
   padding: 0;
   border: none;
-  border-radius: 0px;
+  border-radius: 7px;
 }
 
 .contact_list .cell {
@@ -202,6 +200,7 @@
 }
 
 .contact_list row:selected {
+  color: black;
   background-color: @treeview-selected;
 }
 
@@ -215,23 +214,25 @@
 }
 
 .contact_list .scrollbar {
-  background-color: #1c1c1c;
+  background-color: @treeview-background;
   background-image: none;
   border: none;
 }
 
 .contact_list .slider:hover,
 .contact_list .slider:active {
-  background-color: @treeview-selected;
+  background-color: @widget-selected;
 }
 
 .contact_list .slider {
-  background-color: @treeview-background;
+  background-color: @background;
   background-image: none;
-  border: 1px solid @background;
-  border-radius: 0px;
+  border: 0px solid black;
+  border-radius: 7px;
 }
 
+GtkPaned,
+GtkEventBox,
 .conversation_widget,
 .conversation_widget .conversation_view,
 .conversation_widget .view {
@@ -251,14 +252,14 @@
   border-style: dotted;
 }
 
-.conversation_widget .entry {
+.conversation_widget GtkScrolledWindow {
   border-radius: 0px;
-  border-width: 1px 1px 1px 1px;
+  border-width: 1px 0px 1px 1px;
   border-image: none;
   border-style: solid;
   border-color: @separator-color;
-  box-shadow: none;
 }
+
 
 .conversation_widget .callbutton:insensitive,
 .conversation_widget .callbutton:insensitive:insensitive {
@@ -284,8 +285,47 @@
   background-color: @callbutton-color;
   background-image: none;
   border-image: none;
-  border-radius: 0px;
+  border-radius: 7px;
   border: none;
+}
+
+.conversation_widget .textview-button:insensitive,
+.conversation_widget .textview-button:insensitive:insensitive {
+  background-color: @callbutton-selected;
+  background-image: none;
+}
+
+.conversation_widget .textview-button:active,
+.conversation_widget .textview-button:hover:active,
+.conversation_widget .textview-button:focus:active {
+  background-color: lighter (@callbutton-selected);
+  background-image: none;
+}
+
+.conversation_widget .textview-button:selected,
+.conversation_widget .textview-button:hover {
+  background-color: @callbutton-selected;
+  background-image: none;
+  border-image: none;
+}
+
+.conversation_widget .textview-button {
+  background-color: @callbutton-color;
+  background-image: none;
+  border-image: none;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 7px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border: none;
+}
+
+/* second button*/
+.conversation_widget .textview-button+.textview-button {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 7px;
 }
 
 /* chat list */
@@ -293,17 +333,23 @@
 @define-color cl-background #f1f2f2;
 
 
-
 .conversation_widget .scrollbar {
-  background-color: @cl-background;
+  background-color: alpha(white, 0);
+  background-image: none;
+  border: none;
+  padding: 5px;
 }
 
-.conversation_widget .scrollbar.slider {
-  background-color: #bbb;
+.conversation_widget .slider:hover,
+.conversation_widget .slider:active {
+  background-color: darker(#d1d1d1);
 }
 
-.conversation_widget .scrollbar.slider:prelight {
-  background-color: #939598;
+.conversation_widget .slider {
+  background-color: #d1d1d1;
+  background-image: none;
+  border: 0px solid black;
+  border-radius: 7px;
 }
 
 .message_entry .own_name {

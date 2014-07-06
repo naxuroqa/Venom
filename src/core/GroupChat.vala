@@ -42,18 +42,18 @@ namespace Venom {
     }
 
     public string get_name_string() {
-      return "Groupchat #%i".printf(group_id);
+      return local_name == "" ? _("Groupchat #%i").printf(group_id) : Markup.escape_text(local_name);
     }
     public string get_name_string_with_hyperlinks() {
       return get_name_string();
     }
     public string get_status_string() {
       if(peer_count > 1) {
-        return "%i people connected".printf(peer_count);
+        return _("%i people connected").printf(peer_count);
       } else if(peer_count > 0) {
-        return "%i person connected".printf(peer_count);
+        return _("%i person connected").printf(peer_count);
       } else {
-        return "no one connected";
+        return _("no one connected");
       }
     }
     public string get_status_string_with_hyperlinks() {

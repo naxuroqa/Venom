@@ -51,7 +51,7 @@ namespace Venom {
       File path = File.new_for_path(pathname);
       if(!path.query_exists()) {
         DirUtils.create_with_parents(pathname, mode);
-        stdout.printf("created directory %s\n", pathname);
+        Logger.log(LogLevel.INFO, "created directory " + pathname);
       }
     }
 
@@ -93,7 +93,7 @@ namespace Venom {
         if (u != (unichar) (-1)) {
           sb.append_unichar(u);
         } else {
-          stdout.printf("Invalid UTF-8 character detected\n");
+          Logger.log(LogLevel.WARNING, "Invalid UTF-8 character detected");
         }
       }
       return sb.str;
@@ -120,7 +120,7 @@ namespace Venom {
       try {
         ret = Tools.uri_regex.replace(escaped_text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
 		  } catch (GLib.RegexError e) {
-			  stderr.printf("Error when doing uri markup: %s", e.message);
+		    Logger.log(LogLevel.ERROR, "Error when doing uri markup: " + e.message);
 			  return text;
 		  }
 		  return ret;
@@ -129,23 +129,23 @@ namespace Venom {
     public static string friend_add_error_to_string(Tox.FriendAddError friend_add_error) {
       switch(friend_add_error) {
         case Tox.FriendAddError.TOOLONG:
-          return "Message too long";
+          return _("Message too long");
         case Tox.FriendAddError.NOMESSAGE:
-          return "No message included";
+          return _("No message included");
         case Tox.FriendAddError.OWNKEY:
-          return "Can't send to own key";
+          return _("Can't send to own key");
         case Tox.FriendAddError.ALREADYSENT:
-          return "Friend request already sent";
+          return _("Friend request already sent");
         case Tox.FriendAddError.UNKNOWN:
-          return "Unknown error";
+          return _("Unknown error");
         case Tox.FriendAddError.BADCHECKSUM:
-          return "Bad checksum";
+          return _("Bad checksum");
         case Tox.FriendAddError.SETNEWNOSPAM:
-          return "Set new nospam";
+          return _("Set new nospam");
         case Tox.FriendAddError.NOMEM:
-          return "Out of memory";
+          return _("Out of memory");
         default:
-          return "Friend request successfully sent";
+          return _("Friend request successfully sent");
       }
     }
     private static GLib.Regex _action_regex;
@@ -155,7 +155,7 @@ namespace Venom {
           try {
             _action_regex = new GLib.Regex("^/(?P<action_name>\\S+)(\\s+(?P<action_string>.+))?$");
           } catch (GLib.RegexError e) {
-            stderr.printf("Can't create action regex: %s.\n", e.message);
+            Logger.log(LogLevel.ERROR, "Can't create action regex: " + e.message);
           }
         }
         return _action_regex;
@@ -166,9 +166,9 @@ namespace Venom {
       get {
         if(_uri_regex == null) {
           try {
-          _uri_regex = new GLib.Regex("(?<u>[a-z]\\S*://\\S*)");
+          _uri_regex = new GLib.Regex("(?<u>[a-z]+://\\S*)");
           } catch (GLib.RegexError e) {
-            stderr.printf("Can't create action regex: %s.\n", e.message);
+            Logger.log(LogLevel.ERROR, "Can't create uri regex: " + e.message);
           }
         }
         return _uri_regex;

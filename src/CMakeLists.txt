@@ -38,10 +38,26 @@ PKG_CHECK_MODULES_FULLPATH(NOTIFY REQUIRED libnotify>=0.7.3)
 
 # use djbdns as substitute for missing dns_txt in glib 2.32
 IF(${GLIB_VERSION_MINOR} LESS 34)
-  MESSAGE("GLIB < 2.34 detected, using djbdns for dns resolution")
+  SET(ENABLE_DJBDNS ON)
+ENDIF()
+
+IF(${ENABLE_QR_ENCODE})
+  PKG_CHECK_MODULES_FULLPATH(QR_ENCODE REQUIRED libqrencode>=3.1.1)
+  SET(VENOM_CFLAGS_OPT ${VENOM_CFLAGS_OPT} ${QR_ENCODE_CFLAGS} ${QR_ENCODE_CFLAGS_OTHER})
+  SET(VENOM_VALA_FLAGS_OPT ${VENOM_VALA_FLAGS_OPT} -D ENABLE_QR_ENCODE)
+  SET(VENOM_LIBRARIES_OPT ${VENOM_LIBRARIES_OPT} ${QR_ENCODE_LIBRARIES})
+ENDIF()
+
+IF(${ENABLE_DJBDNS})
   INCLUDE(FindDJBDns)
-  INCLUDE_DIRECTORIES(${DJBDNS_INCLUDE_DIRS})
-  MESSAGE("DJBDNS_LIBRARIES: ${DJBDNS_LIBRARIES}")
+  SET(VENOM_CFLAGS_OPT ${VENOM_CFLAGS_OPT} ${DJBDNS_CFLAGS})
+  SET(VENOM_VALA_FLAGS_OPT ${VENOM_VALA_FLAGS_OPT} -D ENABLE_DJBDNS)
+  SET(VENOM_LIBRARIES_OPT ${VENOM_LIBRARIES_OPT} ${DJBDNS_LIBRARIES})
+ENDIF()
+
+IF(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "DEBUG")
+  MESSAGE("Debug build, setting debug flags")
+  SET(VENOM_VALA_FLAGS_OPT ${VENOM_VALA_FLAGS_OPT} -D DEBUG)
 ENDIF()
 
 # Set a variable defining our minimal version of glib
@@ -68,8 +84,10 @@ IF(LINK_GIO_STATIC)
   ENDIF(WIN32)
 ENDIF(LINK_GIO_STATIC)
 
+SET(GETTEXT_CFLAGS "-DGETTEXT_PACKAGE=\\\"${GETTEXT_PACKAGE}\\\"")
+
 # add cflags and cflags_other of all dependencies to our cflags
-SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
+SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GETTEXT_CFLAGS}
                   ${GTK_CFLAGS}    ${GTK_CFLAGS_OTHER}
                   ${GIO_CFLAGS}    ${GIO_CFLAGS_OTHER}
                   ${GLIB_CFLAGS}   ${GLIB_CFLAGS_OTHER}
@@ -77,6 +95,7 @@ SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
                   ${JSON_CFLAGS}   ${JSON_CFLAGS_OTHER}
                   ${TOX_CFLAGS}    ${TOX_CFLAGS_OTHER}
                   ${NOTIFY_CFLAGS} ${NOTIFY_CFLAGS_OTHER}
+                  ${VENOM_CFLAGS_OPT}
 )
 
 # since pkg_check_modules returns semicolon
@@ -92,9 +111,11 @@ SET( VENOM_SRC
   core/Contact.vala
   core/ContactStorage.vala
   core/DhtNode.vala
+  core/DhtNodeStorage.vala
   core/FileTransfer.vala
   core/GroupChat.vala
   core/GroupChatContact.vala
+  core/Logger.vala
   core/MessageLog.vala
   core/Message.vala
   core/ResourceFactory.vala
@@ -115,6 +136,7 @@ SET( VENOM_SRC
   ui/ConversationTextView.vala
   ui/ConversationView.vala
   ui/ConversationWidget.vala
+  ui/EditableLabel.vala
   ui/FileTransferChatEntry.vala
   ui/GroupConversationSidebar.vala
   ui/GroupConversationWidget.vala
@@ -126,24 +148,39 @@ SET( VENOM_SRC
   ui/SettingsWindow.vala
 )
 
+SET( VENOM_GLADE
+  src/ui/add_contact_dialog.ui
+  src/ui/chat_filetransfer.ui
+  src/ui/contact_list.ui
+  src/ui/conversation_window.ui
+  src/ui/settings_window.ui
+  src/ui/user_info_window.ui
+)
+
+IF (XGETTEXT_FOUND)
+  # create new pot file with "make pot_file"
+  GETTEXT_CREATE_POT(${GETTEXT_PACKAGE}.pot OPTION ${XGETTEXT_OPTIONS} SRC ${VENOM_SRC} GLADE ${VENOM_GLADE})
+ENDIF()
+
 # precompile all vala code to c via valac
 VALA_PRECOMPILE( VALA_C_VENOM
     ${VENOM_SRC}
   PACKAGES
-    gtk+-3.0
-    glib-2.0
-    gio-2.0
-    json-glib-1.0
-    libnotify
-    sqlite3
-    tox-1.0
     config
     djbdns
+    gio-2.0
+    glib-2.0
+    gtk+-3.0
+    json-glib-1.0
+    libnotify
+    libqrencode
+    sqlite3
+    tox-1.0
   OPTIONS
     --target-glib=${TARGET_GLIB}
     --thread
     --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
-    ${VENOM_VALA_FLAGS_EXTRA}
+    ${VENOM_VALA_FLAGS_OPT}
   CUSTOM_VAPIS
   GENERATE_VAPI
   GENERATE_HEADER
@@ -165,7 +202,7 @@ ADD_EXECUTABLE( venom
 
 # link the main executable to our dependencies
 TARGET_LINK_LIBRARIES( venom
-                       ${DJBDNS_LIBRARIES}
+                       ${VENOM_LIBRARIES_OPT}
                        ${TOX_LIBRARIES}
                        ${SQLITE_LIBRARIES}
                        ${GIO_LIBRARIES}
@@ -180,4 +217,18 @@ INSTALL(TARGETS venom RUNTIME DESTINATION ${CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINA
 # add tests
 ADD_SUBDIRECTORY(testing)
 
+# Summary of optional features
+MESSAGE("Optional features / dependencies:")
+SET(DJBDNS_DESCRIPTION "ENABLE_DJBDNS - resolve tox dns ids using djbdns (required for glib <= 2.32)")
+IF(${ENABLE_DJBDNS})
+  MESSAGE("   [X] ${DJBDNS_DESCRIPTION}")
+ELSE()
+  MESSAGE("   [ ] ${DJBDNS_DESCRIPTION}")
+ENDIF()
+SET(QR_ENCODE_DESCRIPTION "ENABLE_QR_ENCODE - show QR codes (requires libqrencode)")
+IF(${ENABLE_QR_ENCODE})
+  MESSAGE("   [X] ${QR_ENCODE_DESCRIPTION}")
+ELSE()
+  MESSAGE("   [ ] ${QR_ENCODE_DESCRIPTION}")
+ENDIF()
 # vim:set ts=2 sw=2 et:

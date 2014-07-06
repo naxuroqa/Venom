@@ -35,6 +35,7 @@ namespace Venom {
     private Gtk.Box conversation_list;
     private Gtk.Label is_typing_label;
     private IMessage last_message = null;
+    private int last_width;
 
     public void on_typing_changed(bool status) {
       is_typing_label.visible = status;
@@ -51,28 +52,56 @@ namespace Venom {
       is_typing_label.visible = false;
       is_typing_label.set_use_markup(true);
       this.notify["is-typing-string"].connect(() => {
-        is_typing_label.set_markup("<i>" + is_typing_string + "</i>");
+        is_typing_label.set_markup(_("<i>%s</i>").printf(is_typing_string));
       });
       conversation_list.pack_end(is_typing_label, false, false);
     }
 
     public void add_filetransfer(FileTransferChatEntry entry) {
+      entry.filetransfer_completed.connect((entry, ft) => {
+        if(!ft.isfile) {
+          try {
+            Gdk.PixbufLoader loader = new Gdk.PixbufLoader();
+            loader.write(ft.data);
+            loader.close();
+
+            int position;
+            conversation_list.child_get(entry, "position", out position);
+
+            Gtk.Image image = new Gtk.Image.from_pixbuf(loader.get_pixbuf());
+            conversation_list.pack_start(image, false, false, 0);
+            conversation_list.reorder_child(image, position + 1);
+            image.set_alignment(0, 0);
+            image.set_visible(true);
+
+          } catch (Error error) {
+            Logger.log(LogLevel.ERROR, "Adding filetransfer failed: " + error.message);
+          }
+        }
+      });
+
       conversation_list.pack_start(entry, false, false, 0);
       entry.set_visible(true);
+
+      last_message = null;
     }
 
     public void add_message(IMessage message) {
+      bool same_sender = false;
       ChatMessage cm;
+
       if(last_message != null && last_message.compare_sender(message)) {
-        cm = new ChatMessage(message, short_names, true);
-      } else {
-        var sep = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-        conversation_list.pack_start(sep, false, false);
-        sep.show_all();
-        cm = new ChatMessage(message, short_names, false);
+        same_sender = true;
       }
+
+      cm = new ChatMessage(message, short_names, same_sender, last_width);
+
       conversation_list.pack_start(cm, false, false);
       cm.show_all();
+
+      if(!same_sender) {
+        last_width = cm.get_name_label_width();
+      }
       last_message = message;
     }
     public void register_search_entry(Gtk.Entry entry) {

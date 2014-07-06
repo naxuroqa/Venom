@@ -165,9 +165,8 @@ namespace Venom {
 
     private void on_preferences(GLib.SimpleAction action, GLib.Variant? parameter) {
       if(settings_window == null) {
-        settings_window = new SettingsWindow();
+        settings_window = new SettingsWindow(contact_list_window);
         settings_window.destroy.connect( () => {settings_window = null;});
-        settings_window.transient_for = contact_list_window;
         settings_window.show_all();
       } else {
         settings_window.present();
@@ -180,7 +179,7 @@ namespace Venom {
           Gtk.DialogFlags.MODAL,
           Gtk.MessageType.INFO,
           Gtk.ButtonsType.OK,
-          "There is currently no help available"
+          _("There is currently no help available")
       );
       dialog.transient_for = contact_list_window;
       dialog.run();

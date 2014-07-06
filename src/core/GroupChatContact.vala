@@ -29,7 +29,7 @@ namespace Venom {
       this.name = name;
     }
 
-    public string get_status_string() { return "Online"; }
+    public string get_status_string() { return _("Online"); }
     public string get_status_string_with_hyperlinks() { return get_status_string(); }
     public string get_status_string_alt() { return get_status_string(); }
     public string get_last_seen_string() { return ""; }

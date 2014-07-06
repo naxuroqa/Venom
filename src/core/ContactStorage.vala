@@ -62,7 +62,7 @@ namespace Venom {
       try {
         SqliteTools.put_text(select_statement, TABLE_KEY, key);
       } catch (SqliteStatementError e) {
-        stderr.printf("Error retrieving contact from sqlite database: %s\n", e.message);
+        Logger.log(LogLevel.ERROR, "Error retrieving contact from sqlite database: " + e.message);
         return;
       }
 
@@ -85,7 +85,7 @@ namespace Venom {
         SqliteTools.put_int (insert_statement,  TABLE_ISBLOCKED, c.is_blocked ? 1 : 0);
         SqliteTools.put_text(insert_statement,  TABLE_GROUP,     c.group);
       } catch (SqliteStatementError e) {
-        stderr.printf("Error writing contact to sqlite database: %s\n", e.message);
+        Logger.log(LogLevel.ERROR, "Error writing contact to sqlite database: " + e.message);
         return;
       }
 
@@ -100,17 +100,17 @@ namespace Venom {
 
       //create table and index if needed
       if(db.exec (QUERY_TABLE_CONTACTS, null, out errmsg) != Sqlite.OK) {
-        throw new SqliteDbError.QUERY("Error creating contacts table: %s\n", errmsg);
+        throw new SqliteDbError.QUERY(_("Error creating contacts table: %s\n"), errmsg);
       }
 
       //prepare insert statement for adding new history messages
       if(db.prepare_v2 (STATEMENT_INSERT_CONTACTS, STATEMENT_INSERT_CONTACTS.length, out insert_statement) != Sqlite.OK) {
-        throw new SqliteDbError.QUERY("Error creating contacts insert statement: %d: %s\n", db.errcode (), db.errmsg());
+        throw new SqliteDbError.QUERY(_("Error creating contacts insert statement: %d: %s\n"), db.errcode (), db.errmsg());
       }
 
       //prepare select statement to get history. Will execute on indexed data
       if(db.prepare_v2 (STATEMENT_SELECT_CONTACTS, STATEMENT_SELECT_CONTACTS.length, out select_statement) != Sqlite.OK) {
-        throw new SqliteDbError.QUERY("Error creating contacts select statement: %d: %s\n", db.errcode (), db.errmsg());
+        throw new SqliteDbError.QUERY(_("Error creating contacts select statement: %d: %s\n"), db.errcode (), db.errmsg());
       }
     }
   }

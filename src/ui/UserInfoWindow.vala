@@ -51,6 +51,7 @@ namespace Venom {
     private Gtk.Entry entry_statusmessage;
     private Gtk.Image image_userimage;
     private Gtk.Label label_id;
+    private Gtk.Image image_qr_code;
 
     public UserInfoWindow() {
       init_widgets();
@@ -61,7 +62,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/user_info_window.ui");
       } catch (GLib.Error e) {
-        stderr.printf("Loading user info window failed!\n");
+        Logger.log(LogLevel.FATAL, "Loading user info window failed: " + e.message);
       }
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.get_content_area().add(box);
@@ -70,15 +71,19 @@ namespace Venom {
       entry_statusmessage = builder.get_object("entry_statusmessage") as Gtk.Entry;
       image_userimage = builder.get_object("image_userimage") as Gtk.Image;
       label_id = builder.get_object("label_id") as Gtk.Label;
+      image_qr_code = builder.get_object("image_qr_code") as Gtk.Image;
+      Gtk.Button button_copy_id = builder.get_object("button_copy_id") as Gtk.Button;
 
       entry_username.changed.connect(on_entry_changed);
       entry_statusmessage.changed.connect(on_entry_changed);
+      button_copy_id.clicked.connect(() => {application.activate_action("copy-id",  null);});
+      notify["user-id"].connect(() => {on_id_changed();});
 
       this.add_button("_Cancel", Gtk.ResponseType.CANCEL);
       button_apply = this.add_button("_Apply", Gtk.ResponseType.APPLY);
 
       this.set_default_response(Gtk.ResponseType.APPLY);
-      this.title = "Edit user information";
+      this.title = _("Edit user information");
       // set dialog to minimal size
       set_default_size(0, 0);
     }
@@ -86,5 +91,13 @@ namespace Venom {
     public void on_entry_changed() {
       button_apply.sensitive = (user_name != "" && user_status != "");
     }
+
+    public void on_id_changed() {
+#if ENABLE_QR_ENCODE
+      image_qr_code.pixbuf = UITools.qr_encode("tox://" + user_id);
+      image_qr_code.show();
+#endif
+    }
+
   }
 }

@@ -76,14 +76,14 @@ namespace Venom {
       );
     """;
 
-    public SqliteMessageLog(Sqlite.Database db) {
+    public SqliteMessageLog(Sqlite.Database db) throws SqliteDbError {
       this.db = db;
       init_db ();
-      stdout.printf ("SQLite database created.\n");
+      Logger.log(LogLevel.DEBUG, "SQLite database created.");
     }
     
     ~LocalStorage() {
-      stdout.printf ("SQLite database closed.\n");
+      Logger.log(LogLevel.DEBUG, "SQLite database closed.");
     }
 
     public void connect_to(ToxSession session) {
@@ -115,7 +115,7 @@ namespace Venom {
         SqliteTools.put_int64(insert_statement, TABLE_TIME,    nowTime.to_unix());
         SqliteTools.put_int(insert_statement,   TABLE_SENDER,  issender ? 1 : 0);
       } catch (SqliteStatementError e) {
-        stderr.printf("Error writing message to sqlite database: %s\n", e.message);
+        Logger.log(LogLevel.ERROR, "Error writing message to sqlite database: " + e.message);
         return;
       }
 
@@ -132,7 +132,7 @@ namespace Venom {
         SqliteTools.put_text(select_statement , TABLE_CONTACT, cId);
         SqliteTools.put_int64(select_statement, TABLE_OLDEST,  earliestTime.to_unix()); 
       } catch (SqliteStatementError e) {
-        stderr.printf("Error retrieving logs from sqlite database: %s\n", e.message);
+        Logger.log(LogLevel.ERROR, "Error retrieving logs from sqlite database: " + e.message);
         return null;
       }
 
@@ -159,41 +159,31 @@ namespace Venom {
       //TODO
     }
 
-    private int init_db() {
-
+    private void init_db() throws SqliteDbError {
       string errmsg;
 
       //create table and index if needed
-      int ec = db.exec (QUERY_TABLE_HISTORY, null, out errmsg);
-      if (ec != Sqlite.OK) {
-        stderr.printf ("Error: %s\n", errmsg);
-        return -1;
+      if (db.exec (QUERY_TABLE_HISTORY, null, out errmsg) != Sqlite.OK) {
+        throw new SqliteDbError.QUERY(_("Error creating message log table: %s\n"), errmsg);
       }
 
       const string index_query = """
         CREATE UNIQUE INDEX IF NOT EXISTS main_index ON History (userHash, contactHash, timestamp);
       """;
 
-      ec = db.exec (index_query, null, out errmsg);
-      if (ec != Sqlite.OK) {
-        stderr.printf ("Error: %s\n", errmsg);
-        return -1;
+      if (db.exec (index_query, null, out errmsg) != Sqlite.OK) {
+        throw new SqliteDbError.QUERY(_("Error executing index query: %d: %s\n"), db.errcode (), errmsg);
       }
 
       //prepare insert statement for adding new history messages
-      ec = db.prepare_v2 (STATEMENT_INSERT_HISTORY, STATEMENT_INSERT_HISTORY.length, out insert_statement);
-      if (ec != Sqlite.OK) {
-        stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
-        return -1;
+      if (db.prepare_v2 (STATEMENT_INSERT_HISTORY, STATEMENT_INSERT_HISTORY.length, out insert_statement) != Sqlite.OK) {
+        throw new SqliteDbError.QUERY(_("Error creating message insert statement: %d: %s\n"), db.errcode (), db.errmsg());
       }
 
       //prepare select statement to get history. Will execute on indexed data
-      ec = db.prepare_v2 (STATEMENT_SELECT_HISTORY, STATEMENT_SELECT_HISTORY.length, out select_statement);
-      if (ec != Sqlite.OK) {
-        stderr.printf ("Error: %d: %s\n", db.errcode (), db.errmsg ());
-        return -1;
+      if (db.prepare_v2 (STATEMENT_SELECT_HISTORY, STATEMENT_SELECT_HISTORY.length, out select_statement) != Sqlite.OK) {
+        throw new SqliteDbError.QUERY(_("Error creating message select statement: %d: %s\n"), db.errcode (), db.errmsg());
       }
-      return 0;
     }
 
 

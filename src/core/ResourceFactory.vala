@@ -38,6 +38,9 @@ namespace Venom {
       string pixmaps_prefix = "/org/gtk/venom/pixmaps/";
       string theme_folder = Path.build_filename(Tools.find_data_dir(), "theme");
 
+      ok = load_image_from_resource(pixmaps_prefix + "ok.png");
+      cancel = load_image_from_resource(pixmaps_prefix + "cancel.png");
+
       away = load_image_from_resource(pixmaps_prefix + "away.png");
       away_glow = load_image_from_resource(pixmaps_prefix + "away_glow.png");
       busy = load_image_from_resource(pixmaps_prefix + "busy.png");
@@ -49,11 +52,15 @@ namespace Venom {
 
       call = load_image_from_resource(pixmaps_prefix + "call.png");
       call_video = load_image_from_resource(pixmaps_prefix + "call_video.png");
+      send = load_image_from_resource(pixmaps_prefix + "send.png");
+
       send_file = load_image_from_resource(pixmaps_prefix + "send_file.png");
+      smiley = load_image_from_resource(pixmaps_prefix + "smiley.png");
 
       add = load_image_from_resource(pixmaps_prefix + "add.png");
       groupchat = load_image_from_resource(pixmaps_prefix + "groupchat.png");
       settings = load_image_from_resource(pixmaps_prefix + "settings.png");
+      filetransfer = load_image_from_resource(pixmaps_prefix + "filetransfer.png");
 
       default_contact = load_image_from_resource(pixmaps_prefix + "default_contact.png");
       default_groupchat = load_image_from_resource(pixmaps_prefix + "default_groupchat.png");
@@ -67,11 +74,12 @@ namespace Venom {
       db_filename = Path.build_filename(tox_config_dir, "tox.db");
       config_filename = Path.build_filename(tox_config_dir, "config.json");
 
-      default_add_contact_message = "Please let me add you to my contact list.";
-      default_username = "Tox User";
-      default_statusmessage = "Toxing on Venom v.%s".printf(Config.VERSION);
+      default_username = _("Tox User");
+      default_statusmessage = _("Toxing on Venom v.%s").printf(Config.VERSION);
     }
 
+    public Gdk.Pixbuf ok {get; private set;}
+    public Gdk.Pixbuf cancel {get; private set;}
 
     public Gdk.Pixbuf away {get; private set;}
     public Gdk.Pixbuf away_glow {get; private set;}
@@ -84,11 +92,15 @@ namespace Venom {
 
     public Gdk.Pixbuf call {get; private set;}
     public Gdk.Pixbuf call_video {get; private set;}
+    public Gdk.Pixbuf send {get; private set;}
+
     public Gdk.Pixbuf send_file {get; private set;}
+    public Gdk.Pixbuf smiley {get; private set;}
 
     public Gdk.Pixbuf add {get; private set;}
     public Gdk.Pixbuf groupchat {get; private set;}
     public Gdk.Pixbuf settings {get; private set;}
+    public Gdk.Pixbuf filetransfer {get; private set;}
 
     public Gdk.Pixbuf default_contact {get; private set;}
     public Gdk.Pixbuf default_groupchat {get; private set;}
@@ -100,7 +112,6 @@ namespace Venom {
     public string data_filename {get; set;}
     public string db_filename {get; set;}
     public string config_filename {get; set;}
-    public string default_add_contact_message {get; private set;}
     public string default_username {get; private set;}
     public string default_statusmessage {get; private set;}
 
@@ -112,7 +123,7 @@ namespace Venom {
       try {
         buf = new Gdk.Pixbuf.from_resource( resourcename );
       } catch (Error e) {
-        stderr.printf("Error while loading image from \"%s\":%s\n", resourcename, e.message );
+        Logger.log(LogLevel.ERROR, "Error while loading image from \"" + resourcename + "\": " + e.message);
       }
       return buf;
     }
