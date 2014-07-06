@@ -37,18 +37,6 @@ namespace Venom {
         application_id: "im.tox.venom",
         flags: GLib.ApplicationFlags.HANDLES_OPEN
       );
-      if(Settings.instance.enable_tray){
-        tray_icon = new Gtk.StatusIcon.from_pixbuf(get_contact_list_window().get_icon());
-        tray_icon.set_tooltip_text ("Venom");
-        tray_icon.set_visible(true);
-        tray_icon.activate.connect(()=>{
-          if(contact_list_window == null){
-            this.activate();
-          } else {
-            get_contact_list_window().show();
-          }
-        });
-      }
     }
 
     ~Client() {
@@ -85,6 +73,18 @@ namespace Venom {
         menu.append_section(null, menu_common);
 
         set_app_menu(menu);
+
+        //tray_icon = new Gtk.StatusIcon.from_pixbuf(get_contact_list_window().get_icon());
+        tray_icon = new Gtk.StatusIcon.from_icon_name("venom");
+        tray_icon.set_tooltip_text ("Venom");
+        Settings.instance.bind_property(Settings.TRAY_KEY, tray_icon, "visible", BindingFlags.SYNC_CREATE);
+        tray_icon.activate.connect(()=>{
+          if(contact_list_window == null){
+            this.activate();
+          } else {
+            get_contact_list_window().show();
+          }
+        });
       }
       return contact_list_window;
     }
@@ -97,7 +97,7 @@ namespace Venom {
     protected override void activate() {
       hold(); 
       Notify.init ("Venom");
-      var window =get_contact_list_window();
+      var window = get_contact_list_window();
       window.incoming_message.connect((m)=>{
         if (!get_contact_list_window().has_toplevel_focus){
           try {
