@@ -25,6 +25,7 @@ namespace Venom {
     public const string MESSAGE_LOGGING_KEY = "enable-logging";
     public const string DAYS_TO_LOG_KEY = "days-to-log";
     public const string URGENCY_NOTIFICATION_KEY = "enable-urgency-notification";
+    public const string TRAY_KEY = "enable-tray";
     public const string DEC_BINARY_PREFIX_KEY = "dec-binary-prefix";
     public const string SEND_TYPING_STATUS_KEY = "send-typing-status";
     public const string SHOW_TYPING_STATUS_KEY = "show-typing-status";
