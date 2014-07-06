@@ -20,6 +20,7 @@
 SET(TRANSLATIONS
   de
   it
+  ru
 )
 
 IF (XGETTEXT_FOUND)
