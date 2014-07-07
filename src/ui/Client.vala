@@ -94,60 +94,55 @@ namespace Venom {
       base.startup();
     }
 
+    public void show_notification(string summary, string? body, Gdk.Pixbuf image) {
+      if(get_contact_list_window().is_active) {
+        return;
+      }
+      try {
+        Notify.Notification notification = new Notify.Notification(summary, body, null);
+        notification.set_image_from_pixbuf(image);
+        notification.show();
+      } catch (Error e) {
+        Logger.log(LogLevel.ERROR, _("Error showing notification: ") + e.message);
+      }
+    }
+
     protected override void activate() {
       hold(); 
       Notify.init ("Venom");
       var window = get_contact_list_window();
       window.incoming_message.connect((m)=>{
-        if (!get_contact_list_window().has_toplevel_focus){
-          try {
-            var notification = new Notify.Notification (m.get_sender_plain() + " says:", m.get_message_plain(), null);
-            notification.set_image_from_pixbuf(m.from.image);
-            notification.show ();
-          } catch (Error e) {
-        	  error ("Error: %s", e.message);
-          }
-        }
-      
+        show_notification(
+          m.get_sender_plain() + _(" says:"),
+          m.get_message_plain(),
+          m.from.image ?? ResourceFactory.instance.default_contact
+        );
       });
+
       window.incoming_group_message.connect((m)=>{
-        if (!get_contact_list_window().has_toplevel_focus){
-          try {
-            var notification = new Notify.Notification (m.get_sender_plain() + " in " + (m.from.local_name==""? m.from.local_name : "Groupchat") + " says:", m.get_message_plain(), null);
-            notification.set_image_from_pixbuf(m.from.image);
-            notification.show ();
-          } catch (Error e) {
-        	  error ("Error: %s", e.message);
-          }
-          
-          
-        }
+        show_notification(
+          m.from_contact.get_name_string() + _(" in ") + m.from.get_name_string() + _(" says:"),
+          m.get_message_plain(),
+          m.from.image ?? ResourceFactory.instance.default_groupchat
+        );
       });
       
       window.incoming_action.connect((m)=>{
-        if (!get_contact_list_window().has_toplevel_focus){
-         try {
-            var notification = new Notify.Notification (m.from.name + ": ", m.get_message_plain(), null);
-            notification.set_image_from_pixbuf(m.from.image);;
-            notification.show ();
-          } catch (Error e) {
-          	error ("Error: %s", e.message);
-          }
-        }
-      
+        show_notification(
+          m.from.get_name_string() + _(":"),
+          m.get_message_plain(),
+          m.from.image ?? ResourceFactory.instance.default_contact
+        );
       });
+
       window.incoming_group_action.connect((m)=>{
-        if (!get_contact_list_window().has_toplevel_focus){
-         try {
-            var notification = new Notify.Notification (m.from.local_name + ": ", m.get_message_plain(), null);
-            notification.set_image_from_pixbuf(m.from.image);
-            notification.show ();
-          } catch (Error e) {
-          	error ("Error: %s", e.message);
-          }
-        }
-      
+        show_notification(
+          m.from_contact.get_name_string() + _(" in ") + m.from.get_name_string() + _(":"),
+          m.get_message_plain(),
+          m.from.image ?? ResourceFactory.instance.default_groupchat
+        );
       });
+
       window.present();
       release();
     }
