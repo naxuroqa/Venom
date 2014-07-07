@@ -26,6 +26,7 @@ namespace Venom {
     public const string DAYS_TO_LOG_KEY = "days-to-log";
     public const string URGENCY_NOTIFICATION_KEY = "enable-urgency-notification";
     public const string TRAY_KEY = "enable-tray";
+    public const string NOTIFY_KEY = "enable-notify";
     public const string DEC_BINARY_PREFIX_KEY = "dec-binary-prefix";
     public const string SEND_TYPING_STATUS_KEY = "send-typing-status";
     public const string SHOW_TYPING_STATUS_KEY = "show-typing-status";
@@ -42,7 +43,8 @@ namespace Venom {
     public int    window_width                { get; set; default = 600;       }
     public int    window_height               { get; set; default = 600;       }
     public string default_host                { get; set; default = "toxme.se";}
-    public bool   enable_tray                 { get; set; default = false;}
+    public bool   enable_tray                 { get; set; default = false;     }
+    public bool   enable_notify               { get; set; default = false;     }
 
     private static Settings? _instance;
     public static Settings instance {

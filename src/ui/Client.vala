@@ -104,7 +104,7 @@ namespace Venom {
     }
 
     private void show_notification_for_message(IMessage m) {
-      if(get_contact_list_window().is_active) {
+      if(get_contact_list_window().is_active || !Settings.instance.enable_notify) {
         return;
       }
       try {
