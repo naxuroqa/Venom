@@ -29,23 +29,28 @@ namespace Venom {
     public abstract MessageDirection message_direction {get; protected set;}
     public abstract bool important {get; set;}
     public abstract bool is_action {get; set;}
-    
+
     /*
      *  Get plain sender string
      */
     public abstract string get_sender_plain();
-    
+
     /*
      *  Get plain message string
      */
     public abstract string get_message_plain();
-    
+
     /*
      *  Get plain time string
      */
     public virtual string get_time_plain() {
       return timestamp.format(_("%R:%S"));
     }
+
+    /*
+     *  Create a notification from message content
+     */
+    public abstract Notify.Notification create_notification();
 
     /*
      *  Compare this senders of two messages
@@ -85,6 +90,15 @@ namespace Venom {
     public virtual string get_message_plain() {
       return message;
     }
+    public virtual Notify.Notification create_notification() {
+      Notify.Notification notification = new Notify.Notification(
+        get_sender_plain() + _(" says:"),
+        get_message_plain(),
+        null
+      );
+      notification.set_image_from_pixbuf(from.image ?? ResourceFactory.instance.default_contact);
+      return notification;
+    }
     public bool compare_sender(IMessage to) {
       if(to is Message) {
         return (from == (to as Message).from);
@@ -114,6 +128,15 @@ namespace Venom {
     }
     public override string get_message_plain() {
       return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from.name : User.instance.name, message);
+    }
+    public override Notify.Notification create_notification() {
+      Notify.Notification notification = new Notify.Notification(
+        from.get_name_string() + ":",
+        get_message_plain(),
+        null
+      );
+      notification.set_image_from_pixbuf(from.image ?? ResourceFactory.instance.default_contact);
+      return notification;
     }
   }
   public class GroupMessage : IMessage, GLib.Object {
@@ -155,6 +178,15 @@ namespace Venom {
     public virtual string get_message_plain() {
       return message;
     }
+    public virtual Notify.Notification create_notification() {
+      Notify.Notification notification = new Notify.Notification(
+        from_contact.get_name_string() + _(" in ") + from.get_name_string() + _(" says:"),
+        get_message_plain(),
+        null
+      );
+      notification.set_image_from_pixbuf(from.image ?? ResourceFactory.instance.default_groupchat);
+      return notification;
+    }
     public bool compare_sender(IMessage to) {
       if(to is GroupMessage) {
         GroupMessage gm = to as GroupMessage;
@@ -193,6 +225,15 @@ namespace Venom {
         name_string = User.instance.name;
       }
       return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from_contact.name : User.instance.name, message);
+    }
+    public override Notify.Notification create_notification() {
+      Notify.Notification notification = new Notify.Notification(
+        from_contact.get_name_string() + _(" in ") + from.get_name_string() + ":",
+        get_message_plain(),
+        null
+      );
+      notification.set_image_from_pixbuf(from.image ?? ResourceFactory.instance.default_groupchat);
+      return notification;
     }
   }
 }

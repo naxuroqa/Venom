@@ -42,7 +42,7 @@ namespace Venom {
     public int    window_width                { get; set; default = 600;       }
     public int    window_height               { get; set; default = 600;       }
     public string default_host                { get; set; default = "toxme.se";}
-    public bool enable_tray                   { get; set; default = false;}
+    public bool   enable_tray                 { get; set; default = false;}
 
     private static Settings? _instance;
     public static Settings instance {

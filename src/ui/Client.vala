@@ -74,15 +74,24 @@ namespace Venom {
 
         set_app_menu(menu);
 
+        contact_list_window.delete_event.connect((e) => {
+          if(Settings.instance.enable_tray) {
+            contact_list_window.hide();
+            return true;
+          }
+          return false;
+        });
+
         //tray_icon = new Gtk.StatusIcon.from_pixbuf(get_contact_list_window().get_icon());
         tray_icon = new Gtk.StatusIcon.from_icon_name("venom");
         tray_icon.set_tooltip_text ("Venom");
         Settings.instance.bind_property(Settings.TRAY_KEY, tray_icon, "visible", BindingFlags.SYNC_CREATE);
         tray_icon.activate.connect(()=>{
-          if(contact_list_window == null){
-            this.activate();
+          var w = get_contact_list_window();
+          if(w.visible) {
+            w.hide();
           } else {
-            get_contact_list_window().show();
+            w.show();
           }
         });
       }
@@ -94,13 +103,12 @@ namespace Venom {
       base.startup();
     }
 
-    public void show_notification(string summary, string? body, Gdk.Pixbuf image) {
+    private void show_notification_for_message(IMessage m) {
       if(get_contact_list_window().is_active) {
         return;
       }
       try {
-        Notify.Notification notification = new Notify.Notification(summary, body, null);
-        notification.set_image_from_pixbuf(image);
+        Notify.Notification notification = m.create_notification();
         notification.show();
       } catch (Error e) {
         Logger.log(LogLevel.ERROR, _("Error showing notification: ") + e.message);
@@ -108,47 +116,18 @@ namespace Venom {
     }
 
     protected override void activate() {
-      hold(); 
+      hold();
+
       Notify.init ("Venom");
       var window = get_contact_list_window();
-      window.incoming_message.connect((m)=>{
-        show_notification(
-          m.get_sender_plain() + _(" says:"),
-          m.get_message_plain(),
-          m.from.image ?? ResourceFactory.instance.default_contact
-        );
-      });
-
-      window.incoming_group_message.connect((m)=>{
-        show_notification(
-          m.from_contact.get_name_string() + _(" in ") + m.from.get_name_string() + _(" says:"),
-          m.get_message_plain(),
-          m.from.image ?? ResourceFactory.instance.default_groupchat
-        );
-      });
-      
-      window.incoming_action.connect((m)=>{
-        show_notification(
-          m.from.get_name_string() + _(":"),
-          m.get_message_plain(),
-          m.from.image ?? ResourceFactory.instance.default_contact
-        );
-      });
-
-      window.incoming_group_action.connect((m)=>{
-        show_notification(
-          m.from_contact.get_name_string() + _(" in ") + m.from.get_name_string() + _(":"),
-          m.get_message_plain(),
-          m.from.image ?? ResourceFactory.instance.default_groupchat
-        );
-      });
+      window.incoming_message.connect(show_notification_for_message);
+      window.incoming_group_message.connect(show_notification_for_message);
+      window.incoming_action.connect(show_notification_for_message);
+      window.incoming_group_action.connect(show_notification_for_message);
 
       window.present();
       release();
     }
- 
-    
-    
 
     protected override void open(GLib.File[] files, string hint) {
       hold();
