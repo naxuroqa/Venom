@@ -130,7 +130,7 @@ namespace Venom {
         while(i < MAX_CALLS) {
 
 	      if(calls[i].active) { 
-            // WE NEED TO PULL A BUFFER FROM GSTREAMER AND THEN ENCODE IT
+
             if(buffer_out(buffer) <= 0) { 
               stdout.printf("Could not pull buffer with buffer_out()\n");	
             }else { 
@@ -138,13 +138,12 @@ namespace Venom {
 	          tox_session.send_audio(i, dest);  
             }
 
-            // WE NEED TO RECV AN AUDIO FRAME AND SEND IT TO GSTREAMER
             tox_session.receive_audio(i, perframe, buffer);
             buffer_in(buffer);
           }
 
           i++;
-          Thread.usleep(5000); //WHAT IS THIS FOR?
+          Thread.usleep(5000); //?
         }
       
         stdout.printf("stopping av thread...\n");
