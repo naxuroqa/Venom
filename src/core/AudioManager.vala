@@ -84,10 +84,10 @@ namespace Venom {
       audio_source_out.link(audio_sink_out);
 
       Gst.Caps caps = Gst.Caps.from_string(AUDIO_CAPS);
-/*
-      audio_source_in.set_caps(caps);    
-      audio_sink_out.set_caps(caps);
-*/
+      //stdout.printf("Caps is [%s]\n", caps.to_string());
+      audio_source_in.caps = caps;      
+      audio_sink_out.caps = caps;
+       
     }
 
     public void destroy_audio_pipeline() {
@@ -104,26 +104,51 @@ namespace Venom {
       stdout.printf("Pipeline set to playing\n");
     }
 
-    public void buffer_in() { 
- 
+    public void buffer_in(int16 inbuf[]) { 
+      Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(inbuf.length);
+      Memory.copy(gst_buf.data, inbuf, inbuf.length); 
+      audio_source_in.push_buffer(gst_buf);
+	  return;
     }
 
-    public void buffer_out() { 
-        uint8[] buf = new uint8[20];
-       
-        //THIS LINE IS NOT WORKING 
-        //Gst.Buffer gst_buf = new Gst.Buffer.wrapped(buf);
-
+    public int buffer_out(int16[] dest) { 
+      Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
+	  Memory.copy(dest, gst_buf.data, gst_buf.data.length);
+	  return dest.length;
     } 
+
 
     private int av_thread_fun() {
       stdout.printf("starting av thread...\n");
-      while(running) {
-        //do something here
+      int perframe = (int)(ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000;
+      int r=0;
+      int i=0;
+      int16[] buffer = new int16[perframe*2];
+      uint8[] dest = new uint8[perframe*2];
 
+      while(true) { 
+        while(i < MAX_CALLS) {
 
-        Thread.usleep(5000);
+	      if(calls[i].active) { 
+
+            if(buffer_out(buffer) <= 0) { 
+              stdout.printf("Could not pull buffer with buffer_out()\n");	
+            }else { 
+              tox_session.prepare_audio_frame(i, dest, buffer);  
+	          tox_session.send_audio(i, dest);  
+            }
+
+            tox_session.receive_audio(i, perframe, buffer);
+            buffer_in(buffer);
+          }
+
+          i++;
+          Thread.usleep(5000); //?
+        }
+
+        i = 0;
       }
+
       stdout.printf("stopping av thread...\n");
       return 0;
     }
