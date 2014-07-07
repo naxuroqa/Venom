@@ -145,10 +145,12 @@ namespace Venom {
           i++;
           Thread.usleep(5000); //?
         }
-      
-        stdout.printf("stopping av thread...\n");
-        return 0;
+
+        i = 0;
       }
+
+      stdout.printf("stopping av thread...\n");
+      return 0;
     }
 
     public void on_start_call(Contact c) {
