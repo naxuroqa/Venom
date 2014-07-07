@@ -69,6 +69,22 @@ namespace ToxAV {
     VIDEO
   }
 
+  [CCode (cname = "ToxAvCallState", has_type_id = false)]
+  public enum CallState {
+    [CCode (cname = "av_CallNonExistant")]
+    NON_EXISTANT,
+    [CCode (cname = "av_CallInviting")]
+    INVITING, /* when sending call invite */
+    [CCode (cname = "av_CallStarting")]
+    STARTING, /* when getting call invite */
+    [CCode (cname = "av_CallActive")]
+    ACTIVE,
+    [CCode (cname = "av_CallHold")]
+    HOLD,
+    [CCode (cname = "av_CallHanged")]
+    HANGED_UP
+  }
+
   /**
    * @brief Error indicators.
    *
@@ -78,27 +94,29 @@ namespace ToxAV {
     [CCode (cname = "ErrorNone")]
     NONE,
     [CCode (cname = "ErrorInternal")]
-    INTERNAL,
+    INTERNAL, /* Internal error */
     [CCode (cname = "ErrorAlreadyInCall")]
-    ALREADY_IN_CALL,
+    ALREADY_IN_CALL, /* Already has an active call */
     [CCode (cname = "ErrorNoCall")]
-    NO_CALL,
+    NO_CALL, /* Trying to perform call action while not in a call */
     [CCode (cname = "ErrorInvalidState")]
-    INVALID_STATE,
+    INVALID_STATE, /* Trying to perform call action while in invalid state*/
     [CCode (cname = "ErrorNoRtpSession")]
-    NO_RTP_SESSION,
+    NO_RTP_SESSION, /* Trying to perform rtp action on invalid session */
     [CCode (cname = "ErrorAudioPacketLost")]
-    AUDIO_PACKET_LOST,
+    AUDIO_PACKET_LOST, /* Indicating packet loss */
     [CCode (cname = "ErrorStartingAudioRtp")]
-    STARTING_AUDIO_RTP,
+    STARTING_AUDIO_RTP,  /* Error in toxav_prepare_transmission() */
     [CCode (cname = "ErrorStartingVideoRtp")]
-    STARTING_VIDEO_RTP,
+    STARTING_VIDEO_RTP,  /* Error in toxav_prepare_transmission() */
     [CCode (cname = "ErrorTerminatingAudioRtp")]
-    TERMINATING_AUDIO_RTP,
+    TERMINATING_AUDIO_RTP, /* Returned in toxav_kill_transmission() */
     [CCode (cname = "ErrorTerminatingVideoRtp")]
-    TERMINATING_VIDEO_RTP,
+    TERMINATING_VIDEO_RTP, /* Returned in toxav_kill_transmission() */
     [CCode (cname = "ErrorPacketTooLarge")]
-    PACKET_TOO_LARGE
+    PACKET_TOO_LARGE, /* Buffer exceeds size while encoding */
+    [CCode (cname = "ErrorInvalidCodecState")]
+    INVALID_CODEC_STATE /* Codec state not initialized */
   }
 
   /**
@@ -122,14 +140,15 @@ namespace ToxAV {
    */
   [CCode (cname = "ToxAvCodecSettings", destroy_function = "", cprefix = "", has_copy_function = false, has_type_id = false)]
   public struct CodecSettings {
-      uint32 video_bitrate; /* In bits/s */
-      uint16 video_width; /* In px */
-      uint16 video_height; /* In px */
+      uint32 video_bitrate; /* In kbits/s */
+      uint16 max_video_width; /* In px */
+      uint16 max_video_height; /* In px */
       
       uint32 audio_bitrate; /* In bits/s */
       uint16 audio_frame_duration; /* In ms */
       uint32 audio_sample_rate; /* In Hz */
       uint32 audio_channels;
+      uint32 audio_VAD_tolerance; /* In ms */
       
       uint32 jbuf_capacity; /* Size of jitter buffer */
   }
@@ -147,7 +166,7 @@ namespace ToxAV {
   //typedef void ( *ToxAVCallback ) ( void *arg );
   [CCode (cname = "ToxAVCallback", has_type_id = false)]
   public delegate void CallstateCallback(int32 call_index);
-  //FIXME
+
   [CCode (cname = "toxav_register_callstate_callback", has_type_id = false)]
   public static void register_callstate_callback ([CCode( delegate_target_pos = 3 )] CallstateCallback callback, CallbackID id);
 
@@ -362,6 +381,16 @@ namespace ToxAV {
     public AV_Error get_peer_id ( int32 call_index, int peer );
 
     /**
+     * @brief Get current call state
+     *
+     * @param av Handler
+     * @param call_index What call
+     * @return int
+     * @retval ToxAvCallState State id
+     */
+    public CallState get_call_state(int32 call_index);
+
+    /**
      * @brief Is certain capability supported
      * 
      * @param av Handler
@@ -400,6 +429,8 @@ namespace ToxAV {
     public Tox.Tox tox_handle {
       [CCode (cname = "toxav_get_tox")] get;
     }
+
+    public int has_activity(int32 call_index, ref int16 pcm, uint16 frame_size, float ref_energy);
   }
 }
 
