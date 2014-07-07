@@ -55,6 +55,6 @@ before_script:
 script:
   - mkdir build
   - cd build
-  - cmake -DDJBDNS_DIRECTORY="../djbdns-1.05" -DENABLE_QR_ENCODE=ON ..
+  - cmake -DDJBDNS_DIRECTORY="../djbdns-1.05" -DENABLE_QR_ENCODE=ON -DENABLE_LIBNOTIFY=ON ..
   - make -j3
   - sudo make install

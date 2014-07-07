@@ -55,8 +55,13 @@ ENDIF(ARCHITECTURE EQUAL 32)
 
 # optional features
 IF(${ENABLE_QR_ENCODE})
-  SET(DEBIAN_PACKAGE_DEPENDS_OPT ${DEBIAN_PACKAGE_DEPENDS_OPT} ", libqrencode3 (>=3.1.1)")
-  SET(RPM_PACKAGE_DEPENDS_OPT ${RPM_PACKAGE_DEPENDS_OPT} ", qrencode-libs >= 3.1.1")
+  SET(DEBIAN_PACKAGE_DEPENDS_OPT "${DEBIAN_PACKAGE_DEPENDS_OPT}, libqrencode3 (>=3.1.1)")
+  SET(RPM_PACKAGE_DEPENDS_OPT "${RPM_PACKAGE_DEPENDS_OPT}, qrencode-libs >= 3.1.1")
+ENDIF()
+
+IF(${ENABLE_LIBNOTIFY})
+  SET(DEBIAN_PACKAGE_DEPENDS_OPT "${DEBIAN_PACKAGE_DEPENDS_OPT}, libnotify4 (>= 0.7.3)")
+  SET(RPM_PACKAGE_DEPENDS_OPT "${RPM_PACKAGE_DEPENDS_OPT}, libnotify >= 0.7.3")
 ENDIF()
 
 # Basic settings
@@ -110,7 +115,7 @@ DeleteRegKey HKCR \\\"tox\\\"
 ")
 # .deb
 # libtoxcore ommitted, since we are most likely linking it statically
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS  "libgtk-3-0 (>= 3.4.1), libjson-glib-1.0-0 (>= 0.14.2), libsqlite3-0 (>= 3.7.9), libnotify4 (>= 0.7.3) ${DEBIAN_PACKAGE_DEPENDS_OPT}")
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS  "libgtk-3-0 (>= 3.4.1), libjson-glib-1.0-0 (>= 0.14.2), libsqlite3-0 (>= 3.7.9) ${DEBIAN_PACKAGE_DEPENDS_OPT}")
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION  "web")
 SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${VENOM_WEBSITE}")
@@ -118,7 +123,7 @@ SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${VENOM_WEBSITE}")
 # .rpm
 SET(CPACK_RPM_PACKAGE_LICENSE  "GPLv3")
 SET(CPACK_RPM_PACKAGE_GROUP    "Applications/Internet")
-SET(CPACK_RPM_PACKAGE_REQUIRES "gtk3 >= 3.4.1, json-glib >= 0.14.2, sqlite >= 3.7.9, libnotify >= 0.7.3 ${RPM_PACKAGE_DEPENDS_OPT}")
+SET(CPACK_RPM_PACKAGE_REQUIRES "gtk3 >= 3.4.1, json-glib >= 0.14.2, sqlite >= 3.7.9 ${RPM_PACKAGE_DEPENDS_OPT}")
 # Default: some cpack comment, overwrite if needed
 #SET(CPACK_RPM_CHANGELOG_FILE   "")
 SET(CPACK_RPM_PACKAGE_RELEASE  1)

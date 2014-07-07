@@ -25,6 +25,7 @@ Additionally to the tox build dependencies, you will need:
 | libsqlite3-dev   | >=3.7     |                |
 | libnotify-dev    | >=0.7.3   | optional, *nix |
 | libqrencode-dev  | >=3.1.1   | optional, *nix |
+| djbdns           | ?         | optional, *nix |
 
 
 Ubuntu >= 12.10 (Quantal Quetzal) / Linux Mint / Debian:

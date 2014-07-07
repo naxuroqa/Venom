@@ -53,7 +53,11 @@ namespace Venom {
       settings.bind_property(Settings.SHOW_TYPING_STATUS_KEY, builder.get_object("show_typing_checkbutton"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings.bind_property(Settings.URGENCY_NOTIFICATION_KEY, builder.get_object("urgency_notification_checkbutton"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings.bind_property(Settings.TRAY_KEY, builder.get_object("enable_tray_checkbutton"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+#if ENABLE_LIBNOTIFY
       settings.bind_property(Settings.NOTIFY_KEY, builder.get_object("notify_checkbutton"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+#else
+      (builder.get_object("notify_checkbutton") as Gtk.Widget).sensitive = false;
+#endif
       settings.bind_property(Settings.DEFAULT_HOST_KEY, builder.get_object("default_host_entry"), "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings.bind_property(Settings.DEC_BINARY_PREFIX_KEY, builder.get_object("filesize_prefix_combobox"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL,
         (binding, srcval, ref targetval) => {targetval.set_int((bool)srcval ? 0 : 1); return true;},

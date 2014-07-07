@@ -107,20 +107,12 @@ namespace Venom {
       if(get_contact_list_window().is_active || !Settings.instance.enable_notify) {
         return;
       }
-      try {
-        Notify.Notification notification = m.create_notification();
-        notification.set_category("im.received");
-        notification.set_hint("sound-name", new Variant.string("message-new-instant"));
-        notification.show();
-      } catch (Error e) {
-        Logger.log(LogLevel.ERROR, _("Error showing notification: ") + e.message);
-      }
+      Notification.show_notification_for_message(m);
     }
 
     protected override void activate() {
       hold();
 
-      Notify.init ("Venom");
       var window = get_contact_list_window();
       window.incoming_message.connect(show_notification_for_message);
       window.incoming_group_message.connect(show_notification_for_message);
