@@ -104,18 +104,17 @@ namespace Venom {
       stdout.printf("Pipeline set to playing\n");
     }
 
-    public void buffer_in(uint8 inbuf[]) { 
-        Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(inbuf.length);
-        Memory.copy(gst_buf.data, inbuf, inbuf.length); 
-        audio_source_in.push_buffer(gst_buf);
-	return;
+    public void buffer_in(int16 inbuf[]) { 
+      Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(inbuf.length);
+      Memory.copy(gst_buf.data, inbuf, inbuf.length); 
+      audio_source_in.push_buffer(gst_buf);
+	  return;
     }
 
-    public uint8[] buffer_out() { 
-        Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
-        uint8[] buf = new uint8[gst_buf.data.length];
-	Memory.copy(buf, gst_buf.data, gst_buf.data.length);
-	return buf;
+    public int buffer_out(int16[] dest) { 
+      Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
+	  Memory.copy(dest, gst_buf.data, gst_buf.data.length);
+	  return dest.length;
     } 
 
 
@@ -123,17 +122,34 @@ namespace Venom {
       stdout.printf("starting av thread...\n");
       int perframe = (int)(ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000;
       int r=0;
-      while(running) {
-        
-	if((r = tox_session.prepare_audio_frame(i, dest, frame) < 0) { 
-	  stdout.printf("toxav_prepare_audio_frame error %i\n", r);
-	}
+      int i=0;
+      int16[] buffer = new int16[perframe*2];
+      uint8[] dest = new uint8[perframe*2];
 
+      while(true) { 
+        while(i < MAX_CALLS) {
 
-        Thread.usleep(5000);
+	      if(calls[i].active) { 
+            // WE NEED TO PULL A BUFFER FROM GSTREAMER AND THEN ENCODE IT
+            if(buffer_out(buffer) <= 0) { 
+              stdout.printf("Could not pull buffer with buffer_out()\n");	
+            }else { 
+              tox_session.prepare_audio_frame(i, dest, buffer);  
+	          tox_session.send_audio(i, dest);  
+            }
+
+            // WE NEED TO RECV AN AUDIO FRAME AND SEND IT TO GSTREAMER
+            tox_session.receive_audio(i, perframe, buffer);
+            buffer_in(buffer);
+          }
+
+          i++;
+          Thread.usleep(5000); //WHAT IS THIS FOR?
+        }
+      
+        stdout.printf("stopping av thread...\n");
+        return 0;
       }
-      stdout.printf("stopping av thread...\n");
-      return 0;
     }
 
     public void on_start_call(Contact c) {
