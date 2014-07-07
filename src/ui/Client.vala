@@ -109,6 +109,8 @@ namespace Venom {
       }
       try {
         Notify.Notification notification = m.create_notification();
+        notification.set_category("im.received");
+        notification.set_hint("sound-name", new Variant.string("message-new-instant"));
         notification.show();
       } catch (Error e) {
         Logger.log(LogLevel.ERROR, _("Error showing notification: ") + e.message);
