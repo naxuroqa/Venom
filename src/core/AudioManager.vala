@@ -112,10 +112,8 @@ namespace Venom {
     }
 
     public int buffer_out(int16[] dest) { 
-      Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
-      stdout.printf("Howdy\n");
-      stdout.printf("%d\n", gst_buf.data[0]);
-      Memory.copy(dest, gst_buf, dest.length);
+      Gst.Buffer gst_buf = audio_sink_out.pull_preroll();
+      Memory.copy(dest, gst_buf.data, dest.length);
 	  return dest.length;
     } 
 
@@ -134,19 +132,17 @@ namespace Venom {
         while(i < MAX_CALLS) {
 
 	      if(calls[i].active) { 
-            stdout.printf("inside calls[i].active\n");
 
             buffer_size = buffer_out(buffer);
-            stdout.printf("Buffer size is %d\n", buffer_size);
 
             if(buffer_size <= 0) { 
               stdout.printf("Could not pull buffer with buffer_out()\n");	
             }else { 
-              stdout.printf("Got here\n");
               tox_session.prepare_audio_frame(i, dest, buffer);  
 	          tox_session.send_audio(i, dest);  
+              stdout.printf("Left send_audio()\n");
             }
-
+            
             tox_session.receive_audio(i, perframe, buffer);
             buffer_in(buffer);
           }
