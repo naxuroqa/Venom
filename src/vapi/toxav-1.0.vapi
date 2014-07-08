@@ -198,6 +198,26 @@ namespace ToxAV {
     //void toxav_kill(ToxAv *av);
 
     /**
+    * @brief Register callback for recieving audio data
+    *
+    * @param callback The callback
+    * @return void
+    */
+    [CCode (has_target = false, has_type_id = false)]
+    public delegate void AudioRecvCallback(ToxAV toxav, int32 call_index, [CCode(array_length_type="int")] int16[] frames);
+    public void register_audio_recv_callback(AudioRecvCallback callback);
+
+    /**
+    * @brief Register callback for recieving video data
+    *
+    * @param callback The callback
+    * @return void
+    */
+    [CCode (has_target = false, has_type_id = false)]
+    public delegate void VideoRecvCallback(ToxAV toxav, int32 call_index, Vpx.Image frame);
+    public void register_video_recv_callback(VideoRecvCallback callback);
+
+    /**
      * @brief Call user. Use its friend_id.
      *
      * @param av Handler.
@@ -284,30 +304,6 @@ namespace ToxAV {
      * @retval ToxAvError On error.
      */
     public AV_Error kill_transmission(int32 call_index);
-
-    /**
-     * @brief Receive decoded video packet.
-     *
-     * @param av Handler.
-     * @param output Storage.
-     * @return int
-     * @retval 0 Success.
-     * @retval ToxAvError On Error.
-     */
-    public AV_Error recv_video (int32 call_index, ref Vpx.Image output);
-
-    /**
-     * @brief Receive decoded audio frame.
-     *
-     * @param av Handler.
-     * @param frame_size ...
-     * @param dest Destination of the packet. Make sure it has enough space for
-     *             RTP_PAYLOAD_SIZE bytes.
-     * @return int
-     * @retval >=0 Size of received packet.
-     * @retval ToxAvError On error.
-     */
-    public AV_Error recv_audio(int32 call_index, int frame_size, [CCode(array_length=false)] int16[] dest );
 
     /**
      * @brief Send video packet.

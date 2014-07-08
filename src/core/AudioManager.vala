@@ -55,7 +55,17 @@ namespace Venom {
     private bool running = false;
     private int number_of_calls = 0;
 
-    public ToxSession tox_session {get; set;}
+    private ToxSession _tox_session = null;
+    private unowned ToxAV.ToxAV toxav = null;
+    public ToxSession tox_session {
+      get {
+        return _tox_session;
+      } set {
+        _tox_session = value;
+        toxav = _tox_session.toxav_handle;
+        register_callbacks();
+      }
+    }
 
     public static AudioManager instance {get; private set;}
 
@@ -87,7 +97,17 @@ namespace Venom {
       stdout.printf("Caps is [%s]\n", caps.to_string());
       audio_source_in.caps = caps;      
       audio_sink_out.caps = caps;
-       
+    }
+
+    public static void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] frames) {
+    }
+
+    public static void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) {
+    }
+
+    public void register_callbacks() {
+      toxav.register_audio_recv_callback(audio_receive_callback);
+      toxav.register_video_recv_callback(video_receive_callback);
     }
 
     public void destroy_audio_pipeline() {
@@ -143,12 +163,12 @@ namespace Venom {
               stdout.printf("Could not pull buffer with buffer_out()\n");	
             }else { 
               stdout.printf("Got here\n");
-              tox_session.prepare_audio_frame(i, dest, buffer);  
-	          tox_session.send_audio(i, dest);  
+              toxav.prepare_audio_frame(i, dest, buffer);  
+	            toxav.send_audio(i, dest);  
             }
 
-            tox_session.receive_audio(i, perframe, buffer);
-            buffer_in(buffer);
+            //tox_session.receive_audio(i, perframe, buffer);
+            //buffer_in(buffer);
           }
 
           i++;
