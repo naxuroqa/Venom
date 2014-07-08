@@ -18,7 +18,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace Venom {
   class Client : Gtk.Application {
     private const GLib.ActionEntry app_entries[] =
@@ -30,6 +29,7 @@ namespace Venom {
     };
     private ContactListWindow contact_list_window;
     private SettingsWindow settings_window;
+    private Gtk.StatusIcon tray_icon;
 
     public Client() {
       // call gobject base constructor
@@ -73,19 +73,53 @@ namespace Venom {
         menu.append_section(null, menu_common);
 
         set_app_menu(menu);
+
+        contact_list_window.delete_event.connect((e) => {
+          if(Settings.instance.enable_tray) {
+            contact_list_window.hide();
+            return true;
+          }
+          return false;
+        });
+
+        //tray_icon = new Gtk.StatusIcon.from_pixbuf(get_contact_list_window().get_icon());
+        tray_icon = new Gtk.StatusIcon.from_icon_name("venom");
+        tray_icon.set_tooltip_text ("Venom");
+        Settings.instance.bind_property(Settings.TRAY_KEY, tray_icon, "visible", BindingFlags.SYNC_CREATE);
+        tray_icon.activate.connect(()=>{
+          var w = get_contact_list_window();
+          if(w.visible) {
+            w.hide();
+          } else {
+            w.show();
+          }
+        });
       }
       return contact_list_window;
     }
 
     protected override void startup() {
       add_action_entries(app_entries, this);
-
       base.startup();
+    }
+
+    private void show_notification_for_message(IMessage m) {
+      if(get_contact_list_window().is_active || !Settings.instance.enable_notify) {
+        return;
+      }
+      Notification.show_notification_for_message(m);
     }
 
     protected override void activate() {
       hold();
-      get_contact_list_window().present();
+
+      var window = get_contact_list_window();
+      window.incoming_message.connect(show_notification_for_message);
+      window.incoming_group_message.connect(show_notification_for_message);
+      window.incoming_action.connect(show_notification_for_message);
+      window.incoming_group_action.connect(show_notification_for_message);
+
+      window.present();
       release();
     }
 

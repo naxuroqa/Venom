@@ -29,23 +29,26 @@ namespace Venom {
     public abstract MessageDirection message_direction {get; protected set;}
     public abstract bool important {get; set;}
     public abstract bool is_action {get; set;}
-    
+
     /*
      *  Get plain sender string
      */
     public abstract string get_sender_plain();
-    
+
     /*
      *  Get plain message string
      */
     public abstract string get_message_plain();
-    
+
     /*
      *  Get plain time string
      */
     public virtual string get_time_plain() {
       return timestamp.format(_("%R:%S"));
     }
+
+    public abstract string get_notification_header();
+    public abstract Gdk.Pixbuf get_sender_image();
 
     /*
      *  Compare this senders of two messages
@@ -85,6 +88,12 @@ namespace Venom {
     public virtual string get_message_plain() {
       return message;
     }
+    public virtual string get_notification_header() {
+      return get_sender_plain() + _(" says:");
+    }
+    public Gdk.Pixbuf get_sender_image() {
+      return from.image ?? ResourceFactory.instance.default_contact;
+    }
     public bool compare_sender(IMessage to) {
       if(to is Message) {
         return (from == (to as Message).from);
@@ -114,6 +123,9 @@ namespace Venom {
     }
     public override string get_message_plain() {
       return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from.name : User.instance.name, message);
+    }
+    public override string get_notification_header() {
+      return from.get_name_string() + ":";
     }
   }
   public class GroupMessage : IMessage, GLib.Object {
@@ -155,6 +167,12 @@ namespace Venom {
     public virtual string get_message_plain() {
       return message;
     }
+    public virtual string get_notification_header() {
+      return from_contact.get_name_string() + _(" in ") + from.get_name_string() + _(" says:");
+    }
+    public Gdk.Pixbuf get_sender_image() {
+      return from.image ?? ResourceFactory.instance.default_groupchat;
+    }
     public bool compare_sender(IMessage to) {
       if(to is GroupMessage) {
         GroupMessage gm = to as GroupMessage;
@@ -193,6 +211,9 @@ namespace Venom {
         name_string = User.instance.name;
       }
       return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from_contact.name : User.instance.name, message);
+    }
+    public override string get_notification_header() {
+      return from_contact.get_name_string() + _(" in ") + from.get_name_string() + ":";
     }
   }
 }
