@@ -84,7 +84,7 @@ namespace Venom {
       audio_source_out.link(audio_sink_out);
 
       Gst.Caps caps = Gst.Caps.from_string(AUDIO_CAPS);
-      //stdout.printf("Caps is [%s]\n", caps.to_string());
+      stdout.printf("Caps is [%s]\n", caps.to_string());
       audio_source_in.caps = caps;      
       audio_sink_out.caps = caps;
        
@@ -113,16 +113,20 @@ namespace Venom {
 
     public int buffer_out(int16[] dest) { 
       Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
-	  Memory.copy(dest, gst_buf.data, gst_buf.data.length);
+      stdout.printf("Howdy\n");
+      stdout.printf("%d\n", gst_buf.data[0]);
+      Memory.copy(dest, gst_buf, dest.length);
 	  return dest.length;
     } 
 
 
     private int av_thread_fun() {
       stdout.printf("starting av thread...\n");
+      set_pipeline_playing();
       int perframe = (int)(ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000;
       int r=0;
       int i=0;
+      int buffer_size;
       int16[] buffer = new int16[perframe*2];
       uint8[] dest = new uint8[perframe*2];
 
@@ -130,10 +134,15 @@ namespace Venom {
         while(i < MAX_CALLS) {
 
 	      if(calls[i].active) { 
+            stdout.printf("inside calls[i].active\n");
 
-            if(buffer_out(buffer) <= 0) { 
+            buffer_size = buffer_out(buffer);
+            stdout.printf("Buffer size is %d\n", buffer_size);
+
+            if(buffer_size <= 0) { 
               stdout.printf("Could not pull buffer with buffer_out()\n");	
             }else { 
+              stdout.printf("Got here\n");
               tox_session.prepare_audio_frame(i, dest, buffer);  
 	          tox_session.send_audio(i, dest);  
             }
