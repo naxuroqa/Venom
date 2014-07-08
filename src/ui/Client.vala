@@ -82,20 +82,39 @@ namespace Venom {
           return false;
         });
 
-        //tray_icon = new Gtk.StatusIcon.from_pixbuf(get_contact_list_window().get_icon());
+        create_tray_menu();
         tray_icon = new Gtk.StatusIcon.from_icon_name("venom");
         tray_icon.set_tooltip_text ("Venom");
         Settings.instance.bind_property(Settings.TRAY_KEY, tray_icon, "visible", BindingFlags.SYNC_CREATE);
-        tray_icon.activate.connect(()=>{
-          var w = get_contact_list_window();
-          if(w.visible) {
-            w.hide();
-          } else {
-            w.show();
-          }
-        });
+        tray_icon.activate.connect(on_trayicon_activate);
+        tray_icon.popup_menu.connect(on_trayicon_popup_menu);
       }
       return contact_list_window;
+    }
+
+    private Gtk.Menu tray_menu;
+    private void create_tray_menu() {
+      tray_menu = new Gtk.Menu();
+      Gtk.MenuItem tray_menu_show = new Gtk.MenuItem.with_mnemonic(_("_Show/Hide Venom"));
+      tray_menu_show.activate.connect(on_trayicon_activate);
+      tray_menu.append(tray_menu_show);
+      Gtk.MenuItem tray_menu_quit = new Gtk.MenuItem.with_mnemonic(_("_Quit"));
+      tray_menu_quit.activate.connect(simple_on_quit);
+      tray_menu.append(tray_menu_quit);
+      tray_menu.show_all();
+    }
+
+    private void on_trayicon_activate() {
+      var w = get_contact_list_window();
+      if(w.visible) {
+        w.hide();
+      } else {
+        w.show();
+      }
+    }
+
+    private void on_trayicon_popup_menu(uint button, uint time) {
+      tray_menu.popup(null, null, null, button, time);
     }
 
     protected override void startup() {
@@ -165,7 +184,12 @@ namespace Venom {
     }
 
     private void on_quit(GLib.SimpleAction action, GLib.Variant? parameter) {
-      contact_list_window.destroy();
+      simple_on_quit();
+    }
+    private void simple_on_quit() {
+      if(contact_list_window != null) {
+        contact_list_window.destroy();
+      }
     }
   }
 }
