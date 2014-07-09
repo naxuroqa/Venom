@@ -100,6 +100,8 @@ namespace Venom {
     }
 
     public static void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] frames) {
+      //instance.buffer_in(frames);
+      return;
     }
 
     public static void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) {
@@ -126,7 +128,8 @@ namespace Venom {
 
     public void buffer_in(int16 inbuf[]) { 
       Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(inbuf.length);
-      Memory.copy(gst_buf.data, inbuf, inbuf.length); 
+      Memory.copy(gst_buf.data, inbuf, gst_buf.data.length); 
+      stdout.printf("Got here 2\n");
       audio_source_in.push_buffer(gst_buf);
 	  return;
     }
@@ -148,7 +151,7 @@ namespace Venom {
       int16[] buffer = new int16[perframe*2];
       uint8[] dest = new uint8[perframe*2];
 
-      while(true) { 
+      while(running) { 
         while(i < MAX_CALLS) {
 
 	      if(calls[i].active) { 
@@ -158,23 +161,11 @@ namespace Venom {
             if(buffer_size <= 0) { 
               stdout.printf("Could not pull buffer with buffer_out()\n");	
             }else { 
-<<<<<<< HEAD
-              tox_session.prepare_audio_frame(i, dest, buffer);  
-	          tox_session.send_audio(i, dest);  
-              stdout.printf("Left send_audio()\n");
-            }
-            
-            tox_session.receive_audio(i, perframe, buffer);
-            buffer_in(buffer);
-=======
-              stdout.printf("Got here\n");
               toxav.prepare_audio_frame(i, dest, buffer);  
-	            toxav.send_audio(i, dest);  
+	          toxav.send_audio(i, dest);  
+              stdout.printf("Leaving send_audio\n");
             }
 
-            //tox_session.receive_audio(i, perframe, buffer);
-            //buffer_in(buffer);
->>>>>>> 6d1969fefcc94a7f4d6e609c870017e928a7e18f
           }
 
           i++;
