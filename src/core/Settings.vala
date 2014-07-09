@@ -52,10 +52,9 @@ namespace Venom {
         if( _instance == null ) {
           File tmp = File.new_for_path(ResourceFactory.instance.config_filename);
           if (tmp.query_exists()) {
-            _instance = load_settings(ResourceFactory.instance.config_filename);
+            _instance = load_settings(ResourceFactory.instance.config_filename) ?? new Settings();
           } else {
             _instance = new Settings();
-            _instance.save_settings(ResourceFactory.instance.config_filename);
           }
         }
         return _instance;
