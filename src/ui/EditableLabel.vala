@@ -51,10 +51,11 @@ namespace Venom {
     }
 
     private void on_show_entry() {
+//FIXME apparently not working on gtk 3.6.4
 //FIXME define GTK_<MAJOR>_<MINOR> in cmake instead of using glib version
-#if GLIB_2_34
-      entry.attributes = label.attributes;
-#endif
+//#if GLIB_2_34
+//      entry.attributes = label.attributes;
+//#endif
       box_label.visible = false;
       box_entry.no_show_all = false;
       box_entry.show_all();
