@@ -314,7 +314,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error send_video (int32 call_index, uint8[] frame);
+    public AV_Error send_video (int32 call_index, [CCode(array_length=false)] uint8[] frame, int frame_size);
 
     /**
      * @brief Send audio frame.
@@ -326,7 +326,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error send_audio (int32 call_index, uint8[] frame);
+    public AV_Error send_audio (int32 call_index, [CCode(array_length=false)] uint8[] frame, int frame_size);
 
     /**
      * @brief Encode video frame
