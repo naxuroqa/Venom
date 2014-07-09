@@ -159,7 +159,6 @@ namespace Venom {
       int buffer_size;
       int16[] buffer = new int16[perframe*2];
       uint8[] dest = new uint8[perframe*2];
-      AV_Error myError;
 
       while(running) { 
         for(i = 0; i < MAX_CALLS; i++) {
@@ -171,11 +170,8 @@ namespace Venom {
             if(buffer_size <= 0) { 
               stdout.printf("Could not pull buffer with buffer_out()\n");	
             }else { 
-              myError = toxav.prepare_audio_frame(i, dest, buffer);  
-              stdout.printf("prepare_audio_frame returned %d\n");
-
-	          myError = toxav.send_audio(i, dest);  
-              stdout.printf("send_audio returned %d\n");
+              toxav.prepare_audio_frame(i, dest, buffer);  
+	          toxav.send_audio(i, dest);  
 
               //stdout.printf("Leaving send_audio\n");
               //stdout.printf("des[69] = %d\n", dest[69]);
