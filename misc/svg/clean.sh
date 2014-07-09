@@ -18,8 +18,7 @@
 #
 for i in $(find . -type f -name "*.svg");
 do
-  cvtpath="../../src/pixmaps/${i%.*}.png"
-  echo "# rendering $i to $cvtpath"
-  rsvg-convert "$i" -o "$cvtpath"
+  echo "# cleaning $i"
+  svgcleaner-cli "$i" "$i"  --join-style-atts
 done
 # vim:set ts=2 sw=2 et:

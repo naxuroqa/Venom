@@ -35,36 +35,33 @@ namespace Venom {
     }
 
     private ResourceFactory () {
-      string pixmaps_prefix = "/org/gtk/venom/pixmaps/";
       string theme_folder = Path.build_filename(Tools.find_data_dir(), "theme");
 
-      ok = load_image_from_resource(pixmaps_prefix + "ok.png");
-      cancel = load_image_from_resource(pixmaps_prefix + "cancel.png");
+      arrow      = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/arrow_white.png");
+      send_file  = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/attach.png");
+      call       = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/call.png");
+      ok         = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/check.png");
+      smiley     = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/emoticon.png");
+      cancel     = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/no.png");
+      send       = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/sendmessage.png");
+      call_video = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/video.png");
 
-      away = load_image_from_resource(pixmaps_prefix + "away.png");
-      away_glow = load_image_from_resource(pixmaps_prefix + "away_glow.png");
-      busy = load_image_from_resource(pixmaps_prefix + "busy.png");
-      busy_glow = load_image_from_resource(pixmaps_prefix + "busy_glow.png");
-      offline = load_image_from_resource(pixmaps_prefix + "offline.png");
-      offline_glow = load_image_from_resource(pixmaps_prefix + "offline_glow.png");
-      online = load_image_from_resource(pixmaps_prefix + "online.png");
-      online_glow = load_image_from_resource(pixmaps_prefix + "online_glow.png");
+      add          = load_image_from_resource("/org/gtk/venom/pixmaps/contact_list_icons/add.png");
+      groupchat    = load_image_from_resource("/org/gtk/venom/pixmaps/contact_list_icons/group.png");
+      settings     = load_image_from_resource("/org/gtk/venom/pixmaps/contact_list_icons/settings.png");
+      filetransfer = load_image_from_resource("/org/gtk/venom/pixmaps/contact_list_icons/transfer.png");
 
-      call = load_image_from_resource(pixmaps_prefix + "call.png");
-      call_video = load_image_from_resource(pixmaps_prefix + "call_video.png");
-      send = load_image_from_resource(pixmaps_prefix + "send.png");
+      away         = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_idle.png");
+      away_glow    = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_idle_notification.png");
+      busy         = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_busy.png");
+      busy_glow    = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_busy_notification.png");
+      offline      = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_away.png");
+      offline_glow = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_away_notification.png");
+      online       = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_online.png");
+      online_glow  = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_online_notification.png");
 
-      send_file = load_image_from_resource(pixmaps_prefix + "send_file.png");
-      smiley = load_image_from_resource(pixmaps_prefix + "smiley.png");
-
-      add = load_image_from_resource(pixmaps_prefix + "add.png");
-      groupchat = load_image_from_resource(pixmaps_prefix + "groupchat.png");
-      settings = load_image_from_resource(pixmaps_prefix + "settings.png");
-      filetransfer = load_image_from_resource(pixmaps_prefix + "filetransfer.png");
-
-      default_contact = load_image_from_resource(pixmaps_prefix + "default_contact.png");
-      default_groupchat = load_image_from_resource(pixmaps_prefix + "default_groupchat.png");
-      arrow = load_image_from_resource(pixmaps_prefix + "arrow.png");
+      default_contact   = load_image_from_resource("/org/gtk/venom/pixmaps/user_icons/default_contact.png");
+      default_groupchat = load_image_from_resource("/org/gtk/venom/pixmaps/user_icons/default_groupchat.png");
 
       default_theme_filename = Path.build_filename(theme_folder, "default.css");
 
