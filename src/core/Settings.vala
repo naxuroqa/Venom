@@ -24,6 +24,7 @@ namespace Venom {
 
     public const string MESSAGE_LOGGING_KEY = "enable-logging";
     public const string DAYS_TO_LOG_KEY = "days-to-log";
+    public const string LOG_INDEFINITELY_KEY = "log-indefinitely";
     public const string URGENCY_NOTIFICATION_KEY = "enable-urgency-notification";
     public const string TRAY_KEY = "enable-tray";
     public const string NOTIFY_KEY = "enable-notify";
@@ -34,6 +35,7 @@ namespace Venom {
 
     public bool   enable_logging              { get; set; default = false;     }
     public bool   enable_urgency_notification { get; set; default = true;      }
+    public bool   log_indefinitely            { get; set; default = true;      }
     public int    days_to_log                 { get; set; default = 180;       }
     public bool   dec_binary_prefix           { get; set; default = true;      }
     public bool   send_typing_status          { get; set; default = false;     }

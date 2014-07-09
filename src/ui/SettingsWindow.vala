@@ -34,20 +34,11 @@ namespace Venom {
       dialog = builder.get_object("dialog") as Gtk.Dialog;
       dialog.set_transient_for(parent);
 
-      Gtk.SpinButton history_delete_spinbutton = builder.get_object("history_delete_spinbutton") as Gtk.SpinButton;
-
       Settings settings = Settings.instance;
 
       settings.bind_property(Settings.MESSAGE_LOGGING_KEY, builder.get_object("keep_history_checkbutton"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings.bind_property(Settings.MESSAGE_LOGGING_KEY, builder.get_object("history_box"), "sensitive", BindingFlags.SYNC_CREATE);
-      settings.bind_property(Settings.DAYS_TO_LOG_KEY, builder.get_object("history_keep_radio"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL,
-        (binding, srcval, ref targetval) => { if((int)srcval < 0) targetval.set_boolean(true); return true; },
-        (binding, srcval, ref targetval) => { if((bool)srcval) targetval.set_int(-1); return true; }
-      );
-      settings.bind_property(Settings.DAYS_TO_LOG_KEY, builder.get_object("history_delete_radio"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL,
-        (binding, srcval, ref targetval) => { if((int)srcval >= 0) targetval.set_boolean(true); return true; },
-        (binding, srcval, ref targetval) => { if((bool)srcval) targetval.set_int((int)history_delete_spinbutton.value); return true; }
-      );
+      settings.bind_property(Settings.LOG_INDEFINITELY_KEY, builder.get_object("history_keep_radio"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings.bind_property(Settings.DAYS_TO_LOG_KEY, builder.get_object("history_delete_spinbutton"), "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings.bind_property(Settings.SEND_TYPING_STATUS_KEY, builder.get_object("send_typing_checkbutton"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings.bind_property(Settings.SHOW_TYPING_STATUS_KEY, builder.get_object("show_typing_checkbutton"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);

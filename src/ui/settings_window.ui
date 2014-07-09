@@ -103,7 +103,6 @@
                           <object class="GtkRadioButton" id="history_keep_radio">
                             <property name="label" translatable="yes">indefinitely</property>
                             <property name="visible">True</property>
-                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="xalign">0</property>
