@@ -31,7 +31,8 @@ namespace Venom {
 
   public class AudioManager { 
 
-    private const string PIPELINE = "audioPipeline";
+    private const string PIPELINE_OUT = "audioPipelineOut";
+    private const string PIPELINE_IN  = "audioPipelineIn";
     private const string AUDIO_SOURCE_IN = "audioSourceIn";
     private const string AUDIO_SOURCE_OUT = "audioSourceOut";
     private const string AUDIO_SINK_IN = "audioSinkIn";
@@ -45,7 +46,8 @@ namespace Venom {
 
     private CallInfo[] calls = new CallInfo[MAX_CALLS];
 
-    private Gst.Pipeline pipeline;
+    private Gst.Pipeline pipeline_out;
+    private Gst.Pipeline pipeline_in;
     private Gst.AppSrc audio_source_in;
     private Gst.Element audio_source_out;
     private Gst.Element audio_sink_in;
@@ -84,13 +86,20 @@ namespace Venom {
       }
       stdout.printf("Gstreamer initialized\n");
 
-      pipeline = new Gst.Pipeline(PIPELINE);
-      audio_source_out = Gst.ElementFactory.make("autoaudiosrc", AUDIO_SOURCE_OUT);
+      pipeline_out = new Gst.Pipeline(PIPELINE_OUT);
+      pipeline_in  = new Gst.Pipeline(PIPELINE_IN);
+
+      audio_source_out = Gst.ElementFactory.make("audiotestsrc", AUDIO_SOURCE_OUT);
       audio_sink_out = (Gst.AppSink)Gst.ElementFactory.make("appsink", AUDIO_SINK_OUT);
+
       audio_source_in = (Gst.AppSrc)Gst.ElementFactory.make("appsrc", AUDIO_SOURCE_IN);
       audio_sink_in = Gst.ElementFactory.make("autoaudiosink", AUDIO_SINK_IN);
-      pipeline.add_many(audio_source_out, audio_sink_out, audio_source_in, audio_sink_in);
+
+      pipeline_out.add_many(audio_source_out, audio_sink_out);
+      pipeline_in.add_many (audio_source_in, audio_sink_in);
+
       audio_source_in.link(audio_sink_in);
+
       audio_source_out.link(audio_sink_out);
 
       Gst.Caps caps = Gst.Caps.from_string(AUDIO_CAPS);
@@ -113,29 +122,29 @@ namespace Venom {
     }
 
     public void destroy_audio_pipeline() {
-      pipeline.set_state(Gst.State.NULL);
+      pipeline_out.set_state(Gst.State.NULL);
     }
 
     public void set_pipeline_paused() {
-      pipeline.set_state(Gst.State.PAUSED);
+      pipeline_out.set_state(Gst.State.PAUSED);
       stdout.printf("Pipeline set to paused\n");
     }
 
     public void set_pipeline_playing() {
-      pipeline.set_state(Gst.State.PLAYING);
+      pipeline_out.set_state(Gst.State.PLAYING);
       stdout.printf("Pipeline set to playing\n");
     }
 
     public void buffer_in(int16 inbuf[]) { 
       Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(inbuf.length);
-      Memory.copy(gst_buf.data, inbuf, gst_buf.data.length); 
+      Memory.copy(gst_buf.data, inbuf, inbuf.length); 
       stdout.printf("Got here 2\n");
       audio_source_in.push_buffer(gst_buf);
 	  return;
     }
 
     public int buffer_out(int16[] dest) { 
-      Gst.Buffer gst_buf = audio_sink_out.pull_preroll();
+      Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
       Memory.copy(dest, gst_buf.data, dest.length);
 	  return dest.length;
     } 
@@ -152,7 +161,7 @@ namespace Venom {
       uint8[] dest = new uint8[perframe*2];
 
       while(running) { 
-        while(i < MAX_CALLS) {
+        for(i = 0; i < MAX_CALLS; i++) {
 
 	      if(calls[i].active) { 
 
@@ -164,15 +173,14 @@ namespace Venom {
               toxav.prepare_audio_frame(i, dest, buffer);  
 	          toxav.send_audio(i, dest);  
               stdout.printf("Leaving send_audio\n");
+              stdout.printf("des[69] = %d\n", dest[69]);
             }
 
           }
 
-          i++;
           Thread.usleep(5000); //?
         }
 
-        i = 0;
       }
 
       stdout.printf("stopping av thread...\n");
