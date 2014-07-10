@@ -146,15 +146,16 @@ namespace Venom {
     public void set_pipeline_playing() {
       pipeline_out.set_state(Gst.State.PLAYING);
       stdout.printf("Pipeline set to playing\n");
+      pipeline_in.set_state(Gst.State.PLAYING);
     }
 
-    public void buffer_in(int16 inbuf[]) { 
+    public void buffer_in(int16[] inbuf) { 
       Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(inbuf.length * 2);
-      stdout.printf("gst_buf.data size is %d\n", gst_buf.data.length);
-      Memory.copy(gst_buf.data, inbuf, gst_buf.data.length ); 
-
-      stdout.printf("Got here 2\n");
+      gst_buf.make_writable();
+      Memory.copy(gst_buf.data, inbuf, gst_buf.data.length);
+      
       audio_source_in.push_buffer(gst_buf);
+      stdout.printf("Pushed received packet to pipeline!\n");
 	  return;
     }
 
@@ -189,10 +190,6 @@ namespace Venom {
             }else { 
               prep_frame_ret = toxav.prepare_audio_frame(i, dest, buffer);  
               stdout.printf("prepare_audio_frame returned %d\n", prep_frame_ret);
-              
-              for(int j = 0; j < prep_frame_ret; j++) {
-                stdout.printf("dest[%d] = %d\n", j, dest[j]);
-              }
 
 	          myError = toxav.send_audio(i, dest, prep_frame_ret);  
               stdout.printf("send_audio returned %d\n", myError);
