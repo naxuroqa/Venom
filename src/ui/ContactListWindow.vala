@@ -346,6 +346,7 @@ namespace Venom {
       session.on_av_error.connect(this.on_av_error);
       session.on_av_request_timeout.connect(this.on_av_request_timeout);
       session.on_av_peer_timeout.connect(this.on_av_peer_timeout);
+      session.on_av_peer_timeout.connect(AudioManager.instance.on_end_call);
 
       //file signals
       session.on_file_sendrequest.connect(this.on_file_sendrequest);
