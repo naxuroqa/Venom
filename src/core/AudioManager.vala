@@ -151,7 +151,7 @@ namespace Venom {
     public void buffer_in(int16 inbuf[]) { 
       Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(inbuf.length * 2);
       stdout.printf("gst_buf.data size is %d\n", gst_buf.data.length);
-      Memory.copy(gst_buf.data, inbuf, int.min(gst_buf.data.length, inbuf.length * 2)); 
+      Memory.copy(gst_buf.data, inbuf, gst_buf.data.length); 
 
       stdout.printf("Got here 2\n");
       audio_source_in.push_buffer(gst_buf);
