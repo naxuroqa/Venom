@@ -353,7 +353,7 @@ namespace ToxAV {
      * @retval ToxAvError On error.
      * @retval >0 On success
      */
-    public AV_Error prepare_audio_frame(int32 call_index, uint8[] dest, int16[] frame);
+    public AV_Error prepare_audio_frame(int32 call_index, uint8[] dest, [CCode(array_length=false)] int16[] frame, int frame_size);
 
     /**
      * @brief Get peer transmission type. It can either be audio or video.
