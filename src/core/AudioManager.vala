@@ -48,6 +48,9 @@ namespace Venom {
 
     private Gst.Pipeline pipeline_out;
     private Gst.Pipeline pipeline_in;
+    private Gst.Pipeline pipeline_test;
+    private Gst.Element test_source;
+    private Gst.Element test_sink;
     private Gst.AppSrc audio_source_in;
     private Gst.Element audio_source_out;
     private Gst.Element audio_sink_in;
@@ -88,6 +91,7 @@ namespace Venom {
 
       pipeline_out = new Gst.Pipeline(PIPELINE_OUT);
       pipeline_in  = new Gst.Pipeline(PIPELINE_IN);
+      pipeline_test = new Gst.Pipeline("Tester");
 
       audio_source_out = Gst.ElementFactory.make("audiotestsrc", AUDIO_SOURCE_OUT);
       audio_sink_out = (Gst.AppSink)Gst.ElementFactory.make("appsink", AUDIO_SINK_OUT);
@@ -95,12 +99,20 @@ namespace Venom {
       audio_source_in = (Gst.AppSrc)Gst.ElementFactory.make("appsrc", AUDIO_SOURCE_IN);
       audio_sink_in = Gst.ElementFactory.make("autoaudiosink", AUDIO_SINK_IN);
 
+      test_source = Gst.ElementFactory.make("audiotestsrc", "testsrc");
+      test_sink   = Gst.ElementFactory.make("autoaudiosink", "testsink");
+
       pipeline_out.add_many(audio_source_out, audio_sink_out);
       pipeline_in.add_many (audio_source_in, audio_sink_in);
+      pipeline_test.add_many(test_source, test_sink);
 
       audio_source_in.link(audio_sink_in);
 
       audio_source_out.link(audio_sink_out);
+
+      test_source.link(test_sink);
+
+      //pipeline_test.set_state(Gst.State.PLAYING);
 
       Gst.Caps caps = Gst.Caps.from_string(AUDIO_CAPS);
       stdout.printf("Caps is [%s]\n", caps.to_string());
@@ -109,7 +121,8 @@ namespace Venom {
     }
 
     public static void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] frames) {
-      //instance.buffer_in(frames);
+      stdout.printf("Got audio frames, of size: %d\n", frames.length * 2);
+      instance.buffer_in(frames);
       return;
     }
 
@@ -136,8 +149,10 @@ namespace Venom {
     }
 
     public void buffer_in(int16 inbuf[]) { 
-      Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(inbuf.length);
-      Memory.copy(gst_buf.data, inbuf, inbuf.length); 
+      Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(inbuf.length * 2);
+      stdout.printf("gst_buf.data size is %d\n", gst_buf.data.length);
+      Memory.copy(gst_buf.data, inbuf, int.min(gst_buf.data.length, inbuf.length * 2)); 
+
       stdout.printf("Got here 2\n");
       audio_source_in.push_buffer(gst_buf);
 	  return;
@@ -145,7 +160,7 @@ namespace Venom {
 
     public int buffer_out(int16[] dest) { 
       Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
-      Memory.copy(dest, gst_buf.data, dest.length);
+      Memory.copy(dest, gst_buf.data, int.min(gst_buf.data.length, dest.length * 2)); 
 	  return dest.length;
     } 
 
@@ -159,6 +174,8 @@ namespace Venom {
       int buffer_size;
       int16[] buffer = new int16[perframe*2];
       uint8[] dest = new uint8[perframe*2];
+      int prep_frame_ret = 0;
+      ToxAV.AV_Error myError;
 
       while(running) { 
         for(i = 0; i < MAX_CALLS; i++) {
@@ -170,8 +187,15 @@ namespace Venom {
             if(buffer_size <= 0) { 
               stdout.printf("Could not pull buffer with buffer_out()\n");	
             }else { 
-              toxav.prepare_audio_frame(i, dest, buffer);  
-	          toxav.send_audio(i, dest);  
+              prep_frame_ret = toxav.prepare_audio_frame(i, dest, buffer);  
+              stdout.printf("prepare_audio_frame returned %d\n", prep_frame_ret);
+              
+              for(int j = 0; j < prep_frame_ret; j++) {
+                stdout.printf("dest[%d] = %d\n", j, dest[j]);
+              }
+
+	          myError = toxav.send_audio(i, dest, prep_frame_ret);  
+              stdout.printf("send_audio returned %d\n", myError);
 
               //stdout.printf("Leaving send_audio\n");
               //stdout.printf("des[69] = %d\n", dest[69]);
