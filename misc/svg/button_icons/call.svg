@@ -1,10 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="21.22" height="19.66" viewBox="0 0 21.222 19.66" style="enable-background:new 0 0 21.222 19.66">
- <defs/>
- <path d="M16.656,0.009c0,0-0.501-0.112-0.723,0.473l-1.782,4.204c0,0-0.334,0.611,0.167,1.196l1.28,1.67
-	c0,0,0.473,0.446,0.111,0.975c-0.362,0.528-2.255,4.036-7.154,6.235c0,0-0.611,0.417-1.056-0.195
-	c-0.446-0.612-1.811-2.839-2.674-2.365l-4.509,2.115c0,0-0.39,0.027-0.306,0.835C0.095,15.958-0.017,19.66,5.3,19.66
-	c6.348,0,15.922-9.061,15.922-14.809c0,0,0-4.843-2.979-4.843H16.656z" style="fill:#FFFFFF"/>
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" id="Layer_1" x="0" y="0" width="24" height="24" viewBox="0 0 24.002263 24" inkscape:version="0.48.3.1 r9886" sodipodi:docname="call.svg">
+ <metadata id="metadata9">
+  <rdf:RDF>
+   <cc:Work>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <sodipodi:namedview pagecolor="#000000" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="1" inkscape:pageshadow="2" inkscape:window-width="1235" inkscape:window-height="643" id="namedview7" showgrid="false" inkscape:zoom="12.004069" inkscape:cx="-1.7996931" inkscape:cy="15.537973" inkscape:window-x="61" inkscape:window-y="176" inkscape:window-maximized="0" inkscape:current-layer="Layer_1"/>
+ <defs id="defs3"/>
+ <path d="m 18.838529,0.88366981 c 0,0 -0.566586,-0.1267694 -0.817648,0.53537459 L 16.0056,6.1774264 c 0,0 -0.377724,0.6915726 0.188862,1.3537162 l 1.447564,1.8902224 c 0,0 0.534921,0.504815 0.125531,1.103574 -0.409389,0.597628 -2.550201,4.568228 -8.0905282,7.05721 0,0 -0.6909859,0.47199 -1.1942408,-0.220715 C 7.9784023,16.66873 6.4347104,14.148056 5.4587353,14.684562 l -5.09927222,2.393905 c 0,0 -0.44105482,0.03056 -0.3460584,0.945112 0.09612734,0.912287 -0.03053456,5.10247 5.98251272,5.10247 7.1790156,0 18.0063456,-10.255876 18.0063456,-16.761864 0,0 0,-5.48164699 -3.36898,-5.48164699 h -1.794754 z" id="path5" inkscape:connector-curvature="0" style="fill:#ffffff"/>
 </svg>

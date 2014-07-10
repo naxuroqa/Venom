@@ -1,8 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="10.09" height="10.09" viewBox="0 0 10.086 10.087" style="enable-background:new 0 0 10.086 10.087">
- <defs/>
- <polygon points="10.086,1.692 8.395,0 5.043,3.351 1.693,0.001 0,1.693 3.35,5.043 0,8.394 1.693,10.086 
-	5.043,6.736 8.395,10.087 10.086,8.394 6.734,5.043 " style="fill:#FFFFFF"/>
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" id="Layer_1" x="0" y="0" width="16" height="16" viewBox="0 0 15.993657 15.995243" inkscape:version="0.48.3.1 r9886" sodipodi:docname="no.svg">
+ <metadata id="metadata9">
+  <rdf:RDF>
+   <cc:Work>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1128" inkscape:window-height="830" id="namedview7" showgrid="false" inkscape:zoom="23.389494" inkscape:cx="-0.14963983" inkscape:cy="5.0450001" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="0" inkscape:current-layer="Layer_1"/>
+ <defs id="defs3"/>
+ <polygon points="10.086,8.394 6.734,5.043 10.086,1.692 8.395,0 5.043,3.351 1.693,0.001 0,1.693 3.35,5.043 0,8.394 1.693,10.086 5.043,6.736 8.395,10.087 " id="polygon5" transform="matrix(0.99117855,0,0,0.99108029,2.9983151,2.9991081)" style="fill:#ffffff"/>
 </svg>
