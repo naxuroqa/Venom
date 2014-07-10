@@ -93,7 +93,7 @@ namespace Venom {
       pipeline_in  = new Gst.Pipeline(PIPELINE_IN);
       pipeline_test = new Gst.Pipeline("Tester");
 
-      audio_source_out = Gst.ElementFactory.make("audiotestsrc", AUDIO_SOURCE_OUT);
+      audio_source_out = Gst.ElementFactory.make("autoaudiosrc", AUDIO_SOURCE_OUT);
       audio_sink_out = (Gst.AppSink)Gst.ElementFactory.make("appsink", AUDIO_SINK_OUT);
 
       audio_source_in = (Gst.AppSrc)Gst.ElementFactory.make("appsrc", AUDIO_SOURCE_IN);
@@ -121,7 +121,6 @@ namespace Venom {
     }
 
     public static void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] frames) {
-      stdout.printf("Got audio frames, of size: %d\n", frames.length * 2);
       instance.buffer_in(frames);
       return;
     }
@@ -155,12 +154,12 @@ namespace Venom {
       Memory.copy(gst_buf.data, inbuf, gst_buf.data.length);
       
       audio_source_in.push_buffer(gst_buf);
-      stdout.printf("Pushed received packet to pipeline!\n");
 	  return;
     }
 
     public int buffer_out(int16[] dest) { 
       Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
+
       Memory.copy(dest, gst_buf.data, int.min(gst_buf.data.length, dest.length * 2)); 
 	  return dest.length;
     } 
@@ -197,10 +196,8 @@ namespace Venom {
               //stdout.printf("Leaving send_audio\n");
               //stdout.printf("des[69] = %d\n", dest[69]);
             }
-
           }
 
-          Thread.usleep(5000); //?
         }
 
       }
