@@ -41,7 +41,7 @@ namespace Venom {
 
     private const int CHUNK_SIZE = 1024; 
     private const int SAMPLE_RATE = 44100;
-    private const string AUDIO_CAPS = "audio/x-raw-int,channels=1,rate=44100,signed=(boolean)true,width=16,depth=16,endianness=BYTE_ORDER";
+    private const string AUDIO_CAPS = "audio/x-raw-int,channels=1,rate=48000,signed=true,width=16,depth=16,endianness=1234";
 
     private const int MAX_CALLS = 16;
     private CallInfo[] calls = new CallInfo[MAX_CALLS];
@@ -163,13 +163,13 @@ namespace Venom {
       set_pipeline_playing();
       int perframe = (int)(ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000;
       int buffer_size;
-      int16[] buffer = new int16[perframe*2];
+      int16[] buffer = new int16[perframe];
       uint8[] enc_buffer = new uint8[perframe*2];
       int prep_frame_ret = 0;
       ToxAV.AV_Error send_audio_ret;
 
-      stdout.printf("buffer size (bytes): %i", buffer.length);
-      stdout.printf("enc_buffer size (bytes): %i", enc_buffer.length * 2);
+      stdout.printf("buffer size (bytes): %i\n", buffer.length);
+      stdout.printf("enc_buffer size (bytes): %i\n", enc_buffer.length * 2);
       while(running) {
         // read samples from pipeline
         buffer_size = buffer_out(buffer);
@@ -183,7 +183,6 @@ namespace Venom {
           if(calls[i].active) {
 
             //FIXME should be this but returns -1
-            //prep_frame_ret = toxav.prepare_audio_frame(i, enc_buffer, buffer, buffer_size);
             prep_frame_ret = toxav.prepare_audio_frame(i, enc_buffer, buffer, buffer.length);
             if(prep_frame_ret <= 0) {
               stdout.printf("prepare_audio_frame returned an error: %i\n", prep_frame_ret);
