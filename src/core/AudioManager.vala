@@ -110,7 +110,7 @@ namespace Venom {
 
     public static void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] frames) {
       stdout.printf("Got audio frames, of size: %d\n", frames.length * 2);
-      //instance.buffer_in(frames, frames.length);
+      instance.buffer_in(frames, frames.length);
     }
 
     public static void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) {
@@ -150,8 +150,14 @@ namespace Venom {
       return;
     }
 
-    public int buffer_out(int16[] dest) {
+
+    //TODO FIXME SOLUTION!!!
+    //INSTEAD OF MAKING THIS RETURN LEN / 2 OR WHATEVER FUCKING BULLSHIT, MAKE IT RETURN
+    //A BUFFER THAT IT ALLOCS. THAT WAY WE CAN ALLOC EXACTLY THE AMOUNT OF SPACE WE NEED
+    //THEN FREE AFTER YOU SEND THE PACKET!!!
+    public int buffer_out(/*There will be NO Args*/int16[] dest) {
       Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
+      //Allocate the new buffer here, we will return this buffer (it is dest)
       int len = int.min(gst_buf.data.length, dest.length * 2);
       Memory.copy(dest, gst_buf.data, len);
       stdout.printf("pulled %i bytes from OUT pipeline\n", len);
@@ -172,12 +178,14 @@ namespace Venom {
       stdout.printf("enc_buffer size (bytes): %i\n", enc_buffer.length * 2);
       while(running) {
         // read samples from pipeline
+        //TODO THIS LINE NEEDS TO CHANGE TO BE A INT16[] GOTTEN FROM BUFFER_OUT(NO ARGS);
         buffer_size = buffer_out(buffer);
         if(buffer_size <= 0) {
           stdout.printf("Could not read samples from pipeline!\n");
           Thread.usleep(1000);
           continue;
         }
+
         // distribute samples across peers
         for(int i = 0; i < MAX_CALLS; i++) {
           if(calls[i].active) {
@@ -193,8 +201,10 @@ namespace Venom {
             if(send_audio_ret != ToxAV.AV_Error.NONE) {
               stdout.printf("send_audio returned %d\n", send_audio_ret);
             }
+             
           }
         }
+        //At this point we are done with buffer, so FREE IT
       }
 
       stdout.printf("stopping av thread...\n");
