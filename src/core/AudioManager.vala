@@ -41,7 +41,7 @@ namespace Venom {
 
     private const int CHUNK_SIZE = 1024; 
     private const int SAMPLE_RATE = 44100;
-    private const string AUDIO_CAPS = "audio/x-raw-int,channels=1,rate=48000,signed=(boolean)true,width=16,depth=16,endianness=BYTE_ORDER";
+    private const string AUDIO_CAPS = "audio/x-raw-int,channels=1,rate=48000,signed=true,width=16,depth=16,endianness=1234";
 
     private const int MAX_CALLS = 16;
     private CallInfo[] calls = new CallInfo[MAX_CALLS];
@@ -73,7 +73,7 @@ namespace Venom {
     public static AudioManager instance {get; private set;}
 
     public static void init() throws AudioManagerError {
-      instance = new AudioManager({""/*,"--gst-debug-level=3"*/});
+      instance = new AudioManager({"","--gst-debug-level=3"});
     }
 
     private AudioManager(string[] args) throws AudioManagerError {
@@ -109,8 +109,8 @@ namespace Venom {
     }
 
     public static void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] frames) {
-      //stdout.printf("Got audio frames, of size: %d\n", frames.length * 2);
-      instance.buffer_in(frames, frames.length);
+      stdout.printf("Got audio frames, of size: %d\n", frames.length * 2);
+      //instance.buffer_in(frames, frames.length);
     }
 
     public static void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) {
@@ -146,7 +146,7 @@ namespace Venom {
       Memory.copy(gst_buf.data, buffer, len);
 
       audio_source_in.push_buffer(gst_buf);
-      //stdout.printf("pushed %i bytes to IN pipeline\n", len);
+      stdout.printf("pushed %i bytes to IN pipeline\n", len);
       return;
     }
 
@@ -154,8 +154,7 @@ namespace Venom {
       Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
       int len = int.min(gst_buf.data.length, dest.length * 2);
       Memory.copy(dest, gst_buf.data, len);
-
-      //stdout.printf("pulled %i bytes from OUT pipeline\n", len);
+      stdout.printf("pulled %i bytes from OUT pipeline\n", len);
       return len / 2;
     }
 
@@ -169,8 +168,8 @@ namespace Venom {
       int prep_frame_ret = 0;
       ToxAV.AV_Error send_audio_ret;
 
-      //stdout.printf("buffer size (bytes): %i", buffer.length);
-      //stdout.printf("enc_buffer size (bytes): %i", enc_buffer.length * 2);
+      stdout.printf("buffer size (bytes): %i\n", buffer.length);
+      stdout.printf("enc_buffer size (bytes): %i\n", enc_buffer.length * 2);
       while(running) {
         // read samples from pipeline
         buffer_size = buffer_out(buffer);
@@ -179,15 +178,12 @@ namespace Venom {
           Thread.usleep(1000);
           continue;
         }
-
-        //stdout.printf("Buffer_size = %d\n", buffer_size);
-
         // distribute samples across peers
         for(int i = 0; i < MAX_CALLS; i++) {
           if(calls[i].active) {
 
             //FIXME should be this but returns -1
-            prep_frame_ret = toxav.prepare_audio_frame(i, enc_buffer, buffer, buffer_size);
+            prep_frame_ret = toxav.prepare_audio_frame(i, enc_buffer, buffer, buffer.length);
             if(prep_frame_ret <= 0) {
               stdout.printf("prepare_audio_frame returned an error: %i\n", prep_frame_ret);
               continue;
