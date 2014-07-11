@@ -73,7 +73,7 @@ namespace Venom {
     public static AudioManager instance {get; private set;}
 
     public static void init() throws AudioManagerError {
-      instance = new AudioManager({"","--gst-debug-level=3"});
+      instance = new AudioManager({""/*,"--gst-debug-level=3"*/});
     }
 
     private AudioManager(string[] args) throws AudioManagerError {
@@ -90,13 +90,13 @@ namespace Venom {
       // input pipeline
       pipeline_in  = new Gst.Pipeline(PIPELINE_IN);
       audio_source_in = (Gst.AppSrc)Gst.ElementFactory.make("appsrc", AUDIO_SOURCE_IN);
-      audio_sink_in   = Gst.ElementFactory.make("autoaudiosink", AUDIO_SINK_IN);
+      audio_sink_in   = Gst.ElementFactory.make("openalsink", AUDIO_SINK_IN);
       pipeline_in.add_many (audio_source_in, audio_sink_in);
       audio_source_in.link(audio_sink_in);
 
       // output pipeline
       pipeline_out = new Gst.Pipeline(PIPELINE_OUT);
-      audio_source_out = Gst.ElementFactory.make("autoaudiosrc", AUDIO_SOURCE_OUT);
+      audio_source_out = Gst.ElementFactory.make("pulsesrc", AUDIO_SOURCE_OUT);
       audio_sink_out   = (Gst.AppSink)Gst.ElementFactory.make("appsink", AUDIO_SINK_OUT);
       pipeline_out.add_many(audio_source_out, audio_sink_out);
       audio_source_out.link(audio_sink_out);
@@ -106,10 +106,12 @@ namespace Venom {
       stdout.printf("Caps is [%s]\n", caps.to_string());
       audio_source_in.caps = caps;
       audio_sink_out.caps = caps;
+
+      ((Gst.BaseSrc)audio_source_out).blocksize = (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000 * 2;
     }
 
     public static void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] frames) {
-      stdout.printf("Got audio frames, of size: %d\n", frames.length * 2);
+      //stdout.printf("Got audio frames, of size: %d\n", frames.length * 2);
       instance.buffer_in(frames, frames.length);
     }
 
@@ -122,7 +124,7 @@ namespace Venom {
     }
 
     public void destroy_audio_pipeline() {
-      pipeline_out.set_state(Gst.State.NULL);
+      pipeline_in.set_state(Gst.State.NULL);
       pipeline_out.set_state(Gst.State.NULL);
       stdout.printf("Pipeline destroyed\n");
     }
@@ -134,19 +136,18 @@ namespace Venom {
     }
 
     public void set_pipeline_playing() {
+      pipeline_in.set_state(Gst.State.PLAYING);
       pipeline_out.set_state(Gst.State.PLAYING);
       stdout.printf("Pipeline set to playing\n");
-      pipeline_in.set_state(Gst.State.PLAYING);
     }
 
     public void buffer_in(int16[] buffer, int buffer_size) {
       int len = int.min(buffer_size * 2, buffer.length * 2);
       Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len);
-      gst_buf.make_writable();
       Memory.copy(gst_buf.data, buffer, len);
 
       audio_source_in.push_buffer(gst_buf);
-      stdout.printf("pushed %i bytes to IN pipeline\n", len);
+      //stdout.printf("pushed %i bytes to IN pipeline\n", len);
       return;
     }
 
@@ -160,7 +161,10 @@ namespace Venom {
       //Allocate the new buffer here, we will return this buffer (it is dest)
       int len = int.min(gst_buf.data.length, dest.length * 2);
       Memory.copy(dest, gst_buf.data, len);
-      stdout.printf("pulled %i bytes from OUT pipeline\n", len);
+      //stdout.printf("pulled %i bytes from OUT pipeline\n", len);
+      if(gst_buf.data.length > dest.length * 2) {
+        stdout.printf("Pulled more data than space in buffer! (%i bytes)\n", gst_buf.data.length);
+      }
       return len / 2;
     }
 
@@ -190,8 +194,7 @@ namespace Venom {
         for(int i = 0; i < MAX_CALLS; i++) {
           if(calls[i].active) {
 
-            //FIXME should be this but returns -1
-            prep_frame_ret = toxav.prepare_audio_frame(i, enc_buffer, buffer, buffer.length);
+            prep_frame_ret = toxav.prepare_audio_frame(i, enc_buffer, buffer, buffer_size);
             if(prep_frame_ret <= 0) {
               stdout.printf("prepare_audio_frame returned an error: %i\n", prep_frame_ret);
               continue;
@@ -236,6 +239,7 @@ namespace Venom {
         return;
       }
 
+      toxav.kill_transmission(c.call_index);
       calls[c.call_index].active = false;
       number_of_calls--;
 
