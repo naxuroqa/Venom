@@ -90,7 +90,7 @@ namespace Venom {
       // input pipeline
       pipeline_in  = new Gst.Pipeline(PIPELINE_IN);
       audio_source_in = (Gst.AppSrc)Gst.ElementFactory.make("appsrc", AUDIO_SOURCE_IN);
-      audio_sink_in   = Gst.ElementFactory.make("autoaudiosink", AUDIO_SINK_IN);
+      audio_sink_in   = Gst.ElementFactory.make("openalsink", AUDIO_SINK_IN);
       pipeline_in.add_many (audio_source_in, audio_sink_in);
       audio_source_in.link(audio_sink_in);
 
@@ -124,7 +124,7 @@ namespace Venom {
     }
 
     public void destroy_audio_pipeline() {
-      pipeline_out.set_state(Gst.State.NULL);
+      pipeline_in.set_state(Gst.State.NULL);
       pipeline_out.set_state(Gst.State.NULL);
       stdout.printf("Pipeline destroyed\n");
     }
@@ -136,15 +136,14 @@ namespace Venom {
     }
 
     public void set_pipeline_playing() {
+      pipeline_in.set_state(Gst.State.PLAYING);
       pipeline_out.set_state(Gst.State.PLAYING);
       stdout.printf("Pipeline set to playing\n");
-      pipeline_in.set_state(Gst.State.PLAYING);
     }
 
     public void buffer_in(int16[] buffer, int buffer_size) {
       int len = int.min(buffer_size * 2, buffer.length * 2);
       Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len);
-      gst_buf.make_writable();
       Memory.copy(gst_buf.data, buffer, len);
 
       audio_source_in.push_buffer(gst_buf);
