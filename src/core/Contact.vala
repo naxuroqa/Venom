@@ -76,10 +76,10 @@ namespace Venom {
         if(alias == "") {
           return name;
         } else {
-          return "%s <i>(%s)</i>".printf(Markup.escape_text(name), Markup.escape_text(alias));
+          return _("%s <i>(%s)</i>").printf(Markup.escape_text(name), Markup.escape_text(alias));
         }
       } else if (alias != "") {
-        return "<i>%s</i>".printf(Markup.escape_text(alias));
+        return _("<i>%s</i>").printf(Markup.escape_text(alias));
       } else {
         return Tools.bin_to_hexstring(public_key);
       }
@@ -90,10 +90,10 @@ namespace Venom {
         if(alias == "") {
           return name;
         } else {
-          return "%s <i>(%s)</i>".printf(Tools.markup_uris(name), Tools.markup_uris(alias));
+          return _("%s <i>(%s)</i>").printf(Tools.markup_uris(name), Tools.markup_uris(alias));
         }
       } else if (alias != "") {
-        return "<i>%s</i>".printf(Tools.markup_uris(alias));
+        return _("<i>%s</i>").printf(Tools.markup_uris(alias));
       } else {
         return Tools.bin_to_hexstring(public_key);
       }
@@ -105,7 +105,7 @@ namespace Venom {
       } else if (last_seen != null) {
         return get_last_seen_string();
       } else {
-        return "Offline";
+        return _("Offline");
       }
     }
 
@@ -115,7 +115,7 @@ namespace Venom {
       } else if (last_seen != null) {
         return get_last_seen_string();
       } else {
-        return "Offline";
+        return _("Offline");
       }
     }
 
@@ -124,7 +124,7 @@ namespace Venom {
     }
 
     public string get_last_seen_string() {
-      return last_seen != null ? "Last seen: %s".printf(last_seen.format("%c")) : "";
+      return last_seen != null ? _("Last seen: %s").printf(last_seen.format("%c")) : "";
     }
 
     public string get_tooltip_string() {

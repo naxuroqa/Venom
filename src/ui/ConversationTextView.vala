@@ -136,7 +136,7 @@ namespace Venom {
       Gtk.TextIter text_end;
       string text;
       buffer.get_end_iter(out text_end);
-      text = "[%s] ".printf(
+      text = _("[%s] ").printf(
         message.get_time_plain()
       );
       buffer.insert_with_tags(text_end, text, text.length, grey_tag);
@@ -181,7 +181,7 @@ namespace Venom {
           try {
             match_info.next();
           } catch (GLib.RegexError e) {
-            stderr.printf("Error matching uri regex: %s\n", e.message);
+            Logger.log(LogLevel.ERROR, "Error matching uri regex: " + e.message);
             break;
           }
         }
@@ -242,7 +242,7 @@ namespace Venom {
       try {
         Gtk.show_uri(null, uri, 0);
       } catch (Error e) {
-        stderr.printf("Error when showing uri: %s\n", e.message);
+        Logger.log(LogLevel.ERROR, "Error when showing uri: " + e.message);
       }
     }
 

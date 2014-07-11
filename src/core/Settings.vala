@@ -22,8 +22,20 @@
 namespace Venom {
   public class Settings : Object {
 
+    public const string MESSAGE_LOGGING_KEY = "enable-logging";
+    public const string DAYS_TO_LOG_KEY = "days-to-log";
+    public const string LOG_INDEFINITELY_KEY = "log-indefinitely";
+    public const string URGENCY_NOTIFICATION_KEY = "enable-urgency-notification";
+    public const string TRAY_KEY = "enable-tray";
+    public const string NOTIFY_KEY = "enable-notify";
+    public const string DEC_BINARY_PREFIX_KEY = "dec-binary-prefix";
+    public const string SEND_TYPING_STATUS_KEY = "send-typing-status";
+    public const string SHOW_TYPING_STATUS_KEY = "show-typing-status";
+    public const string DEFAULT_HOST_KEY = "default-host";
+
     public bool   enable_logging              { get; set; default = false;     }
     public bool   enable_urgency_notification { get; set; default = true;      }
+    public bool   log_indefinitely            { get; set; default = true;      }
     public int    days_to_log                 { get; set; default = 180;       }
     public bool   dec_binary_prefix           { get; set; default = true;      }
     public bool   send_typing_status          { get; set; default = false;     }
@@ -33,6 +45,8 @@ namespace Venom {
     public int    window_width                { get; set; default = 600;       }
     public int    window_height               { get; set; default = 600;       }
     public string default_host                { get; set; default = "toxme.se";}
+    public bool   enable_tray                 { get; set; default = false;     }
+    public bool   enable_notify               { get; set; default = false;     }
 
     private static Settings? _instance;
     public static Settings instance {
@@ -40,10 +54,9 @@ namespace Venom {
         if( _instance == null ) {
           File tmp = File.new_for_path(ResourceFactory.instance.config_filename);
           if (tmp.query_exists()) {
-            _instance = load_settings(ResourceFactory.instance.config_filename);
+            _instance = load_settings(ResourceFactory.instance.config_filename) ?? new Settings();
           } else {
             _instance = new Settings();
-            _instance.save_settings(ResourceFactory.instance.config_filename);
           }
         }
         return _instance;
@@ -88,10 +101,10 @@ namespace Venom {
         DataOutputStream os = new DataOutputStream(file.replace(null, false, FileCreateFlags.PRIVATE | FileCreateFlags.REPLACE_DESTINATION ));
         generator.to_stream(os);
       } catch (Error e) {
-        stderr.printf("Error saving configs:%s\n", e.message);
+        Logger.log(LogLevel.ERROR, "Error saving configs: " + e.message);
         return;
       }
-      stdout.printf("Settings saved.\n");
+      Logger.log(LogLevel.INFO, "Settings saved.");
     }
 
     public static Settings? load_settings(string path) {
@@ -101,7 +114,7 @@ namespace Venom {
         parser.load_from_file(path);
         node = parser.get_root();
       } catch (Error e) {
-        stderr.printf("Error reading configs:%s\n",e.message);
+        Logger.log(LogLevel.ERROR, "Error reading configs: " + e.message);
         return null;
       }
       return Json.gobject_deserialize (typeof (Settings), node) as Settings;

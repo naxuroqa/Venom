@@ -32,12 +32,6 @@ namespace Tox {
   [CCode (cprefix = "TOX_")]
   public const int FRIEND_ADDRESS_SIZE;
   [CCode (cprefix = "TOX_")]
-  public const int PORTRANGE_FROM;
-  [CCode (cprefix = "TOX_")]
-  public const int PORTRANGE_TO;
-  [CCode (cprefix = "TOX_")]
-  public const int PORT_DEFAULT;
-  [CCode (cprefix = "TOX_")]
   public const int ENABLE_IPV6_DEFAULT;
 
   /* Errors for m_addfriend
@@ -139,7 +133,7 @@ namespace Tox {
 
     /* return the friend id associated to that client id.
         return -1 if no such friend */
-    public int32 tox_get_friend_number([CCode(array_length=false)] uint8[] client_id);
+    public int32 get_friend_number([CCode(array_length=false)] uint8[] client_id);
 
     /* Copies the public key associated to that friend id into client_id buffer.
      * Make sure that client_id is of size CLIENT_ID_SIZE.
@@ -171,28 +165,36 @@ namespace Tox {
      public int friend_exists(int32 friendnumber);
 
     /* Send a text chat message to an online friend.
-     *
-     *  return the message id if packet was successfully put into the send queue.
-     *  return 0 if it was not.
-     *
-     * You will want to retain the return value, it will be passed to your read receipt callback
-     * if one is received.
-     * m_sendmessage_withid will send a message with the id of your choosing,
-     * however we can generate an id for you by calling plain m_sendmessage.
-     */
+    *
+    * return the message id if packet was successfully put into the send queue.
+    * return 0 if it was not.
+    *
+    * maximum length of messages is TOX_MAX_MESSAGE_LENGTH, your client must split larger messages
+    * or else sending them will not work. No the core will not split messages for you because that
+    * requires me to parse UTF-8.
+    *
+    * You will want to retain the return value, it will be passed to your read_receipt callback
+    * if one is received.
+    * m_sendmessage_withid will send a message with the id of your choosing,
+    * however we can generate an id for you by calling plain m_sendmessage.
+    */
     public uint32 send_message(int32 friendnumber, [CCode(array_length_type="guint32")] uint8[] message);
     public uint32 send_message_withid(int32 friendnumber, uint32 theid, [CCode(array_length_type="guint32")] uint8[] message);
 
     /* Send an action to an online friend.
-     *
-     *  return the message id if packet was successfully put into the send queue.
-     *  return 0 if it was not.
-     *
-     *  You will want to retain the return value, it will be passed to your read_receipt callback
-     *  if one is received.
-     *  m_sendaction_withid will send an action message with the id of your choosing,
-     *  however we can generate an id for you by calling plain m_sendaction.
-     */
+    *
+    * return the message id if packet was successfully put into the send queue.
+    * return 0 if it was not.
+    *
+    * maximum length of actions is TOX_MAX_MESSAGE_LENGTH, your client must split larger actions
+    * or else sending them will not work. No the core will not split actions for you because that
+    * requires me to parse UTF-8.
+    *
+    * You will want to retain the return value, it will be passed to your read_receipt callback
+    * if one is received.
+    * m_sendaction_withid will send an action message with the id of your choosing,
+    * however we can generate an id for you by calling plain m_sendaction.
+    */
     public uint32 send_action(int32 friendnumber, [CCode(array_length_type="guint32")] uint8[] action);
     public uint32 send_action_withid(int32 friendnumber, uint32 action_id, [CCode(array_length_type="guint32")] uint8[] action);
 
@@ -207,13 +209,13 @@ namespace Tox {
     public int set_name([CCode(array_length_type="guint16")] uint8[] name);
 
     /*
-     * Get your nickname.
-     * m - The messanger context to use.
-     * name - needs to be a valid memory location with a size of at least MAX_NAME_LENGTH (128) bytes.
-     *
-     *  return length of name.
-     *  return 0 on error.
-     */
+    * Get your nickname.
+    * m - The messenger context to use.
+    * name - needs to be a valid memory location with a size of at least MAX_NAME_LENGTH (128) bytes.
+    *
+    * return length of name.
+    * return 0 on error.
+    */
     public uint16 get_self_name([CCode(array_length=false)] uint8[] name);
 
     /* Get name of friendnumber and put it in name.
@@ -374,6 +376,14 @@ namespace Tox {
     public delegate void ConnectionStatusCallback(Tox tox, int32 friend_number, uint8 status);
     public void callback_connection_status(ConnectionStatusCallback callback);
 
+    /**********ADVANCED FUNCTIONS (If you don't know what they do you can safely ignore them.) ************/
+
+    /* Functions to get/set the nospam part of the id.
+    */
+    public uint32 nospam {
+      [CCode(cname="tox_get_nospam")] get;
+      [CCode(cname="tox_set_nospam")] set;
+    }
 
     /**********GROUP CHAT FUNCTIONS: WARNING WILL BREAK A LOT************/
 
@@ -599,7 +609,7 @@ namespace Tox {
      *  returns 0 otherwise
      */
     public int bootstrap_from_address(string address, uint8 ipv6enabled,
-                   uint16 port,[CCode(array_length=false)] uint8[] public_key);
+                   uint16 port, [CCode(array_length=false)] uint8[] public_key);
 
     /*  return 0 if we are not connected to the DHT.
      *  return 1 if we are.
@@ -611,41 +621,15 @@ namespace Tox {
      * Free all datastructures. */
     //void tox_kill(Tox *tox);
 
+    /* Return the time in milliseconds before tox_do() should be called again
+    * for optimal performance.
+    *
+    * returns time (in ms) before the next tox_do() needs to be run on success.
+    */
+    public uint32 do_interval();
 
     /* the main loop that needs to be run at least 20 times per second */
     public void do();
-    
-    /*
-     * tox_wait_prepare(): function should be called under lock
-     * Prepares the data required to call tox_wait_execute() asynchronously
-     *
-     * data[] is reserved and kept by the caller
-     * len is in/out: in = reserved data[], out = required data[]
-     *
-     *  returns 1 on success
-     *  returns 0 on failure (length is insufficient)
-     */
-    public int wait_prepare([CCode(array_length=false)]out uint8[] data, ref uint16 lenptr);
-
-    /* tox_wait_execute(): function can be called asynchronously
-     * Waits for something to happen on the socket for up to milliseconds milliseconds.
-     * *** Function MUSTN'T poll. ***
-     * The function mustn't modify anything at all, so it can be called completely
-     * asynchronously without any worry.
-     *
-     *  returns  1 if there is socket activity (i.e. tox_do() should be called)
-     *  returns  0 if the timeout was reached
-     *  returns -1 if data was NULL or len too short
-     */
-    public int wait_execute([CCode(array_length_type="guint16")]uint8[] data, uint16 milliseconds);
-
-    /* tox_wait_cleanup(): function should be called under lock
-     * Stores results from tox_wait_execute().
-     *
-     * data[]/len shall be the exact same as given to tox_wait_execute()
-     *
-     */
-    public void wait_cleanup([CCode(array_length_type="guint16")]uint8[] data);
 
     /* SAVING AND LOADING FUNCTIONS: */
 

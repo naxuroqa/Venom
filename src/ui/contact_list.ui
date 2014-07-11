@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
-<interface>
+<!-- Generated with glade 3.18.3 -->
+<interface domain="Venom">
   <requires lib="gtk+" version="3.4"/>
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">100</property>
@@ -129,6 +129,34 @@
       </object>
     </child>
     <child>
+      <object class="GtkSeparatorMenuItem" id="menuitem_separator1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="menuitem_export">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">E_xport data file</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="menuitem_import">
+        <property name="can_focus">False</property>
+        <property name="no_show_all">True</property>
+        <property name="label" translatable="yes">_Import data file</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="menutitem_separator2">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
       <object class="GtkImageMenuItem" id="menuitem_about">
         <property name="label">gtk-about</property>
         <property name="visible">True</property>
@@ -154,7 +182,7 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
   </object>
-  <object class="GtkImage" id="image_arrow">
+  <object class="GtkImage" id="image_filetransfer">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
@@ -184,19 +212,15 @@
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkBox" id="box_self_info">
-                <property name="height_request">76</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="border_width">16</property>
                 <child>
                   <object class="GtkImage" id="image_userimage">
                     <property name="width_request">44</property>
                     <property name="height_request">41</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">8</property>
-                    <property name="margin_right">8</property>
-                    <property name="margin_top">8</property>
-                    <property name="margin_bottom">8</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                   <packing>
@@ -216,7 +240,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">#username</property>
+                        <property name="label">#username</property>
                         <property name="ellipsize">end</property>
                         <attributes>
                           <attribute name="weight" value="heavy"/>
@@ -233,7 +257,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">#userstatus</property>
+                        <property name="label">#userstatus</property>
                         <property name="ellipsize">end</property>
                         <attributes>
                           <attribute name="foreground" value="#636364646666"/>
@@ -253,37 +277,42 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkImage" id="image_status">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="stock">gtk-missing-image</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSpinner" id="spinner_status">
-                    <property name="width_request">26</property>
-                    <property name="can_focus">False</property>
-                    <property name="no_show_all">True</property>
-                    <property name="tooltip_text" translatable="yes">connecting...</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkToggleButton" id="button_user">
-                    <property name="width_request">13</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="image">image_arrow</property>
+                    <child>
+                      <object class="GtkBox" id="box3">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkImage" id="image_status">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="stock">gtk-missing-image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinner" id="spinner_status">
+                            <property name="width_request">26</property>
+                            <property name="height_request">26</property>
+                            <property name="can_focus">False</property>
+                            <property name="no_show_all">True</property>
+                            <property name="tooltip_text" translatable="yes">connecting...</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                     <style>
                       <class name="userbutton"/>
                     </style>
@@ -291,7 +320,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">4</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
@@ -302,90 +331,81 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="box1">
+              <object class="GtkEventBox" id="eventbox1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkFrame" id="frame1">
+                  <object class="GtkBox" id="box1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label_xalign">0</property>
-                    <property name="shadow_type">out</property>
                     <child>
-                      <object class="GtkEventBox" id="eventbox1">
+                      <object class="GtkScrollbar" id="scrollbar_contact_list">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="margin_left">3</property>
+                        <property name="margin_right">3</property>
+                        <property name="margin_top">3</property>
+                        <property name="margin_bottom">3</property>
+                        <property name="orientation">vertical</property>
+                        <property name="adjustment">adjustment1</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="box4">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkBox" id="box4">
+                          <object class="GtkComboBox" id="combobox_status">
+                            <property name="height_request">27</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="orientation">vertical</property>
+                            <property name="halign">start</property>
+                            <property name="margin_top">5</property>
+                            <property name="margin_bottom">1</property>
+                            <property name="id_column">0</property>
+                            <style>
+                              <class name="statuscombo"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="scrolled_window_contact_list">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="vadjustment">adjustment1</property>
                             <child>
-                              <object class="GtkComboBox" id="combobox_status">
-                                <property name="height_request">27</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="margin_left">8</property>
-                                <property name="margin_top">5</property>
-                                <property name="margin_bottom">1</property>
-                                <property name="id_column">0</property>
-                                <style>
-                                  <class name="statuscombo"/>
-                                </style>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkScrolledWindow" id="scrolled_window_contact_list">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="vadjustment">adjustment1</property>
-                                <property name="hscrollbar_policy">never</property>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">True</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
+                              <placeholder/>
                             </child>
                           </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
                         </child>
-                        <style>
-                          <class name="contactlist-box"/>
-                        </style>
                       </object>
-                    </child>
-                    <child type="label_item">
-                      <placeholder/>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
-                <child>
-                  <object class="GtkScrollbar" id="scrollbar_contact_list">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="adjustment">adjustment1</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+                <style>
+                  <class name="contactlist-box"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -434,6 +454,22 @@
                   </packing>
                 </child>
                 <child>
+                  <object class="GtkButton" id="button_filetransfer">
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="no_show_all">True</property>
+                    <property name="image">image_filetransfer</property>
+                    <style>
+                      <class name="bottombutton"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkButton" id="button_preferences">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -448,7 +484,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>

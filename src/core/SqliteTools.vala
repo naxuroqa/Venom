@@ -34,30 +34,30 @@ namespace Venom {
     public static void put_int(Sqlite.Statement statement, string name, int value) throws SqliteStatementError {
       int index = statement.bind_parameter_index(name);
       if(index == 0) {
-        throw new SqliteStatementError.INDEX(@"Index for \"$(name)\" not found.");
+        throw new SqliteStatementError.INDEX(_("Index for %s not found.").printf(name));
       }
       if(statement.bind_int(index, value) != Sqlite.OK) {
-        throw new SqliteStatementError.BIND(@"Could not bind int to \"$(name)\".");
+        throw new SqliteStatementError.BIND(_("Could not bind int to %s.").printf(name));
       }
     }
 
     public static void put_int64(Sqlite.Statement statement, string name, int64 value) throws SqliteStatementError {
       int index = statement.bind_parameter_index(name);
       if(index == 0) {
-        throw new SqliteStatementError.INDEX(@"Index for \"$(name)\" not found.");
+        throw new SqliteStatementError.INDEX(_("Index for %s not found.").printf(name));
       }
       if(statement.bind_int64(index, value) != Sqlite.OK) {
-        throw new SqliteStatementError.BIND(@"Could not bind int64 to \"$(name)\".");
+        throw new SqliteStatementError.BIND(_("Could not bind int64 to %s.").printf(name));
       }
     }
 
     public static void put_text(Sqlite.Statement statement, string name, string value) throws SqliteStatementError {
       int index = statement.bind_parameter_index(name);
       if(index == 0) {
-        throw new SqliteStatementError.INDEX(@"Index for \"$(name)\" not found.");
+        throw new SqliteStatementError.INDEX(_("Index for %s not found.").printf(name));
       }
       if(statement.bind_text(index, value) != Sqlite.OK) {
-        throw new SqliteStatementError.BIND(@"Could not bind text to \"$(name)\".");
+        throw new SqliteStatementError.BIND(_("Could not bind text to %s").printf(name));
       }
     }
 
@@ -72,7 +72,7 @@ namespace Venom {
       }
 
       if(Sqlite.Database.open (filepath, out db) != Sqlite.OK) {
-        throw new SqliteDbError.OPEN("Can't open database: %d: %s\n", db.errcode (), db.errmsg ());
+        throw new SqliteDbError.OPEN(_("Can't open database: %d: %s\n"), db.errcode (), db.errmsg ());
       }
     }
   }

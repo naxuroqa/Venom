@@ -25,10 +25,6 @@ namespace Venom {
     private static Gdk.RGBA unread_message_bgcolor = Gdk.RGBA() { red = 0.419607843, green = 0.760784314, blue = 0.376470588, alpha = 1.0 };
     private static Gdk.RGBA unread_message_fgcolor = Gdk.RGBA() { red = 0, green = 0, blue = 0, alpha = 1.0 };
 
-    public ContactListCellRenderer() {
-      GLib.Object();
-    }
-
     public override void get_size(Gtk.Widget widget, Gdk.Rectangle? cell_area, out int x_offset, out int y_offset, out int width, out int height) {
       x_offset = 0;
       y_offset = 0;
@@ -38,7 +34,8 @@ namespace Venom {
 
     public override void render(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gtk.CellRendererState flags) {
       int y = 6 + cell_area.y;
-      Pango.Rectangle ink_rect = render_name(ctx, widget, background_area, cell_area, y);
+      Gtk.StateFlags state_flags = get_state(widget, flags);
+      Pango.Rectangle ink_rect = render_name(ctx, widget, background_area, cell_area, y, state_flags);
       y += ink_rect.height;
       render_status(ctx, widget, background_area, cell_area, y);
       render_image(ctx, widget, background_area, cell_area, y);
@@ -46,13 +43,13 @@ namespace Venom {
       render_unread_messages(ctx, widget, background_area, cell_area);
     }
 
-    public void render_image(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
+    private void render_image(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
       Gdk.Pixbuf? icon;
       if(entry is Contact) {
-        Contact contact = entry as Contact;
+        Contact contact = (Contact)entry;
         icon = contact.image != null ? contact.image : ResourceFactory.instance.default_contact;
       } else {
-        GroupChat groupchat = entry as GroupChat;
+        GroupChat groupchat = (GroupChat)entry;
         icon = groupchat.image != null ? groupchat.image : ResourceFactory.instance.default_groupchat;
       }
       Gdk.Rectangle image_rect = {8, 9 + background_area.y, 44, 41};
@@ -63,11 +60,11 @@ namespace Venom {
 			}
     }
 
-    public void render_userstatus(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
+    private void render_userstatus(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
       Gdk.Pixbuf? status = null;
       
       if(entry is Contact) {
-        Contact contact = entry as Contact;
+        Contact contact = (Contact)entry;
 
         if(!contact.online) {
           status = contact.unread_messages > 0 ? ResourceFactory.instance.offline_glow : ResourceFactory.instance.offline;
@@ -89,7 +86,7 @@ namespace Venom {
           }
         }
       } else if(entry is GroupChat) {
-        GroupChat groupchat = entry as GroupChat;
+        GroupChat groupchat = (GroupChat)entry;
         if(groupchat.peer_count > 0) {
           status = groupchat.unread_messages > 0 ? ResourceFactory.instance.online_glow : ResourceFactory.instance.online;
         } else {
@@ -104,13 +101,12 @@ namespace Venom {
 		  }
     }
 
-    public Pango.Rectangle? render_name(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
+    private Pango.Rectangle? render_name(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset, Gtk.StateFlags state_flags) {
       Pango.Rectangle? ink_rect, logical_rect;
       Pango.FontDescription font = new Pango.FontDescription();
       Pango.Layout layout = widget.create_pango_layout(null);
       layout.set_font_description(font);
-      Gtk.StateFlags state = widget.get_state_flags();
-      Gdk.RGBA color = widget.get_style_context().get_color(state);
+      Gdk.RGBA color = widget.get_style_context().get_color(state_flags);
 
       layout.set_markup(entry.get_name_string(), -1);
       layout.set_ellipsize(Pango.EllipsizeMode.END);
@@ -127,13 +123,12 @@ namespace Venom {
       return ink_rect;
     }
 
-    public Pango.Rectangle render_status(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
+    private Pango.Rectangle render_status(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, int y_offset) {
       Pango.Rectangle? ink_rect, logical_rect;
       Pango.FontDescription font = new Pango.FontDescription();
       Pango.Layout layout = widget.create_pango_layout(null);
       layout.set_font_description(font);
-      Gtk.StateFlags state = widget.get_state_flags();
-      Gdk.RGBA color = widget.get_style_context().get_color(state);
+      Gdk.RGBA color = widget.get_style_context().get_color(Gtk.StateFlags.NORMAL);
       //FIXME find a better way for this (css styling if possible)
       color.red -= 0.4;
       color.green -= 0.4;
@@ -152,12 +147,12 @@ namespace Venom {
       }
       return ink_rect;
     }
-  public void render_unread_messages(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
+    private void render_unread_messages(Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area) {
       int unread_messages = 0;
       if(entry is Contact) {
-        unread_messages = (entry as Contact).unread_messages;
+        unread_messages = ((Contact)entry).unread_messages;
       } else if(entry is GroupChat) {
-        unread_messages = (entry as GroupChat).unread_messages;
+        unread_messages = ((GroupChat)entry).unread_messages;
       }
       if(unread_messages == 0) {
         return;

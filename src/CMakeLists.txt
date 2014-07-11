@@ -68,6 +68,18 @@ IF(${ENABLE_DJBDNS})
   SET(VENOM_LIBRARIES_OPT ${VENOM_LIBRARIES_OPT} ${DJBDNS_LIBRARIES})
 ENDIF()
 
+IF(${ENABLE_LIBNOTIFY})
+  PKG_CHECK_MODULES_FULLPATH(LIBNOTIFY REQUIRED libnotify>=0.7.3)
+  SET(VENOM_CFLAGS_OPT ${VENOM_CFLAGS_OPT} ${LIBNOTIFY_CFLAGS})
+  SET(VENOM_VALA_FLAGS_OPT ${VENOM_VALA_FLAGS_OPT} -D ENABLE_LIBNOTIFY)
+  SET(VENOM_LIBRARIES_OPT ${VENOM_LIBRARIES_OPT} ${LIBNOTIFY_LIBRARIES})
+ENDIF()
+
+IF(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "DEBUG")
+  MESSAGE("Debug build, setting debug flags")
+  SET(VENOM_VALA_FLAGS_OPT ${VENOM_VALA_FLAGS_OPT} -D DEBUG)
+ENDIF()
+
 # Set a variable defining our minimal version of glib
 SET(TARGET_GLIB ${GLIB_VERSION_MAJOR}.${GLIB_VERSION_MINOR})
 
@@ -92,8 +104,10 @@ IF(LINK_GIO_STATIC)
   ENDIF(WIN32)
 ENDIF(LINK_GIO_STATIC)
 
+SET(GETTEXT_CFLAGS "-DGETTEXT_PACKAGE=\\\"${GETTEXT_PACKAGE}\\\"")
+
 # add cflags and cflags_other of all dependencies to our cflags
-SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}
+SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GETTEXT_CFLAGS}
                   ${GTK_CFLAGS}    ${GTK_CFLAGS_OTHER}
                   ${GIO_CFLAGS}    ${GIO_CFLAGS_OTHER}
                   ${GLIB_CFLAGS}   ${GLIB_CFLAGS_OTHER}
@@ -124,8 +138,10 @@ SET( VENOM_SRC
   core/FileTransfer.vala
   core/GroupChat.vala
   core/GroupChatContact.vala
+  core/Logger.vala
   core/MessageLog.vala
   core/Message.vala
+  core/Notification.vala
   core/ResourceFactory.vala
   core/Settings.vala
   core/SqliteTools.vala
@@ -156,6 +172,20 @@ SET( VENOM_SRC
   ui/SettingsWindow.vala
 )
 
+SET( VENOM_GLADE
+  src/ui/add_contact_dialog.ui
+  src/ui/chat_filetransfer.ui
+  src/ui/contact_list.ui
+  src/ui/conversation_window.ui
+  src/ui/settings_window.ui
+  src/ui/user_info_window.ui
+)
+
+IF (XGETTEXT_FOUND)
+  # create new pot file with "make pot_file"
+  GETTEXT_CREATE_POT(${GETTEXT_PACKAGE}.pot OPTION ${XGETTEXT_OPTIONS} SRC ${VENOM_SRC} GLADE ${VENOM_GLADE})
+ENDIF()
+
 # precompile all vala code to c via valac
 VALA_PRECOMPILE( VALA_C_VENOM
     ${VENOM_SRC}
@@ -170,6 +200,7 @@ VALA_PRECOMPILE( VALA_C_VENOM
     gstreamer-interfaces-0.10
     gtk+-3.0
     json-glib-1.0
+    libnotify
     libqrencode
     sqlite3
     tox-1.0
@@ -266,5 +297,11 @@ IF(${ENABLE_QR_ENCODE})
   MESSAGE("   [X] ${QR_ENCODE_DESCRIPTION}")
 ELSE()
   MESSAGE("   [ ] ${QR_ENCODE_DESCRIPTION}")
+ENDIF()
+SET(LIBNOTIFY_DESCRIPTION "ENABLE_LIBNOTIFY - libnotify notification support")
+IF(${ENABLE_LIBNOTIFY})
+  MESSAGE("   [X] ${LIBNOTIFY_DESCRIPTION}")
+ELSE()
+  MESSAGE("   [ ] ${LIBNOTIFY_DESCRIPTION}")
 ENDIF()
 # vim:set ts=2 sw=2 et:

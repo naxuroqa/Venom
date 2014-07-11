@@ -62,7 +62,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/user_info_window.ui");
       } catch (GLib.Error e) {
-        stderr.printf("Loading user info window failed!\n");
+        Logger.log(LogLevel.FATAL, "Loading user info window failed: " + e.message);
       }
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.get_content_area().add(box);
@@ -83,7 +83,7 @@ namespace Venom {
       button_apply = this.add_button("_Apply", Gtk.ResponseType.APPLY);
 
       this.set_default_response(Gtk.ResponseType.APPLY);
-      this.title = "Edit user information";
+      this.title = _("Edit user information");
       // set dialog to minimal size
       set_default_size(0, 0);
     }

@@ -50,7 +50,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/add_contact_dialog.ui");
       } catch (GLib.Error e) {
-        stderr.printf("Loading add contact window failed!\n");
+        Logger.log(LogLevel.FATAL, "Loading add contact window failed: " + e.message);
       }
 
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
@@ -68,12 +68,12 @@ namespace Venom {
       try {
         id_regex = new GLib.Regex("^[[:xdigit:]]*$");
       } catch (RegexError re) {
-        stderr.printf("Failed to compile regex: %s\n", re.message);
+        Logger.log(LogLevel.FATAL, "Failed to compile regex:" + re.message);
       }
 
       this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Ok", Gtk.ResponseType.OK, null);
       this.set_default_response(Gtk.ResponseType.OK);
-      this.title = "Add contact";
+      this.title = _("Add contact");
       this.set_default_size(400, 250);
     }
 
@@ -87,17 +87,17 @@ namespace Venom {
 
     private void on_entry_changed() {
       if(id == null || id == "") {
-        entry_contact_id.secondary_icon_tooltip_text = "No ID given";
+        entry_contact_id.secondary_icon_tooltip_text = _("No ID given");
         entry_contact_id.secondary_icon_name = "emblem-important-symbolic";
       } else {
         string stripped_id = Tools.remove_whitespace(id);
         if (stripped_id.length == Tox.FRIEND_ADDRESS_SIZE * 2) {
           if (id_regex != null && !id_regex.match(stripped_id)) {
-            entry_contact_id.secondary_icon_tooltip_text = "ID contains invalid characters";
+            entry_contact_id.secondary_icon_tooltip_text = _("ID contains invalid characters");
             entry_contact_id.secondary_icon_name = "emblem-important-symbolic";
           } else {
             entry_contact_id.secondary_icon_name = "emblem-ok-symbolic";
-            entry_contact_id.secondary_icon_tooltip_text = "Valid ID size";
+            entry_contact_id.secondary_icon_tooltip_text = _("Valid ID size");
           }
         } else {
           entry_contact_id.secondary_icon_pixbuf = null;

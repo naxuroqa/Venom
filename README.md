@@ -6,8 +6,7 @@ a cross-platform graphical user interface for [Tox](https://github.com/irungento
 Installing
 ----------
 
-- Grab a [stable](https://github.com/naxuroqa/Venom/releases) or [nightly](http://download.tox.im) binary for Windows
-- Build it from source (Read [INSTALL.md](INSTALL.md) for instructions)
+- Grab a [stable](https://github.com/naxuroqa/Venom/releases) or [nightly](https://wiki.tox.im/Binaries)
 
 Contributing
 ------------
@@ -18,7 +17,7 @@ Contributing
 
 Contact
 -------
-- Visit our IRC channel `#tox` on [freenode](http://freenode.net/)  
+- Visit our IRC channel `#tox` on [freenode](https://freenode.net/)  
 [![Visit our IRC channel](https://kiwiirc.com/buttons/irc.freenode.net/tox.png)](https://kiwiirc.com/client/irc.freenode.net/?theme=basic#tox)
 - write an email to [naxuroqa@gmail.com](mailto:naxuroqa@gmail.com)
 

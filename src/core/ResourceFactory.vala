@@ -35,33 +35,33 @@ namespace Venom {
     }
 
     private ResourceFactory () {
-      string pixmaps_prefix = "/org/gtk/venom/pixmaps/";
       string theme_folder = Path.build_filename(Tools.find_data_dir(), "theme");
 
-      ok = load_image_from_resource(pixmaps_prefix + "ok.png");
-      cancel = load_image_from_resource(pixmaps_prefix + "cancel.png");
+      arrow      = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/arrow_white.png");
+      send_file  = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/attach.png");
+      call       = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/call.png");
+      ok         = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/check.png");
+      smiley     = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/emoticon.png");
+      cancel     = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/no.png");
+      send       = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/sendmessage.png");
+      call_video = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/video.png");
 
-      away = load_image_from_resource(pixmaps_prefix + "away.png");
-      away_glow = load_image_from_resource(pixmaps_prefix + "away_glow.png");
-      busy = load_image_from_resource(pixmaps_prefix + "busy.png");
-      busy_glow = load_image_from_resource(pixmaps_prefix + "busy_glow.png");
-      offline = load_image_from_resource(pixmaps_prefix + "offline.png");
-      offline_glow = load_image_from_resource(pixmaps_prefix + "offline_glow.png");
-      online = load_image_from_resource(pixmaps_prefix + "online.png");
-      online_glow = load_image_from_resource(pixmaps_prefix + "online_glow.png");
+      add          = load_image_from_resource("/org/gtk/venom/pixmaps/contact_list_icons/add.png");
+      groupchat    = load_image_from_resource("/org/gtk/venom/pixmaps/contact_list_icons/group.png");
+      settings     = load_image_from_resource("/org/gtk/venom/pixmaps/contact_list_icons/settings.png");
+      filetransfer = load_image_from_resource("/org/gtk/venom/pixmaps/contact_list_icons/transfer.png");
 
-      call = load_image_from_resource(pixmaps_prefix + "call.png");
-      call_video = load_image_from_resource(pixmaps_prefix + "call_video.png");
-      send = load_image_from_resource(pixmaps_prefix + "send.png");
-      send_file = load_image_from_resource(pixmaps_prefix + "send_file.png");
+      away         = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_idle.png");
+      away_glow    = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_idle_notification.png");
+      busy         = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_busy.png");
+      busy_glow    = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_busy_notification.png");
+      offline      = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_away.png");
+      offline_glow = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_away_notification.png");
+      online       = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_online.png");
+      online_glow  = load_image_from_resource("/org/gtk/venom/pixmaps/status/dot_online_notification.png");
 
-      add = load_image_from_resource(pixmaps_prefix + "add.png");
-      groupchat = load_image_from_resource(pixmaps_prefix + "groupchat.png");
-      settings = load_image_from_resource(pixmaps_prefix + "settings.png");
-
-      default_contact = load_image_from_resource(pixmaps_prefix + "default_contact.png");
-      default_groupchat = load_image_from_resource(pixmaps_prefix + "default_groupchat.png");
-      arrow = load_image_from_resource(pixmaps_prefix + "arrow.png");
+      default_contact   = load_image_from_resource("/org/gtk/venom/pixmaps/user_icons/default_contact.png");
+      default_groupchat = load_image_from_resource("/org/gtk/venom/pixmaps/user_icons/default_groupchat.png");
 
       default_theme_filename = Path.build_filename(theme_folder, "default.css");
 
@@ -71,9 +71,8 @@ namespace Venom {
       db_filename = Path.build_filename(tox_config_dir, "tox.db");
       config_filename = Path.build_filename(tox_config_dir, "config.json");
 
-      default_add_contact_message = "Please let me add you to my contact list.";
-      default_username = "Tox User";
-      default_statusmessage = "Toxing on Venom v.%s".printf(Config.VERSION);
+      default_username = _("Tox User");
+      default_statusmessage = _("Toxing on Venom v.%s").printf(Config.VERSION);
     }
 
     public Gdk.Pixbuf ok {get; private set;}
@@ -91,11 +90,14 @@ namespace Venom {
     public Gdk.Pixbuf call {get; private set;}
     public Gdk.Pixbuf call_video {get; private set;}
     public Gdk.Pixbuf send {get; private set;}
+
     public Gdk.Pixbuf send_file {get; private set;}
+    public Gdk.Pixbuf smiley {get; private set;}
 
     public Gdk.Pixbuf add {get; private set;}
     public Gdk.Pixbuf groupchat {get; private set;}
     public Gdk.Pixbuf settings {get; private set;}
+    public Gdk.Pixbuf filetransfer {get; private set;}
 
     public Gdk.Pixbuf default_contact {get; private set;}
     public Gdk.Pixbuf default_groupchat {get; private set;}
@@ -107,7 +109,6 @@ namespace Venom {
     public string data_filename {get; set;}
     public string db_filename {get; set;}
     public string config_filename {get; set;}
-    public string default_add_contact_message {get; private set;}
     public string default_username {get; private set;}
     public string default_statusmessage {get; private set;}
 
@@ -119,7 +120,7 @@ namespace Venom {
       try {
         buf = new Gdk.Pixbuf.from_resource( resourcename );
       } catch (Error e) {
-        stderr.printf("Error while loading image from \"%s\":%s\n", resourcename, e.message );
+        Logger.log(LogLevel.ERROR, "Error while loading image from \"" + resourcename + "\": " + e.message);
       }
       return buf;
     }

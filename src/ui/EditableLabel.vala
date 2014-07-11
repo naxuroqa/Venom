@@ -51,10 +51,11 @@ namespace Venom {
     }
 
     private void on_show_entry() {
+//FIXME apparently not working on gtk 3.6.4
 //FIXME define GTK_<MAJOR>_<MINOR> in cmake instead of using glib version
-#if GLIB_2_34
-      entry.attributes = label.attributes;
-#endif
+//#if GLIB_2_34
+//      entry.attributes = label.attributes;
+//#endif
       box_label.visible = false;
       box_entry.no_show_all = false;
       box_entry.show_all();
@@ -103,7 +104,7 @@ namespace Venom {
       unowned Gtk.Widget w = get_toplevel();
       if(!w.is_toplevel() || !(w is Gtk.Window)) {
         //could not get window for some reason, abort
-        stderr.printf("Could not get reference to toplevel window\n");
+        Logger.log(LogLevel.ERROR, "Could not get reference to toplevel window");
         return false;
       }
       unowned Gtk.Widget focus_widget = (w as Gtk.Window).get_focus();

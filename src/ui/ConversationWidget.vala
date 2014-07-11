@@ -51,7 +51,7 @@ namespace Venom {
 
     public void update_contact() {
       // update contact name
-      label_contact_name.label.label = "<b>%s</b>".printf(contact.get_name_string_with_hyperlinks());
+      label_contact_name.label.label = _("<b>%s</b>").printf(contact.get_name_string_with_hyperlinks());
 
       // update contact status message
       label_contact_statusmessage.label = contact.get_status_string_with_hyperlinks();
@@ -60,10 +60,15 @@ namespace Venom {
       image_contact_image.set_from_pixbuf(contact.image != null ? contact.image : ResourceFactory.instance.default_contact);
 
       if( contact.name != null )
-        conversation_view.is_typing_string = "%s is typing...".printf(Markup.escape_text(contact.name));
+        conversation_view.is_typing_string = _("%s is typing...").printf(Markup.escape_text(contact.name));
 
       button_send_file.sensitive = contact.online;
       button_send.sensitive = contact.online;
+
+      // remove is_typing notification for offline contacts
+      if(!contact.online){
+        on_typing_changed(false);
+      }
     }
 
     private void init_widgets() {
@@ -71,7 +76,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/conversation_window.ui");
       } catch (GLib.Error e) {
-        stderr.printf("Loading conversation window failed!\n");
+        Logger.log(LogLevel.FATAL, "Loading conversation window failed: " + e.message);
       }
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.add(box);
@@ -82,7 +87,9 @@ namespace Venom {
       Gtk.Image image_send = builder.get_object("image_send") as Gtk.Image;
       Gtk.Image image_call = builder.get_object("image_call") as Gtk.Image;
       Gtk.Image image_call_video = builder.get_object("image_call_video") as Gtk.Image;
+
       Gtk.Image image_send_file = builder.get_object("image_send_file") as Gtk.Image;
+      Gtk.Image image_insert_smiley = builder.get_object("image_insert_smiley") as Gtk.Image;
 
       Gtk.Label label_contact_name_ = builder.get_object("label_contact_name") as Gtk.Label;
       Gtk.Box box_user_info = builder.get_object("box_user_info") as Gtk.Box;
@@ -145,6 +152,8 @@ namespace Venom {
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
+      image_insert_smiley.set_from_pixbuf(ResourceFactory.instance.smiley);
+      
 
       Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
 
@@ -180,7 +189,39 @@ namespace Venom {
       delete_event.connect(hide_on_delete);
     }
 
+    bool is_typing = false;
+    // changes typing status to false after >= 15 seconds of inactivity
+    bool is_typing_timeout_fn_running = false;
+    Timer is_typing_timer = new Timer();
+    private bool is_typing_timeout_fn() {
+      if(is_typing) {
+        if(is_typing_timer.elapsed() > 15) {
+          is_typing = false;
+          conversation_view.on_typing_changed(is_typing);
+          is_typing_timeout_fn_running = false;
+          return false;
+        } else {
+          // wait another second
+          return true;
+        }
+      }
+      // abort timeout function when is_typing is already false
+      is_typing_timeout_fn_running = false;
+      return false;
+    }
+
     public void on_typing_changed(bool is_typing) {
+      is_typing_timer.start();
+      if(this.is_typing == is_typing) {
+        return;
+      }
+      this.is_typing = is_typing;
+
+      if(is_typing && !is_typing_timeout_fn_running) {
+        is_typing_timeout_fn_running = true;
+        Timeout.add(1, is_typing_timeout_fn);
+      }
+
       conversation_view.on_typing_changed(is_typing);
     }
 
@@ -245,10 +286,10 @@ namespace Venom {
 
     //GUI events
     public void button_send_file_clicked(Gtk.Button source){
-      Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog("Select a file to send",null,
+      Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog(_("Select a file to send"),null,
                                                                               Gtk.FileChooserAction.OPEN,
-                                                                              "Cancel", Gtk.ResponseType.CANCEL,
-                                                                              "Select", Gtk.ResponseType.ACCEPT);
+                                                                              "_Cancel", Gtk.ResponseType.CANCEL,
+                                                                              _("Select"), Gtk.ResponseType.ACCEPT);
       int response = file_selection_dialog.run();
       if(response != Gtk.ResponseType.ACCEPT){
         file_selection_dialog.destroy();
@@ -282,7 +323,7 @@ namespace Venom {
       try {
         file_size = file.query_info ("*", FileQueryInfoFlags.NONE).get_size ();
       } catch (Error e) {
-        stderr.printf("Error occured while getting file size: %s",e.message);
+        Logger.log(LogLevel.ERROR, "Error occured while getting file size: " + e.message);
         return;
       }
       FileTransfer ft = new FileTransfer(contact, FileTransferDirection.OUTGOING, file_size, file.get_basename(), file.get_path() );
