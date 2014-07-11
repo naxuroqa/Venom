@@ -30,15 +30,15 @@ namespace Venom {
     public string to_string() {
       switch(this) {
         case DEBUG:
-          return "DBG";
+          return "DBG   ";
         case INFO:
-          return "INFO";
+          return "INFO  ";
         case WARNING:
-          return "WARN";
+          return "WARN  ";
         case ERROR:
-          return "ERROR";
+          return "ERROR ";
         case FATAL:
-          return "FATAL";
+          return "FATAL ";
         default:
           return "UNKOWN";
       }
@@ -46,12 +46,43 @@ namespace Venom {
   }
   public class Logger : GLib.Object {
     public static LogLevel displayed_level {get; set; default = LogLevel.WARNING;}
+    public static bool use_coloring {get; set; default = true;}
+    public static void init() {
+      Log.set_default_handler (glib_log);
+    }
     public static void log(LogLevel level, string message) {
       if(level < displayed_level) {
         return;
       }
       unowned FileStream s = level < LogLevel.ERROR ? stdout : stderr;
-      s.printf("[%s] %s\n", level.to_string(), message);
+      if(use_coloring) {
+        s.printf("\x001b[%dm[%s]\x001b[0m %s\n", level + 90, level.to_string(), message);
+      } else {
+        s.printf("[%s] %s\n", level.to_string(), message);
+      }
+    }
+    private static void glib_log(string? domain, LogLevelFlags flags, string message) {
+      string logmessage = "%s %s".printf(domain ?? "", message);
+
+      switch (flags) {
+        case LogLevelFlags.LEVEL_CRITICAL:
+          log(LogLevel.FATAL, logmessage);
+          break;
+        case LogLevelFlags.LEVEL_ERROR:
+          log(LogLevel.ERROR, logmessage);
+          break;
+        case LogLevelFlags.LEVEL_INFO:
+        case LogLevelFlags.LEVEL_MESSAGE:
+          log(LogLevel.INFO, logmessage);
+          break;
+        case LogLevelFlags.LEVEL_DEBUG:
+          log(LogLevel.DEBUG, logmessage);
+          break;
+        case LogLevelFlags.LEVEL_WARNING:
+        default:
+          log(LogLevel.WARNING, logmessage);
+          break;
+      }
     }
   }
 }
