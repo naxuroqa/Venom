@@ -164,7 +164,7 @@ namespace Venom {
       set_pipeline_playing();
       int perframe = (int)(ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000;
       int buffer_size;
-      int16[] buffer = new int16[perframe*2];
+      int16[] buffer = new int16[perframe];
       uint8[] enc_buffer = new uint8[perframe*2];
       int prep_frame_ret = 0;
       ToxAV.AV_Error send_audio_ret;
