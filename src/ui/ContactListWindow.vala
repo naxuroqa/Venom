@@ -863,7 +863,7 @@ namespace Venom {
     }
 
     private void on_av_invite(Contact c) {
-      stdout.printf("[LOG] on_toxav_invite from %s\n", c.get_name_string());
+      Logger.log(LogLevel.INFO, "[LOG] on_toxav_invite from %s".printf(c.get_name_string()));
       this.set_urgency();
       Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
@@ -884,43 +884,43 @@ namespace Venom {
     }
 
     private void on_av_start(Contact c) {
-      stdout.printf("[LOG] on_toxav_start from %s\n", c.get_name_string());
+      Logger.log(LogLevel.INFO, "[LOG] on_toxav_start from %s".printf(c.get_name_string()));
     }
 
     private void on_av_cancel(Contact c) {
-      stdout.printf("[LOG] on_toxav_cancel from %s\n", c.get_name_string());
+      Logger.log(LogLevel.INFO, "[LOG] on_toxav_cancel from %s".printf(c.get_name_string()));
     }
 
     private void on_av_reject(Contact c) {
-      stdout.printf("[LOG] on_toxav_reject from %s\n", c.get_name_string());
+      Logger.log(LogLevel.INFO, "[LOG] on_toxav_reject from %s".printf(c.get_name_string()));
     }
 
     private void on_av_end(Contact c) {
-      stdout.printf("[LOG] on_toxav_end from %s\n", c.get_name_string());
+      Logger.log(LogLevel.INFO, "[LOG] on_toxav_end from %s".printf(c.get_name_string()));
     }
 
     private void on_av_ringing(Contact c) {
-      stdout.printf("[LOG] on_toxav_ringing from %s\n", c.get_name_string());
+      Logger.log(LogLevel.INFO, "[LOG] on_toxav_starting from %s".printf(c.get_name_string()));
     }
 
     private void on_av_starting(Contact c) {
-      stdout.printf("[LOG] on_toxav_starting from %s\n", c.get_name_string());
+      Logger.log(LogLevel.INFO, "[LOG] on_toxav_starting from %s".printf(c.get_name_string()));
     }
 
     private void on_av_ending(Contact c) {
-      stdout.printf("[LOG] on_toxav_ending from %s\n", c.get_name_string());
+      Logger.log(LogLevel.INFO, "[LOG] on_toxav_ending from %s".printf(c.get_name_string()));
     }
 
     private void on_av_error(Contact c) {
-      stdout.printf("[LOG] on_toxav_error from %s\n", c.get_name_string());
+      Logger.log(LogLevel.INFO, "[LOG] on_toxav_error from %s".printf(c.get_name_string()));
     }
 
     private void on_av_request_timeout(Contact c) {
-      stdout.printf("[LOG] on_toxav_request_timeout from %s\n", c.get_name_string());
+      Logger.log(LogLevel.INFO, "[LOG] on_toxav_request_timeout from %s".printf(c.get_name_string()));
     }
 
     private void on_av_peer_timeout(Contact c) {
-      stdout.printf("[LOG] on_toxav_peer_timeout from %s\n", c.get_name_string());
+      Logger.log(LogLevel.INFO, "[LOG] on_toxav_peer_timeout from %s".printf(c.get_name_string()));
     }
 
     private void on_start_audio_call(Contact c) {

@@ -122,7 +122,7 @@ namespace Venom {
       try {
         AudioManager.init();
       } catch (AudioManagerError e) {
-        stderr.printf("Error creating Audio Pipeline: %s\n", e.message);      
+        Logger.log(LogLevel.FATAL, "Error creating Audio Pipeline: " + e.message);
       }
 
       base.startup();

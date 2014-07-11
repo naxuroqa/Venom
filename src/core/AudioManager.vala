@@ -85,7 +85,7 @@ namespace Venom {
       } catch (Error e) {
         throw new AudioManagerError.INIT(e.message);
       }
-      stdout.printf("Gstreamer initialized\n");
+      Logger.log(LogLevel.INFO, "Gstreamer initialized");
 
       // input pipeline
       pipeline_in  = new Gst.Pipeline(PIPELINE_IN);
@@ -103,7 +103,7 @@ namespace Venom {
 
       // caps
       Gst.Caps caps = Gst.Caps.from_string(AUDIO_CAPS);
-      stdout.printf("Caps is [%s]\n", caps.to_string());
+      Logger.log(LogLevel.INFO, "Caps is [" + caps.to_string() + "]");
       audio_source_in.caps = caps;
       audio_sink_out.caps = caps;
 
@@ -111,7 +111,7 @@ namespace Venom {
     }
 
     public static void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] frames) {
-      //stdout.printf("Got audio frames, of size: %d\n", frames.length * 2);
+      Logger.log(LogLevel.DEBUG, "Got audio frames, of size: %d".printf(frames.length * 2));
       instance.buffer_in(frames, frames.length);
     }
 
@@ -126,19 +126,19 @@ namespace Venom {
     public void destroy_audio_pipeline() {
       pipeline_in.set_state(Gst.State.NULL);
       pipeline_out.set_state(Gst.State.NULL);
-      stdout.printf("Pipeline destroyed\n");
+      Logger.log(LogLevel.INFO, "Audio pipeline destroyed");
     }
 
     public void set_pipeline_paused() {
       pipeline_in.set_state(Gst.State.PAUSED);
       pipeline_out.set_state(Gst.State.PAUSED);
-      stdout.printf("Pipeline set to paused\n");
+      Logger.log(LogLevel.INFO, "Audio pipeline set to paused");
     }
 
     public void set_pipeline_playing() {
       pipeline_in.set_state(Gst.State.PLAYING);
       pipeline_out.set_state(Gst.State.PLAYING);
-      stdout.printf("Pipeline set to playing\n");
+      Logger.log(LogLevel.INFO, "Audio pipeline set to playing");
     }
 
     public void buffer_in(int16[] buffer, int buffer_size) {
@@ -147,7 +147,7 @@ namespace Venom {
       Memory.copy(gst_buf.data, buffer, len);
 
       audio_source_in.push_buffer(gst_buf);
-      //stdout.printf("pushed %i bytes to IN pipeline\n", len);
+      Logger.log(LogLevel.DEBUG, "pushed %i bytes to IN pipeline".printf(len));
       return;
     }
 
@@ -155,15 +155,12 @@ namespace Venom {
       Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
       int len = int.min(gst_buf.data.length, dest.length * 2);
       Memory.copy(dest, gst_buf.data, len);
-      //stdout.printf("pulled %i bytes from OUT pipeline\n", len);
-      if(gst_buf.data.length > dest.length * 2) {
-        stdout.printf("Pulled more data than space in buffer! (%i bytes)\n", gst_buf.data.length);
-      }
+      Logger.log(LogLevel.DEBUG, "pulled %i bytes from OUT pipeline".printf(len));
       return len / 2;
     }
 
     private int av_thread_fun() {
-      stdout.printf("starting av thread...\n");
+      Logger.log(LogLevel.INFO, "starting av thread...");
       set_pipeline_playing();
       int perframe = (int)(ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000;
       int buffer_size;
@@ -172,13 +169,11 @@ namespace Venom {
       int prep_frame_ret = 0;
       ToxAV.AV_Error send_audio_ret;
 
-      stdout.printf("buffer size (bytes): %i\n", buffer.length);
-      stdout.printf("enc_buffer size (bytes): %i\n", enc_buffer.length * 2);
       while(running) {
         // read samples from pipeline
         buffer_size = buffer_out(buffer);
         if(buffer_size <= 0) {
-          stdout.printf("Could not read samples from pipeline!\n");
+          Logger.log(LogLevel.WARNING, "Could not read samples from audio pipeline!");
           Thread.usleep(1000);
           continue;
         }
@@ -188,19 +183,19 @@ namespace Venom {
 
             prep_frame_ret = toxav.prepare_audio_frame(i, enc_buffer, buffer, buffer_size);
             if(prep_frame_ret <= 0) {
-              stdout.printf("prepare_audio_frame returned an error: %i\n", prep_frame_ret);
+              Logger.log(LogLevel.WARNING, "prepare_audio_frame returned an error: %i".printf(prep_frame_ret));
               continue;
             }
 
             send_audio_ret = toxav.send_audio(i, enc_buffer, prep_frame_ret);
             if(send_audio_ret != ToxAV.AV_Error.NONE) {
-              stdout.printf("send_audio returned %d\n", send_audio_ret);
+              Logger.log(LogLevel.WARNING, "send_audio returned %d".printf(send_audio_ret));
             }
           }
         }
       }
 
-      stdout.printf("stopping av thread...\n");
+      Logger.log(LogLevel.INFO, "stopping av thread...");
       set_pipeline_paused();
       return 0;
     }
@@ -209,7 +204,7 @@ namespace Venom {
       ToxAV.CallType call_type = tox_session.get_peer_transmission_type(c);
 
       if(!tox_session.prepare_transmission(c, call_type)) {
-        stderr.printf("Could not prepare AV transmission!\n");
+        Logger.log(LogLevel.ERROR, "Could not prepare AV transmission!");
         return;
       }
 
@@ -225,7 +220,7 @@ namespace Venom {
 
     public void on_end_call(Contact c) {
       if(!running) {
-        stdout.printf("No av thread running\n");
+        Logger.log(LogLevel.INFO, "No av thread running");
         return;
       }
 
@@ -234,7 +229,7 @@ namespace Venom {
       number_of_calls--;
 
       if(number_of_calls == 0) {
-        stdout.printf("number of calls is 0, stopping av thread...\n");
+        Logger.log(LogLevel.INFO, "number of calls is 0, stopping av thread...");
         running = false;
       }
     }
