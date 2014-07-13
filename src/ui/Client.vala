@@ -20,6 +20,7 @@
  */
 namespace Venom {
   class Client : Gtk.Application {
+    private const string APPLICATION_NAME = "Venom";
     private const GLib.ActionEntry app_entries[] =
     {
       { "preferences", on_preferences },
@@ -37,14 +38,6 @@ namespace Venom {
         application_id: "im.tox.venom",
         flags: GLib.ApplicationFlags.HANDLES_OPEN
       );
-    }
-
-    ~Client() {
-      // FIXME Workaround for some DEs keeping
-      // one instance of the contactlistwindow alive
-      if(contact_list_window != null) {
-        contact_list_window.cleanup();
-      }
     }
 
     private ContactListWindow get_contact_list_window() {
@@ -84,7 +77,7 @@ namespace Venom {
 
         create_tray_menu();
         tray_icon = new Gtk.StatusIcon.from_icon_name("venom");
-        tray_icon.set_tooltip_text ("Venom");
+        tray_icon.set_tooltip_text(APPLICATION_NAME);
         Settings.instance.bind_property(Settings.TRAY_KEY, tray_icon, "visible", BindingFlags.SYNC_CREATE);
         tray_icon.activate.connect(on_trayicon_activate);
         tray_icon.popup_menu.connect(on_trayicon_popup_menu);
@@ -124,9 +117,20 @@ namespace Venom {
       } catch (AudioManagerError e) {
         Logger.log(LogLevel.FATAL, "Error creating Audio Pipeline: " + e.message);
       }
+      Notification.init(APPLICATION_NAME);
       Logger.init();
 
       base.startup();
+    }
+
+    protected override void shutdown() {
+      Logger.log(LogLevel.DEBUG, "Application shutting down...");
+      // FIXME Workaround for some DEs keeping
+      // one instance of the contactlistwindow alive
+      if(contact_list_window != null) {
+        contact_list_window.cleanup();
+      }
+      base.shutdown();
     }
 
     private void show_notification_for_message(IMessage m) {
@@ -180,14 +184,12 @@ namespace Venom {
       dialog.destroy();
     }
 
-    private AboutDialog about_dialog;
     private void on_about(GLib.SimpleAction action, GLib.Variant? parameter) {
-      if(about_dialog == null)
-        about_dialog = new AboutDialog();
+      AboutDialog about_dialog = new AboutDialog();
       about_dialog.transient_for = contact_list_window;
       about_dialog.modal = true;
       about_dialog.run();
-      about_dialog.hide();
+      about_dialog.destroy();
     }
 
     private void on_quit(GLib.SimpleAction action, GLib.Variant? parameter) {
