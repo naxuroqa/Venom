@@ -30,17 +30,17 @@ namespace Venom {
     public string to_string() {
       switch(this) {
         case DEBUG:
-          return "DBG   ";
+          return "DEBUG  ";
         case INFO:
-          return "INFO  ";
+          return "INFO   ";
         case WARNING:
-          return "WARN  ";
+          return "WARNING";
         case ERROR:
-          return "ERROR ";
+          return "ERROR  ";
         case FATAL:
-          return "FATAL ";
+          return "FATAL  ";
         default:
-          return "UNKOWN";
+          return "UNKNOWN";
       }
     }
   }
