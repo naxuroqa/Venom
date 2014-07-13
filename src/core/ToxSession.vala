@@ -898,19 +898,6 @@ namespace Venom {
       _toxav_handle.cancel(c.call_index, 0, "do not want");
     }
 
-    public bool prepare_transmission(Contact c, ToxAV.CallType call_type, ToxAV.CodecSettings settings = ToxAV.DefaultCodecSettings) {
-      ToxAV.CodecSettings t_settings = settings;
-      ToxAV.AV_Error e = _toxav_handle.prepare_transmission(c.call_index, ref t_settings, call_type);
-      if(e != ToxAV.AV_Error.NONE) {
-        stderr.printf("toxav_prepare_transmission failed: %i\n", e);
-      }
-      return  e == ToxAV.AV_Error.NONE;
-    }
-
-    public ToxAV.CallType get_peer_transmission_type (Contact c) {
-      return (ToxAV.CallType)_toxav_handle.get_peer_transmission_type(c.call_index, 0);
-    }
-
     // TOXAV callbacks
     private void on_av_invite_callback(int32 call_index) {
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);

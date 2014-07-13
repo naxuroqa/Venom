@@ -25,6 +25,8 @@ namespace Venom {
   }
 
   public struct CallInfo {
+    bool shutdown;
+    bool startup;
     bool active;
     bool video;
   }
@@ -56,7 +58,6 @@ namespace Venom {
 
     private Thread<int> av_thread = null;
     private bool running = false;
-    private int number_of_calls = 0;
 
     private ToxSession _tox_session = null;
     private unowned ToxAV.ToxAV toxav = null;
@@ -108,6 +109,12 @@ namespace Venom {
       audio_sink_out.caps = caps;
 
       ((Gst.BaseSrc)audio_source_out).blocksize = (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000 * 2;
+    }
+    ~AudioManager() {
+      running = false;
+      if(av_thread != null) {
+        av_thread.join();
+      }
     }
 
     public static void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] frames) {
@@ -168,6 +175,7 @@ namespace Venom {
       uint8[] enc_buffer = new uint8[perframe*2];
       int prep_frame_ret = 0;
       ToxAV.AV_Error send_audio_ret;
+      int number_of_calls = 0;
 
       while(running) {
         // read samples from pipeline
@@ -179,38 +187,56 @@ namespace Venom {
         }
         // distribute samples across peers
         for(int i = 0; i < MAX_CALLS; i++) {
+          if(calls[i].shutdown && calls[i].active) {
+            Logger.log(LogLevel.DEBUG, "Shutting down av transmission %i".printf(i));
+            ToxAV.AV_Error e = toxav.kill_transmission(i);
+            if(e != ToxAV.AV_Error.NONE) {
+              Logger.log(LogLevel.FATAL, "Could not shutdown AV transmission: %i".printf((int)e));
+            }
+            number_of_calls--;
+            calls[i].active = false;
+            calls[i].shutdown = false;
+          }
+          if(calls[i].startup && !calls[i].active) {
+            Logger.log(LogLevel.DEBUG, "Starting av transmission %i".printf(i));
+            calls[i].startup = false;
+            ToxAV.CodecSettings t_settings = ToxAV.DefaultCodecSettings;
+            ToxAV.AV_Error e = toxav.prepare_transmission(i, ref t_settings, ToxAV.CallType.AUDIO);
+            if(e != ToxAV.AV_Error.NONE) {
+              Logger.log(LogLevel.FATAL, "Could not prepare AV transmission: %i".printf((int)e));
+            } else {
+              number_of_calls++;
+              calls[i].active = true;
+            }
+          }
           if(calls[i].active) {
-
             prep_frame_ret = toxav.prepare_audio_frame(i, enc_buffer, buffer, buffer_size);
             if(prep_frame_ret <= 0) {
               Logger.log(LogLevel.WARNING, "prepare_audio_frame returned an error: %i".printf(prep_frame_ret));
-              continue;
-            }
-
-            send_audio_ret = toxav.send_audio(i, enc_buffer, prep_frame_ret);
-            if(send_audio_ret != ToxAV.AV_Error.NONE) {
-              Logger.log(LogLevel.WARNING, "send_audio returned %d".printf(send_audio_ret));
+            } else {
+              send_audio_ret = toxav.send_audio(i, enc_buffer, prep_frame_ret);
+              if(send_audio_ret != ToxAV.AV_Error.NONE) {
+                Logger.log(LogLevel.WARNING, "send_audio returned %d".printf(send_audio_ret));
+              }
             }
           }
         }
+        if(number_of_calls <= 0) {
+          number_of_calls = 0;
+          Logger.log(LogLevel.INFO, "No remaining calls, stopping audio thread.");
+          break;
+        }
       }
 
-      Logger.log(LogLevel.INFO, "stopping av thread...");
+      Logger.log(LogLevel.INFO, "stopping audio thread...");
       set_pipeline_paused();
       return 0;
     }
 
     public void on_start_call(Contact c) {
-      ToxAV.CallType call_type = tox_session.get_peer_transmission_type(c);
 
-      if(!tox_session.prepare_transmission(c, call_type)) {
-        Logger.log(LogLevel.ERROR, "Could not prepare AV transmission!");
-        return;
-      }
-
-      calls[c.call_index].active = true;
+      calls[c.call_index].startup = true;
       calls[c.call_index].video = false;
-      number_of_calls++;
 
       if(!running) {
         running = true;
@@ -224,14 +250,7 @@ namespace Venom {
         return;
       }
 
-      toxav.kill_transmission(c.call_index);
-      calls[c.call_index].active = false;
-      number_of_calls--;
-
-      if(number_of_calls == 0) {
-        Logger.log(LogLevel.INFO, "number of calls is 0, stopping av thread...");
-        running = false;
-      }
+      calls[c.call_index].shutdown = true;
     }
 
   }
