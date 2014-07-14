@@ -869,9 +869,13 @@ namespace Venom {
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
                                   Gtk.ButtonsType.NONE,
-                                  "'%s' is calling ...",
-                                  c.get_name_string());
+                                  "");
+      message_dialog.set_markup("'%s' is calling ...".printf(c.get_name_string()));
       message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
+      //close message dialog when callstate changes (timeout)
+      c.notify["audio-call-state"].connect(() => {
+        message_dialog.destroy();
+      });
 
       int response = message_dialog.run();
       message_dialog.destroy();
