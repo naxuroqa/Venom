@@ -168,9 +168,9 @@
             <child>
               <object class="GtkButton" id="button_call_video">
                 <property name="width_request">64</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="visible">True</property>
                 <property name="no_show_all">True</property>
+                <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Call contact with video</property>
                 <property name="image">image_call_video</property>
                 <style>

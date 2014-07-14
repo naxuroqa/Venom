@@ -96,13 +96,9 @@ namespace Venom {
         groupchat_changed(groupchat);
       });
 
-      //TODO
-      //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
-      //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
+      (builder.get_object("button_call") as Gtk.Button).sensitive = false;
+      (builder.get_object("button_call_video") as Gtk.Button).sensitive = false;
       Gtk.Button button_send = builder.get_object("button_send") as Gtk.Button;
-      //Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
-
-      //button_send_file.clicked.connect(button_send_file_clicked);
 
       Gtk.Paned paned_sidebar = builder.get_object("paned_sidebar") as Gtk.Paned;
       Gtk.ScrolledWindow sidebar_scrolled_window = new Gtk.ScrolledWindow(null, null);

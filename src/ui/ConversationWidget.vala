@@ -27,6 +27,8 @@ namespace Venom {
     private Gtk.Image image_contact_image;
     private Gtk.Button button_send;
     private Gtk.Button button_send_file;
+    private Gtk.Button button_call;
+    private Gtk.Button button_call_video;
 
     private MessageTextView message_textview;
     private IConversationView conversation_view;
@@ -64,6 +66,8 @@ namespace Venom {
 
       button_send_file.sensitive = contact.online;
       button_send.sensitive = contact.online;
+      button_call.sensitive = contact.online;
+      //button_call_video.sensitive = contact.online;
 
       // remove is_typing notification for offline contacts
       if(!contact.online){
@@ -108,15 +112,17 @@ namespace Venom {
       });
 
       //TODO
-      Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
-      //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
+      button_call = builder.get_object("button_call") as Gtk.Button;
+      button_call_video = builder.get_object("button_call_video") as Gtk.Button;
+      button_call.clicked.connect(button_call_clicked);
+      button_call_video.clicked.connect(button_call_video_clicked);
+      button_call_video.sensitive = false;
       button_send = builder.get_object("button_send") as Gtk.Button;
       button_send_file = builder.get_object("button_send_file") as Gtk.Button;
 
       button_send.clicked.connect(() => {textview_activate();});
       button_send_file.clicked.connect(button_send_file_clicked);
 
-      button_call.clicked.connect(button_call_clicked);
 
       Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
       message_textview = new MessageTextView();
@@ -306,6 +312,10 @@ namespace Venom {
       } else {
         start_audio_call(contact);
       }
+    }
+
+    public void button_call_video_clicked(Gtk.Button source) {
+      //TODO
     }
 
     private void on_drag_data_received(Gtk.Widget sender, Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData data, uint info, uint time) {
