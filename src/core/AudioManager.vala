@@ -222,9 +222,9 @@ namespace Venom {
           }
         }
         if(number_of_calls <= 0) {
-          number_of_calls = 0;
           Logger.log(LogLevel.INFO, "No remaining calls, stopping audio thread.");
-          break;
+          number_of_calls = 0;
+          running = false;
         }
       }
 
