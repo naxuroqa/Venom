@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.2 -->
-<interface>
+<!-- Generated with glade 3.18.3 -->
+<interface domain="Venom">
   <requires lib="gtk+" version="3.4"/>
+  <object class="GtkTextBuffer" id="textbuffer1">
+    <property name="text" translatable="yes">Please let me add you to my contact list.</property>
+  </object>
   <object class="GtkBox" id="box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -111,6 +114,7 @@
                 <property name="vexpand">True</property>
                 <property name="border_width">6</property>
                 <property name="wrap_mode">word-char</property>
+                <property name="buffer">textbuffer1</property>
               </object>
             </child>
           </object>

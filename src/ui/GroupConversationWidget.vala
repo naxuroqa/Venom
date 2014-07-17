@@ -44,7 +44,7 @@ namespace Venom {
 
     public void update_groupchat_info() {
       // update groupchat name
-      label_groupchat_name.label.label = "<b>%s</b>".printf(groupchat.get_name_string_with_hyperlinks());
+      label_groupchat_name.label.label = _("<b>%s</b>").printf(groupchat.get_name_string_with_hyperlinks());
 
       // update groupchat status message
       label_groupchat_statusmessage.label = groupchat.get_status_string_with_hyperlinks();
@@ -66,7 +66,7 @@ namespace Venom {
       try {
         builder.add_from_resource("/org/gtk/venom/conversation_window.ui");
       } catch (GLib.Error e) {
-        stderr.printf("Loading conversation window failed!\n");
+        Logger.log(LogLevel.FATAL, "Loading conversation window failed: " + e.message);
       }
       Gtk.Box box = builder.get_object("box") as Gtk.Box;
       this.add(box);
@@ -78,6 +78,7 @@ namespace Venom {
       Gtk.Image image_call = builder.get_object("image_call") as Gtk.Image;
       Gtk.Image image_call_video = builder.get_object("image_call_video") as Gtk.Image;
       Gtk.Image image_send_file = builder.get_object("image_send_file") as Gtk.Image;
+      Gtk.Image image_insert_smiley = builder.get_object("image_insert_smiley") as Gtk.Image;
 
       Gtk.Label label_groupchat_name_ = builder.get_object("label_contact_name") as Gtk.Label;
       Gtk.Box box_user_info = builder.get_object("box_user_info") as Gtk.Box;
@@ -95,15 +96,9 @@ namespace Venom {
         groupchat_changed(groupchat);
       });
 
-      //TODO
-      //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
-      //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
+      (builder.get_object("button_call") as Gtk.Button).sensitive = false;
+      (builder.get_object("button_call_video") as Gtk.Button).sensitive = false;
       Gtk.Button button_send = builder.get_object("button_send") as Gtk.Button;
-      Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
-      button_send_file.visible = false;
-      button_send_file.no_show_all = true;
-
-      //button_send_file.clicked.connect(button_send_file_clicked);
 
       Gtk.Paned paned_sidebar = builder.get_object("paned_sidebar") as Gtk.Paned;
       Gtk.ScrolledWindow sidebar_scrolled_window = new Gtk.ScrolledWindow(null, null);
@@ -127,6 +122,7 @@ namespace Venom {
       image_call.set_from_pixbuf(ResourceFactory.instance.call);
       image_call_video.set_from_pixbuf(ResourceFactory.instance.call_video);
       image_send_file.set_from_pixbuf(ResourceFactory.instance.send_file);
+      image_insert_smiley.set_from_pixbuf(ResourceFactory.instance.smiley);
 
       Gtk.ScrolledWindow scrolled_window = builder.get_object("scrolled_window") as Gtk.ScrolledWindow;
 

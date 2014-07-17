@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
-<interface>
+<!-- Generated with glade 3.18.3 -->
+<interface domain="Venom">
   <requires lib="gtk+" version="3.4"/>
   <object class="GtkFrame" id="frame1">
     <property name="width_request">400</property>
@@ -31,7 +31,7 @@
                   <object class="GtkLabel" id="name_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">#filename</property>
+                    <property name="label">#filename</property>
                     <property name="ellipsize">middle</property>
                     <property name="max_width_chars">30</property>
                     <style>
@@ -48,7 +48,7 @@
                   <object class="GtkLabel" id="size_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">#size</property>
+                    <property name="label">#size</property>
                     <style>
                       <class name="fileinfo"/>
                     </style>
@@ -88,11 +88,12 @@
                 <property name="layout_style">end</property>
                 <child>
                   <object class="GtkButton" id="cancel_button">
-                    <property name="label" translatable="yes">Cancel</property>
+                    <property name="label">gtk-cancel</property>
                     <property name="height_request">0</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="receives_default">False</property>
+                    <property name="use_stock">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -102,11 +103,12 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="save_as_button">
-                    <property name="label" translatable="yes">Save As...</property>
+                    <property name="label">gtk-save-as</property>
                     <property name="height_request">0</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="receives_default">False</property>
+                    <property name="use_stock">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>

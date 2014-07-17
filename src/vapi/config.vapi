@@ -29,4 +29,7 @@ namespace Venom.Config {
   public const string COPYRIGHT_NOTICE;
   public const string SHORT_DESCRIPTION;
   public const string WEBSITE;
+
+  public const string GETTEXT_PACKAGE;
+  public const string GETTEXT_PATH;
 }

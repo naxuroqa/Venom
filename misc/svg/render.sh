@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #    Copyright (C) 2013 Venom authors and contributors
 #
 #    This file is part of Venom.
@@ -16,10 +16,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-for i in *.svg;
+for i in $(find . -type f -name "*.svg");
 do
-  rsvg-convert $i -o ../../src/pixmaps/${i%.*}.png
+  cvtpath="../../src/pixmaps/${i%.*}.png"
+  echo "# rendering $i to $cvtpath"
+  rsvg-convert "$i" -o "$cvtpath"
 done
-
 # vim:set ts=2 sw=2 et:
