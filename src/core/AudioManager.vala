@@ -33,13 +33,21 @@ namespace Venom {
 
   public class AudioManager { 
 
-    private const string PIPELINE_IN      = "audioPipelineIn";
-    private const string AUDIO_SOURCE_IN  = "audioSourceIn";
-    private const string AUDIO_SINK_IN    = "audioSinkIn";
+    private const string PIPELINE_IN        = "audioPipelineIn";
+    private const string AUDIO_SOURCE_IN    = "audioSourceIn";
+    private const string AUDIO_SINK_IN      = "audioSinkIn";
 
-    private const string PIPELINE_OUT     = "audioPipelineOut";
-    private const string AUDIO_SOURCE_OUT = "audioSourceOut";
-    private const string AUDIO_SINK_OUT   = "audioSinkOut";
+    private const string PIPELINE_OUT       = "audioPipelineOut";
+    private const string AUDIO_SOURCE_OUT   = "audioSourceOut";
+    private const string AUDIO_SINK_OUT     = "audioSinkOut";
+
+    private const string VIDEO_PIPELINE_IN  = "videoPipelineIn";
+    private const string VIDEO_SOURCE_IN    = "videoSourceIn";
+    private const string VIDEO_SINK_IN      = "videoSinkIn";
+    
+    private const string VIDEO_PIPELINE_OUT = "videoPipelineOut";
+    private const string VIDEO_SOURCE_OUT   = "videoSourceOut";
+    private const string VIDEO_SINK_OUT     = "videoSinkOut";  
 
     private const int CHUNK_SIZE = 1024; 
     private const int SAMPLE_RATE = 44100;
@@ -55,6 +63,14 @@ namespace Venom {
     private Gst.Pipeline pipeline_out;
     private Gst.Element  audio_source_out;
     private Gst.AppSink  audio_sink_out;
+
+    private Gst.Pipeline video_pipeline_in;
+    private Gst.AppSrc  video_source_in;
+    private Gst.Element  video_sink_in;
+
+    private Gst.Pipeline video_pipeline_out;
+    private Gst.Element  video_source_out;
+    private Gst.AppSink  video_sink_out;
 
     private Thread<int> av_thread = null;
     private bool running = false;
@@ -88,19 +104,33 @@ namespace Venom {
       }
       Logger.log(LogLevel.INFO, "Gstreamer initialized");
 
-      // input pipeline
+      // input audio pipeline
       pipeline_in  = new Gst.Pipeline(PIPELINE_IN);
       audio_source_in = (Gst.AppSrc)Gst.ElementFactory.make("appsrc", AUDIO_SOURCE_IN);
       audio_sink_in   = Gst.ElementFactory.make("openalsink", AUDIO_SINK_IN);
       pipeline_in.add_many (audio_source_in, audio_sink_in);
       audio_source_in.link(audio_sink_in);
 
-      // output pipeline
+      // output audio pipeline
       pipeline_out = new Gst.Pipeline(PIPELINE_OUT);
       audio_source_out = Gst.ElementFactory.make("pulsesrc", AUDIO_SOURCE_OUT);
       audio_sink_out   = (Gst.AppSink)Gst.ElementFactory.make("appsink", AUDIO_SINK_OUT);
       pipeline_out.add_many(audio_source_out, audio_sink_out);
       audio_source_out.link(audio_sink_out);
+
+      // input video pipeline
+      video_pipeline_in  = new Gst.Pipeline(VIDEO_PIPELINE_IN);
+      video_source_in = (Gst.AppSrc)Gst.ElementFactory.make("appsrc", VIDEO_SOURCE_IN);
+      video_sink_in   = Gst.ElementFactory.make("autovideosink", VIDEO_SINK_IN);
+      video_pipeline_in.add_many (video_source_in, video_sink_in);
+      video_source_in.link(video_sink_in);
+
+      // output video pipeline
+      video_pipeline_out  = new Gst.Pipeline(VIDEO_PIPELINE_OUT);
+      video_source_out = Gst.ElementFactory.make("v4l2src", VIDEO_SOURCE_OUT);
+      video_sink_out   = (Gst.AppSink)Gst.ElementFactory.make("appsink", VIDEO_SINK_OUT);
+      video_pipeline_out.add_many (video_source_out, video_sink_out);
+      video_source_out.link(video_sink_out);
 
       // caps
       Gst.Caps caps = Gst.Caps.from_string(AUDIO_CAPS);
@@ -122,8 +152,7 @@ namespace Venom {
       instance.buffer_in(frames, frames.length);
     }
 
-    public static void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) {
-    }
+    public static void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) { }
 
     public void register_callbacks() {
       toxav.register_audio_recv_callback(audio_receive_callback);
