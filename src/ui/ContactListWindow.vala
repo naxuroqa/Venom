@@ -340,26 +340,13 @@ namespace Venom {
       session.on_group_peer_changed.connect(this.on_group_peer_changed);
 
       /*=== AV signals ===*/
-      //av requests
       session.on_av_invite.connect(this.on_av_invite);
-      session.on_av_start.connect(this.on_av_start);
       session.on_av_start.connect(AudioManager.instance.on_start_call);
-      session.on_av_cancel.connect(this.on_av_cancel);
-      session.on_av_reject.connect(this.on_av_reject);
-      session.on_av_end.connect(this.on_av_end);
       session.on_av_end.connect(AudioManager.instance.on_end_call);
-
       //av responses
-      session.on_av_ringing.connect(this.on_av_ringing);
-      session.on_av_starting.connect(this.on_av_starting);
       session.on_av_starting.connect(AudioManager.instance.on_start_call);
-      session.on_av_ending.connect(this.on_av_ending);
       session.on_av_ending.connect(AudioManager.instance.on_end_call);
-
       //av protocol
-      session.on_av_error.connect(this.on_av_error);
-      session.on_av_request_timeout.connect(this.on_av_request_timeout);
-      session.on_av_peer_timeout.connect(this.on_av_peer_timeout);
       session.on_av_peer_timeout.connect(AudioManager.instance.on_end_call);
 
       //file signals
@@ -863,7 +850,6 @@ namespace Venom {
     }
 
     private void on_av_invite(Contact c) {
-      Logger.log(LogLevel.INFO, "[LOG] on_toxav_invite from %s".printf(c.get_name_string()));
       this.set_urgency();
       Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
@@ -872,7 +858,7 @@ namespace Venom {
                                   "");
       message_dialog.set_markup("'%s' is calling ...".printf(c.get_name_string()));
       message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
-      //close message dialog when callstate changes (timeout)
+      //close message dialog when callstate changes (timeout, cancel, ...)
       c.notify["audio-call-state"].connect(() => {
         message_dialog.destroy();
       });
@@ -880,51 +866,17 @@ namespace Venom {
       int response = message_dialog.run();
       message_dialog.destroy();
 
-      if(response != Gtk.ResponseType.ACCEPT) {
-        session.reject_call(c);
-      } else {
-        session.answer_audio_call(c);
+      if(c.audio_call_state != AudioCallState.RINGING) {
+        //when remote cancels the request
+        Logger.log(LogLevel.DEBUG, "call with %s already canceled".printf(c.name));
+        return;
       }
-    }
 
-    private void on_av_start(Contact c) {
-      Logger.log(LogLevel.INFO, "[LOG] on_toxav_start from %s".printf(c.get_name_string()));
-    }
-
-    private void on_av_cancel(Contact c) {
-      Logger.log(LogLevel.INFO, "[LOG] on_toxav_cancel from %s".printf(c.get_name_string()));
-    }
-
-    private void on_av_reject(Contact c) {
-      Logger.log(LogLevel.INFO, "[LOG] on_toxav_reject from %s".printf(c.get_name_string()));
-    }
-
-    private void on_av_end(Contact c) {
-      Logger.log(LogLevel.INFO, "[LOG] on_toxav_end from %s".printf(c.get_name_string()));
-    }
-
-    private void on_av_ringing(Contact c) {
-      Logger.log(LogLevel.INFO, "[LOG] on_toxav_starting from %s".printf(c.get_name_string()));
-    }
-
-    private void on_av_starting(Contact c) {
-      Logger.log(LogLevel.INFO, "[LOG] on_toxav_starting from %s".printf(c.get_name_string()));
-    }
-
-    private void on_av_ending(Contact c) {
-      Logger.log(LogLevel.INFO, "[LOG] on_toxav_ending from %s".printf(c.get_name_string()));
-    }
-
-    private void on_av_error(Contact c) {
-      Logger.log(LogLevel.INFO, "[LOG] on_toxav_error from %s".printf(c.get_name_string()));
-    }
-
-    private void on_av_request_timeout(Contact c) {
-      Logger.log(LogLevel.INFO, "[LOG] on_toxav_request_timeout from %s".printf(c.get_name_string()));
-    }
-
-    private void on_av_peer_timeout(Contact c) {
-      Logger.log(LogLevel.INFO, "[LOG] on_toxav_peer_timeout from %s".printf(c.get_name_string()));
+      if(response == Gtk.ResponseType.ACCEPT) {
+        session.answer_audio_call(c);
+      } else {
+        session.reject_call(c);
+      }
     }
 
     private void on_start_audio_call(Contact c) {
@@ -932,17 +884,22 @@ namespace Venom {
     }
 
     private void on_stop_audio_call(Contact c) {
+      Logger.log(LogLevel.DEBUG, "on_stop_audio_call");
       switch(c.audio_call_state) {
         case AudioCallState.RINGING:
+          Logger.log(LogLevel.DEBUG, "cancelling call with %s".printf(c.name));
           session.cancel_call(c);
           break;
         case AudioCallState.CALLING:
+          Logger.log(LogLevel.DEBUG, "rejecting call from %s".printf(c.name));
           session.reject_call(c);
           break;
         case AudioCallState.STARTED:
+          Logger.log(LogLevel.DEBUG, "hanging up on %s".printf(c.name));
           session.hangup_call(c);
           break;
         case AudioCallState.ENDED:
+          Logger.log(LogLevel.DEBUG, "call with %s already ended".printf(c.name));
           break;
         default:
           assert_not_reached();

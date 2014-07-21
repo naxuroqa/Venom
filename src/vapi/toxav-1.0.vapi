@@ -116,7 +116,41 @@ namespace ToxAV {
     [CCode (cname = "ErrorPacketTooLarge")]
     PACKET_TOO_LARGE, /* Buffer exceeds size while encoding */
     [CCode (cname = "ErrorInvalidCodecState")]
-    INVALID_CODEC_STATE /* Codec state not initialized */
+    INVALID_CODEC_STATE; /* Codec state not initialized */
+
+    [CCode (cname = "vala_av_error_to_string")]
+    public string to_string() {
+      switch(this) {
+        case NONE:
+          return "No error";
+        case INTERNAL:
+          return "Internal error";
+        case ALREADY_IN_CALL:
+          return "Already has an active call";
+        case NO_CALL:
+          return "Trying to perform call action while not in a call";
+        case INVALID_STATE:
+          return "Trying to perform call action while in invalid state";
+        case NO_RTP_SESSION:
+          return "Trying to perform rtp action on invalid session";
+        case AUDIO_PACKET_LOST:
+          return "Indicating packet loss";
+        case STARTING_AUDIO_RTP:
+          return "Error in toxav_prepare_transmission()";
+        case STARTING_VIDEO_RTP:
+          return "Error in toxav_prepare_transmission()";
+        case TERMINATING_AUDIO_RTP:
+          return "Returned in toxav_kill_transmission()";
+        case TERMINATING_VIDEO_RTP:
+          return "Returned in toxav_kill_transmission()";
+        case PACKET_TOO_LARGE:
+          return "Buffer exceeds size while encoding";
+        case INVALID_CODEC_STATE:
+          return "Codec state not initialized";
+        default:
+          return "unknown error, fix vapi";
+      }
+    }
   }
 
   /**

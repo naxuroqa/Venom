@@ -138,6 +138,7 @@ namespace Venom {
             ctx.remove_class("callbutton-started");
             break;
         }
+        ctx.invalidate();
       });
 
       button_send = builder.get_object("button_send") as Gtk.Button;

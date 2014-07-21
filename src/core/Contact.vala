@@ -26,7 +26,21 @@ namespace Venom {
     RINGING, // outgoing call
     CALLING, // incoming call
     STARTED, // call commencing
-    ENDED    // call ended
+    ENDED;   // call ended
+    public string to_string() {
+      switch(this) {
+        case RINGING:
+          return "ringing";
+        case CALLING:
+          return "calling";
+        case STARTED:
+          return "started";
+        case ENDED:
+          return "ended";
+        default:
+          return "unknown state";
+      }
+    }
   }
 
   public interface IContact : GLib.Object {
