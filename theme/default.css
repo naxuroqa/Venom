@@ -158,7 +158,7 @@
   background-image: none;
   border-image: none;
   border-style: none;
-  border-radius: 7px;
+  border-radius: 5px;
 }
 
 .contact_list .userbutton:active,
@@ -175,7 +175,7 @@
   border-image: none;
   padding: 0;
   border: none;
-  border-radius: 7px;
+  border-radius: 5px;
 }
 
 .contact_list .cell {
@@ -228,7 +228,7 @@
   background-color: @background;
   background-image: none;
   border: 0px solid black;
-  border-radius: 7px;
+  border-radius: 5px;
 }
 
 GtkPaned,
@@ -260,20 +260,10 @@ GtkEventBox,
   border-color: @separator-color;
 }
 
-
-.conversation_widget .callbutton:insensitive,
-.conversation_widget .callbutton:insensitive:insensitive {
-  background-color: @callbutton-selected;
-  background-image: none;
-}
-
 .conversation_widget .callbutton:active,
 .conversation_widget .callbutton:hover:active,
-.conversation_widget .callbutton:focus:active {
-  background-color: lighter (@callbutton-selected);
-  background-image: none;
-}
-
+.conversation_widget .callbutton:focus:active,
+.conversation_widget .callbutton:insensitive,
 .conversation_widget .callbutton:selected,
 .conversation_widget .callbutton:hover {
   background-color: @callbutton-selected;
@@ -285,7 +275,68 @@ GtkEventBox,
   background-color: @callbutton-color;
   background-image: none;
   border-image: none;
-  border-radius: 7px;
+  border-radius: 5px;
+  border: none;
+}
+
+.conversation_widget .callbutton-ringing:active,
+.conversation_widget .callbutton-ringing:hover:active,
+.conversation_widget .callbutton-ringing:focus:active,
+.conversation_widget .callbutton-ringing:insensitive,
+.conversation_widget .callbutton-ringing:selected,
+.conversation_widget .callbutton-ringing:hover {
+  background-color: lighter(gold);
+  background-image: none;
+  border-image: none;
+}
+
+.conversation_widget .callbutton-ringing {
+  background-color: gold;
+  background-image: none;
+  border-image: none;
+  border-radius: 5px;
+  border: none;
+}
+
+.conversation_widget .callbutton-started:active,
+.conversation_widget .callbutton-started:hover:active,
+.conversation_widget .callbutton-started:focus:active,
+.conversation_widget .callbutton-started:insensitive,
+.conversation_widget .callbutton-started:selected,
+.conversation_widget .callbutton-started:hover {
+  background-color: lighter(red);
+  background-image: none;
+  border-image: none;
+}
+
+.conversation_widget .callbutton-started {
+  background-color: red;
+  background-image: none;
+  border-image: none;
+  border-radius: 5px;
+  border: none;
+}
+
+.conversation_widget .sendbutton:active,
+.conversation_widget .sendbutton:hover:active,
+.conversation_widget .sendbutton:focus:active {
+  background-color: lighter (@callbutton-selected);
+  background-image: none;
+}
+
+.conversation_widget .sendbutton:insensitive,
+.conversation_widget .sendbutton:selected,
+.conversation_widget .sendbutton:hover {
+  background-color: @callbutton-selected;
+  background-image: none;
+  border-image: none;
+}
+
+.conversation_widget .sendbutton {
+  background-color: @callbutton-color;
+  background-image: none;
+  border-image: none;
+  border-radius: 5px;
   border: none;
 }
 
@@ -349,7 +400,7 @@ GtkEventBox,
   background-color: #d1d1d1;
   background-image: none;
   border: 0px solid black;
-  border-radius: 7px;
+  border-radius: 5px;
 }
 
 .message_entry .own_name {

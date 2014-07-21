@@ -100,8 +100,8 @@ namespace Venom {
       box_user_info.remove(label_contact_name_);
       label_contact_name = new EditableLabel.with_label(label_contact_name_);
       box_user_info.pack_start(label_contact_name, false);
-      label_contact_name.button_cancel.get_style_context().add_class("callbutton");
-      label_contact_name.button_ok.get_style_context().add_class("callbutton");
+      label_contact_name.button_cancel.get_style_context().add_class("sendbutton");
+      label_contact_name.button_ok.get_style_context().add_class("sendbutton");
       label_contact_name.show_all();
       label_contact_name.show_entry.connect_after(() => {
         label_contact_name.entry.text = contact.alias;
@@ -117,6 +117,29 @@ namespace Venom {
       button_call.clicked.connect(button_call_clicked);
       button_call_video.clicked.connect(button_call_video_clicked);
       button_call_video.sensitive = false;
+      contact.notify["audio-call-state"].connect(() => {
+        Logger.log(LogLevel.DEBUG, "Changing call state to " + contact.audio_call_state.to_string());
+        unowned Gtk.StyleContext ctx = button_call.get_style_context();
+        switch(contact.audio_call_state) {
+          case AudioCallState.RINGING:
+          case AudioCallState.CALLING:
+            ctx.remove_class("callbutton");
+            ctx.remove_class("callbutton-started");
+            ctx.add_class("callbutton-ringing");
+            break;
+          case AudioCallState.STARTED:
+            ctx.remove_class("callbutton");
+            ctx.remove_class("callbutton-ringing");
+            ctx.add_class("callbutton-started");
+            break;
+          default:
+            ctx.add_class("callbutton");
+            ctx.remove_class("callbutton-ringing");
+            ctx.remove_class("callbutton-started");
+            break;
+        }
+      });
+
       button_send = builder.get_object("button_send") as Gtk.Button;
       button_send_file = builder.get_object("button_send_file") as Gtk.Button;
 

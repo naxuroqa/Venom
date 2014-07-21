@@ -896,6 +896,7 @@ namespace Venom {
 
     public void cancel_call(Contact c) {
       _toxav_handle.cancel(c.call_index, 0, "do not want");
+      c.audio_call_state = AudioCallState.ENDED;
     }
 
     // TOXAV callbacks

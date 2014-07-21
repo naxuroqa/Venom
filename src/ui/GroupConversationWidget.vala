@@ -85,8 +85,8 @@ namespace Venom {
       box_user_info.remove(label_groupchat_name_);
       label_groupchat_name = new EditableLabel.with_label(label_groupchat_name_);
       box_user_info.pack_start(label_groupchat_name, false);
-      label_groupchat_name.button_cancel.get_style_context().add_class("callbutton");
-      label_groupchat_name.button_ok.get_style_context().add_class("callbutton");
+      label_groupchat_name.button_cancel.get_style_context().add_class("sendbutton");
+      label_groupchat_name.button_ok.get_style_context().add_class("sendbutton");
       label_groupchat_name.show_all();
       label_groupchat_name.show_entry.connect_after(() => {
         label_groupchat_name.entry.text = groupchat.local_name;

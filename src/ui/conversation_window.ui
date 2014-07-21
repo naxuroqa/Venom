@@ -151,8 +151,8 @@
               <object class="GtkButton" id="button_call">
                 <property name="width_request">64</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="no_show_all">True</property>
+                <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Call contact</property>
                 <property name="image">image_call</property>
                 <style>
@@ -341,7 +341,7 @@
                 <property name="tooltip_text" translatable="yes">Send message</property>
                 <property name="image">image_send</property>
                 <style>
-                  <class name="callbutton"/>
+                  <class name="sendbutton"/>
                 </style>
               </object>
               <packing>
