@@ -28,7 +28,6 @@
 @define-color separator-color #c1c1c1;
 
 * {
-  engine: none;
   -GtkWindow-resize-grip-default: false;
   -GtkWindow-resize-grip-height: 0;
   -GtkWindow-resize-grip-width: 0;
@@ -39,13 +38,14 @@
 .contact_list * {
   border-width: 0px;
   border-radius: 0px;
-  background-color: alpha(white, 0);
 }
 
 .contact_list,
 .contact_list *,
 .conversation_widget,
 .conversation_widget * {
+  engine: none;
+  background-color: transparent;
   /*border-width: 0px;*/
   background-clip: padding-box;
   /*font-family: Roboto, Sans;
@@ -385,7 +385,7 @@ GtkEventBox,
 
 
 .conversation_widget .scrollbar {
-  background-color: alpha(white, 0);
+  background-color: transparent;
   background-image: none;
   border: none;
   padding: 5px;
