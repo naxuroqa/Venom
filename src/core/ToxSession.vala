@@ -940,6 +940,7 @@ namespace Venom {
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
         c.call_index = call_index;
+        c.audio_call_state = AudioCallState.CALLING;
         on_av_invite(c);
         return false;
       });

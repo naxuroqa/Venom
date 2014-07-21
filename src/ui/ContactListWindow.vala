@@ -866,7 +866,7 @@ namespace Venom {
       int response = message_dialog.run();
       message_dialog.destroy();
 
-      if(c.audio_call_state != AudioCallState.RINGING) {
+      if(c.audio_call_state != AudioCallState.CALLING) {
         //when remote cancels the request
         Logger.log(LogLevel.DEBUG, "call with %s already canceled".printf(c.name));
         return;
