@@ -74,7 +74,11 @@ namespace Venom {
     public static AudioManager instance {get; private set;}
 
     public static void init() throws AudioManagerError {
-      instance = new AudioManager({""/*,"--gst-debug-level=3"*/});
+#if DEBUG
+      instance = new AudioManager({"", "--gst-debug-level=3"});
+#else
+      instance = new AudioManager({""});
+#endif
     }
 
     private AudioManager(string[] args) throws AudioManagerError {
