@@ -52,6 +52,7 @@ namespace Venom {
     private const int CHUNK_SIZE = 1024; 
     private const int SAMPLE_RATE = 44100;
     private const string AUDIO_CAPS = "audio/x-raw-int,channels=1,rate=48000,signed=true,width=16,depth=16,endianness=1234";
+    private const string VIDEO_CAPS = "vide/x-raw-yuv,height=640,width=480,framerate=24/1";
 
     private const int MAX_CALLS = 16;
     private CallInfo[] calls = new CallInfo[MAX_CALLS];
@@ -133,12 +134,19 @@ namespace Venom {
       video_source_out.link(video_sink_out);
 
       // caps
-      Gst.Caps caps = Gst.Caps.from_string(AUDIO_CAPS);
+      Gst.Caps caps  = Gst.Caps.from_string(AUDIO_CAPS);
+      Gst.Caps vcaps = Gst.Caps.from_string(VIDEO_CAPS);
       Logger.log(LogLevel.INFO, "Caps is [" + caps.to_string() + "]");
+
       audio_source_in.caps = caps;
-      audio_sink_out.caps = caps;
+      audio_sink_out.caps  = caps;
+
+      video_source_in.caps  = vcaps;
+      video_source_out.caps = vcaps;
 
       ((Gst.BaseSrc)audio_source_out).blocksize = (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000 * 2;
+      ((Gst.BaseSrc)video_source_out).blocksize = (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000 * 2;
+
     }
     ~AudioManager() {
       running = false;
@@ -152,7 +160,9 @@ namespace Venom {
       instance.buffer_in(frames, frames.length);
     }
 
-    public static void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) { }
+    public static void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) { 
+      Logger.log(LogLevel.DEBUG, "Got video frame, of size: %d".printf(    
+    }
 
     public void register_callbacks() {
       toxav.register_audio_recv_callback(audio_receive_callback);
@@ -189,7 +199,7 @@ namespace Venom {
 
 
     //TODO FIXME SOLUTION!!!
-    //INSTEAD OF MAKING THIS RETURN LEN / 2 OR WHATEVER FUCKING BULLSHIT, MAKE IT RETURN
+    //INSTEAD OF MAKING THIS RETURN LEN / 2 OR WHATEVER, MAKE IT RETURN
     //A BUFFER THAT IT ALLOCS. THAT WAY WE CAN ALLOC EXACTLY THE AMOUNT OF SPACE WE NEED
     //THEN FREE AFTER YOU SEND THE PACKET!!!
     public int buffer_out(/*There will be NO Args*/int16[] dest) {
