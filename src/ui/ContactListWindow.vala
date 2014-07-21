@@ -936,6 +936,9 @@ namespace Venom {
         case AudioCallState.RINGING:
           session.cancel_call(c);
           break;
+        case AudioCallState.CALLING:
+          session.reject_call(c);
+          break;
         case AudioCallState.STARTED:
           session.hangup_call(c);
           break;

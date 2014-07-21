@@ -658,8 +658,16 @@ namespace Venom {
     public uint32 send_message(int friend_number, string message)
       requires(message != null)
     {
+      unowned string message_ptr = message;
       lock(handle) {
-        return handle.send_message(friend_number, message.data);
+        while(message_ptr.length > Tox.MAX_MESSAGE_LENGTH) {
+          int offset = Tox.MAX_MESSAGE_LENGTH - 1;
+          unichar c;
+          message_ptr.get_prev_char(ref offset, out c);
+          handle.send_message(friend_number, message_ptr.data, offset);
+          message_ptr = message_ptr.offset(offset);
+        }
+        return handle.send_message(friend_number, message_ptr.data, message_ptr.length);
       }
     }
 
@@ -896,6 +904,7 @@ namespace Venom {
 
     public void cancel_call(Contact c) {
       _toxav_handle.cancel(c.call_index, 0, "do not want");
+      c.audio_call_state = AudioCallState.ENDED;
     }
 
     // TOXAV callbacks

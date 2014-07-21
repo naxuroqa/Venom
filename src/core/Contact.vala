@@ -23,9 +23,10 @@
 namespace Venom {
 
   public enum AudioCallState {
-    RINGING,
-    STARTED,
-    ENDED
+    RINGING, // outgoing call
+    CALLING, // incoming call
+    STARTED, // call commencing
+    ENDED    // call ended
   }
 
   public interface IContact : GLib.Object {
