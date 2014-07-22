@@ -25,10 +25,23 @@ namespace Venom {
   }
 
   public struct CallInfo {
-    bool shutdown;
-    bool startup;
-    bool active;
-    bool video;
+    bool   active;
+    bool   video;
+    bool   muted;
+    int    volume;
+  }
+
+  public enum AVStatusChangeType {
+    START,
+    END,
+    MUTE,
+    VOLUME
+  }
+
+  public struct AVStatusChange {
+    AVStatusChangeType type;
+    int32 call_index;
+    int var1;
   }
 
   public class AudioManager { 
@@ -36,10 +49,12 @@ namespace Venom {
     private const string PIPELINE_IN        = "audioPipelineIn";
     private const string AUDIO_SOURCE_IN    = "audioSourceIn";
     private const string AUDIO_SINK_IN      = "audioSinkIn";
+    private const string AUDIO_VOLUME_IN    = "audioVolumeIn";
 
     private const string PIPELINE_OUT       = "audioPipelineOut";
     private const string AUDIO_SOURCE_OUT   = "audioSourceOut";
     private const string AUDIO_SINK_OUT     = "audioSinkOut";
+    private const string AUDIO_VOLUME_OUT   = "audioVolumeOut";
 
     private const string VIDEO_PIPELINE_IN  = "videoPipelineIn";
     private const string VIDEO_SOURCE_IN    = "videoSourceIn";
@@ -54,18 +69,22 @@ namespace Venom {
     private const string AUDIO_CAPS = "audio/x-raw-int,channels=1,rate=48000,signed=true,width=16,depth=16,endianness=1234";
 
     private const int MAX_CALLS = 16;
-    private CallInfo[] calls = new CallInfo[MAX_CALLS];
+    CallInfo[] calls = new CallInfo[MAX_CALLS];
+
+    private AsyncQueue<AVStatusChange?> status_changes = new AsyncQueue<AVStatusChange?>();
 
     private Gst.Pipeline pipeline_in;
     private Gst.AppSrc   audio_source_in;
     private Gst.Element  audio_sink_in;
+    private Gst.Element  audio_volume_in;
 
     private Gst.Pipeline pipeline_out;
     private Gst.Element  audio_source_out;
     private Gst.AppSink  audio_sink_out;
+    private Gst.Element  audio_volume_out;
 
     private Gst.Pipeline video_pipeline_in;
-    private Gst.AppSrc  video_source_in;
+    private Gst.AppSrc   video_source_in;
     private Gst.Element  video_sink_in;
 
     private Gst.Pipeline video_pipeline_out;
@@ -109,18 +128,20 @@ namespace Venom {
       Logger.log(LogLevel.INFO, "Gstreamer initialized");
 
       // input audio pipeline
-      pipeline_in  = new Gst.Pipeline(PIPELINE_IN);
-      audio_source_in = (Gst.AppSrc)Gst.ElementFactory.make("appsrc", AUDIO_SOURCE_IN);
-      audio_sink_in   = Gst.ElementFactory.make("openalsink", AUDIO_SINK_IN);
-      pipeline_in.add_many (audio_source_in, audio_sink_in);
-      audio_source_in.link(audio_sink_in);
+      pipeline_in = new Gst.Pipeline(PIPELINE_IN);
+      audio_source_in  = (Gst.AppSrc)Gst.ElementFactory.make("appsrc", AUDIO_SOURCE_IN);
+      audio_sink_in    = Gst.ElementFactory.make("openalsink", AUDIO_SINK_IN);
+      audio_volume_in  = Gst.ElementFactory.make("volume", AUDIO_VOLUME_IN);
+      pipeline_in.add_many (audio_source_in, audio_volume_in, audio_sink_in);
+      audio_source_in.link_many(audio_volume_in, audio_sink_in);
 
       // output audio pipeline
       pipeline_out = new Gst.Pipeline(PIPELINE_OUT);
       audio_source_out = Gst.ElementFactory.make("pulsesrc", AUDIO_SOURCE_OUT);
       audio_sink_out   = (Gst.AppSink)Gst.ElementFactory.make("appsink", AUDIO_SINK_OUT);
-      pipeline_out.add_many(audio_source_out, audio_sink_out);
-      audio_source_out.link(audio_sink_out);
+      audio_volume_out = Gst.ElementFactory.make("volume", AUDIO_VOLUME_OUT);
+      pipeline_out.add_many(audio_source_out, audio_volume_out, audio_sink_out);
+      audio_source_out.link_many(audio_volume_out, audio_sink_out);
 
       // input video pipeline
       video_pipeline_in  = new Gst.Pipeline(VIDEO_PIPELINE_IN);
@@ -143,6 +164,8 @@ namespace Venom {
       audio_sink_out.caps = caps;
 
       ((Gst.BaseSrc)audio_source_out).blocksize = (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000 * 2;
+
+      Settings.instance.bind_property(Settings.MIC_VOLUME_KEY, audio_volume_out, "volume", BindingFlags.SYNC_CREATE);
     }
     ~AudioManager() {
       running = false;
@@ -212,8 +235,7 @@ namespace Venom {
       int buffer_size;
       int16[] buffer = new int16[perframe];
       uint8[] enc_buffer = new uint8[perframe*2];
-      int prep_frame_ret = 0;
-      ToxAV.AV_Error send_audio_ret;
+      ToxAV.AV_Error prep_frame_ret = 0, send_audio_ret = 0;
       int number_of_calls = 0;
 
       while(running) {
@@ -226,45 +248,62 @@ namespace Venom {
           continue;
         }
 
+        // calling try_pop once per cycle should be enough
+        AVStatusChange? c = status_changes.try_pop();
+        if(c != null) {
+          switch(c.type) {
+            case AVStatusChangeType.START:
+              Logger.log(LogLevel.DEBUG, "Starting av transmission %i".printf(c.call_index));
+              ToxAV.CodecSettings t_settings = ToxAV.DefaultCodecSettings;
+              ToxAV.AV_Error e = toxav.prepare_transmission(c.call_index, ref t_settings, ToxAV.CallType.AUDIO);
+              if(e != ToxAV.AV_Error.NONE) {
+                Logger.log(LogLevel.FATAL, "Could not prepare AV transmission: %s".printf(e.to_string()));
+              } else {
+                number_of_calls++;
+                calls[c.call_index].active = true;
+              }
+              break;
+            case AVStatusChangeType.END:
+              Logger.log(LogLevel.DEBUG, "Shutting down av transmission %i".printf(c.call_index));
+              ToxAV.AV_Error e = toxav.kill_transmission(c.call_index);
+              if(e != ToxAV.AV_Error.NONE) {
+                Logger.log(LogLevel.FATAL, "Could not shutdown AV transmission: %s".printf(e.to_string()));
+              }
+              number_of_calls--;
+              calls[c.call_index].active = false;
+              break;
+            case AVStatusChangeType.MUTE:
+              Logger.log(LogLevel.DEBUG, (c.var1 == 1) ? "Muting %i".printf(c.call_index) : "Unmuting %i".printf(c.call_index));
+              calls[c.call_index].muted = (c.var1 == 1);
+              break;
+            case AVStatusChangeType.VOLUME:
+              calls[c.call_index].volume = c.var1;
+              Logger.log(LogLevel.DEBUG, "Set receive volume for %i to %i".printf(c.call_index, c.var1));
+              //FIXME this only works for one contact right now
+              audio_volume_in.set("volume", ((double)c.var1) / 100.0);
+              break;
+            default:
+              Logger.log(LogLevel.ERROR, "unknown av status change type");
+              break;
+          }
+        }
         // distribute samples across peers
         for(int i = 0; i < MAX_CALLS; i++) {
-          if(calls[i].shutdown && calls[i].active) {
-            Logger.log(LogLevel.DEBUG, "Shutting down av transmission %i".printf(i));
-            ToxAV.AV_Error e = toxav.kill_transmission(i);
-            if(e != ToxAV.AV_Error.NONE) {
-              Logger.log(LogLevel.FATAL, "Could not shutdown AV transmission: %i".printf((int)e));
-            }
-            number_of_calls--;
-            calls[i].active = false;
-            calls[i].shutdown = false;
-          }
-          if(calls[i].startup && !calls[i].active) {
-            Logger.log(LogLevel.DEBUG, "Starting av transmission %i".printf(i));
-            calls[i].startup = false;
-            ToxAV.CodecSettings t_settings = ToxAV.DefaultCodecSettings;
-            ToxAV.AV_Error e = toxav.prepare_transmission(i, ref t_settings, ToxAV.CallType.AUDIO);
-            if(e != ToxAV.AV_Error.NONE) {
-              Logger.log(LogLevel.FATAL, "Could not prepare AV transmission: %i".printf((int)e));
-            } else {
-              number_of_calls++;
-              calls[i].active = true;
-            }
-          }
           if(calls[i].active) {
             prep_frame_ret = toxav.prepare_audio_frame(i, enc_buffer, buffer, buffer_size);
             if(prep_frame_ret <= 0) {
-              Logger.log(LogLevel.WARNING, "prepare_audio_frame returned an error: %i".printf(prep_frame_ret));
+              Logger.log(LogLevel.ERROR, "prepare_audio_frame returned an error: %s".printf(prep_frame_ret.to_string()));
             } else {
               send_audio_ret = toxav.send_audio(i, enc_buffer, prep_frame_ret);
               if(send_audio_ret != ToxAV.AV_Error.NONE) {
-                Logger.log(LogLevel.WARNING, "send_audio returned %d".printf(send_audio_ret));
+                Logger.log(LogLevel.ERROR, "send_audio returned %s".printf(send_audio_ret.to_string()));
               }
             }
              
           }
         }
 
-        if(number_of_calls <= 0) {
+        if(number_of_calls <= 0 && status_changes.length() == 0) {
           Logger.log(LogLevel.INFO, "No remaining calls, stopping audio thread.");
           number_of_calls = 0;
           running = false;
@@ -276,10 +315,27 @@ namespace Venom {
       return 0;
     }
 
-    public void on_start_call(Contact c) {
+    public void set_volume(Contact c, int volume) {
+      status_changes.push( AVStatusChange() {
+        type = AVStatusChangeType.VOLUME,
+        call_index = c.call_index,
+        var1 = volume
+      });
+    }
 
-      calls[c.call_index].startup = true;
-      calls[c.call_index].video = false;
+    public void set_mute(Contact c, bool mute) {
+      status_changes.push( AVStatusChange() {
+        type = AVStatusChangeType.MUTE,
+        call_index = c.call_index,
+        var1 = mute ? 1 : 0
+      });
+    }
+
+    public void on_start_call(Contact c) {
+      status_changes.push( AVStatusChange() {
+        type = AVStatusChangeType.START,
+        call_index = c.call_index
+      });
 
       if(!running) {
         running = true;
@@ -293,7 +349,11 @@ namespace Venom {
         return;
       }
 
-      calls[c.call_index].shutdown = true;
+      status_changes.push( AVStatusChange() {
+        type = AVStatusChangeType.END,
+        call_index = c.call_index
+      });
+
     }
 
   }

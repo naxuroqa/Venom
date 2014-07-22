@@ -74,6 +74,7 @@ namespace Venom {
     // ToxAV stuff
     public int            call_index       { get; set; default = -1; }
     public AudioCallState audio_call_state { get; set; default = AudioCallState.ENDED; }
+    public double         volume           { get; set; default = 1.0; }
 
     private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
 

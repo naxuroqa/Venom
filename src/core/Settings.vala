@@ -32,6 +32,7 @@ namespace Venom {
     public const string SEND_TYPING_STATUS_KEY = "send-typing-status";
     public const string SHOW_TYPING_STATUS_KEY = "show-typing-status";
     public const string DEFAULT_HOST_KEY = "default-host";
+    public const string MIC_VOLUME_KEY = "mic-volume";
 
     public bool   enable_logging              { get; set; default = false;     }
     public bool   enable_urgency_notification { get; set; default = true;      }
@@ -47,6 +48,7 @@ namespace Venom {
     public string default_host                { get; set; default = "toxme.se";}
     public bool   enable_tray                 { get; set; default = true;      }
     public bool   enable_notify               { get; set; default = true;      }
+    public double mic_volume                  { get; set; default = 1.0;       }
 
     private static Settings? _instance;
     public static Settings instance {

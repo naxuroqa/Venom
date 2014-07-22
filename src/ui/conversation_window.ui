@@ -141,36 +141,129 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="box1">
+          <object class="GtkBox" id="callbutton_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="border_width">8</property>
             <property name="spacing">12</property>
-            <property name="homogeneous">True</property>
             <child>
-              <object class="GtkButton" id="button_call">
-                <property name="width_request">64</property>
+              <object class="GtkBox" id="box1">
                 <property name="visible">True</property>
-                <property name="no_show_all">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Call contact</property>
-                <property name="image">image_call</property>
-                <style>
-                  <class name="callbutton"/>
-                </style>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkBox" id="box_volume">
+                    <property name="can_focus">False</property>
+                    <property name="no_show_all">True</property>
+                    <child>
+                      <object class="GtkVolumeButton" id="volume_speakers">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="orientation">vertical</property>
+                        <property name="icons">audio-volume-muted-symbolic
+audio-volume-high-symbolic
+audio-volume-low-symbolic
+audio-volume-medium-symbolic</property>
+                        <child internal-child="plus_button">
+                          <object class="GtkButton" id="volumebutton-plus_button1">
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="relief">none</property>
+                          </object>
+                        </child>
+                        <child internal-child="minus_button">
+                          <object class="GtkButton" id="volumebutton-minus_button1">
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="relief">none</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkVolumeButton" id="volume_mic">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="orientation">vertical</property>
+                        <property name="icons">microphone-sensitivity-muted-symbolic
+microphone-sensitivity-high-symbolic
+microphone-sensitivity-low-symbolic
+microphone-sensitivity-medium-symbolic</property>
+                        <child internal-child="plus_button">
+                          <object class="GtkButton" id="volumebutton-plus_button3">
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="relief">none</property>
+                          </object>
+                        </child>
+                        <child internal-child="minus_button">
+                          <object class="GtkButton" id="volumebutton-minus_button3">
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="relief">none</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="button_call">
+                    <property name="width_request">64</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="no_show_all">True</property>
+                    <property name="tooltip_text" translatable="yes">Call contact</property>
+                    <property name="image">image_call</property>
+                    <style>
+                      <class name="callbutton"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkButton" id="button_call_video">
                 <property name="width_request">64</property>
                 <property name="visible">True</property>
-                <property name="no_show_all">True</property>
                 <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="no_show_all">True</property>
                 <property name="tooltip_text" translatable="yes">Call contact with video</property>
                 <property name="image">image_call_video</property>
                 <style>
