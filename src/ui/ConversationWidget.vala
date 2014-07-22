@@ -29,6 +29,7 @@ namespace Venom {
     private Gtk.Button button_send_file;
     private Gtk.Button button_call;
     private Gtk.Button button_call_video;
+    private Gtk.Box box_volume;    
 
     private MessageTextView message_textview;
     private IConversationView conversation_view;
@@ -92,6 +93,8 @@ namespace Venom {
       Gtk.Image image_call = builder.get_object("image_call") as Gtk.Image;
       Gtk.Image image_call_video = builder.get_object("image_call_video") as Gtk.Image;
 
+      box_volume = builder.get_object("box_volume") as Gtk.Box;
+
       Gtk.Image image_send_file = builder.get_object("image_send_file") as Gtk.Image;
       Gtk.Image image_insert_smiley = builder.get_object("image_insert_smiley") as Gtk.Image;
 
@@ -120,6 +123,7 @@ namespace Venom {
       contact.notify["audio-call-state"].connect(() => {
         Logger.log(LogLevel.DEBUG, "Changing call state to " + contact.audio_call_state.to_string());
         unowned Gtk.StyleContext ctx = button_call.get_style_context();
+        box_volume.visible = contact.audio_call_state == AudioCallState.STARTED;
         switch(contact.audio_call_state) {
           case AudioCallState.RINGING:
           case AudioCallState.CALLING:
@@ -141,12 +145,22 @@ namespace Venom {
         ctx.invalidate();
       });
 
+      Gtk.VolumeButton volume_speakers = builder.get_object("volume_speakers") as Gtk.VolumeButton;
+      Gtk.VolumeButton volume_mic = builder.get_object("volume_mic") as Gtk.VolumeButton;
+
+      Settings.instance.bind_property(Settings.MIC_VOLUME_KEY, volume_mic, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      contact.bind_property("volume", volume_speakers, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      volume_speakers.value_changed.connect((d_volume) => {
+        int volume = (int)(d_volume * 100.0);
+        Logger.log(LogLevel.DEBUG, "Setting volume for %s to %i".printf(contact.name, volume));
+        AudioManager.instance.set_volume(contact, volume);
+      });
+
       button_send = builder.get_object("button_send") as Gtk.Button;
       button_send_file = builder.get_object("button_send_file") as Gtk.Button;
 
       button_send.clicked.connect(() => {textview_activate();});
       button_send_file.clicked.connect(button_send_file_clicked);
-
 
       Gtk.ScrolledWindow scrolled_window_message = builder.get_object("scrolled_window_message") as Gtk.ScrolledWindow;
       message_textview = new MessageTextView();
