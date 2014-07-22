@@ -50,12 +50,12 @@ namespace ToxAV {
     ENDING,
 
     /* Protocol */
-    [CCode (cname = "av_OnError")]
-    ERROR,
     [CCode (cname = "av_OnRequestTimeout")]
     REQUEST_TIMEOUT,
     [CCode (cname = "av_OnPeerTimeout")]
-    PEER_TIMEOUT
+    PEER_TIMEOUT,
+    [CCode (cname = "av_OnMediaChange")]
+    MEDIA_CHANGE
   }
 
   /**
@@ -190,24 +190,23 @@ namespace ToxAV {
   [CCode (cname = "av_DefaultSettings", has_type_id = false)]
   public const CodecSettings DefaultCodecSettings;
 
-  /**
-   * @brief Register callback for call state.
-   *
-   * @param callback The callback
-   * @param id One of the ToxAvCallbackID values
-   * @return void
-   */
-  //typedef void ( *ToxAVCallback ) ( void *arg );
-  [CCode (cname = "ToxAVCallback", has_type_id = false)]
-  public delegate void CallstateCallback(int32 call_index);
-
-  [CCode (cname = "toxav_register_callstate_callback", has_type_id = false)]
-  public static void register_callstate_callback ([CCode( delegate_target_pos = 3 )] CallstateCallback callback, CallbackID id);
-
-
   [CCode (cname = "ToxAv", free_function = "toxav_kill", cprefix = "toxav_", has_type_id = false)]
   [Compact]
   public class ToxAV {
+    /**
+     * @brief Register callback for call state.
+     *
+     * @param callback The callback
+     * @param id One of the ToxAvCallbackID values
+     * @return void
+     */
+    //typedef void ( *ToxAVCallback ) ( void *arg );
+    [CCode (cname = "ToxAVCallback", has_type_id = false)]
+    public delegate void CallstateCallback(ToxAV av, int32 call_index);
+
+    [CCode (cname = "toxav_register_callstate_callback", has_type_id = false)]
+    public void register_callstate_callback ([CCode( delegate_target_pos = 3 )] CallstateCallback callback, CallbackID id);
+
     /**
      * @brief Start new A/V session. There can only be one session at the time. If you register more
      *        it will result in undefined behaviour.

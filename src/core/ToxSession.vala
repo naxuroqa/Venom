@@ -177,17 +177,17 @@ namespace Venom {
       handle.callback_file_data(on_file_data_callback);
 
       // ToxAV callbacks
-      ToxAV.register_callstate_callback(on_av_invite_callback         , ToxAV.CallbackID.INVITE);
-      ToxAV.register_callstate_callback(on_av_start_callback          , ToxAV.CallbackID.START);
-      ToxAV.register_callstate_callback(on_av_cancel_callback         , ToxAV.CallbackID.CANCEL);
-      ToxAV.register_callstate_callback(on_av_reject_callback         , ToxAV.CallbackID.REJECT);
-      ToxAV.register_callstate_callback(on_av_end_callback            , ToxAV.CallbackID.END);
-      ToxAV.register_callstate_callback(on_av_ringing_callback        , ToxAV.CallbackID.RINGING);
-      ToxAV.register_callstate_callback(on_av_starting_callback       , ToxAV.CallbackID.STARTING);
-      ToxAV.register_callstate_callback(on_av_ending_callback         , ToxAV.CallbackID.ENDING);
-      ToxAV.register_callstate_callback(on_av_error_callback          , ToxAV.CallbackID.ERROR);
-      ToxAV.register_callstate_callback(on_av_request_timeout_callback, ToxAV.CallbackID.REQUEST_TIMEOUT);
-      ToxAV.register_callstate_callback(on_av_peer_timeout_callback   , ToxAV.CallbackID.PEER_TIMEOUT);
+      _toxav_handle.register_callstate_callback(on_av_invite_callback         , ToxAV.CallbackID.INVITE);
+      _toxav_handle.register_callstate_callback(on_av_start_callback          , ToxAV.CallbackID.START);
+      _toxav_handle.register_callstate_callback(on_av_cancel_callback         , ToxAV.CallbackID.CANCEL);
+      _toxav_handle.register_callstate_callback(on_av_reject_callback         , ToxAV.CallbackID.REJECT);
+      _toxav_handle.register_callstate_callback(on_av_end_callback            , ToxAV.CallbackID.END);
+      _toxav_handle.register_callstate_callback(on_av_ringing_callback        , ToxAV.CallbackID.RINGING);
+      _toxav_handle.register_callstate_callback(on_av_starting_callback       , ToxAV.CallbackID.STARTING);
+      _toxav_handle.register_callstate_callback(on_av_ending_callback         , ToxAV.CallbackID.ENDING);
+      _toxav_handle.register_callstate_callback(on_av_request_timeout_callback, ToxAV.CallbackID.REQUEST_TIMEOUT);
+      _toxav_handle.register_callstate_callback(on_av_peer_timeout_callback   , ToxAV.CallbackID.PEER_TIMEOUT);
+      _toxav_handle.register_callstate_callback(on_av_media_change            , ToxAV.CallbackID.MEDIA_CHANGE);
     }
 
     private void init_contact_list() {
@@ -934,7 +934,7 @@ namespace Venom {
     }
 
     // TOXAV callbacks
-    private void on_av_invite_callback(int32 call_index) {
+    private void on_av_invite_callback(ToxAV.ToxAV av, int32 call_index) {
       Logger.log(LogLevel.DEBUG, "on_av_invite_callback %i".printf(call_index));
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
@@ -945,7 +945,7 @@ namespace Venom {
         return false;
       });
     }
-    private void on_av_start_callback(int32 call_index) {
+    private void on_av_start_callback(ToxAV.ToxAV av, int32 call_index) {
       Logger.log(LogLevel.DEBUG, "on_av_start_callback %i".printf(call_index));
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
@@ -955,7 +955,7 @@ namespace Venom {
         return false;
       });
     }
-    private void on_av_cancel_callback(int32 call_index) {
+    private void on_av_cancel_callback(ToxAV.ToxAV av, int32 call_index) {
       Logger.log(LogLevel.DEBUG, "on_av_cancel_callback %i".printf(call_index));
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
@@ -965,7 +965,7 @@ namespace Venom {
         return false;
       });
     }
-    private void on_av_reject_callback(int32 call_index) {
+    private void on_av_reject_callback(ToxAV.ToxAV av, int32 call_index) {
       Logger.log(LogLevel.DEBUG, "on_av_reject_callback %i".printf(call_index));
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
@@ -975,7 +975,7 @@ namespace Venom {
         return false;
       });
     }
-    private void on_av_end_callback(int32 call_index) {
+    private void on_av_end_callback(ToxAV.ToxAV av, int32 call_index) {
       Logger.log(LogLevel.DEBUG, "on_av_end_callback %i".printf(call_index));
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
@@ -985,7 +985,7 @@ namespace Venom {
         return false;
       });
     }
-    private void on_av_ringing_callback(int32 call_index) {
+    private void on_av_ringing_callback(ToxAV.ToxAV av, int32 call_index) {
       Logger.log(LogLevel.DEBUG, "on_av_ringing_callback %i".printf(call_index));
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
@@ -996,7 +996,7 @@ namespace Venom {
         return false;
       });
     }
-    private void on_av_starting_callback(int32 call_index) {
+    private void on_av_starting_callback(ToxAV.ToxAV av, int32 call_index) {
       Logger.log(LogLevel.DEBUG, "on_av_starting_callback %i".printf(call_index));
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
@@ -1006,7 +1006,7 @@ namespace Venom {
         return false;
       });
     }
-    private void on_av_ending_callback(int32 call_index) {
+    private void on_av_ending_callback(ToxAV.ToxAV av, int32 call_index) {
       Logger.log(LogLevel.DEBUG, "on_av_ending_callback %i".printf(call_index));
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
@@ -1016,17 +1016,7 @@ namespace Venom {
         return false;
       });
     }
-    private void on_av_error_callback(int32 call_index) {
-      Logger.log(LogLevel.DEBUG, "on_av_error_callback %i".printf(call_index));
-      int friend_id = _toxav_handle.get_peer_id(call_index, 0);
-      Idle.add(() => {
-        Contact c = _contacts.get(friend_id);
-        c.audio_call_state = AudioCallState.ENDED;
-        on_av_error(c);
-        return false;
-      });
-    }
-    private void on_av_request_timeout_callback(int32 call_index) {
+    private void on_av_request_timeout_callback(ToxAV.ToxAV av, int32 call_index) {
       Logger.log(LogLevel.DEBUG, "on_av_request_timeout_callback %i".printf(call_index));
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
@@ -1036,7 +1026,7 @@ namespace Venom {
         return false;
       });
     }
-    private void on_av_peer_timeout_callback(int32 call_index) {
+    private void on_av_peer_timeout_callback(ToxAV.ToxAV av, int32 call_index) {
       Logger.log(LogLevel.DEBUG, "on_av_peer_timeout_callback %i".printf(call_index));
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
@@ -1045,6 +1035,9 @@ namespace Venom {
         on_av_peer_timeout(c);
         return false;
       });
+    }
+    private void on_av_media_change(ToxAV.ToxAV av, int32 call_index) {
+      Logger.log(LogLevel.DEBUG, "on_av_media_change_callback %i".printf(call_index));
     }
   }
 }
