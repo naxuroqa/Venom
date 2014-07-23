@@ -161,8 +161,10 @@ namespace Venom {
     }
 
     public static void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) { 
-      Logger.log(LogLevel.DEBUG, "Got video frame, of size: %d".printf(frame.img_data.length));    
-      instance.video_buffer_in(frame.img_data, frame.img_data.length);
+     uint8 planey = frame.planes[0][0];
+     stdout.printf("First y value is %d\n", planey);
+      //Logger.log(LogLevel.DEBUG, "Got video frame, of size: %d".printf(frame.img_data.length));    
+      //instance.video_buffer_in(frame.img_data, frame.img_data.length);
     }
 
     public void register_callbacks() {
