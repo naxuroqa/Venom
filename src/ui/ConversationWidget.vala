@@ -44,6 +44,8 @@ namespace Venom {
     public signal void contact_changed(Contact c);
     public signal void start_audio_call(Contact c);
     public signal void stop_audio_call(Contact c);
+    public signal void start_video_call(Contact c);
+    public signal void stop_video_call(Contact c);
 
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
@@ -68,7 +70,10 @@ namespace Venom {
       button_send_file.sensitive = contact.online;
       button_send.sensitive = contact.online;
       button_call.sensitive = contact.online;
-      //button_call_video.sensitive = contact.online;
+
+#if DEBUG
+      button_call_video.sensitive = contact.online;
+#endif
 
       // remove is_typing notification for offline contacts
       if(!contact.online){
@@ -120,29 +125,46 @@ namespace Venom {
       button_call.clicked.connect(button_call_clicked);
       button_call_video.clicked.connect(button_call_video_clicked);
       button_call_video.sensitive = false;
-      contact.notify["audio-call-state"].connect(() => {
-        Logger.log(LogLevel.DEBUG, "Changing call state to " + contact.audio_call_state.to_string());
-        box_volume.visible = contact.audio_call_state == AudioCallState.STARTED;
-        unowned Gtk.StyleContext ctx = button_call.get_style_context();
-        switch(contact.audio_call_state) {
-          case AudioCallState.RINGING:
-          case AudioCallState.CALLING:
-            ctx.remove_class("callbutton");
-            ctx.remove_class("callbutton-started");
-            ctx.add_class("callbutton-ringing");
+      contact.notify["call-state"].connect(() => {
+        Logger.log(LogLevel.DEBUG, "Changing call state to " + contact.call_state.to_string());
+        box_volume.visible = contact.call_state == CallState.STARTED;
+        unowned Gtk.StyleContext ctx_ca = button_call.get_style_context();
+        unowned Gtk.StyleContext ctx_cv = button_call_video.get_style_context();
+        switch(contact.call_state) {
+          case CallState.RINGING:
+          case CallState.CALLING:
+            ctx_ca.remove_class("callbutton");
+            ctx_ca.remove_class("callbutton-started");
+            ctx_ca.add_class("callbutton-ringing");
+            if(contact.video) {
+              ctx_cv.remove_class("callbutton");
+              ctx_cv.remove_class("callbutton-started");
+              ctx_cv.add_class("callbutton-ringing");
+            }
             break;
-          case AudioCallState.STARTED:
-            ctx.remove_class("callbutton");
-            ctx.remove_class("callbutton-ringing");
-            ctx.add_class("callbutton-started");
+          case CallState.STARTED:
+            ctx_ca.remove_class("callbutton");
+            ctx_ca.remove_class("callbutton-ringing");
+            ctx_ca.add_class("callbutton-started");
+            if(contact.video) {
+              ctx_cv.remove_class("callbutton");
+              ctx_cv.remove_class("callbutton-ringing");
+              ctx_cv.add_class("callbutton-started");
+            }
             break;
           default:
-            ctx.add_class("callbutton");
-            ctx.remove_class("callbutton-ringing");
-            ctx.remove_class("callbutton-started");
+            ctx_ca.add_class("callbutton");
+            ctx_ca.remove_class("callbutton-ringing");
+            ctx_ca.remove_class("callbutton-started");
+            if(contact.video) {
+              ctx_cv.add_class("callbutton");
+              ctx_cv.remove_class("callbutton-ringing");
+              ctx_cv.remove_class("callbutton-started");
+            }
             break;
         }
-        ctx.invalidate();
+        ctx_ca.invalidate();
+        ctx_cv.invalidate();
       });
       //FIXME currently commented out as it introduces sigsev on gtk 3.4
 /*
@@ -357,7 +379,7 @@ namespace Venom {
     }
 
     public void button_call_clicked(Gtk.Button source) {
-      if(contact.audio_call_state != AudioCallState.ENDED) {
+      if(contact.call_state != CallState.ENDED) {
         stop_audio_call(contact);
       } else {
         start_audio_call(contact);
@@ -365,7 +387,12 @@ namespace Venom {
     }
 
     public void button_call_video_clicked(Gtk.Button source) {
-      //TODO
+      if(contact.call_state == CallState.ENDED) {
+        start_video_call(contact);
+      } else {
+        //FIXME enable video when call already running
+        stop_audio_call(contact);
+      }
     }
 
     private void on_drag_data_received(Gtk.Widget sender, Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData data, uint info, uint time) {

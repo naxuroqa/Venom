@@ -885,23 +885,33 @@ namespace Venom {
 
     // TOXAV functions
     public void start_audio_call(Contact c) {
-      // start audio thread, ...
+      Logger.log(LogLevel.DEBUG, "starting audio call");
       int call_index = 0;
+      c.video = false;
       ToxAV.AV_Error ret = _toxav_handle.call(ref call_index, c.friend_id, ToxAV.CallType.AUDIO, 10);
 
       if(ret != ToxAV.AV_Error.NONE) {
         Logger.log(LogLevel.ERROR, "toxav_call returned an error: %s".printf(ret.to_string()));
       } else {
-        c.call_index = (int)call_index;
+        c.call_index = call_index;
       }
     }
 
     public void start_video_call(Contact c) {
-      //TODO
+      Logger.log(LogLevel.DEBUG, "starting video call");
+      int call_index = 0;
+      c.video = true;
+      ToxAV.AV_Error ret = _toxav_handle.call(ref call_index, c.friend_id, ToxAV.CallType.VIDEO, 10);
+
+      if(ret != ToxAV.AV_Error.NONE) {
+        Logger.log(LogLevel.ERROR, "toxav_call returned an error: %s".printf(ret.to_string()));
+      } else {
+        c.call_index = call_index;
+      }
     }
 
-    public void answer_audio_call(Contact c) {
-      ToxAV.AV_Error ret = _toxav_handle.answer(c.call_index, ToxAV.CallType.AUDIO);
+    public void answer_call(Contact c) {
+      ToxAV.AV_Error ret = _toxav_handle.answer(c.call_index, c.video ? ToxAV.CallType.VIDEO : ToxAV.CallType.AUDIO);
 
       if(ret != ToxAV.AV_Error.NONE) {
         Logger.log(LogLevel.ERROR, "toxav_answer returned an error: %s".printf(ret.to_string()));
@@ -926,7 +936,7 @@ namespace Venom {
 
     public void cancel_call(Contact c) {
       ToxAV.AV_Error ret = _toxav_handle.cancel(c.call_index, ToxAV.CallType.AUDIO, "do not want");
-      c.audio_call_state = AudioCallState.ENDED;
+      c.call_state = CallState.ENDED;
 
       if(ret != ToxAV.AV_Error.NONE) {
         Logger.log(LogLevel.ERROR, "toxav_cancel returned an error: %s".printf(ret.to_string()));
@@ -937,10 +947,12 @@ namespace Venom {
     private void on_av_invite_callback(ToxAV.ToxAV av, int32 call_index) {
       Logger.log(LogLevel.DEBUG, "on_av_invite_callback %i".printf(call_index));
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
+      bool video = ((ToxAV.CallType)_toxav_handle.get_peer_transmission_type(call_index, 0) == ToxAV.CallType.VIDEO);
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
         c.call_index = call_index;
-        c.audio_call_state = AudioCallState.CALLING;
+        c.call_state = CallState.CALLING;
+        c.video = video;
         on_av_invite(c);
         return false;
       });
@@ -950,7 +962,7 @@ namespace Venom {
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
-        c.audio_call_state = AudioCallState.STARTED;
+        c.call_state = CallState.STARTED;
         on_av_start(c);
         return false;
       });
@@ -960,7 +972,7 @@ namespace Venom {
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
-        c.audio_call_state = AudioCallState.ENDED;
+        c.call_state = CallState.ENDED;
         on_av_cancel(c);
         return false;
       });
@@ -970,7 +982,7 @@ namespace Venom {
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
-        c.audio_call_state = AudioCallState.ENDED;
+        c.call_state = CallState.ENDED;
         on_av_reject(c);
         return false;
       });
@@ -980,7 +992,7 @@ namespace Venom {
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
-        c.audio_call_state = AudioCallState.ENDED;
+        c.call_state = CallState.ENDED;
         on_av_end(c);
         return false;
       });
@@ -991,7 +1003,7 @@ namespace Venom {
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
         c.call_index = call_index;
-        c.audio_call_state = AudioCallState.RINGING;
+        c.call_state = CallState.RINGING;
         on_av_ringing(c);
         return false;
       });
@@ -1001,7 +1013,7 @@ namespace Venom {
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
-        c.audio_call_state = AudioCallState.STARTED;
+        c.call_state = CallState.STARTED;
         on_av_starting(c);
         return false;
       });
@@ -1011,7 +1023,7 @@ namespace Venom {
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
-        c.audio_call_state = AudioCallState.ENDED;
+        c.call_state = CallState.ENDED;
         on_av_ending(c);
         return false;
       });
@@ -1021,7 +1033,7 @@ namespace Venom {
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
-        c.audio_call_state = AudioCallState.ENDED;
+        c.call_state = CallState.ENDED;
         on_av_request_timeout(c);
         return false;
       });
@@ -1031,7 +1043,7 @@ namespace Venom {
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
-        c.audio_call_state = AudioCallState.ENDED;
+        c.call_state = CallState.ENDED;
         on_av_peer_timeout(c);
         return false;
       });

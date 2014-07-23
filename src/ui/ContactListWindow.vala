@@ -856,24 +856,24 @@ namespace Venom {
                                   Gtk.MessageType.QUESTION,
                                   Gtk.ButtonsType.NONE,
                                   "");
-      message_dialog.set_markup("'%s' is calling ...".printf(c.get_name_string()));
+      message_dialog.set_markup("'%s' is calling (%s) ...".printf(c.get_name_string(), c.video ? "Video call" : "Audio only"));
       message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
       //close message dialog when callstate changes (timeout, cancel, ...)
-      c.notify["audio-call-state"].connect(() => {
+      c.notify["call-state"].connect(() => {
         message_dialog.destroy();
       });
 
       int response = message_dialog.run();
       message_dialog.destroy();
 
-      if(c.audio_call_state != AudioCallState.CALLING) {
+      if(c.call_state != CallState.CALLING) {
         //when remote cancels the request
         Logger.log(LogLevel.DEBUG, "call with %s already canceled".printf(c.name));
         return;
       }
 
       if(response == Gtk.ResponseType.ACCEPT) {
-        session.answer_audio_call(c);
+        session.answer_call(c);
       } else {
         session.reject_call(c);
       }
@@ -883,27 +883,35 @@ namespace Venom {
       session.start_audio_call(c);
     }
 
+    private void on_start_video_call(Contact c) {
+      session.start_video_call(c);
+    }
+
     private void on_stop_audio_call(Contact c) {
       Logger.log(LogLevel.DEBUG, "on_stop_audio_call");
-      switch(c.audio_call_state) {
-        case AudioCallState.RINGING:
+      switch(c.call_state) {
+        case CallState.RINGING:
           Logger.log(LogLevel.DEBUG, "cancelling call with %s".printf(c.name));
           session.cancel_call(c);
           break;
-        case AudioCallState.CALLING:
+        case CallState.CALLING:
           Logger.log(LogLevel.DEBUG, "rejecting call from %s".printf(c.name));
           session.reject_call(c);
           break;
-        case AudioCallState.STARTED:
+        case CallState.STARTED:
           Logger.log(LogLevel.DEBUG, "hanging up on %s".printf(c.name));
           session.hangup_call(c);
           break;
-        case AudioCallState.ENDED:
+        case CallState.ENDED:
           Logger.log(LogLevel.DEBUG, "call with %s already ended".printf(c.name));
           break;
         default:
           assert_not_reached();
       }
+    }
+
+    private void on_stop_video_call(Contact c) {
+      //TODO
     }
 
     private void on_file_sendrequest(int friendnumber, uint8 filenumber, uint64 filesize,string filename) {
@@ -1094,6 +1102,8 @@ namespace Venom {
         w.new_outgoing_file.connect(on_outgoing_file);
         w.start_audio_call.connect(on_start_audio_call);
         w.stop_audio_call.connect(on_stop_audio_call);
+        w.start_video_call.connect(on_start_video_call);
+        w.stop_video_call.connect(on_stop_video_call);
         w.typing_status.connect( (is_typing) => {
           if(Settings.instance.send_typing_status) {
             session.set_user_is_typing(c.friend_id, is_typing);

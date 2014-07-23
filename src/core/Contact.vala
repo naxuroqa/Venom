@@ -22,7 +22,7 @@
 
 namespace Venom {
 
-  public enum AudioCallState {
+  public enum CallState {
     RINGING, // outgoing call
     CALLING, // incoming call
     STARTED, // call commencing
@@ -73,7 +73,8 @@ namespace Venom {
     public bool           is_typing        { get; set; default = false; }
     // ToxAV stuff
     public int            call_index       { get; set; default = -1; }
-    public AudioCallState audio_call_state { get; set; default = AudioCallState.ENDED; }
+    public CallState      call_state       { get; set; default = CallState.ENDED; }
+    public bool           video            { get; set; default = false; }
     public double         volume           { get; set; default = 1.0; }
 
     private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
