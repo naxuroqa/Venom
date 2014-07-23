@@ -57,19 +57,12 @@ namespace Vpx {
     public uint x_chroma_shift;
     [CCode (cname = "y_chroma_shift")]
     public uint y_chroma_shift;
-    [CCode (cname = "planes")]
-    public uint8[][] planes;
-    [CCode (cname = "stride")]
+    [CCode (cname = "planes", array_length=false)]
+    public uint8[,] planes;
+    [CCode (cname = "stride", array_length=false)]
     public int[] stride;
     [CCode (cname = "bps")]
     public int bps;
-    //void* user_priv
-    [CCode (cname = "img_data")]
-    public uint8[] img_data;
-    [CCode (cname = "img_data_owner")]
-    public int img_data_owner;
-    [CCode (cname = "self_alloced")]
-    public int self_alloced;
 
     [CCode (cname = "vpx_image_alloc")]
     public Image(ImageFormat fmt, uint d_w, uint d_h, uint align);
