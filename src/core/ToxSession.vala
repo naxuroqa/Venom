@@ -885,7 +885,7 @@ namespace Venom {
 
     // TOXAV functions
     public void start_audio_call(Contact c) {
-      Logger.log(LogLevel.DEBUG, "starting audio call");
+      Logger.log(LogLevel.DEBUG, "starting audio call with " + c.name);
       int call_index = 0;
       c.video = false;
       ToxAV.AV_Error ret = _toxav_handle.call(ref call_index, c.friend_id, ToxAV.CallType.AUDIO, 10);
@@ -898,7 +898,7 @@ namespace Venom {
     }
 
     public void start_video_call(Contact c) {
-      Logger.log(LogLevel.DEBUG, "starting video call");
+      Logger.log(LogLevel.DEBUG, "starting video call with " + c.name);
       int call_index = 0;
       c.video = true;
       ToxAV.AV_Error ret = _toxav_handle.call(ref call_index, c.friend_id, ToxAV.CallType.VIDEO, 10);
@@ -911,6 +911,7 @@ namespace Venom {
     }
 
     public void answer_call(Contact c) {
+      Logger.log(LogLevel.DEBUG, "answering call %i".printf(c.call_index));
       ToxAV.AV_Error ret = _toxav_handle.answer(c.call_index, c.video ? ToxAV.CallType.VIDEO : ToxAV.CallType.AUDIO);
 
       if(ret != ToxAV.AV_Error.NONE) {
