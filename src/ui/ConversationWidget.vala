@@ -29,7 +29,7 @@ namespace Venom {
     private Gtk.Button button_send_file;
     private Gtk.Button button_call;
     private Gtk.Button button_call_video;
-    private Gtk.Box box_volume;    
+    //private Gtk.Box box_volume;    
 
     private MessageTextView message_textview;
     private IConversationView conversation_view;
@@ -98,7 +98,7 @@ namespace Venom {
       Gtk.Image image_call = builder.get_object("image_call") as Gtk.Image;
       Gtk.Image image_call_video = builder.get_object("image_call_video") as Gtk.Image;
 
-      box_volume = builder.get_object("box_volume") as Gtk.Box;
+      //box_volume = builder.get_object("box_volume") as Gtk.Box;
 
       Gtk.Image image_send_file = builder.get_object("image_send_file") as Gtk.Image;
       Gtk.Image image_insert_smiley = builder.get_object("image_insert_smiley") as Gtk.Image;
@@ -127,7 +127,7 @@ namespace Venom {
       button_call_video.sensitive = false;
       contact.notify["call-state"].connect(() => {
         Logger.log(LogLevel.DEBUG, "Changing call state to " + contact.call_state.to_string());
-        box_volume.visible = contact.call_state == CallState.STARTED;
+        //box_volume.visible = contact.call_state == CallState.STARTED;
         unowned Gtk.StyleContext ctx_ca = button_call.get_style_context();
         unowned Gtk.StyleContext ctx_cv = button_call_video.get_style_context();
         switch(contact.call_state) {

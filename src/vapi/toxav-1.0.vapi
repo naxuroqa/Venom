@@ -201,7 +201,7 @@ namespace ToxAV {
      * @return void
      */
     //typedef void ( *ToxAVCallback ) ( void *arg );
-    [CCode (cname = "ToxAVCallback", has_type_id = false)]
+    [CCode (cname = "ToxAVCallback", has_target = true)]
     public delegate void CallstateCallback(ToxAV av, int32 call_index);
 
     [CCode (cname = "toxav_register_callstate_callback", has_type_id = false)]

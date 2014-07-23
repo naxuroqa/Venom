@@ -951,9 +951,9 @@ namespace Venom {
       bool video = ((ToxAV.CallType)_toxav_handle.get_peer_transmission_type(call_index, 0) == ToxAV.CallType.VIDEO);
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
+        c.video = video;
         c.call_index = call_index;
         c.call_state = CallState.CALLING;
-        c.video = video;
         on_av_invite(c);
         return false;
       });
