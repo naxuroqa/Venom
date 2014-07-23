@@ -122,8 +122,8 @@ namespace Venom {
       button_call_video.sensitive = false;
       contact.notify["audio-call-state"].connect(() => {
         Logger.log(LogLevel.DEBUG, "Changing call state to " + contact.audio_call_state.to_string());
-        unowned Gtk.StyleContext ctx = button_call.get_style_context();
         box_volume.visible = contact.audio_call_state == AudioCallState.STARTED;
+        unowned Gtk.StyleContext ctx = button_call.get_style_context();
         switch(contact.audio_call_state) {
           case AudioCallState.RINGING:
           case AudioCallState.CALLING:
@@ -144,9 +144,21 @@ namespace Venom {
         }
         ctx.invalidate();
       });
-
-      Gtk.VolumeButton volume_speakers = builder.get_object("volume_speakers") as Gtk.VolumeButton;
-      Gtk.VolumeButton volume_mic = builder.get_object("volume_mic") as Gtk.VolumeButton;
+      //FIXME currently commented out as it introduces sigsev on gtk 3.4
+/*
+      Gtk.ScaleButton volume_speakers = new Gtk.ScaleButton(Gtk.IconSize.SMALL_TOOLBAR);
+      Gtk.ScaleButton volume_mic = new Gtk.ScaleButton(Gtk.IconSize.SMALL_TOOLBAR);
+      volume_mic.set_icons({
+        "microphone-sensitivity-muted",
+        "microphone-sensitivity-high",
+        "microphone-sensitivity-low",
+        "microphone-sensitivity-medium",
+        null
+      });
+      volume_speakers.show_all();
+      volume_mic.show_all();
+      box_volume.pack_start(volume_speakers, false);
+      box_volume.pack_start(volume_mic, false);
 
       Settings.instance.bind_property(Settings.MIC_VOLUME_KEY, volume_mic, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       contact.bind_property("volume", volume_speakers, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
@@ -154,7 +166,7 @@ namespace Venom {
         int volume = (int)(d_volume * 100.0);
         Logger.log(LogLevel.DEBUG, "Setting volume for %s to %i".printf(contact.name, volume));
         AudioManager.instance.set_volume(contact, volume);
-      });
+      });*/
 
       button_send = builder.get_object("button_send") as Gtk.Button;
       button_send_file = builder.get_object("button_send_file") as Gtk.Button;
