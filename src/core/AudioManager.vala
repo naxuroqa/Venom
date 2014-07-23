@@ -367,10 +367,11 @@ namespace Venom {
     }
 
     public void set_mute(Contact c, bool mute) {
+      int imute = (mute ? 1 : 0);
       status_changes.push( AVStatusChange() {
         type = AVStatusChangeType.MUTE,
         call_index = c.call_index,
-        var1 = mute ? 1 : 0
+        var1 = imute
       });
     }
 
