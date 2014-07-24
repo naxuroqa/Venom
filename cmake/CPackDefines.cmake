@@ -116,7 +116,7 @@ DeleteRegKey HKCR \\\"tox\\\"
 ")
 # .deb
 # libtoxcore ommitted, since we are most likely linking it statically
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS  "libgtk-3-0 (>= 3.4.1), libjson-glib-1.0-0 (>= 0.14.2), libsqlite3-0 (>= 3.7.9), libgstreamer0.10-0 (>= 0.10.36), libgstreamer-plugins-base0.10-0 (>= 0.10.36) ${DEBIAN_PACKAGE_DEPENDS_OPT}")
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS  "libgtk-3-0 (>= 3.4.1), libjson-glib-1.0-0 (>= 0.14.2), libsqlite3-0 (>= 3.7.9), libgstreamer0.10-0 (>= 0.10.36), libgstreamer-plugins-base0.10-0 (>= 0.10.36), gstreamer0.10-plugins-bad (>= 0.10.22) ${DEBIAN_PACKAGE_DEPENDS_OPT}")
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION  "web")
 SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${VENOM_WEBSITE}")
