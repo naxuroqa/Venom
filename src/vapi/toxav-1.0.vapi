@@ -81,7 +81,7 @@ namespace ToxAV {
     ACTIVE,
     [CCode (cname = "av_CallHold")]
     HOLD,
-    [CCode (cname = "av_CallHanged")]
+    [CCode (cname = "av_CallHanged_up")]
     HANGED_UP
   }
 
@@ -159,7 +159,7 @@ namespace ToxAV {
   [Flags]
   [CCode (cname = "ToxAvCapabilities", cprefix = "", has_type_id = false)]
   public enum Capabilities {
-    [CCode (cname = "AudioEnconding")]
+    [CCode (cname = "AudioEncoding")]
     AUDIO_ENCODING,
     [CCode (cname = "AudioDecoding")]
     AUDIO_DECODING,
@@ -172,8 +172,10 @@ namespace ToxAV {
   /**
    * @brief Encoding settings.
    */
-  [CCode (cname = "ToxAvCodecSettings", destroy_function = "", cprefix = "", has_copy_function = false, has_type_id = false)]
+  [CCode (cname = "ToxAvCSettings", destroy_function = "", cprefix = "", has_copy_function = false, has_type_id = false)]
   public struct CodecSettings {
+      CallType call_type;
+
       uint32 video_bitrate; /* In kbits/s */
       uint16 max_video_width; /* In px */
       uint16 max_video_height; /* In px */
@@ -182,13 +184,14 @@ namespace ToxAV {
       uint16 audio_frame_duration; /* In ms */
       uint32 audio_sample_rate; /* In Hz */
       uint32 audio_channels;
-      uint32 audio_VAD_tolerance; /* In ms */
-      
-      uint32 jbuf_capacity; /* Size of jitter buffer */
   }
 
   [CCode (cname = "av_DefaultSettings", has_type_id = false)]
   public const CodecSettings DefaultCodecSettings;
+  [CCode (cname = "av_jbufdc")]
+  public const uint32 JITTER_BUFFER_DEFAULT_CAPACITY;
+  [CCode (cname = "av_VADd")]
+  public const uint32 VAD_DEFAULT_THRESHOLD;
 
   [CCode (cname = "ToxAv", free_function = "toxav_kill", cprefix = "toxav_", has_type_id = false)]
   [Compact]
@@ -261,7 +264,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error call(ref int32 call_index, int user, CallType call_type, int ringing_seconds);
+    public AV_Error call(ref int32 call_index, int user, ref CodecSettings csettings, int ringing_seconds);
 
     /**
      * @brief Hangup active call.
@@ -282,7 +285,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error answer(int32 call_index, CallType call_type );
+    public AV_Error answer(int32 call_index, ref CodecSettings csettings );
 
     /**
      * @brief Reject incomming call.
@@ -308,6 +311,16 @@ namespace ToxAV {
     public AV_Error cancel(int32 call_index, int peer_id, string reason);
 
     /**
+     * @brief Notify peer that we are changing call settings
+     *
+     * @param av Handler.
+     * @return int
+     * @retval 0 Success.
+     * @retval ToxAvError On error.
+     */
+    public AV_Error change_settings(int32 call_index, ref CodecSettings csettings);
+
+    /**
      * @brief Terminate transmission. Note that transmission will be terminated without informing remote peer.
      *
      * @param av Handler.
@@ -326,7 +339,7 @@ namespace ToxAV {
      * @retval 0 Success.
      * @retval ToxAvError On error.
      */
-    public AV_Error prepare_transmission(int32 call_index, ref CodecSettings codec_settings, int support_video);
+    public AV_Error prepare_transmission(int32 call_index, uint32 jbuf_size, uint32 VAD_threshold, int support_video);
 
     /**
      * @brief Call this at the end of the transmission.
@@ -397,7 +410,7 @@ namespace ToxAV {
      * @retval ToxAvCallType On success.
      * @retval ToxAvError On error.
      */
-    public AV_Error get_peer_transmission_type (int32 call_index, int peer);
+    public AV_Error get_peer_csettings (int32 call_index, int peer, ref CodecSettings dest);
 
     /**
      * @brief Get id of peer participating in conversation
@@ -428,26 +441,6 @@ namespace ToxAV {
      * @retval 0 No.
      */
     public int capability_supported ( int32 call_index, Capabilities capability );
-
-    /**
-     * @brief Set queue limit
-     *
-     * @param av Handler
-     * @param call_index index
-     * @param limit the limit
-     * @return void
-     */
-    public int set_audio_queue_limit ( int32 call_index, uint64 limit );
-
-    /**
-     * @brief Set queue limit
-     *
-     * @param av Handler
-     * @param call_index index
-     * @param limit the limit
-     * @return void
-     */
-    public int set_video_queue_limit ( int32 call_index, uint64 limit );
 
     /**
      * @brief Get messenger handle

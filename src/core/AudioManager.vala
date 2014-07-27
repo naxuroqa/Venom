@@ -286,13 +286,18 @@ namespace Venom {
           switch(c.type) {
             case AVStatusChangeType.START:
               Logger.log(LogLevel.DEBUG, "Starting av transmission %i".printf(c.call_index));
-              ToxAV.CodecSettings t_settings = ToxAV.DefaultCodecSettings;
-              ToxAV.AV_Error e = toxav.prepare_transmission(c.call_index, ref t_settings, ToxAV.CallType.AUDIO);
+              ToxAV.AV_Error e = toxav.prepare_transmission(
+                c.call_index,
+                ToxAV.JITTER_BUFFER_DEFAULT_CAPACITY,
+                ToxAV.VAD_DEFAULT_THRESHOLD,
+                c.var1 // video support
+              );
               if(e != ToxAV.AV_Error.NONE) {
                 Logger.log(LogLevel.FATAL, "Could not prepare AV transmission: %s".printf(e.to_string()));
               } else {
                 number_of_calls++;
                 calls[c.call_index].active = true;
+                calls[c.call_index].video = (c.var1 != 0);
               }
               break;
             case AVStatusChangeType.END:
@@ -376,9 +381,11 @@ namespace Venom {
     }
 
     public void on_start_call(Contact c) {
+      int video = c.video ? 1 : 0;
       status_changes.push( AVStatusChange() {
         type = AVStatusChangeType.START,
-        call_index = c.call_index
+        call_index = c.call_index,
+        var1 = video
       });
 
       if(!running) {

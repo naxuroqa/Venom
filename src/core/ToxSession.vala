@@ -888,7 +888,10 @@ namespace Venom {
       Logger.log(LogLevel.DEBUG, "starting audio call with " + c.name);
       int call_index = 0;
       c.video = false;
-      ToxAV.AV_Error ret = _toxav_handle.call(ref call_index, c.friend_id, ToxAV.CallType.AUDIO, 10);
+      ToxAV.CodecSettings settings = ToxAV.DefaultCodecSettings;
+      settings.call_type = ToxAV.CallType.AUDIO;
+      
+      ToxAV.AV_Error ret = _toxav_handle.call(ref call_index, c.friend_id, ref settings, 10);
 
       if(ret != ToxAV.AV_Error.NONE) {
         Logger.log(LogLevel.ERROR, "toxav_call returned an error: %s".printf(ret.to_string()));
@@ -901,7 +904,10 @@ namespace Venom {
       Logger.log(LogLevel.DEBUG, "starting video call with " + c.name);
       int call_index = 0;
       c.video = true;
-      ToxAV.AV_Error ret = _toxav_handle.call(ref call_index, c.friend_id, ToxAV.CallType.VIDEO, 10);
+      ToxAV.CodecSettings settings = ToxAV.DefaultCodecSettings;
+      settings.call_type = ToxAV.CallType.VIDEO;
+
+      ToxAV.AV_Error ret = _toxav_handle.call(ref call_index, c.friend_id, ref settings, 10);
 
       if(ret != ToxAV.AV_Error.NONE) {
         Logger.log(LogLevel.ERROR, "toxav_call returned an error: %s".printf(ret.to_string()));
@@ -912,7 +918,9 @@ namespace Venom {
 
     public void answer_call(Contact c) {
       Logger.log(LogLevel.DEBUG, "answering call %i".printf(c.call_index));
-      ToxAV.AV_Error ret = _toxav_handle.answer(c.call_index, c.video ? ToxAV.CallType.VIDEO : ToxAV.CallType.AUDIO);
+      ToxAV.CodecSettings settings = ToxAV.DefaultCodecSettings;
+      settings.call_type = c.video ? ToxAV.CallType.VIDEO : ToxAV.CallType.AUDIO;
+      ToxAV.AV_Error ret = _toxav_handle.answer(c.call_index, ref settings);
 
       if(ret != ToxAV.AV_Error.NONE) {
         Logger.log(LogLevel.ERROR, "toxav_answer returned an error: %s".printf(ret.to_string()));
@@ -948,7 +956,9 @@ namespace Venom {
     private void on_av_invite_callback(ToxAV.ToxAV av, int32 call_index) {
       Logger.log(LogLevel.DEBUG, "on_av_invite_callback %i".printf(call_index));
       int friend_id = _toxav_handle.get_peer_id(call_index, 0);
-      bool video = ((ToxAV.CallType)_toxav_handle.get_peer_transmission_type(call_index, 0) == ToxAV.CallType.VIDEO);
+      ToxAV.CodecSettings settings = ToxAV.CodecSettings();
+      _toxav_handle.get_peer_csettings(call_index, 0, ref settings);
+      bool video = (settings.call_type == ToxAV.CallType.VIDEO);
       Idle.add(() => {
         Contact c = _contacts.get(friend_id);
         c.video = video;
