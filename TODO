@@ -1,23 +1,21 @@
-[0.2]
-* save actions in db
-* testing
-
 [0.3]
-* add audiochat
-* add videochat
+* Add audiochat (Windows and OSX support missing)
+* Add videochat
+* Fix file transfer
+* Ensure compatiblity with Windows
 
 [0.4]
-* Local storage additionally to tox data file (sqlite, plain xml file, ...?)
-  * add local nicknames/tags for contacts (optionally)
-  * make dht boostrapping nodes editable / selectable
+* Add integrated toxme.se support
+  * see (https://github.com/Tox/toxme.se/blob/master/api.md)
+* Rework notification system
+  * Drop libnotfiy dependency (use dbus, see https://developer.gnome.org/notification-spec/)
+  * Add notifications for contacts going offline/online
+  * Add sounds for notifications
 
 [future]
-* add option for multiaccount
-* unit tests
-* test it on OSX
-* add plugins
-  * sound plugin
-  * inotify plugin
-  * logger plugin
-  * anonymizer plugin (strip metadata of known media)
-  * ...
+* Make dht boostrapping nodes editable / selectable
+* Multiaccounts
+* Encrypted data file and database
+* Unit tests
+* Better compatibility with windows and OSX
+* Add plugin system (possibly with gobject-introspection support to allow jscript/python plugins)
