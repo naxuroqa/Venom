@@ -851,6 +851,9 @@ namespace Venom {
 
     private void on_av_invite(Contact c) {
       this.set_urgency();
+#if DEBUG
+      session.answer_call(c);
+#else
       Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
@@ -877,6 +880,7 @@ namespace Venom {
       } else {
         session.reject_call(c);
       }
+#endif
     }
 
     private void on_start_audio_call(Contact c) {
