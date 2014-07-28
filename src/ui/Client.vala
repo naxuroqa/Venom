@@ -130,6 +130,7 @@ namespace Venom {
       if(contact_list_window != null) {
         contact_list_window.cleanup();
       }
+      AudioManager.free();
       base.shutdown();
     }
 

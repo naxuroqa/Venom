@@ -65,8 +65,7 @@ namespace Venom {
     private const string VIDEO_SOURCE_OUT   = "videoSourceOut";
     private const string VIDEO_SINK_OUT     = "videoSinkOut";  
 
-    private const string AUDIO_CAPS = "audio/x-raw-int,channels=1,rate=48000,signed=true,width=16,depth=16,endianness=1234";
-    private const string VIDEO_CAPS = "vide/x-raw-yuv,height=640,width=480,framerate=24/1";
+    private const string VIDEO_CAPS = "video/x-raw-yuv,height=640,width=480,framerate=24/1";
 
     private const int MAX_CALLS = 16;
     CallInfo[] calls = new CallInfo[MAX_CALLS];
@@ -94,6 +93,10 @@ namespace Venom {
     private Thread<int> av_thread = null;
     private bool running = false;
 
+    // settings in use by audio in pipeline
+    private ToxAV.CodecSettings current_audio_settings = ToxAV.DefaultCodecSettings;
+    // settings in use by out pipeline
+    private ToxAV.CodecSettings default_settings = ToxAV.DefaultCodecSettings;
     private ToxSession _tox_session = null;
     private unowned ToxAV.ToxAV toxav = null;
     public ToxSession tox_session {
@@ -114,6 +117,12 @@ namespace Venom {
 #else
       instance = new AudioManager({""});
 #endif
+    }
+
+    public static void free() {
+      instance.running = false;
+      instance.join();
+      instance.destroy_audio_pipeline();
     }
 
     private AudioManager(string[] args) throws AudioManagerError {
@@ -152,23 +161,30 @@ namespace Venom {
       audio_sink_out   = pipeline_out.get_by_name(AUDIO_SINK_OUT) as Gst.AppSink;
 
       // input video pipeline
-      video_pipeline_in  = new Gst.Pipeline(VIDEO_PIPELINE_IN);
-      video_source_in = (Gst.AppSrc)Gst.ElementFactory.make("appsrc", VIDEO_SOURCE_IN);
-      video_sink_in   = Gst.ElementFactory.make("autovideosink", VIDEO_SINK_IN);
-      video_pipeline_in.add_many (video_source_in, video_sink_in);
-      video_source_in.link(video_sink_in);
+      try {
+        video_pipeline_in = Gst.parse_launch("appsrc name=" + VIDEO_SOURCE_IN +
+                                          " ! autovideosink name=" + VIDEO_SINK_IN) as Gst.Pipeline;
+      } catch (Error e) {
+        throw new AudioManagerError.PIPELINE("Error creating the video input pipeline: " + e.message);
+      }
+      video_source_in = video_pipeline_in.get_by_name(VIDEO_SOURCE_IN) as Gst.AppSrc;
+      video_sink_in   = video_pipeline_in.get_by_name(VIDEO_SINK_IN);
 
       // output video pipeline
-      video_pipeline_out  = new Gst.Pipeline(VIDEO_PIPELINE_OUT);
-      video_source_out = Gst.ElementFactory.make("v4l2src", VIDEO_SOURCE_OUT);
-      video_sink_out   = (Gst.AppSink)Gst.ElementFactory.make("appsink", VIDEO_SINK_OUT);
-      video_pipeline_out.add_many (video_source_out, video_sink_out);
-      video_source_out.link(video_sink_out);
+      try {
+        video_pipeline_out = Gst.parse_launch("v4l2src name=" + VIDEO_SOURCE_OUT +
+                                           " ! appsink name=" + VIDEO_SINK_OUT) as Gst.Pipeline;
+      } catch (Error e) {
+        throw new AudioManagerError.PIPELINE("Error creating the video output pipeline: " + e.message);
+      }
+      video_source_out = video_pipeline_out.get_by_name(VIDEO_SOURCE_OUT);
+      video_sink_out   = video_pipeline_out.get_by_name(VIDEO_SINK_OUT) as Gst.AppSink;
 
       // caps
-      Gst.Caps caps  = Gst.Caps.from_string(AUDIO_CAPS);
+      Gst.Caps caps  = Gst.Caps.from_string(get_audio_caps_from_codec_settings(ref default_settings));
       Gst.Caps vcaps = Gst.Caps.from_string(VIDEO_CAPS);
-      Logger.log(LogLevel.INFO, "Caps is [" + caps.to_string() + "]");
+      Logger.log(LogLevel.INFO, "Audio caps are [" + caps.to_string() + "]");
+      Logger.log(LogLevel.INFO, "Video caps are [" + vcaps.to_string() + "]");
 
       audio_source_in.caps = caps;
       audio_sink_out.caps  = caps;
@@ -176,8 +192,13 @@ namespace Venom {
       video_source_in.caps = vcaps;
       video_sink_out.caps  = vcaps;
 
+      //audio_sink_out.blocksize = (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000 * 2;
+      //audio_sink_out.drop = true;
+      //audio_sink_out.max_buffers = 2;
+      //audio_sink_out.max_lateness = 1000; // buffers older than 1 msec will be dropped
+
       ((Gst.BaseSrc)audio_source_out).blocksize = (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000 * 2;
-      ((Gst.BaseSrc)video_source_out).blocksize = (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000 * 2;
+      //((Gst.BaseSrc)video_source_out).blocksize = (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000 * 2;
 
       Settings.instance.bind_property(Settings.MIC_VOLUME_KEY, audio_volume_out, "volume", BindingFlags.SYNC_CREATE);
     }
@@ -188,57 +209,65 @@ namespace Venom {
       }
     }
 
-    public static void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] samples) {
-      Logger.log(LogLevel.DEBUG, "Received audio samples (%d bytes)".printf(samples.length * 2));      
-      instance.samples_in(call_index, samples, samples.length);
+    private static void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] samples) {
+      Logger.log(LogLevel.DEBUG, "Received audio samples (%d bytes)".printf(samples.length * 2));
+      instance.samples_in(call_index, samples);
     }
 
-    public static void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) { 
+    private static void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) { 
      uint8 planey = frame.planes[0,0];
      stdout.printf("First y value is %d\n", planey);
       //Logger.log(LogLevel.DEBUG, "Got video frame, of size: %d".printf(frame.img_data.length));    
       //instance.video_buffer_in(frame.img_data, frame.img_data.length);
     }
 
-    public void register_callbacks() {
+    private void register_callbacks() {
       toxav.register_audio_recv_callback(audio_receive_callback);
       toxav.register_video_recv_callback(video_receive_callback);
     }
 
-    public void destroy_audio_pipeline() {
+    private void destroy_audio_pipeline() {
       pipeline_in.set_state(Gst.State.NULL);
       pipeline_out.set_state(Gst.State.NULL);
       Logger.log(LogLevel.INFO, "Audio pipeline destroyed");
     }
 
-    public void set_pipeline_paused() {
+    private void set_audio_pipeline_paused() {
       pipeline_in.set_state(Gst.State.PAUSED);
       pipeline_out.set_state(Gst.State.PAUSED);
       Logger.log(LogLevel.INFO, "Audio pipeline set to paused");
     }
 
-    public void set_pipeline_playing() {
+    private void set_audio_pipeline_playing() {
       pipeline_in.set_state(Gst.State.PLAYING);
       pipeline_out.set_state(Gst.State.PLAYING);
       Logger.log(LogLevel.INFO, "Audio pipeline set to playing");
     }
 
-    private ToxAV.CodecSettings current_audio_settings = ToxAV.DefaultCodecSettings;
-    public void samples_in(int32 call_index, int16[] buffer, int buffer_size) {
-      int len = int.min(buffer_size * 2, buffer.length * 2);
+    private string get_audio_caps_from_codec_settings(ref ToxAV.CodecSettings settings) {
+      return "audio/x-raw-int,channels=(int)%u,rate=(int)%u,signed=(boolean)true,width=(int)16,depth=(int)16,endianness=(int)1234".printf(settings.audio_channels, settings.audio_sample_rate);
+    }
+
+    private void samples_in(int32 call_index, int16[] buffer) {
+      int len = buffer.length * 2;
       Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len);
       Memory.copy(gst_buf.data, buffer, len);
 
       ToxAV.CodecSettings settings = ToxAV.CodecSettings();
-      toxav.get_peer_csettings(call_index, 0, ref settings);
+      ToxAV.AV_Error ret = toxav.get_peer_csettings(call_index, 0, ref settings);
 
       gst_buf.duration = -1; // settings.audio_frame_duration * Gst.MSECOND;
       gst_buf.timestamp = -1;
 
-      if(settings.audio_channels    != current_audio_settings.audio_channels ||
+      if(ret != ToxAV.AV_Error.NONE) {
+        Logger.log(LogLevel.WARNING, "Could not acquire codec settings for contact %i, assuming default settings".printf(call_index));
+        settings = ToxAV.DefaultCodecSettings;
+      }
+
+      if(settings.audio_channels != current_audio_settings.audio_channels ||
          settings.audio_sample_rate != current_audio_settings.audio_sample_rate) {
         current_audio_settings = settings;
-        string caps_string = "audio/x-raw-int,channels=(int)%u,rate=(int)%u,signed=(boolean)true,width=(int)16,depth=(int)16,endianness=(int)1234".printf(settings.audio_channels, settings.audio_sample_rate);
+        string caps_string = get_audio_caps_from_codec_settings(ref settings);
         Logger.log(LogLevel.INFO, "Changing caps to " + caps_string);
         audio_source_in.caps = Gst.Caps.from_string(caps_string);
       }
@@ -252,7 +281,7 @@ namespace Venom {
     //INSTEAD OF MAKING THIS RETURN LEN / 2 OR WHATEVER, MAKE IT RETURN
     //A BUFFER THAT IT ALLOCS. THAT WAY WE CAN ALLOC EXACTLY THE AMOUNT OF SPACE WE NEED
     //THEN FREE AFTER YOU SEND THE PACKET!!!
-    public int buffer_out(/*There will be NO Args*/int16[] dest) {
+    private int buffer_out(/*There will be NO Args*/int16[] dest) {
       Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
       //Allocate the new buffer here, we will return this buffer (it is dest)
       int len = int.min(gst_buf.data.length, dest.length * 2);
@@ -261,8 +290,7 @@ namespace Venom {
       return len / 2;
     }
 
-
-    public void video_buffer_in(uint8[] buffer, int buffer_size) { 
+    private void video_buffer_in(uint8[] buffer, int buffer_size) { 
        int len = int.min(buffer_size, buffer.length);
        Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len);
        Memory.copy(gst_buf.data, buffer, len);
@@ -272,7 +300,7 @@ namespace Venom {
        return;
     }
 
-    public uint8[] video_buffer_out() { 
+    private uint8[] video_buffer_out() { 
         Gst.Buffer gst_buf = video_sink_out.pull_buffer();
         uint8[] return_buffer = (uint8[])malloc(sizeof(uint8) * gst_buf.data.length);
         Memory.copy(return_buffer, gst_buf.data, gst_buf.data.length);
@@ -282,7 +310,7 @@ namespace Venom {
 
     private int av_thread_fun() {
       Logger.log(LogLevel.INFO, "starting av thread...");
-      set_pipeline_playing();
+      set_audio_pipeline_playing();
       int perframe = (int)(ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000;
       int buffer_size;
       int16[] buffer = new int16[perframe];
@@ -345,7 +373,7 @@ namespace Venom {
               break;
           }
         }
-        /*
+        
         // distribute samples across peers
         for(int i = 0; i < MAX_CALLS; i++) {
           if(calls[i].active) {
@@ -358,21 +386,21 @@ namespace Venom {
                 Logger.log(LogLevel.ERROR, "send_audio returned %s".printf(send_audio_ret.to_string()));
               }
             }
-            
-           // if(true) { //THIS SHOULD BE if(VIDEO) but I don't know what variable that is 
-           //   prep_frame_ret = toxav.prepare_video_frame(i, enc_buffer, buffer, buffer_size);
-           //   if(prep_frame_ret <= 0) { 
-           //     Logger.log(LogLevel.WARNING, "prepare_video_frame returned an error: %i".printf(prep_frame_ret));
-           //   } else { 
-           //     send_video_ret = toxav.send_video(i, enc_buffer, prep_frame_ret);
-           //     if(send_video_ret != ToxAV.AV_Error.NONE) { 
-           //       Logger.log(LogLevel.WARNING, "send_video returned %d".printf(send_video_ret));
-           //     }
-           //   } 
-           // }
+
+            if(calls[i].video) {
+            //   prep_frame_ret = toxav.prepare_video_frame(i, enc_buffer, buffer, buffer_size);
+            //   if(prep_frame_ret <= 0) { 
+            //     Logger.log(LogLevel.WARNING, "prepare_video_frame returned an error: %i".printf(prep_frame_ret));
+            //   } else {
+            //     send_video_ret = toxav.send_video(i, enc_buffer, prep_frame_ret);
+            //     if(send_video_ret != ToxAV.AV_Error.NONE) { 
+            //       Logger.log(LogLevel.WARNING, "send_video returned %d".printf(send_video_ret));
+            //     }
+            //   } 
+            }
           }
         }
-*/
+
         if(number_of_calls <= 0 && status_changes.length() == 0) {
           Logger.log(LogLevel.INFO, "No remaining calls, stopping audio thread.");
           number_of_calls = 0;
@@ -381,9 +409,18 @@ namespace Venom {
       }
 
       Logger.log(LogLevel.INFO, "stopping audio thread...");
-      set_pipeline_paused();
+      set_audio_pipeline_paused();
       return 0;
     }
+
+    public int join() {
+      if(av_thread != null) {
+        return av_thread.join();
+      }
+      return -1;
+    }
+
+    // functions to control the AV Manager
 
     public void set_volume(Contact c, int volume) {
       status_changes.push( AVStatusChange() {
