@@ -66,6 +66,10 @@ namespace Venom {
     public string         alias            { get; set; default = ""; }
     public bool           is_blocked       { get; set; default = false; }
     public string         group            { get; set; default = ""; }
+    // FIXME update sql save file and save those
+    public bool           auto_files       { get; set; default = false; }
+    public bool           auto_audio       { get; set; default = false; }
+    public bool           auto_video       { get; set; default = false; }
     // Not saved
     public bool           online           { get; set; default = false; }
     public Gdk.Pixbuf?    image            { get; set; default = null; }

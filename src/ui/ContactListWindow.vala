@@ -851,9 +851,11 @@ namespace Venom {
 
     private void on_av_invite(Contact c) {
       this.set_urgency();
-#if DEBUG
-      session.answer_call(c);
-#else
+      if(c.auto_video && c.video || c.auto_audio && !c.video) {
+        //Auto accept
+        session.answer_call(c);
+        return;
+      }
       Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
@@ -880,7 +882,6 @@ namespace Venom {
       } else {
         session.reject_call(c);
       }
-#endif
     }
 
     private void on_start_audio_call(Contact c) {

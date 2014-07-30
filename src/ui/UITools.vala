@@ -79,9 +79,30 @@ namespace Venom {
       item.activate.connect(() => { w.block_contact(c); });
       menu.append(item);*/
 
+      Gtk.Menu autoaccept_submenu = new Gtk.Menu();
+
+      item = new Gtk.CheckMenuItem.with_mnemonic(_("_File transfers"));
+      c.bind_property("auto-files", item, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      // FIXME make selectable when done with reworking file transfers
+      item.sensitive = false;
+      autoaccept_submenu.append(item);
+
+      item = new Gtk.CheckMenuItem.with_mnemonic(_("_Audio chat"));
+      c.bind_property("auto-audio", item, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      autoaccept_submenu.append(item);
+
+      item = new Gtk.CheckMenuItem.with_mnemonic(_("_Video chat"));
+      c.bind_property("auto-video", item, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      autoaccept_submenu.append(item);
+
+      item = new Gtk.MenuItem.with_mnemonic(_("_Automatically accept ..."));
+      item.submenu = autoaccept_submenu;
+      menu.append(item);
+
       GLib.HashTable<int, GroupChat> groupchats = w.get_groupchats();
       if(groupchats.size() > 0) {
         Gtk.MenuItem groupchat_item = new Gtk.MenuItem.with_mnemonic(_("_Invite to ..."));
+        c.bind_property("online", groupchat_item, "sensitive", BindingFlags.SYNC_CREATE);
         Gtk.Menu groupchat_submenu = new Gtk.Menu();
 
         item = new Gtk.MenuItem.with_mnemonic(_("_New groupchat"));
@@ -97,6 +118,7 @@ namespace Venom {
         menu.append(groupchat_item);
       } else {
         item = new Gtk.MenuItem.with_mnemonic(_("_Invite to new groupchat"));
+        c.bind_property("online", item, "sensitive", BindingFlags.SYNC_CREATE);
         item.activate.connect(() => { w.invite_to_groupchat(c); });
         menu.append(item);
       }
