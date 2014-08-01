@@ -59,13 +59,14 @@ namespace Venom {
 
     private const string VIDEO_PIPELINE_IN  = "videoPipelineIn";
     private const string VIDEO_SOURCE_IN    = "videoSourceIn";
+    private const string VIDEO_CONVERTER    = "videoConverter";
     private const string VIDEO_SINK_IN      = "videoSinkIn";
     
     private const string VIDEO_PIPELINE_OUT = "videoPipelineOut";
     private const string VIDEO_SOURCE_OUT   = "videoSourceOut";
     private const string VIDEO_SINK_OUT     = "videoSinkOut";  
 
-    private const string VIDEO_CAPS = "video/x-raw-yuv,width=640,height=480,framerate=24/1";
+    private const string VIDEO_CAPS = "video/x-raw-yuv,format=i420,width=640,height=480,framerate=24/1";
 
     private const int MAX_CALLS = 16;
     CallInfo[] calls = new CallInfo[MAX_CALLS];
@@ -164,6 +165,7 @@ namespace Venom {
       // input video pipeline
       try {
         video_pipeline_in = Gst.parse_launch("appsrc name=" + VIDEO_SOURCE_IN +
+                                          " ! ffmpegcolorspace name=" + VIDEO_CONVERTER +
                                           " ! autovideosink name=" + VIDEO_SINK_IN) as Gst.Pipeline;
       } catch (Error e) {
         throw new AudioManagerError.PIPELINE("Error creating the video input pipeline: " + e.message);
@@ -318,7 +320,7 @@ namespace Venom {
        int i;
        int j;
 
-       for(i = 0; i < frame.d_h; ++i) { 
+    /*   for(i = 0; i < frame.d_h; ++i) { 
          for(j = 0; j < frame.d_w; ++j) { 
            uint8 y = frame.planes[0, ((i * frame.stride[0]) + j)];
            uint8 u = frame.planes[1, (((i / 2) * frame.stride[1]) + (j / 2))];
@@ -330,8 +332,9 @@ namespace Venom {
                   
          }
       }
+    */
 
-      Memory.copy(gst_buf.data, tempBuf, len);
+      Memory.copy(gst_buf.data, frame.planes, len);
       for(i = 0; i < len; i++) { 
         stdout.printf("[%u]    [%u]    [%u]\n", gst_buf.data[i], gst_buf.data[i+1], gst_buf.data[i+2]);
         i += 3;
