@@ -77,6 +77,7 @@ namespace Venom {
     private Gst.Element  audio_sink_in;
     private Gst.Element  audio_volume_in;
 
+    
     private Gst.Pipeline pipeline_out;
     private Gst.Element  audio_source_out;
     private Gst.AppSink  audio_sink_out;
@@ -302,14 +303,21 @@ namespace Venom {
            uint8 y = frame.planes[0, ((i * frame.stride[0]) + j)];
            uint8 u = frame.planes[1, (((i / 2) * frame.stride[1]) + (j / 2))];
            uint8 v = frame.planes[2, (((i / 2) * frame.stride[2]) + (j / 2))];
-           
+
            tempBuf += y;
            tempBuf += u;
            tempBuf += v;
+
+           stdout.printf("[%u]    [%u]    [%u]\n", y, u, v);
+                  
          }
       }
 
       Memory.copy(gst_buf.data, tempBuf, len);
+      /*for(i = 0; i < len; i++) { 
+        stdout.printf("[%u]    [%u]    [%u]\n", tempBuf[i], tempBuf[i+1], tempBuf[i+2]);
+        i += 3;
+      }*/
       video_source_in.push_buffer(gst_buf);
       //Logger.log(LogLevel.DEBUG, "pushed %i bytes to VIDEO_IN pipeline".printf(len));
       return;
