@@ -58,7 +58,7 @@ namespace Vpx {
     [CCode (cname = "y_chroma_shift")]
     public uint y_chroma_shift;
     [CCode (cname = "planes", array_length=false)]
-    public uint8[,] planes;
+    public uint8** planes;
     [CCode (cname = "stride", array_length=false)]
     public int[] stride;
     [CCode (cname = "bps")]

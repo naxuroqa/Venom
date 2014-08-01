@@ -66,7 +66,7 @@ namespace Venom {
     private const string VIDEO_SOURCE_OUT   = "videoSourceOut";
     private const string VIDEO_SINK_OUT     = "videoSinkOut";  
 
-    private const string VIDEO_CAPS = "video/x-raw-yuv,format=i420,width=640,height=480,framerate=24/1";
+    private const string VIDEO_CAPS = "video/x-raw-yuv,format=(fourcc)I420,width=640,height=480,framerate=24/1";
 
     private const int MAX_CALLS = 16;
     CallInfo[] calls = new CallInfo[MAX_CALLS];
@@ -271,6 +271,12 @@ namespace Venom {
 #endif
     }
 
+    private void set_video_pipeline_paused() { 
+      video_pipeline_in.set_state(Gst.State.PAUSED);
+      video_pipeline_out.set_state(Gst.State.PAUSED);
+      Logger.log(LogLevel.INFO, "Video pipeline set to paused");
+    }
+
     private string get_audio_caps_from_codec_settings(ref ToxAV.CodecSettings settings) {
       return "audio/x-raw-int,channels=(int)%u,rate=(int)%u,signed=(boolean)true,width=(int)16,depth=(int)16,endianness=(int)1234".printf(settings.audio_channels, settings.audio_sample_rate);
     }
@@ -340,8 +346,7 @@ namespace Venom {
         i += 2;
       }
       video_source_in.push_buffer(gst_buf);
-      //Logger.log(LogLevel.DEBUG, "pushed %i bytes to VIDEO_IN pipeline".printf(len));
-      return;
+      Logger.log(LogLevel.DEBUG, "pushed %u bytes to VIDEO_IN pipeline".printf(len));
     }
 
     private uint8[] video_buffer_out() { 
@@ -399,9 +404,10 @@ namespace Venom {
               ToxAV.AV_Error e = toxav.kill_transmission(c.call_index);
               if(e != ToxAV.AV_Error.NONE) {
                 Logger.log(LogLevel.FATAL, "Could not shutdown AV transmission: %s".printf(e.to_string()));
+              } else {
+                number_of_calls--;
+                calls[c.call_index].active = false;
               }
-              number_of_calls--;
-              calls[c.call_index].active = false;
               break;
             case AVStatusChangeType.MUTE:
               Logger.log(LogLevel.DEBUG, (c.var1 == 1) ? "Muting %i".printf(c.call_index) : "Unmuting %i".printf(c.call_index));
@@ -461,6 +467,7 @@ namespace Venom {
 
       Logger.log(LogLevel.INFO, "stopping audio thread...");
       set_audio_pipeline_paused();
+      set_video_pipeline_paused();
       return 0;
     }
 
