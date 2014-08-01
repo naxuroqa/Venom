@@ -65,7 +65,7 @@ namespace Venom {
     private const string VIDEO_SOURCE_OUT   = "videoSourceOut";
     private const string VIDEO_SINK_OUT     = "videoSinkOut";  
 
-    private const string VIDEO_CAPS = "video/x-raw-yuv,height=640,width=480,framerate=24/1";
+    private const string VIDEO_CAPS = "video/x-raw-yuv,width=640,height=480,framerate=24/1";
 
     private const int MAX_CALLS = 16;
     CallInfo[] calls = new CallInfo[MAX_CALLS];
