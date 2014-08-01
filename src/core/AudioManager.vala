@@ -320,7 +320,7 @@ namespace Venom {
        int i;
        int j;
 
-    /*   for(i = 0; i < frame.d_h; ++i) { 
+      for(i = 0; i < frame.d_h; ++i) { 
          for(j = 0; j < frame.d_w; ++j) { 
            uint8 y = frame.planes[0, ((i * frame.stride[0]) + j)];
            uint8 u = frame.planes[1, (((i / 2) * frame.stride[1]) + (j / 2))];
@@ -332,12 +332,12 @@ namespace Venom {
                   
          }
       }
-    */
+    
 
       Memory.copy(gst_buf.data, frame.planes, len);
       for(i = 0; i < len; i++) { 
         stdout.printf("[%u]    [%u]    [%u]\n", gst_buf.data[i], gst_buf.data[i+1], gst_buf.data[i+2]);
-        i += 3;
+        i += 2;
       }
       video_source_in.push_buffer(gst_buf);
       //Logger.log(LogLevel.DEBUG, "pushed %i bytes to VIDEO_IN pipeline".printf(len));
