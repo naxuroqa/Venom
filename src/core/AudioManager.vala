@@ -314,7 +314,7 @@ namespace Venom {
     private void video_buffer_in(Vpx.Image frame) { 
        uint len = frame.d_w * frame.d_h * 4;
        Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len);
-       uint8[] tempBuf = new uint8[len];
+       uint8[] tempBuf = {};
        int i;
        int j;
 
@@ -327,17 +327,15 @@ namespace Venom {
            tempBuf += y;
            tempBuf += u;
            tempBuf += v;
-
-           stdout.printf("[%u]    [%u]    [%u]\n", y, u, v);
                   
          }
       }
 
       Memory.copy(gst_buf.data, tempBuf, len);
-      /*for(i = 0; i < len; i++) { 
+      for(i = 0; i < len; i++) { 
         stdout.printf("[%u]    [%u]    [%u]\n", tempBuf[i], tempBuf[i+1], tempBuf[i+2]);
         i += 3;
-      }*/
+      }
       video_source_in.push_buffer(gst_buf);
       //Logger.log(LogLevel.DEBUG, "pushed %i bytes to VIDEO_IN pipeline".printf(len));
       return;
