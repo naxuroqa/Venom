@@ -218,19 +218,21 @@ namespace Venom {
       }
     }
 
-    private static void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] samples) {
+    private void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] samples) {
       //Logger.log(LogLevel.DEBUG, "Received audio samples (%d bytes)".printf(samples.length * 2));
-      instance.samples_in(call_index, samples);
+      samples_in(call_index, samples);
     }
 
-    private static void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) { 
-//      Logger.log(LogLevel.DEBUG, "Got video frame, of size: %d".printf(frame.img_data.length));    
-      instance.video_buffer_in(frame);
+    private void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) {
+//      Logger.log(LogLevel.DEBUG, "Got video frame, of size: %d".printf(frame.img_data.length));
+      video_buffer_in(frame);
     }
 
     private void register_callbacks() {
       toxav.register_audio_recv_callback(audio_receive_callback);
+#if DEBUG
       toxav.register_video_recv_callback(video_receive_callback);
+#endif
     }
 
     private void destroy_audio_pipeline() {
@@ -251,10 +253,12 @@ namespace Venom {
       Logger.log(LogLevel.INFO, "Audio pipeline set to playing");
     }
  
-    private void set_video_pipeline_playing() { 
+    private void set_video_pipeline_playing() {
+#if DEBUG
       video_pipeline_in.set_state(Gst.State.PLAYING);
       video_pipeline_out.set_state(Gst.State.PLAYING);
       Logger.log(LogLevel.INFO, "Video pipeline set to playing");
+#endif
     }
 
     private string get_audio_caps_from_codec_settings(ref ToxAV.CodecSettings settings) {

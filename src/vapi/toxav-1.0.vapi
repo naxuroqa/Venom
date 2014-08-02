@@ -239,7 +239,7 @@ namespace ToxAV {
     * @param callback The callback
     * @return void
     */
-    [CCode (has_target = false, has_type_id = false)]
+    [CCode (has_type_id = false)]
     public delegate void AudioRecvCallback(ToxAV toxav, int32 call_index, [CCode(array_length_type="int")] int16[] frames);
     public void register_audio_recv_callback(AudioRecvCallback callback);
 
@@ -249,7 +249,7 @@ namespace ToxAV {
     * @param callback The callback
     * @return void
     */
-    [CCode (has_target = false, has_type_id = false)]
+    [CCode (has_type_id = false)]
     public delegate void VideoRecvCallback(ToxAV toxav, int32 call_index, Vpx.Image frame);
     public void register_video_recv_callback(VideoRecvCallback callback);
 
