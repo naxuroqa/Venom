@@ -19,6 +19,7 @@
 
 SET(TRANSLATIONS
   de
+  fr
   it
   ru
 )
