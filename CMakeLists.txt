@@ -65,6 +65,9 @@ ENDIF(WIN32)
 
 SET(COMMON_DATA_DIR share)
 
+#Check for Vala
+find_package(Vala REQUIRED)
+
 #i18n
 INCLUDE(Gettext)
 SET(GETTEXT_PACKAGE "Venom")
