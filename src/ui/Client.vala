@@ -158,7 +158,15 @@ namespace Venom {
       hold();
       get_contact_list_window().present();
       //FIXME allow names without tox:// prefix on command line
-      contact_list_window.add_contact(files[0].get_uri());
+      string id = files[0].get_uri();
+      try {
+      var regex = new GLib.Regex("^tox:/*");
+        id = regex.replace(id, -1, 0, "");
+      } catch (GLib.RegexError e) {
+        GLib.assert_not_reached();
+      }
+      Logger.log(LogLevel.DEBUG, "Adding contact from commandline: " + id);
+      contact_list_window.add_contact(id);
       release();
     }
 
