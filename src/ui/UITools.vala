@@ -64,8 +64,12 @@ namespace Venom {
       }
     }
 
+    private static Gtk.Menu context_menu = null;
     public static Gtk.Menu show_contact_context_menu( ContactListWindow w,  Contact c ) {
-      Gtk.Menu menu = new Gtk.Menu();
+      if(context_menu != null) {
+        context_menu.destroy();
+      }
+      context_menu = new Gtk.Menu();
 /*
       Gtk.MenuItem item = new Gtk.MenuItem.with_mnemonic("_Show");
       item.activate.connect(() => { print("name: %s\n", c.get_name_string()); });
@@ -73,11 +77,11 @@ namespace Venom {
 
       Gtk.MenuItem item = new Gtk.MenuItem.with_mnemonic(_("_Unfriend"));
       item.activate.connect(() => { w.remove_contact(c); });
-      menu.append(item);
 /*
       item = new Gtk.MenuItem.with_mnemonic("_Block");
       item.activate.connect(() => { w.block_contact(c); });
       menu.append(item);*/
+      context_menu.append(item);
 
       Gtk.Menu autoaccept_submenu = new Gtk.Menu();
 
@@ -97,7 +101,7 @@ namespace Venom {
 
       item = new Gtk.MenuItem.with_mnemonic(_("_Automatically accept ..."));
       item.submenu = autoaccept_submenu;
-      menu.append(item);
+      context_menu.append(item);
 
       GLib.HashTable<int, GroupChat> groupchats = w.get_groupchats();
       if(groupchats.size() > 0) {
@@ -115,24 +119,27 @@ namespace Venom {
           groupchat_submenu.append(item);
         });
         groupchat_item.submenu = groupchat_submenu;
-        menu.append(groupchat_item);
+        context_menu.append(groupchat_item);
       } else {
         item = new Gtk.MenuItem.with_mnemonic(_("_Invite to new groupchat"));
         c.bind_property("online", item, "sensitive", BindingFlags.SYNC_CREATE);
         item.activate.connect(() => { w.invite_to_groupchat(c); });
-        menu.append(item);
+        context_menu.append(item);
       }
-      return menu;
+      return context_menu;
     }
 
     public static Gtk.Menu show_groupchat_context_menu( ContactListWindow w,  GroupChat g ) {
-      Gtk.Menu menu = new Gtk.Menu();
+      if(context_menu != null) {
+        context_menu.destroy();
+      }
+      context_menu = new Gtk.Menu();
 
       Gtk.MenuItem item = new Gtk.MenuItem.with_mnemonic(_("_Leave groupchat"));
       item.activate.connect(() => { w.remove_groupchat(g ); });
-      menu.append(item);
+      context_menu.append(item);
 
-      return menu;
+      return context_menu;
     }
 
     public static void export_datafile(Gtk.Window parent, ToxSession s) {
