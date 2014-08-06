@@ -166,7 +166,7 @@ namespace Venom {
       try {
         video_pipeline_in = Gst.parse_launch("appsrc name=" + VIDEO_SOURCE_IN +
                                           " ! ffmpegcolorspace name=" + VIDEO_CONVERTER +
-                                          " ! autovideosink name=" + VIDEO_SINK_IN) as Gst.Pipeline;
+                                          " ! xvimagesink name=" + VIDEO_SINK_IN) as Gst.Pipeline;
       } catch (Error e) {
         throw new AudioManagerError.PIPELINE("Error creating the video input pipeline: " + e.message);
       }
@@ -322,6 +322,7 @@ namespace Venom {
     private void video_buffer_in(Vpx.Image frame) { 
       uint len = frame.d_w * frame.d_h;
       Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len + len / 2);
+      stdout.printf("%u, %u, %u\n", frame.fmt, frame.d_w, frame.d_h);
       uint8[] y = {};
       uint8[] u = {};
       uint8[] v = {};
@@ -344,6 +345,15 @@ namespace Venom {
       Logger.log(LogLevel.DEBUG, "pushed %u bytes to VIDEO_IN pipeline".printf(len));
     }
 
+
+
+
+
+
+
+    /////////////////////////////////////////////////
+    //Working on the below two functions
+
     private uint8[] video_buffer_out() { 
         Gst.Buffer gst_buf = video_sink_out.pull_buffer();
         uint8[] return_buffer = (uint8[])malloc(sizeof(uint8) * gst_buf.data.length);
@@ -351,6 +361,28 @@ namespace Venom {
         Logger.log(LogLevel.DEBUG, "pulled %i bytes form VIDEO_OUT pipeline".printf(gst_buf.data.length));
         return return_buffer;
     }
+
+
+
+    //TODO: Should send this function args for making the vpx.image
+    private Vpx.Image make_vpx_image() { 
+       
+       uint8[] img_data = video_buffer_out();
+       //These should be args and not constants... but w/e for now :P
+       Vpx.Image myImage = new Vpx.Image((Vpx.ImageFormat)258, 640, 480, 0);
+       myImage.wrap((Vpx.ImageFormat)258, 640, 480, 0, img_data);
+       return myImage;
+    }
+
+
+   //End work zone 
+   /////////////////////////////////////////////////
+
+
+
+
+
+
 
     private int av_thread_fun() {
       Logger.log(LogLevel.INFO, "starting av thread...");
@@ -360,13 +392,13 @@ namespace Venom {
       int buffer_size;
       int16[] buffer = new int16[perframe];
       uint8[] enc_buffer = new uint8[perframe*2];
+      Vpx.Image outImage;
       ToxAV.AV_Error prep_frame_ret = 0, send_audio_ret = 0, send_video_ret = 0;
       //ToxAV.AV_Error send_video_ret;
       int number_of_calls = 0;
 
       while(running) {
         // read samples from pipeline
-        //TODO THIS LINE NEEDS TO CHANGE TO BE A INT16[] GOTTEN FROM BUFFER_OUT(NO ARGS);
         buffer_size = buffer_out(buffer);
         if(buffer_size <= 0) {
           Logger.log(LogLevel.WARNING, "Could not read samples from audio pipeline!");
@@ -432,26 +464,42 @@ namespace Venom {
                 Logger.log(LogLevel.ERROR, "send_audio returned %s".printf(send_audio_ret.to_string()));
               }
             }
-/*
+
+
+
+
+
+
+
+            ////////////////////////////////////////////////////////////
+            //Working on send video code
+
             if(calls[i].video) {
-              buffer_size = buffer_out(buffer);
-              if(buffer_size <= 0) {
-                Logger.log(LogLevel.WARNING, "Could not read samples from video pipeline!");
-              }else { 
-                prep_frame_ret = toxav.prepare_video_frame(i, enc_buffer, buffer, buffer_size);
-                if(prep_frame_ret <= 0) { 
-                   Logger.log(LogLevel.WARNING, "prepare_video_frame returned an error: %i".printf(prep_frame_ret));
-                } else {
-                  send_video_ret = toxav.send_video(i, enc_buffer, prep_frame_ret);
-                  if(send_video_ret != ToxAV.AV_Error.NONE) { 
-                    Logger.log(LogLevel.WARNING, "send_video returned %d".printf(send_video_ret));
-                  }
-                } 
-              }
+              outImage = make_vpx_image();                
+              prep_frame_ret = toxav.prepare_video_frame(i, enc_buffer, outImage);
+              if(prep_frame_ret <= 0) { 
+                 Logger.log(LogLevel.WARNING, "prepare_video_frame returned an error: %i".printf(prep_frame_ret));
+              } else {
+                send_video_ret = toxav.send_video(i, enc_buffer, prep_frame_ret);
+                if(send_video_ret != ToxAV.AV_Error.NONE) { 
+                  Logger.log(LogLevel.WARNING, "send_video returned %d".printf(send_video_ret));
+                }
+              } 
+              
             }
-*/
+
+           //End work zone 
+           ///////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
           }
         }
+
 
         if(number_of_calls <= 0 && status_changes.length() == 0) {
           Logger.log(LogLevel.INFO, "No remaining calls, stopping audio thread.");
