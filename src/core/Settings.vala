@@ -72,26 +72,32 @@ namespace Venom {
     }
 
     private string filepath;
-    private bool timeout_started;
+    private bool timeout_fn_running = false;
+    private Timer timeout_fn_timer = new Timer();
     private bool timeout_function() {
       // save only if not saved previously
-      if( timeout_started ) {
-        save_settings(filepath);
+      if(!timeout_fn_running) {
+        return false;
       }
-      return false;
+      if(timeout_fn_timer.elapsed() > 1) {
+        save_settings(filepath);
+        return false;
+      }
+      return true;
     }
 
     public void save_settings_with_timeout(string path_to_file) {
-      // only add timeout function once
-      if( !timeout_started ) {
-        timeout_started = true;
+      timeout_fn_timer.start();
+      if( !timeout_fn_running ) {
+        timeout_fn_running = true;
         filepath = path_to_file;
         Timeout.add_seconds(1, timeout_function);
       }
     }
 
     public void save_settings(string path_to_file) {
-      timeout_started = false;
+      //stop timeout save
+      timeout_fn_running = false;
       Json.Node root = Json.gobject_serialize (this);
 
       Json.Generator generator = new Json.Generator ();
