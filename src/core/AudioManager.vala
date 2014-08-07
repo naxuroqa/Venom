@@ -366,12 +366,10 @@ namespace Venom {
 
     //TODO: Should send this function args for making the vpx.image
     private Vpx.Image make_vpx_image() { 
-       
        uint8[] img_data = video_buffer_out();
        //These should be args and not constants... but w/e for now :P
-       Vpx.Image myImage = new Vpx.Image((Vpx.ImageFormat)258, 640, 480, 0);
-       myImage.wrap((Vpx.ImageFormat)258, 640, 480, 0, img_data);
-       return myImage;
+       Vpx.Image my_image = Vpx.Image.wrap(null, Vpx.ImageFormat.I420, 640, 480, 0, img_data);
+       return my_image;
     }
 
 

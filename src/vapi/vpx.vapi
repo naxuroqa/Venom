@@ -38,10 +38,13 @@ namespace Vpx {
     RGB565_LE,  // 16 bit per pixel, gggbbbbb rrrrrggg
     RGB555_LE,  // 16 bit per pixel, gggbbbbb 0rrrrrgg
     YV12,       // planar YVU
+    I420,
+    VPXYV12,
     VPXI420     // < planar 4:2:0 format with vpx color space
   }
 
-  [CCode (cname = "vpx_image_t", free_function = "vpx_image_free", cprefix = "vpx_image_", has_type_id = false)]
+  [CCode (cname = "vpx_image_t", free_function = "vpx_img_free", cprefix = "vpx_img_", has_type_id = false)]
+  [Compact]
   public class Image {
     [CCode (cname = "fmt")]
     public ImageFormat fmt;
@@ -64,10 +67,8 @@ namespace Vpx {
     [CCode (cname = "bps")]
     public int bps;
 
-    [CCode (cname = "vpx_image_alloc")]
-    public Image(ImageFormat fmt, uint d_w, uint d_h, uint align);
-
-    public Image wrap(ImageFormat fmt, uint d_w, uint d_h, uint align, [CCode(array_length=false)] uint8[] img_data);
+    public static Image alloc(Image? img, ImageFormat fmt, uint d_w, uint d_h, uint align);
+    public static Image wrap(Image? img, ImageFormat fmt, uint d_w, uint d_h, uint align, [CCode(array_length=false)] uint8[] img_data);
 
     public int set_rect(uint x, uint y, uint w, uint h);
 
