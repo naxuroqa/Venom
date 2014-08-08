@@ -323,15 +323,22 @@ namespace Venom {
       session.on_own_user_status.connect(this.on_ownuserstatus);
       session.on_typing_change.connect(this.on_typing_change);
 
-      //minimize on tray signals
-      if(Settings.instance.enable_tray){
-        this.window_state_event.connect( (e) => {
-          if (e.new_window_state == Gdk.WindowState.ICONIFIED){
-            this.hide();
+      //Window signals
+      this.delete_event.connect((e) => {
+        if(Settings.instance.enable_tray) {
+          this.hide();
             return true;
-          } else {return false;}
-        } ) ;
-      }
+        }
+        return false;
+      });
+        
+      this.window_state_event.connect( (e) => {
+		if ((e.new_window_state == Gdk.WindowState.ICONIFIED) && Settings.instance.enable_tray){
+          this.hide();
+          return true;
+        }
+		return false;
+      } ) ;
 
       //groupmessage signals
       session.on_group_invite.connect(this.on_group_invite);

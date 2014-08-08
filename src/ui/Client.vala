@@ -67,14 +67,6 @@ namespace Venom {
 
         set_app_menu(menu);
 
-        contact_list_window.delete_event.connect((e) => {
-          if(Settings.instance.enable_tray) {
-            contact_list_window.hide();
-            return true;
-          }
-          return false;
-        });
-
         create_tray_menu();
         tray_icon = new Gtk.StatusIcon.from_icon_name("venom");
         tray_icon.set_tooltip_text(APPLICATION_NAME);
@@ -102,6 +94,7 @@ namespace Venom {
       if(w.visible) {
         w.hide();
       } else {
+		w.deiconify();				//Avoid the window to stay hid when "minimized on tray"
         w.show();
       }
     }
