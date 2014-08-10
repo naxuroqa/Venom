@@ -188,13 +188,6 @@
   background-color: @treeview-background;
 }
 
-.contact_list .frame {
-  border: 0px solid @border-color;
-  border-top-width: 1px;
-  border-bottom-width: 1px;
-  padding: 0px;
-}
-
 .contact_list GtkTreeView {
   background-color: @treeview-background;
 }
@@ -260,6 +253,9 @@ GtkEventBox,
   border-color: @separator-color;
 }
 
+.conversation_widget GtkLabel {
+  color: #000000;
+}
 
 .conversation_widget .callbutton:insensitive,
 .conversation_widget .callbutton:insensitive:insensitive {
@@ -352,7 +348,12 @@ GtkEventBox,
   border-radius: 7px;
 }
 
-.message_entry .own_name {
+.message_entry {
+  color: #000000;
+}
+
+.message_entry .own_name,
+.message_entry .own_message {
   color: #939598;
 }
 
@@ -378,4 +379,3 @@ GtkEventBox,
 .filetransfer_entry .fileinfo{
   color: #d5d5d5;
 }
-
