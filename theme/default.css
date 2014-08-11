@@ -27,7 +27,8 @@
 @define-color callbutton-selected lighter(@callbutton-color);
 @define-color separator-color #c1c1c1;
 
-* {
+.contact_list *,
+.conversation_widget * {
   engine: none;
   -GtkWindow-resize-grip-default: false;
   -GtkWindow-resize-grip-height: 0;
