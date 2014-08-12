@@ -76,7 +76,6 @@ namespace Venom {
     private Gst.AppSrc   audio_source_in;
     private Gst.Element  audio_sink_in;
     private Gst.Element  audio_volume_in;
-
     
     private Gst.Pipeline pipeline_out;
     private Gst.Element  audio_source_out;
@@ -110,7 +109,7 @@ namespace Venom {
       }
     }
 
-    public static AudioManager instance {get; private set;}
+    public static AudioManager instance {get; private set; default = null;}
 
     public static void init() throws AudioManagerError {
 #if DEBUG
@@ -121,9 +120,8 @@ namespace Venom {
     }
 
     public static void free() {
-      instance.running = false;
-      instance.join();
-      instance.destroy_audio_pipeline();
+      instance = null;
+      Logger.log(LogLevel.INFO, "AudioManager instance freed");
     }
 
     private AudioManager(string[] args) throws AudioManagerError {
@@ -216,6 +214,10 @@ namespace Venom {
       if(av_thread != null) {
         av_thread.join();
       }
+      destroy_audio_pipeline();
+      destroy_video_pipeline();
+      Gst.deinit();
+      Logger.log(LogLevel.INFO, "Gstreamer deinitialized");
     }
 
     private void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] samples) {
@@ -239,6 +241,12 @@ namespace Venom {
       pipeline_in.set_state(Gst.State.NULL);
       pipeline_out.set_state(Gst.State.NULL);
       Logger.log(LogLevel.INFO, "Audio pipeline destroyed");
+    }
+
+    private void destroy_video_pipeline() {
+      video_pipeline_in.set_state(Gst.State.NULL);
+      video_pipeline_out.set_state(Gst.State.NULL);
+      Logger.log(LogLevel.INFO, "Video pipeline destroyed");
     }
 
     private void set_audio_pipeline_paused() {
