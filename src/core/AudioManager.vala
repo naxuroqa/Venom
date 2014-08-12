@@ -64,6 +64,7 @@ namespace Venom {
     
     private const string VIDEO_PIPELINE_OUT = "videoPipelineOut";
     private const string VIDEO_SOURCE_OUT   = "videoSourceOut";
+    private const string VIDEO_CONVERTER_OUT = "videoConverterOut";
     private const string VIDEO_SINK_OUT     = "videoSinkOut";  
 
     private const string VIDEO_CAPS  = "video/x-raw-yuv,format=(fourcc)I420,width=640,height=480,framerate=24/1";
@@ -90,6 +91,7 @@ namespace Venom {
 
     private Gst.Pipeline video_pipeline_out;
     private Gst.Element  video_source_out;
+    private Gst.Element  video_converter_out;
     private Gst.AppSink  video_sink_out;
 
     private Thread<int> av_thread = null;
@@ -176,13 +178,14 @@ namespace Venom {
 
       // output video pipeline
       try {
-        video_pipeline_out = Gst.parse_launch("videotestsrc name=" + VIDEO_SOURCE_OUT +
-                                           " ! ffmpegcolorspace" +
+        video_pipeline_out = Gst.parse_launch("v4l2src name=" + VIDEO_SOURCE_OUT +
+                                           " ! ffmpegcolorspace name=" + VIDEO_CONVERTER_OUT + 
                                            " ! appsink name=" + VIDEO_SINK_OUT) as Gst.Pipeline;
       } catch (Error e) {
         throw new AudioManagerError.PIPELINE("Error creating the video output pipeline: " + e.message);
       }
       video_source_out = video_pipeline_out.get_by_name(VIDEO_SOURCE_OUT);
+      video_converter_out = video_pipeline_out.get_by_name(VIDEO_CONVERTER_OUT);
       video_sink_out   = video_pipeline_out.get_by_name(VIDEO_SINK_OUT) as Gst.AppSink;
 
       // caps
@@ -368,7 +371,7 @@ namespace Venom {
     private Vpx.Image make_vpx_image() { 
        uint8[] img_data = video_buffer_out();
        //These should be args and not constants... but w/e for now :P
-       Vpx.Image my_image = Vpx.Image.wrap(null, Vpx.ImageFormat.I420, 640, 480, 1, img_data);
+       Vpx.Image my_image = Vpx.Image.wrap(null, Vpx.ImageFormat.I420, 640, 480, 0, img_data);
        return my_image;
     }
 
