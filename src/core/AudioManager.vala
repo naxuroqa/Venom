@@ -67,7 +67,8 @@ namespace Venom {
     private const string VIDEO_CONVERTER_OUT = "videoConverterOut";
     private const string VIDEO_SINK_OUT     = "videoSinkOut";  
 
-    private const string VIDEO_CAPS  = "video/x-raw-yuv,format=(fourcc)I420,width=640,height=480";
+    private const string VIDEO_CAPS_IN   = "video/x-raw-yuv,format=(fourcc)I420,width=640,height=480,framerate=24/1";
+    private const string VIDEO_CAPS_OUT  = "video/x-raw-yuv,format=(fourcc)I420,width=640,height=480";
 
 
     private const int MAX_CALLS = 16;
@@ -190,15 +191,17 @@ namespace Venom {
 
       // caps
       Gst.Caps caps  = Gst.Caps.from_string(get_audio_caps_from_codec_settings(ref default_settings));
-      Gst.Caps vcaps = Gst.Caps.from_string(VIDEO_CAPS);
+      Gst.Caps vcaps_in = Gst.Caps.from_string(VIDEO_CAPS_IN);
+      Gst.Caps vcaps_out = Gst.Caps.from_string(VIDEO_CAPS_OUT);
       Logger.log(LogLevel.INFO, "Audio caps are [" + caps.to_string() + "]");
-      Logger.log(LogLevel.INFO, "Video caps are [" + vcaps.to_string() + "]");
+      Logger.log(LogLevel.INFO, "Video(IN) caps are [" + vcaps_in.to_string() + "]");
+      Logger.log(LogLevel.INFO, "Video(OUT) caps are [" + vcaps_out.to_string() + "]");
 
       audio_source_in.caps = caps;
       audio_sink_out.caps  = caps;
 
-      video_source_in.caps = vcaps;
-      video_sink_out.caps  = vcaps;
+      video_source_in.caps = vcaps_in;
+      video_sink_out.caps  = vcaps_out;
 
       //audio_sink_out.blocksize = (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000 * 2;
       //audio_sink_out.drop = true;
