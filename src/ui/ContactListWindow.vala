@@ -707,11 +707,11 @@ namespace Venom {
       this.set_urgency();
     }
     private void on_namechange(Contact c, string? old_name) {
-      Logger.log(LogLevel.INFO, old_name + " changed his name to " + c.name);
+      Logger.log(LogLevel.INFO, old_name + " changed name to " + c.name);
       contact_changed(c);
     }
     private void on_statusmessage(Contact c, string? old_status) {
-      Logger.log(LogLevel.INFO, c.name + " changed his status to " + c.status_message);
+      Logger.log(LogLevel.INFO, c.name + " changed status to " + c.status_message);
       contact_changed(c);
     }
     private void on_userstatus(Contact c, uint8 old_status) {
