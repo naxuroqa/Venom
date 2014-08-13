@@ -370,6 +370,9 @@ namespace Venom {
        //These should be args and not constants... but w/e for now :P
        Logger.log(LogLevel.DEBUG, "Buffer caps: " + gst_buf.caps.to_string());
        Vpx.Image my_image = Vpx.Image.wrap(null, Vpx.ImageFormat.I420, 640, 480, 0, gst_buf.data);
+       uint8* temp = my_image.planes[1];
+       my_image.planes[1] = my_image.planes[2];
+       my_image.planes[2] = temp;
        return my_image;
     }
 
