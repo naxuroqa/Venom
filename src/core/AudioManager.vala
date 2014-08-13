@@ -327,40 +327,35 @@ namespace Venom {
       return len / 2;
     }
 
+
     private void video_buffer_in(Vpx.Image frame) { 
       uint len = frame.d_w * frame.d_h;
-      Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len + len / 2);
-      //stdout.printf("%u, %u, %u\n", frame.fmt, frame.d_w, frame.d_h);
+      Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len + len/2  );
       uint8[] y = {};
       uint8[] u = {};
       uint8[] v = {};
-      
+
       int i, j;
       for (i = 0; i < frame.d_h; ++i) {
         for (j = 0; j < frame.d_w; ++j) {
-
-            y += *(*(frame.planes + 0)+((i * frame.stride[0]) + j));
-            u += *(*(frame.planes + 1)+(((i / 2) * frame.stride[1]) + (j / 2)));
-            v += *(*(frame.planes + 2)+(((i / 2) * frame.stride[2]) + (j / 2)));
+          y += *(*(frame.planes + 0)+((i * frame.stride[0]) + j));
         }
-      } 
+      }
 
-      Memory.copy(gst_buf.data                        , y, len);
-      Memory.copy((uint8*)gst_buf.data + len          , u, len / 4);
-      Memory.copy((uint8*)gst_buf.data + len + len / 4, v, len / 4);
+      for(i = 0; i < frame.d_h / 2; ++i) {
+        for(j = 0; j < frame.d_w / 2; ++j) {  
+          u += *(*(frame.planes + 1)+ (i * frame.stride[1]) + j);
+          v += *(*(frame.planes + 2)+ (i * frame.stride[2]) + j);
+        }
+      }
 
+
+      Memory.copy(gst_buf.data , y, len);
+      Memory.copy((uint8*)gst_buf.data + len , v, len / 4);
+      Memory.copy((uint8*)gst_buf.data + len + len/4,  u, len / 4);
       video_source_in.push_buffer(gst_buf);
       Logger.log(LogLevel.DEBUG, "pushed %u bytes to VIDEO_IN pipeline".printf(len));
-    }
-
-
-
-
-
-
-
-    /////////////////////////////////////////////////
-    //Working on the below two functions
+   }
 
 
     //TODO: Should send this function args for making the vpx.image
@@ -377,9 +372,6 @@ namespace Venom {
     }
 
 
-   //End work zone 
-   /////////////////////////////////////////////////
-
     private bool video_running = false;
     private int video_thread_fun() {
       Logger.log(LogLevel.INFO, "starting video thread...");
@@ -389,8 +381,6 @@ namespace Venom {
       while(video_running) {
         for(int i = 0; i < MAX_CALLS; i++) {
           if(calls[i].active && calls[i].video) {
-            ////////////////////////////////////////////////////////////
-            //Working on send video code
             Vpx.Image out_image = make_vpx_image();                
             prep_frame_ret = toxav.prepare_video_frame(i, video_enc_buffer, out_image);
             if(prep_frame_ret <= 0) { 
@@ -402,8 +392,6 @@ namespace Venom {
                 Logger.log(LogLevel.WARNING, "send_video returned %d".printf(send_video_ret));
               }
             }
-           //End work zone 
-           ///////////////////////////////////////////////////////////////
           }
         }
       }
