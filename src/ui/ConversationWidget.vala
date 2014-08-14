@@ -70,10 +70,7 @@ namespace Venom {
       button_send_file.sensitive = contact.online;
       button_send.sensitive = contact.online;
       button_call.sensitive = contact.online;
-
-#if DEBUG
       button_call_video.sensitive = contact.online;
-#endif
 
       // remove is_typing notification for offline contacts
       if(!contact.online){
