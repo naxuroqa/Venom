@@ -90,8 +90,11 @@ namespace Venom {
     public ToxSession( bool ipv6 = false ) {
       this.ipv6 = ipv6;
 
+      Tox.Options options = Tox.Options();
+      options.ipv6enabled = ipv6 ? 1 : 0;
+
       // create handle
-      handle = new Tox.Tox( ipv6 ? 1 : 0);
+      handle = new Tox.Tox(options);
 
       //start local storage
       try {
@@ -731,8 +734,7 @@ namespace Venom {
           lock(handle) {
             handle.bootstrap_from_address(
               dht_nodes[i].host,
-              dht_nodes[i].is_ipv6 ? 1 : 0,
-              dht_nodes[i].port.to_big_endian(),
+              dht_nodes[i].port,
               dht_nodes[i].pub_key
             );
           }

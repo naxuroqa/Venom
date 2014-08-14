@@ -76,6 +76,30 @@ namespace Tox {
     PEER_NAME
   }
 
+  [CCode (cname = "Tox_Options",  destroy_function = "", has_type_id = false)]
+  public struct Options {
+    /*
+    *  The type of UDP socket created depends on ipv6enabled:
+    *  If set to 0 (zero), creates an IPv4 socket which subsequently only allows
+    *    IPv4 communication
+    *  If set to anything else (default), creates an IPv6 socket which allows both IPv4 AND
+    *    IPv6 communication
+    */
+    uint8 ipv6enabled;
+     /*
+     * Set to 1 to disable udp support. (default: 0)
+     * This will force Tox to use TCP only which may slow things down.
+     * Disabling udp support is necessary when using anonymous proxies or Tor.
+     */
+    uint8 udp_disabled;
+    /* Enable proxy support. (only basic TCP socks5 proxy currently supported.) (default: 0 (disabled))*/
+    uint8 proxy_enabled;
+    /* Proxy ip or domain in NULL terminated string format. */
+    char proxy_address[256];
+    /* Proxy port: in host byte order. */
+    uint16 proxy_port;
+  }
+
   [CCode (cname = "Tox", free_function = "tox_kill", cprefix = "tox_", has_type_id = false)]
   [Compact]
   public class Tox {
@@ -100,7 +124,7 @@ namespace Tox {
      *  return 0 if there are problems.
      */
     [CCode (cname = "tox_new")]
-    public Tox(uint8 ipv6enabled);
+    public Tox(Options? options = null);
 
     /*  return TOX_FRIEND_ADDRESS_SIZE byte address to give to others.
      * format: [client_id (32 bytes)][nospam number (4 bytes)][checksum (2 bytes)]
@@ -608,8 +632,7 @@ namespace Tox {
      *  returns 1 if the address could be converted into an IP address
      *  returns 0 otherwise
      */
-    public int bootstrap_from_address(string address, uint8 ipv6enabled,
-                   uint16 port, [CCode(array_length=false)] uint8[] public_key);
+    public int bootstrap_from_address(string address, uint16 port, [CCode(array_length=false)] uint8[] public_key);
 
     /*  return 0 if we are not connected to the DHT.
      *  return 1 if we are.
