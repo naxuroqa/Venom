@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-08-14 19:33+0200\n"
-"PO-Revision-Date: 2014-06-17 21:09+0100\n"
+"PO-Revision-Date: 2014-08-14 20:03+0100\n"
 "Last-Translator: Spixi <spxmar@gmail.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -36,12 +36,12 @@ msgstr "%s <i>(%s)</i>"
 #: core/Message.vala:171
 #, c-format
 msgid "%s in %s says:"
-msgstr ""
+msgstr "%s in %s sagt:"
 
 #: core/Message.vala:216
-#, fuzzy, c-format
+#, c-format
 msgid "%s in %s:"
-msgstr "%s ist jetzt %s.\n"
+msgstr "%s in %s:"
 
 #: ui/ConversationWidget.vala:68
 #, c-format
@@ -51,7 +51,7 @@ msgstr "%s tippt gerade..."
 #: core/Message.vala:92
 #, c-format
 msgid "%s says:"
-msgstr ""
+msgstr "%s sagt:"
 
 #: ui/ContactListWindow.vala:776
 #, c-format
@@ -63,7 +63,7 @@ msgstr ""
 #: Main.vala:50
 #, c-format
 msgid "'%s' not a positive number"
-msgstr ""
+msgstr "'%s' ist keine positive Zahl"
 
 #: ui/ConversationWidget.vala:59 ui/GroupConversationWidget.vala:47
 #, c-format
@@ -100,7 +100,7 @@ msgid "All"
 msgstr "Alle"
 
 #: ui/ContactListWindow.vala:1196 ui/ContactListWindow.vala:1233
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to remove '%s' from your contact list?"
 msgstr ""
 "Bist du sicher, dass du '%s' von deiner Kontaktliste entfernen möchtest?"
@@ -171,9 +171,8 @@ msgid "Could not bind text to %s"
 msgstr "Konnte text nicht auf %s binden."
 
 #: ui/UITools.vala:169
-#, fuzzy
 msgid "Could not export data file: "
-msgstr "Konnte Freund nicht hinzufügen: %s.\n"
+msgstr "Fehler beim exportieren:"
 
 #: ui/ContactListWindow.vala:130
 #, c-format
@@ -202,7 +201,7 @@ msgstr "Vom Netz getrennt"
 
 #: ui/contact_list.ui:141
 msgid "E_xport data file"
-msgstr ""
+msgstr "E_xportiere Datei"
 
 #: ui/UserInfoWindow.vala:86
 msgid "Edit user information"
@@ -260,11 +259,11 @@ msgstr "Fehler beim Lesen vom Datenstrom."
 
 #: ui/UITools.vala:147
 msgid "Export tox data file"
-msgstr ""
+msgstr "Dateiexport"
 
 #: ui/UITools.vala:169
 msgid "Exporting data file failed"
-msgstr ""
+msgstr "Exportieren fehlgeschlagen"
 
 #: core/ToxSession.vala:837
 #, c-format
@@ -272,14 +271,12 @@ msgid "File \"%d\" does not exist."
 msgstr "Datei \"%d\"  existiert nicht."
 
 #: ui/FileTransferChatEntry.vala:85
-#, fuzzy
 msgid "File received"
-msgstr "Datei wurde abgelehnt"
+msgstr "Datei wurde empfangen"
 
 #: ui/FileTransferChatEntry.vala:87
-#, fuzzy
 msgid "File sent"
-msgstr "Datei wurde abgelehnt"
+msgstr "Datei wurde versandt"
 
 #: ui/FileTransferChatEntry.vala:94
 msgid "File was rejected"
@@ -316,7 +313,7 @@ msgstr "Symbol:"
 
 #: ui/UITools.vala:175
 msgid "Importing data files is currently not supported"
-msgstr ""
+msgstr "Dateiimport wird noch nicht unterstützt"
 
 #: core/SqliteTools.vala:37 core/SqliteTools.vala:47 core/SqliteTools.vala:57
 #, c-format
@@ -350,7 +347,7 @@ msgstr "Mitteilung zu lang"
 
 #: ui/settings_window.ui:265
 msgid "Minimize to system tray"
-msgstr ""
+msgstr "Minimiere in den Infobereich"
 
 #: ui/settings_window.ui:366
 msgid "Miscellaneous"
@@ -493,7 +490,6 @@ msgid "Show me when others are typing"
 msgstr "Anzeigen, wenn andere tippen"
 
 #: ui/settings_window.ui:250
-#, fuzzy
 msgid "Show notification when a new message arrives"
 msgstr "Flackern, wenn eine neue Mitteilung ankommt"
 
@@ -533,15 +529,15 @@ msgstr "[%s] "
 
 #: ui/ContactListWindow.vala:667
 msgid "_Accept"
-msgstr ""
+msgstr "_Annehmen"
 
 #: ui/UITools.vala:94
 msgid "_Audio chat"
-msgstr ""
+msgstr "_Audio Chat"
 
 #: ui/UITools.vala:102
 msgid "_Automatically accept ..."
-msgstr ""
+msgstr "_Akzeptiere automatisch ..."
 
 #: ui/contact_list.ui:96
 msgid "_Away"
@@ -557,9 +553,8 @@ msgstr "_Beschäftigt"
 
 #: ui/ContactListWindow.vala:667 ui/FileTransferChatEntry.vala:157
 #: ui/UITools.vala:150
-#, fuzzy
 msgid "_Cancel"
-msgstr "Abgebrochen"
+msgstr "Abbre_chen"
 
 #: ui/contact_list.ui:61
 msgid "_Copy ID to clipboard"
@@ -571,34 +566,31 @@ msgstr "_Benutzer bearbeiten"
 
 #: ui/UITools.vala:88
 msgid "_File transfers"
-msgstr ""
+msgstr "Datei übertragungen"
 
 #: ui/contact_list.ui:149
 msgid "_Import data file"
-msgstr ""
+msgstr "Datei _importieren"
 
 #: ui/UITools.vala:108
 msgid "_Invite to ..."
-msgstr ""
+msgstr "E_inladen in ..."
 
 #: ui/UITools.vala:124
-#, fuzzy
 msgid "_Invite to new groupchat"
-msgstr "Gruppenchat erstellen"
+msgstr "_In neuen Gruppenchat einladen"
 
 #: ui/UITools.vala:138
-#, fuzzy
 msgid "_Leave groupchat"
-msgstr "Gruppenchat erstellen"
+msgstr "Gruppenchat ver_lassen"
 
 #: ui/add_contact_dialog.ui:94
 msgid "_Message (optional):"
 msgstr "_Mitteilung (optional):"
 
 #: ui/UITools.vala:112
-#, fuzzy
 msgid "_New groupchat"
-msgstr "Gruppenchat erstellen"
+msgstr "Gruppenchat erstelle_n"
 
 #: ui/add_contact_dialog.ui:54
 msgid "_Nickname (optional):"
@@ -610,16 +602,15 @@ msgstr "_Online"
 
 #: ui/Client.vala:86
 msgid "_Quit"
-msgstr ""
+msgstr "Beenden"
 
 #: ui/FileTransferChatEntry.vala:158 ui/UITools.vala:152
-#, fuzzy
 msgid "_Save"
-msgstr "Speichern"
+msgstr "_Speichern"
 
 #: ui/Client.vala:83
 msgid "_Show/Hide Venom"
-msgstr ""
+msgstr "Zeige/Ver_stecke Venom"
 
 #: ui/add_contact_dialog.ui:27
 msgid "_Tox ID:"
@@ -627,11 +618,11 @@ msgstr "_Tox-ID:"
 
 #: ui/UITools.vala:78
 msgid "_Unfriend"
-msgstr ""
+msgstr "Entfre_unden"
 
 #: ui/UITools.vala:98
 msgid "_Video chat"
-msgstr ""
+msgstr "_Video chat"
 
 #: ui/contact_list.ui:306
 msgid "connecting..."
