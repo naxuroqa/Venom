@@ -106,8 +106,8 @@ namespace Venom {
     protected override void startup() {
       add_action_entries(app_entries, this);
       try {
-        AudioManager.init();
-      } catch (AudioManagerError e) {
+        AVManager.init();
+      } catch (AVManagerError e) {
         Logger.log(LogLevel.FATAL, "Error creating Audio Pipeline: " + e.message);
       }
       Notification.init(APPLICATION_NAME);
@@ -123,7 +123,7 @@ namespace Venom {
       if(contact_list_window != null) {
         contact_list_window.cleanup();
       }
-      AudioManager.free();
+      AVManager.free();
       base.shutdown();
     }
 

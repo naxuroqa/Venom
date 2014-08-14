@@ -1,5 +1,5 @@
 /*
- *    AudioManager.vala
+ *    AVManager.vala
  *
  *    Copyright (C) 2013-2014  Venom authors and contributors
  *
@@ -20,7 +20,7 @@
  */
 
 namespace Venom { 
-  public errordomain AudioManagerError {
+  public errordomain AVManagerError {
     INIT,
     PIPELINE
   }
@@ -59,7 +59,7 @@ namespace Venom {
     int var1;
   }
 
-  public class AudioManager { 
+  public class AVManager { 
 
     private const string PIPELINE_IN        = "audioPipelineIn";
     private const string AUDIO_SOURCE_IN    = "audioSourceIn";
@@ -128,29 +128,29 @@ namespace Venom {
       }
     }
 
-    public static AudioManager instance {get; private set; default = null;}
+    public static AVManager instance {get; private set;}
 
-    public static void init() throws AudioManagerError {
+    public static void init() throws AVManagerError {
 #if DEBUG
-      instance = new AudioManager({"", "--gst-debug-level=0"});
+      instance = new AVManager({"", "--gst-debug-level=3"});
 #else
-      instance = new AudioManager({""});
+      instance = new AVManager({""});
 #endif
     }
 
     public static void free() {
-      Logger.log(LogLevel.DEBUG, "Audiomanager free called");
+      Logger.log(LogLevel.DEBUG, "AVManager free called");
       instance = null;
     }
 
-    private AudioManager(string[] args) throws AudioManagerError {
+    private AVManager(string[] args) throws AVManagerError {
       // Initialize Gstreamer
       try {
         if(!Gst.init_check(ref args)) {
-          throw new AudioManagerError.INIT("Gstreamer initialization failed.");
+          throw new AVManagerError.INIT("Gstreamer initialization failed.");
         }
       } catch (Error e) {
-        throw new AudioManagerError.INIT(e.message);
+        throw new AVManagerError.INIT(e.message);
       }
       Logger.log(LogLevel.INFO, "Gstreamer initialized");
 
@@ -162,7 +162,7 @@ namespace Venom {
                                     " ! volume name=" + AUDIO_VOLUME_IN +
                                     " ! openalsink name=" + AUDIO_SINK_IN) as Gst.Pipeline;
       } catch (Error e) {
-        throw new AudioManagerError.PIPELINE("Error creating the audio input pipeline: " + e.message);
+        throw new AVManagerError.PIPELINE("Error creating the audio input pipeline: " + e.message);
       }
       audio_source_in = pipeline_in.get_by_name(AUDIO_SOURCE_IN) as Gst.AppSrc;
       audio_volume_in = pipeline_in.get_by_name(AUDIO_VOLUME_IN);
@@ -174,7 +174,7 @@ namespace Venom {
                                      " ! volume name=" + AUDIO_VOLUME_OUT +
                                      " ! appsink name=" + AUDIO_SINK_OUT) as Gst.Pipeline;
       } catch (Error e) {
-        throw new AudioManagerError.PIPELINE("Error creating the audio output pipeline: " + e.message);
+        throw new AVManagerError.PIPELINE("Error creating the audio output pipeline: " + e.message);
       }
       audio_source_out = pipeline_out.get_by_name(AUDIO_SOURCE_OUT);
       audio_volume_out = pipeline_out.get_by_name(AUDIO_VOLUME_OUT);
@@ -186,7 +186,7 @@ namespace Venom {
                                           " ! ffmpegcolorspace name=" + VIDEO_CONVERTER +
                                           " ! xvimagesink name=" + VIDEO_SINK_IN) as Gst.Pipeline;
       } catch (Error e) {
-        throw new AudioManagerError.PIPELINE("Error creating the video input pipeline: " + e.message);
+        throw new AVManagerError.PIPELINE("Error creating the video input pipeline: " + e.message);
       }
       video_source_in = video_pipeline_in.get_by_name(VIDEO_SOURCE_IN) as Gst.AppSrc;
       video_sink_in   = video_pipeline_in.get_by_name(VIDEO_SINK_IN);
@@ -197,7 +197,7 @@ namespace Venom {
                                            " ! ffmpegcolorspace name=" + VIDEO_CONVERTER_OUT + 
                                            " ! appsink name=" + VIDEO_SINK_OUT) as Gst.Pipeline;
       } catch (Error e) {
-        throw new AudioManagerError.PIPELINE("Error creating the video output pipeline: " + e.message);
+        throw new AVManagerError.PIPELINE("Error creating the video output pipeline: " + e.message);
       }
       video_source_out = video_pipeline_out.get_by_name(VIDEO_SOURCE_OUT);
       video_converter_out = video_pipeline_out.get_by_name(VIDEO_CONVERTER_OUT);
@@ -233,8 +233,8 @@ namespace Venom {
       Settings.instance.bind_property(Settings.MIC_VOLUME_KEY, audio_volume_out, "volume", BindingFlags.SYNC_CREATE);
     }
 
-    ~AudioManager() {
-      Logger.log(LogLevel.INFO, "Audiomanager destructor called");
+    ~AVManager() {
+      Logger.log(LogLevel.INFO, "AVManager destructor called");
       audio_status_changes.push( AVStatusChange() {
         type = VideoStatusChangeType.KILL
       });
@@ -263,9 +263,7 @@ namespace Venom {
 
     private void register_callbacks() {
       toxav.register_audio_recv_callback(audio_receive_callback);
-#if DEBUG
       toxav.register_video_recv_callback(video_receive_callback);
-#endif
     }
 
     private void destroy_audio_pipeline() {
@@ -293,11 +291,9 @@ namespace Venom {
     }
  
     private void set_video_pipeline_playing() {
-#if DEBUG
       video_pipeline_in.set_state(Gst.State.PLAYING);
       video_pipeline_out.set_state(Gst.State.PLAYING);
       Logger.log(LogLevel.INFO, "Video pipeline set to playing");
-#endif
     }
 
     private void set_video_pipeline_paused() { 
