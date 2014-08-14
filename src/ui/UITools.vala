@@ -147,9 +147,9 @@ namespace Venom {
         _("Export tox data file"),
         parent,
         Gtk.FileChooserAction.SAVE,
-        "_Cancel",
+        _("_Cancel"),
 				Gtk.ResponseType.CANCEL,
-				"_Save",
+				_("_Save"),
 				Gtk.ResponseType.ACCEPT
       );
       dialog.set_filename(ResourceFactory.instance.data_filename);

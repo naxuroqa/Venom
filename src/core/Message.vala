@@ -44,7 +44,7 @@ namespace Venom {
      *  Get plain time string
      */
     public virtual string get_time_plain() {
-      return timestamp.format(_("%R:%S"));
+      return timestamp.format("%R:%S");
     }
 
     public abstract string get_notification_header();
@@ -89,7 +89,7 @@ namespace Venom {
       return message;
     }
     public virtual string get_notification_header() {
-      return get_sender_plain() + _(" says:");
+      return _("%s says:").printf(get_sender_plain());
     }
     public Gdk.Pixbuf get_sender_image() {
       return from.image ?? ResourceFactory.instance.default_contact;
@@ -168,7 +168,7 @@ namespace Venom {
       return message;
     }
     public virtual string get_notification_header() {
-      return from_contact.get_name_string() + _(" in ") + from.get_name_string() + _(" says:");
+      return _("%s in %s says:").printf(from_contact.get_name_string(), from.get_name_string());
     }
     public Gdk.Pixbuf get_sender_image() {
       return from.image ?? ResourceFactory.instance.default_groupchat;
@@ -213,7 +213,7 @@ namespace Venom {
       return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from_contact.name : User.instance.name, message);
     }
     public override string get_notification_header() {
-      return from_contact.get_name_string() + _(" in ") + from.get_name_string() + ":";
+      return _("%s in %s:").printf(from_contact.get_name_string(), from.get_name_string());
     }
   }
 }

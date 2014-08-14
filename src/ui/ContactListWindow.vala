@@ -516,7 +516,7 @@ namespace Venom {
     }
 
     private void set_title_from_status(UserStatus status) {
-      this.our_title = _("Venom (%s)").printf(status.to_string());
+      this.our_title = "Venom (%s)".printf(status.to_string());
       string notify = "";
       if (this.get_urgency_hint()) {
         notify = "* ";
@@ -636,7 +636,7 @@ namespace Venom {
     public void set_urgency () {
       if(!is_active && Settings.instance.enable_urgency_notification) {
         this.set_urgency_hint(true);
-        this.set_title(_("* %s").printf(this.our_title));
+        this.set_title("* %s".printf(this.our_title));
       }
     }
 
@@ -664,7 +664,7 @@ namespace Venom {
                                   Gtk.MessageType.QUESTION,
                                   Gtk.ButtonsType.NONE,
                                   _("New friend request from '%s'.\nDo you want to accept?"), public_key_string);
-      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
+      message_dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Accept"), Gtk.ResponseType.ACCEPT, null);
       message_dialog.secondary_text = message;
           int response = message_dialog.run();
           message_dialog.destroy();
@@ -1193,7 +1193,7 @@ namespace Venom {
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.WARNING,
                                   Gtk.ButtonsType.NONE,
-                                  _("Are you sure you want to delete '%s' from your contact list?"), name);
+                                  _("Are you sure you want to remove '%s' from your contact list?"), name);
       message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Delete", Gtk.ResponseType.OK, null);
       int response = message_dialog.run();
       message_dialog.destroy();
@@ -1225,12 +1225,12 @@ namespace Venom {
     public void remove_groupchat(GroupChat g) {
       if(g == null)
         return;
-      string name = _("groupchat #%i").printf(g.group_id);
+      string name = "groupchat #%i".printf(g.group_id);
       Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.WARNING,
                                   Gtk.ButtonsType.NONE,
-                                  _("Are you sure you want to delete '%s' from your contact list?"), name);
+                                  _("Are you sure you want to remove '%s' from your contact list?"), name);
       message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Delete", Gtk.ResponseType.OK, null);
       int response = message_dialog.run();
       message_dialog.destroy();

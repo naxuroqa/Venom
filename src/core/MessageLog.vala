@@ -176,7 +176,7 @@ namespace Venom {
 
       //create table and index if needed
       if (db.exec (QUERY_TABLE_HISTORY, null, out errmsg) != Sqlite.OK) {
-        throw new SqliteDbError.QUERY(_("Error creating message log table: %s\n"), errmsg);
+        throw new SqliteDbError.QUERY("Error creating message log table: %s\n", errmsg);
       }
 
       //prepare insert statement for adding new history messages

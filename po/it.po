@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-17 21:05+0200\n"
+"POT-Creation-Date: 2014-08-14 19:33+0200\n"
 "PO-Revision-Date: 2014-06-17 21:12+0100\n"
 "Last-Translator: Ansa89\n"
 "Language-Team: Italiano\n"
@@ -16,24 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.6.5\n"
-
-#: core/ToxSession.vala:725
-#, c-format
-msgid "  %s\n"
-msgstr " %s\n"
-
-#: core/DhtNode.vala:47
-msgid " (ipv6)"
-msgstr " (IPv6)"
-
-#: ui/ContactListWindow.vala:627
-#, c-format
-msgid "%F"
-msgstr "%F"
-
-#: core/Message.vala:47
-msgid "%R:%S"
-msgstr "%R:%S"
 
 #: core/GroupChat.vala:52
 #, c-format
@@ -45,62 +27,42 @@ msgstr "%i persone connesse"
 msgid "%i person connected"
 msgstr "%i persona connessa"
 
-#: core/Contact.vala:69 core/Contact.vala:83
+#: core/Contact.vala:100 core/Contact.vala:114
 #, c-format
 msgid "%s <i>(%s)</i>"
 msgstr "%s <i>(%s)</i>"
 
-#: ui/ContactListWindow.vala:648
+#: core/Message.vala:171
 #, c-format
-msgid "%s changed his name to %s\n"
-msgstr "%s ha cambiato il suo nome in %s\n"
+msgid "%s in %s says:"
+msgstr ""
 
-#: ui/ContactListWindow.vala:652
-#, c-format
-msgid "%s changed his status to %s\n"
-msgstr "%s ha cambiato il suo stato in %s\n"
-
-#: ui/ContactListWindow.vala:663
-#, c-format
-msgid "%s is now %s.\n"
+#: core/Message.vala:216
+#, fuzzy, c-format
+msgid "%s in %s:"
 msgstr "%s ora è %s.\n"
 
-#: ui/ConversationWidget.vala:60
+#: ui/ConversationWidget.vala:68
 #, c-format
 msgid "%s is typing..."
 msgstr "%s sta scrivendo..."
 
-#: ui/ContactListWindow.vala:131
+#: core/Message.vala:92
 #, c-format
-msgid "%s: %s\n"
-msgstr "%s: %s\n"
+msgid "%s says:"
+msgstr ""
 
-#: core/DhtNode.vala:47
-#, c-format
-msgid "%s:%u%s %s"
-msgstr "%s:%u%s %s"
-
-#: ui/ContactListWindow.vala:714
+#: ui/ContactListWindow.vala:776
 #, c-format
 msgid "'%s' has invited you to a groupchat, do you want to accept?"
 msgstr "'%s' ti ha invitato in una chat di gruppo. Vuoi accettare?"
 
-#: ui/ContactListWindow.vala:577
+#: Main.vala:50
 #, c-format
-msgid "* %s"
-msgstr "* %s"
+msgid "'%s' not a positive number"
+msgstr ""
 
-#: ui/ContactListWindow.vala:627
-#, c-format
-msgid "<%i>"
-msgstr "<%i>"
-
-#: ui/ContactListWindow.vala:627
-#, c-format
-msgid "<%s> %s:%s\n"
-msgstr "<%s> %s: %s\n"
-
-#: ui/ConversationWidget.vala:51 ui/GroupConversationWidget.vala:47
+#: ui/ConversationWidget.vala:59 ui/GroupConversationWidget.vala:47
 #, c-format
 msgid "<b>%s</b>"
 msgstr "<b>%s</b>"
@@ -113,12 +75,12 @@ msgstr "<b>Tox</b>"
 msgid "<b>User</b>"
 msgstr "<b>Utente</b>"
 
-#: core/Contact.vala:72 core/Contact.vala:86 ui/ConversationView.vala:55
+#: core/Contact.vala:103 core/Contact.vala:117 ui/ConversationView.vala:55
 #, c-format
 msgid "<i>%s</i>"
 msgstr "<i>%s</i>"
 
-#: core/Message.vala:152 core/Message.vala:191
+#: core/Message.vala:164 core/Message.vala:209
 msgid "<unknown>"
 msgstr "<sconosciuto>"
 
@@ -126,39 +88,24 @@ msgstr "<sconosciuto>"
 msgid "Add contact"
 msgstr "Aggiungi contatto"
 
-#: ui/ContactListWindow.vala:617
-#, c-format
-msgid "Added new friend #%i\n"
-msgstr "Aggiunto nuovo amico #%i\n"
-
-#: ui/ContactListWindow.vala:1125 ui/ContactListWindow.vala:1137
+#: ui/ContactListWindow.vala:1274 ui/ContactListWindow.vala:1285
 msgid "Adding Friend failed"
 msgstr "Errore durante l'aggiunta del nuovo contattto"
 
-#: ui/ContactListWindow.vala:210
+#: ui/ContactListWindow.vala:211
 msgid "All"
 msgstr "Tutti"
 
-#: ui/ContactListWindow.vala:1060 ui/ContactListWindow.vala:1082
-#, c-format
-msgid "Are you sure you want to delete '%s' from your contact list?"
+#: ui/ContactListWindow.vala:1196 ui/ContactListWindow.vala:1233
+#, fuzzy, c-format
+msgid "Are you sure you want to remove '%s' from your contact list?"
 msgstr "Sei sicuro di voler eliminare '%s' dalla tua lista dei contatti?"
 
 #: core/ToxSession.vala:33
 msgid "Away"
 msgstr "Assente"
 
-#: core/ToxSession.vala:717
-#, c-format
-msgid "Background thread started.\n"
-msgstr "Thread in background avviato.\n"
-
-#: core/ToxSession.vala:756
-#, c-format
-msgid "Background thread stopped.\n"
-msgstr "Thread in background fermato.\n"
-
-#: core/Tools.vala:142
+#: core/Tools.vala:147
 msgid "Bad checksum"
 msgstr "Checksum errato"
 
@@ -170,21 +117,16 @@ msgstr "Occupato"
 msgid "Call contact"
 msgstr "Chiama contatto"
 
-#: ui/conversation_window.ui:174
+#: ui/conversation_window.ui:175
 msgid "Call contact with video"
 msgstr "Videochiama contatto"
-
-#: core/Tools.vala:158 core/Tools.vala:171
-#, c-format
-msgid "Can't create action regex: %s.\n"
-msgstr "Impossibile creare l'espressione regolare: %s.\n"
 
 #: core/SqliteTools.vala:75
 #, c-format
 msgid "Can't open database: %d: %s\n"
 msgstr "Impossibile accedere al database: %d: %s\n"
 
-#: core/Tools.vala:136
+#: core/Tools.vala:141
 msgid "Can't send to own key"
 msgstr "Impossibile inviare alla propria chiave"
 
@@ -196,36 +138,16 @@ msgstr "Annullato"
 msgid "Change _Status"
 msgstr "Cambia _Stato"
 
-#: ui/ContactListWindow.vala:670
+#: ui/ContactListWindow.vala:732
 msgid "Connected to the network"
 msgstr "Connesso alla rete"
 
-#: core/ToxSession.vala:720
-#, c-format
-msgid "Connecting to DHT Nodes:\n"
-msgstr "Connessione ai server DHT:\n"
-
-#: ui/ContactListWindow.vala:668
-#, c-format
-msgid "Connection to DHT %s.\n"
-msgstr "Connessione al server DHT %s.\n"
-
-#: ui/ContactListWindow.vala:907
-#, c-format
-msgid "Contact accepted file sending request\n"
-msgstr "Il contatto ha accettato la richiesta di invio file\n"
-
-#: ui/ContactListWindow.vala:508
-#, c-format
-msgid "Copied Tox ID to clipboard\n"
-msgstr "Tox ID copiato negli appunti\n"
-
-#: ui/ContactListWindow.vala:1135
+#: ui/ContactListWindow.vala:1285
 #, c-format
 msgid "Could not add friend: %s.\n"
 msgstr "Impossibile aggiungere il contatto: %s.\n"
 
-#: ui/ContactListWindow.vala:1123
+#: ui/ContactListWindow.vala:1274
 msgid "Could not add friend: Invalid ID\n"
 msgstr "Impossibile aggiungere il contatto: ID non valido\n"
 
@@ -244,62 +166,25 @@ msgstr "Impossibile collegare int64 a %s."
 msgid "Could not bind text to %s"
 msgstr "Impossibile collegare text a %s"
 
-#: ui/ContactListWindow.vala:447
-#, c-format
-msgid "Could not change user name!\n"
-msgstr "Impossibile cambiare il nome\n"
-
-#: ui/ContactListWindow.vala:455
-#, c-format
-msgid "Could not change user statusmessage!\n"
-msgstr "Impossibile cambiare lo stato\n"
-
-#: ui/ContactListWindow.vala:1189
-#, c-format
-msgid "Could not create a new groupchat.\n"
-msgstr "Impossibile creare una nuova chat di gruppo.\n"
-
-#: ui/ContactListWindow.vala:725
-#, c-format
-msgid "Could not join groupchat.\n"
-msgstr "Impossibile unirsi alla chat di gruppo.\n"
-
-#: ui/ContactListWindow.vala:146
-#, c-format
-msgid "Could not load session data (%s), creating new one.\n"
-msgstr "Impossibile caricare i dati (%s), ne verranno creati di nuovi.\n"
+#: ui/UITools.vala:169
+#, fuzzy
+msgid "Could not export data file: "
+msgstr "Impossibile aggiungere il contatto: %s.\n"
 
 #: ui/ContactListWindow.vala:130
 #, c-format
 msgid "Could not read theme from \"%s\""
 msgstr "Impossibile leggere il tema da \"%s\""
 
-#: ui/ContactListWindow.vala:1090
-#, c-format
-msgid "Could not remove %s.\n"
-msgstr "Impossibile rimuovere %s.\n"
-
-#: ui/ContactListWindow.vala:1068
-#, c-format
-msgid "Could not remove contact %i.\n"
-msgstr "Impossibile rimuovere il contatto %i.\n"
-
-#: core/ToxSession.vala:352
-#, c-format
-msgid "Could not remove peer [%i] from groupchat #%i (no such peer)\n"
-msgstr ""
-"Impossibile rimuovere il peer [%i] dalla chat di gruppo #%i (peer non "
-"trovato)\n"
-
-#: ui/ContactListWindow.vala:1112
+#: ui/ContactListWindow.vala:1264
 msgid "Could not resolve ID from DNS record\n"
 msgstr "Impossibile risolvere il Tox ID dal record DNS\n"
 
-#: ui/contact_list.ui:416
+#: ui/contact_list.ui:444
 msgid "Create groupchat"
 msgstr "Crea chat di gruppo"
 
-#: ui/settings_window.ui:301
+#: ui/settings_window.ui:330
 msgid "Default Tox DNS ID suffix:"
 msgstr "Suffisso di default per i Tox DNS ID:"
 
@@ -307,23 +192,17 @@ msgstr "Suffisso di default per i Tox DNS ID:"
 msgid "Disconnected"
 msgstr "Disconnesso"
 
-#: ui/ContactListWindow.vala:673
+#: ui/ContactListWindow.vala:735
 msgid "Disconnected from the network"
 msgstr "Disconnesso dalla rete"
+
+#: ui/contact_list.ui:141
+msgid "E_xport data file"
+msgstr ""
 
 #: ui/UserInfoWindow.vala:86
 msgid "Edit user information"
 msgstr "Modifica informazioni utente"
-
-#: ui/ContactListWindow.vala:899
-#, c-format
-msgid "Ended file transfer for %s to %s\n"
-msgstr "Trasferimento file finito per %s a %s\n"
-
-#: ui/ContactListWindow.vala:102
-#, c-format
-msgid "Ending session...\n"
-msgstr "Chiudendo la sessione...\n"
 
 #: ui/add_contact_dialog.ui:40
 msgid "Enter a Tox ID here or a Tox URI"
@@ -359,185 +238,57 @@ msgstr "Errore nel create lo statement di selezione server DHT: %d: %s\n"
 msgid "Error creating dht nodes table: %s\n"
 msgstr "Errore nel creare la tabella dei server DHT: %s\n"
 
-#: core/ToxDns.vala:36
-#, c-format
-msgid "Error creating tox dns regex: %s\n"
-msgstr "Errore nel creare l'espressione regolare dei DNS tox: %s\n"
-
-#: core/ToxDns.vala:51
-#, c-format
-msgid "Error creating tox uri regex: %s\n"
-msgstr "Errore nel creare l'espressione regolare degli URI tox: %s\n"
-
-#: ui/ConversationTextView.vala:184
-#, c-format
-msgid "Error matching uri regex: %s\n"
-msgstr "Errore nel match dell'espressione regolare degli URI: %s\n"
-
-#: ui/ConversationWidget.vala:308
-#, c-format
-msgid "Error occured while getting file size: %s"
-msgstr "Errore nel calcolare la dimesione del file: %s"
-
-#: core/ToxSession.vala:111
-#, c-format
-msgid "Error opening database: %s\n"
-msgstr "Errore nell'accedere al database: %s\n"
-
-#: core/Settings.vala:112
-#, c-format
-msgid "Error reading configs:%s\n"
-msgstr "Errore nella lettura delle configurazioni: %s\n"
-
-#: core/ToxDns.vala:81
-#, c-format
-msgid "Error resolving name: %s\n"
-msgstr "Errore nel risolvere il nome: %s\n"
-
-#: core/MessageLog.vala:135
-#, c-format
-msgid "Error retrieving logs from sqlite database: %s\n"
-msgstr "Errore nel recupero dei log dal database sqlite: %s\n"
-
-#: core/Settings.vala:99
-#, c-format
-msgid "Error saving configs:%s\n"
-msgstr "Errore nel salvataggio delle configurazioni: %s\n"
-
-#: core/Tools.vala:123
-#, c-format
-msgid "Error when doing uri markup: %s"
-msgstr "Errore durante il markup dell'URI: %s"
-
-#: ui/ConversationTextView.vala:245
-#, c-format
-msgid "Error when showing uri: %s\n"
-msgstr "Errore nel mostrare l'URI: %s\n"
-
-#: ui/ContactListWindow.vala:168
-#, c-format
-msgid "Error while loading icon: %s\n"
-msgstr "Errore nel caricare l'icona: %s\n"
-
-#: core/ResourceFactory.vala:126
-#, c-format
-msgid "Error while loading image from \"%s\":%s\n"
-msgstr "Errore nel caricamento dell'immagine da \"%s\": %s\n"
-
-#: core/ToxSession.vala:801
+#: core/ToxSession.vala:850
 msgid "Error while loading messenger data."
 msgstr "Errore nel caricamento dei dati del messenger."
 
-#: core/ToxSession.vala:795
+#: core/ToxSession.vala:844
 msgid "Error while reading from stream."
 msgstr "Errore nel leggere lo stream."
 
-#: ui/FileTransferChatEntry.vala:171
-#, c-format
-msgid "Error while trying to create file: %s\n"
-msgstr "Errore nel creare il file: %s\n"
+#: ui/UITools.vala:147
+msgid "Export tox data file"
+msgstr ""
 
-#: ui/ContactListWindow.vala:961
-#, c-format
-msgid "Error while trying to write data to file\n"
-msgstr "Errore nella scrittura dei dati su file\n"
+#: ui/UITools.vala:169
+msgid "Exporting data file failed"
+msgstr ""
 
-#: core/ToxSession.vala:828
-msgid "Error while writing to stream."
-msgstr "Errore nella scrittura dello stream."
-
-#: core/ContactStorage.vala:88
-#, c-format
-msgid "Error writing contact to sqlite database: %s\n"
-msgstr "Errore nella scrittura del contatto nel database sqlite: %s\n"
-
-#: core/MessageLog.vala:118
-#, c-format
-msgid "Error writing message to sqlite database: %s\n"
-msgstr "Errore nella scrittura del messaggio nel database sqlite: %s\n"
-
-#: core/MessageLog.vala:186 core/MessageLog.vala:193
-#, c-format
-msgid "Error: %d: %s\n"
-msgstr "Errore: %d: %s\n"
-
-#: core/MessageLog.vala:169 core/MessageLog.vala:179
-#: ui/ConversationView.vala:78
-#, c-format
-msgid "Error: %s\n"
-msgstr "Errore %s\n"
-
-#: core/ToxSession.vala:788
+#: core/ToxSession.vala:837
 #, c-format
 msgid "File \"%d\" does not exist."
 msgstr "Il file \"%d\" non esiste."
 
-#: ui/ContactListWindow.vala:929
-#, c-format
-msgid "File transfer finished for file number %u"
-msgstr "Trasferimento file finito per il file numero %u"
+#: ui/FileTransferChatEntry.vala:85
+#, fuzzy
+msgid "File received"
+msgstr "Il file è stato rifiutato"
 
-#: ui/ContactListWindow.vala:925
-#, c-format
-msgid "File transfer was rejected for file number %u"
-msgstr "Trasferimento file rifiutato per il file numero %u"
+#: ui/FileTransferChatEntry.vala:87
+#, fuzzy
+msgid "File sent"
+msgstr "Il file è stato rifiutato"
 
 #: ui/FileTransferChatEntry.vala:94
 msgid "File was rejected"
 msgstr "Il file è stato rifiutato"
 
-#: ui/settings_window.ui:236
+#: ui/settings_window.ui:235
 msgid "Flash window when a new message arrives"
 msgstr "Illumina finestra quando arriva un nuovo messaggio"
 
-#: ui/ContactListWindow.vala:614
-#, c-format
-msgid "Friend could not be added.\n"
-msgstr "Il contatto non può essere aggiunto.\n"
-
-#: core/Tools.vala:138
+#: core/Tools.vala:143
 msgid "Friend request already sent"
 msgstr "Richiesta d'amicizia già inviata"
 
-#: core/Tools.vala:148
+#: core/Tools.vala:153
 msgid "Friend request successfully sent"
 msgstr "Richiesta d'amicizia inviata con successo"
-
-#: ui/ContactListWindow.vala:1142
-#, c-format
-msgid "Friend request successfully sent. Friend added as %i.\n"
-msgstr ""
-"Richiesta d'amicizia inviata con successo. Contatto aggiunto come %i.\n"
-
-#: ui/ContactListWindow.vala:771
-#, c-format
-msgid "Group action from unknown contact #%i [%i]\n"
-msgstr "Azione di gruppo da contatto sconosciuto #%i [%i]\n"
-
-#: ui/ContactListWindow.vala:708
-#, c-format
-msgid "Group invite from %s with public key %s\n"
-msgstr "Invito di gruppo da %s con chiave pubblica %s\n"
-
-#: ui/ContactListWindow.vala:742
-#, c-format
-msgid "Group message from unknown contact #%i [%i]\n"
-msgstr "Messaggio di gruppo da contatto sconosciuto #%i [%i]\n"
 
 #: core/GroupChat.vala:45
 #, c-format
 msgid "Groupchat #%i"
 msgstr "Chat di gruppo #%i"
-
-#: ui/ContactListWindow.vala:896
-#, c-format
-msgid "I/O error while trying to close file stream: %s\n"
-msgstr "Errore I/O nella chiusura del file di stream: %s\n"
-
-#: ui/ContactListWindow.vala:888
-#, c-format
-msgid "I/O error while trying to read file: %s\n"
-msgstr "Errore I/O nel leggere il file: %s\n"
 
 #: ui/AddContactDialog.vala:96
 msgid "ID contains invalid characters"
@@ -547,38 +298,22 @@ msgstr "Il Tox ID contiene caratteri non validi"
 msgid "ID:"
 msgstr "Tox ID:"
 
-#: ui/ContactListWindow.vala:86
-#, c-format
-msgid "ID: %s\n"
-msgstr "Tox ID: %s\n"
-
 #: ui/user_info_window.ui:222
 msgid "Icon:"
 msgstr "Icona:"
+
+#: ui/UITools.vala:175
+msgid "Importing data files is currently not supported"
+msgstr ""
 
 #: core/SqliteTools.vala:37 core/SqliteTools.vala:47 core/SqliteTools.vala:57
 #, c-format
 msgid "Index for %s not found."
 msgstr "Indice per %s non trovato."
 
-#: ui/conversation_window.ui:290
+#: ui/conversation_window.ui:291
 msgid "Insert Smiley"
 msgstr "Inserisci emoticon"
-
-#: core/ToxDns.vala:113
-#, c-format
-msgid "Invalid record\n"
-msgstr "Record DNS non valido\n"
-
-#: core/ToxDns.vala:64
-#, c-format
-msgid "Invalid tox uri\n"
-msgstr "Tox URI non valido\n"
-
-#: ui/ContactListWindow.vala:728
-#, c-format
-msgid "Joined Groupchat #%i\n"
-msgstr "Entrato nella chat di gruppo #%i\n"
 
 #: ui/settings_window.ui:18
 msgid "KB/MB"
@@ -592,31 +327,20 @@ msgstr "Salva cronologia delle chat"
 msgid "KiB/MiB"
 msgstr "KiB/MiB"
 
-#: core/Contact.vala:117
+#: core/Contact.vala:148
 #, c-format
 msgid "Last seen: %s"
 msgstr "Visto l'ultima volta: %s"
 
-#: ui/AddContactDialog.vala:53
-#, c-format
-msgid "Loading add contact window failed!\n"
-msgstr "Caricamento della finestra di aggiunta contatti fallito\n"
-
-#: ui/ConversationWidget.vala:71 ui/SettingsWindow.vala:32
-#, c-format
-msgid "Loading conversation window failed!\n"
-msgstr "Caricamento della finestra di conversazione fallito\n"
-
-#: ui/FileTransferChatEntry.vala:40
-#, c-format
-msgid "Loading message widget failed!\n"
-msgstr "Caricamento del widget dei messaggi fallito\n"
-
-#: core/Tools.vala:132
+#: core/Tools.vala:137
 msgid "Message too long"
 msgstr "Messaggio troppo lungo"
 
-#: ui/settings_window.ui:337
+#: ui/settings_window.ui:265
+msgid "Minimize to system tray"
+msgstr ""
+
+#: ui/settings_window.ui:366
 msgid "Miscellaneous"
 msgstr "Altro"
 
@@ -624,7 +348,7 @@ msgstr "Altro"
 msgid "Name:"
 msgstr "Nome:"
 
-#: ui/ContactListWindow.vala:604
+#: ui/ContactListWindow.vala:666
 #, c-format
 msgid ""
 "New friend request from '%s'.\n"
@@ -637,33 +361,28 @@ msgstr ""
 msgid "No ID given"
 msgstr "Nessun Tox ID inserito"
 
-#: core/Tools.vala:134
+#: core/Tools.vala:139
 msgid "No message included"
 msgstr "Nessun messaggio incluso"
-
-#: core/ToxDns.vala:103
-#, c-format
-msgid "No pin privided, aborting...\n"
-msgstr "Nessun PIN inserito, annullo...\n"
 
 #: ui/contact_list.ui:118
 msgid "O_ffline"
 msgstr "O_ffline"
 
-#: core/Contact.vala:98 core/Contact.vala:108 core/ToxSession.vala:37
+#: core/Contact.vala:129 core/Contact.vala:139 core/ToxSession.vala:37
 msgid "Offline"
 msgstr "Offline"
 
 #: core/GroupChatContact.vala:32 core/ToxSession.vala:31
-#: ui/ContactListWindow.vala:208
+#: ui/ContactListWindow.vala:209
 msgid "Online"
 msgstr "Online"
 
-#: ui/contact_list.ui:449
+#: ui/contact_list.ui:477
 msgid "Open preferences"
 msgstr "Preferenze"
 
-#: core/Tools.vala:146
+#: core/Tools.vala:151
 msgid "Out of memory"
 msgstr "Memoria esaurita"
 
@@ -688,72 +407,33 @@ msgstr "Per favore inserisci il PIN..."
 msgid "Please let me add you to my contact list."
 msgstr "Per favore permettimi di aggiungerti alla mia lista contatti."
 
-#: ui/settings_window.ui:221
+#: ui/settings_window.ui:220
 msgid "Privacy"
 msgstr "Privacy"
-
-#: ui/ContactListWindow.vala:869
-#, c-format
-msgid "Read incorrect number of bytes from file\n"
-msgstr "Letto un numero non corretto di bytes dal file\n"
 
 #: ui/FileTransferChatEntry.vala:113
 msgid "Receiving failed"
 msgstr "Ricezione fallita"
 
-#: ui/ContactListWindow.vala:1114
+#: ui/ContactListWindow.vala:1264
 msgid "Resolving ID failed"
 msgstr "Risoluzione del Tox ID fallita"
 
-#: ui/ContactListWindow.vala:427
-#, c-format
-msgid "Retrieved contact %s from savefile.\n"
-msgstr "Recupero contatto %s dal savefile.\n"
-
-#: Main.vala:50
+#: Main.vala:69
 #, c-format
 msgid "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 "Esegui '%s --help' per vedere la lista completa delle opzioni disponibili.\n"
 
-#: core/MessageLog.vala:86
-#, c-format
-msgid "SQLite database closed.\n"
-msgstr "Database SQLita chiuso.\n"
-
-#: core/MessageLog.vala:82
-#, c-format
-msgid "SQLite database created.\n"
-msgstr "Database SQLite creato.\n"
-
-#: ui/FileTransferChatEntry.vala:158
-msgid "Save"
-msgstr "Salva"
-
 #: ui/FileTransferChatEntry.vala:155
 msgid "Save file"
 msgstr "Salva file"
 
-#: ui/ContactListWindow.vala:120
-#, c-format
-msgid "Saving session file failed: %s\n"
-msgstr "Salvataggio del file di sessione fallito: %s\n"
-
-#: ui/FileTransferChatEntry.vala:165
-#, c-format
-msgid "Saving to: %s\n"
-msgstr "Salvataggio in: %s\n"
-
-#: ui/ContactListWindow.vala:116
-#, c-format
-msgid "Saving tox session data\n"
-msgstr "Salvataggio dei dati di sessione\n"
-
-#: ui/ConversationWidget.vala:282
+#: ui/ConversationWidget.vala:370
 msgid "Select"
 msgstr "Seleziona"
 
-#: ui/ConversationWidget.vala:279
+#: ui/ConversationWidget.vala:367
 msgid "Select a file to send"
 msgstr "Seleziona un file da inviare"
 
@@ -763,11 +443,11 @@ msgstr ""
 "Invia un messaggio personalizzato che sarà visualizzato dal contatto che "
 "stai aggiungendo"
 
-#: ui/conversation_window.ui:308
+#: ui/conversation_window.ui:309
 msgid "Send file"
 msgstr "Invia file"
 
-#: ui/conversation_window.ui:341
+#: ui/conversation_window.ui:342
 msgid "Send message"
 msgstr "Invia messaggio"
 
@@ -775,17 +455,12 @@ msgstr "Invia messaggio"
 msgid "Sending failed"
 msgstr "Invio fallito"
 
-#: ui/ContactListWindow.vala:111
-#, c-format
-msgid "Session ended gracefully.\n"
-msgstr "Sessione terminata senza errori.\n"
-
 #: ui/add_contact_dialog.ui:67
 msgid "Set a custom nickname for the friend you are about to add"
 msgstr ""
 "Imposta un nickname personalizzato per il contatto che stai aggiungendo"
 
-#: core/Tools.vala:144
+#: core/Tools.vala:149
 msgid "Set new nospam"
 msgstr "Imposta un nuovo valore nospam"
 
@@ -793,121 +468,68 @@ msgstr "Imposta un nuovo valore nospam"
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: core/Settings.vala:102
-#, c-format
-msgid "Settings saved.\n"
-msgstr "Impostazioni salvate.\n"
-
-#: ui/settings_window.ui:186
+#: ui/settings_window.ui:185
 msgid "Show _others when I am typing"
 msgstr "Mostra agli altri quando sto scrivendo"
 
-#: ui/settings_window.ui:258
+#: ui/settings_window.ui:287
 msgid "Show filesize in"
 msgstr "Mostra dimensione file in"
 
-#: ui/settings_window.ui:202
+#: ui/settings_window.ui:201
 msgid "Show me when others are typing"
 msgstr "Mostra quando gli altri stanno scrivendo"
 
-#: Main.vala:70
-#, c-format
-msgid "Starting in offline mode\n"
-msgstr "Avvio in modalità offline\n"
+#: ui/settings_window.ui:250
+#, fuzzy
+msgid "Show notification when a new message arrives"
+msgstr "Illumina finestra quando arriva un nuovo messaggio"
 
 #: ui/user_info_window.ui:178
 msgid "Status message:"
 msgstr "Messaggio di stato:"
 
-#: ui/ContactListWindow.vala:408
-#, c-format
-msgid "Theme refreshed\n"
-msgstr "Tema ricaricato\n"
-
-#: ui/Client.vala:116
+#: ui/Client.vala:182
 msgid "There is currently no help available"
 msgstr "Attualmente non è disponibile una pagina di aiuto"
 
-#: core/ResourceFactory.vala:77
+#: core/ResourceFactory.vala:74
 msgid "Tox User"
 msgstr "Utente Tox"
 
-#: core/ResourceFactory.vala:78
+#: core/ResourceFactory.vala:75
 #, c-format
 msgid "Toxing on Venom v.%s"
 msgstr "Toxing on Venom v.%s"
-
-#: ui/ContactListWindow.vala:826
-#, c-format
-msgid "Trying to send unknown file"
-msgstr "Cercando di inviare un file sconosciuto"
 
 #: ui/MessageTextView.vala:27
 msgid "Type your message here..."
 msgstr "Scrivi il tuo messaggio qui..."
 
-#: core/Tools.vala:140
+#: core/Tools.vala:145
 msgid "Unknown error"
 msgstr "Errore sconosciuto"
-
-#: ui/ContactListWindow.vala:890
-#, c-format
-msgid "Unknown error while trying to read file: %s\n"
-msgstr "Errore sconosciuto nel leggere il file: %s\n"
-
-#: Main.vala:65
-#, c-format
-msgid "Using Gtk.TextView to display messages\n"
-msgstr "Uso Gtk.TextView per visualizzare i messaggi\n"
-
-#: Main.vala:60
-#, c-format
-msgid "Using data file \"%s\"\n"
-msgstr "Uso il datafile \"%s\"\n"
 
 #: ui/AddContactDialog.vala:100
 msgid "Valid ID size"
 msgstr "Dimensione Tox ID valida"
-
-#: ui/ContactListWindow.vala:461
-#, c-format
-msgid "Venom (%s)"
-msgstr "Venom (%s)"
 
 #: ui/ConversationTextView.vala:139
 #, c-format
 msgid "[%s] "
 msgstr "[%s] "
 
-#: ui/ContactListWindow.vala:638
-#, c-format
-msgid "[ac] %i:%s\n"
-msgstr "[ac] %i: %s\n"
+#: ui/ContactListWindow.vala:667
+msgid "_Accept"
+msgstr ""
 
-#: ui/ContactListWindow.vala:598
-#, c-format
-msgid "[fr] %s:%s\n"
-msgstr "[fr] %s: %s\n"
+#: ui/UITools.vala:94
+msgid "_Audio chat"
+msgstr ""
 
-#: ui/ContactListWindow.vala:763
-#, c-format
-msgid "[ga] %s [%i]@%i: %s\n"
-msgstr "[ga] %s [%i]@%i: %s\n"
-
-#: ui/ContactListWindow.vala:734
-#, c-format
-msgid "[gm] %s [%i]@%i: %s\n"
-msgstr "[gm] %s [%i]@%i: %s\n"
-
-#: ui/ContactListWindow.vala:660
-#, c-format
-msgid "[rr] %s:%u\n"
-msgstr "[rr] %s: %u\n"
-
-#: ui/ContactListWindow.vala:656
-#, c-format
-msgid "[us] %s:%i\n"
-msgstr "[us] %s: %i\n"
+#: ui/UITools.vala:102
+msgid "_Automatically accept ..."
+msgstr ""
 
 #: ui/contact_list.ui:96
 msgid "_Away"
@@ -921,6 +543,12 @@ msgstr "_Sfoglia..."
 msgid "_Busy"
 msgstr "_Occupato"
 
+#: ui/ContactListWindow.vala:667 ui/FileTransferChatEntry.vala:157
+#: ui/UITools.vala:150
+#, fuzzy
+msgid "_Cancel"
+msgstr "Annullato"
+
 #: ui/contact_list.ui:61
 msgid "_Copy ID to clipboard"
 msgstr "_Copia Tox ID negli appunti"
@@ -929,9 +557,36 @@ msgstr "_Copia Tox ID negli appunti"
 msgid "_Edit user"
 msgstr "_Modifica utente"
 
+#: ui/UITools.vala:88
+msgid "_File transfers"
+msgstr ""
+
+#: ui/contact_list.ui:149
+msgid "_Import data file"
+msgstr ""
+
+#: ui/UITools.vala:108
+msgid "_Invite to ..."
+msgstr ""
+
+#: ui/UITools.vala:124
+#, fuzzy
+msgid "_Invite to new groupchat"
+msgstr "Crea chat di gruppo"
+
+#: ui/UITools.vala:138
+#, fuzzy
+msgid "_Leave groupchat"
+msgstr "Crea chat di gruppo"
+
 #: ui/add_contact_dialog.ui:94
 msgid "_Message (optional):"
 msgstr "_Messaggio (opzionale):"
+
+#: ui/UITools.vala:112
+#, fuzzy
+msgid "_New groupchat"
+msgstr "Crea chat di gruppo"
 
 #: ui/add_contact_dialog.ui:54
 msgid "_Nickname (optional):"
@@ -941,88 +596,362 @@ msgstr "_Nickname (opzionale):"
 msgid "_Online"
 msgstr "_Online"
 
+#: ui/Client.vala:86
+msgid "_Quit"
+msgstr ""
+
+#: ui/FileTransferChatEntry.vala:158 ui/UITools.vala:152
+#, fuzzy
+msgid "_Save"
+msgstr "Salva"
+
+#: ui/Client.vala:83
+msgid "_Show/Hide Venom"
+msgstr ""
+
 #: ui/add_contact_dialog.ui:27
 msgid "_Tox ID:"
 msgstr "_Tox ID:"
 
-#: ui/contact_list.ui:278
+#: ui/UITools.vala:78
+msgid "_Unfriend"
+msgstr ""
+
+#: ui/UITools.vala:98
+msgid "_Video chat"
+msgstr ""
+
+#: ui/contact_list.ui:306
 msgid "connecting..."
 msgstr "connessione..."
 
-#: ui/settings_window.ui:160
+#: ui/settings_window.ui:159
 msgid "days"
 msgstr "giorni"
 
-#: ui/settings_window.ui:127
+#: ui/settings_window.ui:126
 msgid "delete after"
 msgstr "elimina dopo"
 
-#: Main.vala:49
+#: Main.vala:68
 #, c-format
 msgid "error: %s\n"
 msgstr "errore: %s\n"
-
-#: ui/ContactListWindow.vala:668
-msgid "established"
-msgstr "stabilita"
-
-#: ui/ContactListWindow.vala:569
-#, c-format
-msgid "failed to send file %s to %s"
-msgstr "invio del file %s a %s fallito"
-
-#: ui/ContactListWindow.vala:1077
-#, c-format
-msgid "groupchat #%i"
-msgstr "chat di gruppo #%i"
 
 #: ui/settings_window.ui:104
 msgid "indefinitely"
 msgstr "per sempre"
 
-#: ui/ContactListWindow.vala:668
-msgid "lost"
-msgstr "persa"
-
 #: core/GroupChat.vala:56
 msgid "no one connected"
 msgstr "nessuno connesso"
 
-#: ui/ContactListWindow.vala:663
-msgid "offline"
-msgstr "offline"
-
-#: ui/ContactListWindow.vala:663
-msgid "online"
-msgstr "online"
-
-#: ui/ContactListWindow.vala:798
-#, c-format
-msgid "received file send request friend: %i filenumber: %i filename: %s \n"
-msgstr ""
-"ricevuta richiesta di trasferimento file contatto: %i numero file: %i nome "
-"file: %s \n"
-
-#: ui/ContactListWindow.vala:562
-#, c-format
-msgid "sending file %s to %s\n"
-msgstr "invio file %s a %s\n"
-
-#: ui/ContactListWindow.vala:1129
-#, c-format
-msgid "setting alias: %s\n"
-msgstr "impostazione alias: %s\n"
-
-#: core/ToxDns.vala:95
-#, c-format
-msgid "tox 1 ID found: %s\n"
-msgstr "Trovato Tox ID v1: %s\n"
-
-#: core/ToxDns.vala:100
-#, c-format
-msgid "tox 2 ID found: %s %s\n"
-msgstr "Trovato Tox ID v2: %s %s\n"
-
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
 msgstr "Ansa89"
+
+#~ msgid "  %s\n"
+#~ msgstr " %s\n"
+
+#~ msgid " (ipv6)"
+#~ msgstr " (IPv6)"
+
+#~ msgid "%F"
+#~ msgstr "%F"
+
+#~ msgid "%R:%S"
+#~ msgstr "%R:%S"
+
+#~ msgid "%s changed his name to %s\n"
+#~ msgstr "%s ha cambiato il suo nome in %s\n"
+
+#~ msgid "%s changed his status to %s\n"
+#~ msgstr "%s ha cambiato il suo stato in %s\n"
+
+#~ msgid "%s: %s\n"
+#~ msgstr "%s: %s\n"
+
+#~ msgid "%s:%u%s %s"
+#~ msgstr "%s:%u%s %s"
+
+#~ msgid "* %s"
+#~ msgstr "* %s"
+
+#~ msgid "<%i>"
+#~ msgstr "<%i>"
+
+#~ msgid "<%s> %s:%s\n"
+#~ msgstr "<%s> %s: %s\n"
+
+#~ msgid "Added new friend #%i\n"
+#~ msgstr "Aggiunto nuovo amico #%i\n"
+
+#~ msgid "Background thread started.\n"
+#~ msgstr "Thread in background avviato.\n"
+
+#~ msgid "Background thread stopped.\n"
+#~ msgstr "Thread in background fermato.\n"
+
+#~ msgid "Can't create action regex: %s.\n"
+#~ msgstr "Impossibile creare l'espressione regolare: %s.\n"
+
+#~ msgid "Connecting to DHT Nodes:\n"
+#~ msgstr "Connessione ai server DHT:\n"
+
+#~ msgid "Connection to DHT %s.\n"
+#~ msgstr "Connessione al server DHT %s.\n"
+
+#~ msgid "Contact accepted file sending request\n"
+#~ msgstr "Il contatto ha accettato la richiesta di invio file\n"
+
+#~ msgid "Copied Tox ID to clipboard\n"
+#~ msgstr "Tox ID copiato negli appunti\n"
+
+#~ msgid "Could not change user name!\n"
+#~ msgstr "Impossibile cambiare il nome\n"
+
+#~ msgid "Could not change user statusmessage!\n"
+#~ msgstr "Impossibile cambiare lo stato\n"
+
+#~ msgid "Could not create a new groupchat.\n"
+#~ msgstr "Impossibile creare una nuova chat di gruppo.\n"
+
+#~ msgid "Could not join groupchat.\n"
+#~ msgstr "Impossibile unirsi alla chat di gruppo.\n"
+
+#~ msgid "Could not load session data (%s), creating new one.\n"
+#~ msgstr "Impossibile caricare i dati (%s), ne verranno creati di nuovi.\n"
+
+#~ msgid "Could not remove %s.\n"
+#~ msgstr "Impossibile rimuovere %s.\n"
+
+#~ msgid "Could not remove contact %i.\n"
+#~ msgstr "Impossibile rimuovere il contatto %i.\n"
+
+#~ msgid "Could not remove peer [%i] from groupchat #%i (no such peer)\n"
+#~ msgstr ""
+#~ "Impossibile rimuovere il peer [%i] dalla chat di gruppo #%i (peer non "
+#~ "trovato)\n"
+
+#~ msgid "Ended file transfer for %s to %s\n"
+#~ msgstr "Trasferimento file finito per %s a %s\n"
+
+#~ msgid "Ending session...\n"
+#~ msgstr "Chiudendo la sessione...\n"
+
+#, fuzzy
+#~ msgid "Error creating message log table: %s\n"
+#~ msgstr "Errore nel creare la tabella dei server DHT: %s\n"
+
+#~ msgid "Error creating tox dns regex: %s\n"
+#~ msgstr "Errore nel creare l'espressione regolare dei DNS tox: %s\n"
+
+#~ msgid "Error creating tox uri regex: %s\n"
+#~ msgstr "Errore nel creare l'espressione regolare degli URI tox: %s\n"
+
+#~ msgid "Error matching uri regex: %s\n"
+#~ msgstr "Errore nel match dell'espressione regolare degli URI: %s\n"
+
+#~ msgid "Error occured while getting file size: %s"
+#~ msgstr "Errore nel calcolare la dimesione del file: %s"
+
+#~ msgid "Error opening database: %s\n"
+#~ msgstr "Errore nell'accedere al database: %s\n"
+
+#~ msgid "Error reading configs:%s\n"
+#~ msgstr "Errore nella lettura delle configurazioni: %s\n"
+
+#~ msgid "Error resolving name: %s\n"
+#~ msgstr "Errore nel risolvere il nome: %s\n"
+
+#~ msgid "Error retrieving logs from sqlite database: %s\n"
+#~ msgstr "Errore nel recupero dei log dal database sqlite: %s\n"
+
+#~ msgid "Error saving configs:%s\n"
+#~ msgstr "Errore nel salvataggio delle configurazioni: %s\n"
+
+#~ msgid "Error when doing uri markup: %s"
+#~ msgstr "Errore durante il markup dell'URI: %s"
+
+#~ msgid "Error when showing uri: %s\n"
+#~ msgstr "Errore nel mostrare l'URI: %s\n"
+
+#~ msgid "Error while loading icon: %s\n"
+#~ msgstr "Errore nel caricare l'icona: %s\n"
+
+#~ msgid "Error while loading image from \"%s\":%s\n"
+#~ msgstr "Errore nel caricamento dell'immagine da \"%s\": %s\n"
+
+#~ msgid "Error while trying to create file: %s\n"
+#~ msgstr "Errore nel creare il file: %s\n"
+
+#~ msgid "Error while trying to write data to file\n"
+#~ msgstr "Errore nella scrittura dei dati su file\n"
+
+#~ msgid "Error while writing to stream."
+#~ msgstr "Errore nella scrittura dello stream."
+
+#~ msgid "Error writing contact to sqlite database: %s\n"
+#~ msgstr "Errore nella scrittura del contatto nel database sqlite: %s\n"
+
+#~ msgid "Error writing message to sqlite database: %s\n"
+#~ msgstr "Errore nella scrittura del messaggio nel database sqlite: %s\n"
+
+#~ msgid "Error: %d: %s\n"
+#~ msgstr "Errore: %d: %s\n"
+
+#~ msgid "Error: %s\n"
+#~ msgstr "Errore %s\n"
+
+#~ msgid "File transfer finished for file number %u"
+#~ msgstr "Trasferimento file finito per il file numero %u"
+
+#~ msgid "File transfer was rejected for file number %u"
+#~ msgstr "Trasferimento file rifiutato per il file numero %u"
+
+#~ msgid "Friend could not be added.\n"
+#~ msgstr "Il contatto non può essere aggiunto.\n"
+
+#~ msgid "Friend request successfully sent. Friend added as %i.\n"
+#~ msgstr ""
+#~ "Richiesta d'amicizia inviata con successo. Contatto aggiunto come %i.\n"
+
+#~ msgid "Group action from unknown contact #%i [%i]\n"
+#~ msgstr "Azione di gruppo da contatto sconosciuto #%i [%i]\n"
+
+#~ msgid "Group invite from %s with public key %s\n"
+#~ msgstr "Invito di gruppo da %s con chiave pubblica %s\n"
+
+#~ msgid "Group message from unknown contact #%i [%i]\n"
+#~ msgstr "Messaggio di gruppo da contatto sconosciuto #%i [%i]\n"
+
+#~ msgid "I/O error while trying to close file stream: %s\n"
+#~ msgstr "Errore I/O nella chiusura del file di stream: %s\n"
+
+#~ msgid "I/O error while trying to read file: %s\n"
+#~ msgstr "Errore I/O nel leggere il file: %s\n"
+
+#~ msgid "ID: %s\n"
+#~ msgstr "Tox ID: %s\n"
+
+#~ msgid "Invalid record\n"
+#~ msgstr "Record DNS non valido\n"
+
+#~ msgid "Invalid tox uri\n"
+#~ msgstr "Tox URI non valido\n"
+
+#~ msgid "Joined Groupchat #%i\n"
+#~ msgstr "Entrato nella chat di gruppo #%i\n"
+
+#~ msgid "Loading add contact window failed!\n"
+#~ msgstr "Caricamento della finestra di aggiunta contatti fallito\n"
+
+#~ msgid "Loading conversation window failed!\n"
+#~ msgstr "Caricamento della finestra di conversazione fallito\n"
+
+#~ msgid "Loading message widget failed!\n"
+#~ msgstr "Caricamento del widget dei messaggi fallito\n"
+
+#~ msgid "No pin privided, aborting...\n"
+#~ msgstr "Nessun PIN inserito, annullo...\n"
+
+#~ msgid "Read incorrect number of bytes from file\n"
+#~ msgstr "Letto un numero non corretto di bytes dal file\n"
+
+#~ msgid "Retrieved contact %s from savefile.\n"
+#~ msgstr "Recupero contatto %s dal savefile.\n"
+
+#~ msgid "SQLite database closed.\n"
+#~ msgstr "Database SQLita chiuso.\n"
+
+#~ msgid "SQLite database created.\n"
+#~ msgstr "Database SQLite creato.\n"
+
+#~ msgid "Saving session file failed: %s\n"
+#~ msgstr "Salvataggio del file di sessione fallito: %s\n"
+
+#~ msgid "Saving to: %s\n"
+#~ msgstr "Salvataggio in: %s\n"
+
+#~ msgid "Saving tox session data\n"
+#~ msgstr "Salvataggio dei dati di sessione\n"
+
+#~ msgid "Session ended gracefully.\n"
+#~ msgstr "Sessione terminata senza errori.\n"
+
+#~ msgid "Settings saved.\n"
+#~ msgstr "Impostazioni salvate.\n"
+
+#~ msgid "Starting in offline mode\n"
+#~ msgstr "Avvio in modalità offline\n"
+
+#~ msgid "Theme refreshed\n"
+#~ msgstr "Tema ricaricato\n"
+
+#~ msgid "Trying to send unknown file"
+#~ msgstr "Cercando di inviare un file sconosciuto"
+
+#~ msgid "Unknown error while trying to read file: %s\n"
+#~ msgstr "Errore sconosciuto nel leggere il file: %s\n"
+
+#~ msgid "Using Gtk.TextView to display messages\n"
+#~ msgstr "Uso Gtk.TextView per visualizzare i messaggi\n"
+
+#~ msgid "Using data file \"%s\"\n"
+#~ msgstr "Uso il datafile \"%s\"\n"
+
+#~ msgid "Venom (%s)"
+#~ msgstr "Venom (%s)"
+
+#~ msgid "[ac] %i:%s\n"
+#~ msgstr "[ac] %i: %s\n"
+
+#~ msgid "[fr] %s:%s\n"
+#~ msgstr "[fr] %s: %s\n"
+
+#~ msgid "[ga] %s [%i]@%i: %s\n"
+#~ msgstr "[ga] %s [%i]@%i: %s\n"
+
+#~ msgid "[gm] %s [%i]@%i: %s\n"
+#~ msgstr "[gm] %s [%i]@%i: %s\n"
+
+#~ msgid "[rr] %s:%u\n"
+#~ msgstr "[rr] %s: %u\n"
+
+#~ msgid "[us] %s:%i\n"
+#~ msgstr "[us] %s: %i\n"
+
+#~ msgid "established"
+#~ msgstr "stabilita"
+
+#~ msgid "failed to send file %s to %s"
+#~ msgstr "invio del file %s a %s fallito"
+
+#~ msgid "groupchat #%i"
+#~ msgstr "chat di gruppo #%i"
+
+#~ msgid "lost"
+#~ msgstr "persa"
+
+#~ msgid "offline"
+#~ msgstr "offline"
+
+#~ msgid "online"
+#~ msgstr "online"
+
+#~ msgid "received file send request friend: %i filenumber: %i filename: %s \n"
+#~ msgstr ""
+#~ "ricevuta richiesta di trasferimento file contatto: %i numero file: %i "
+#~ "nome file: %s \n"
+
+#~ msgid "sending file %s to %s\n"
+#~ msgstr "invio file %s a %s\n"
+
+#~ msgid "setting alias: %s\n"
+#~ msgstr "impostazione alias: %s\n"
+
+#~ msgid "tox 1 ID found: %s\n"
+#~ msgstr "Trovato Tox ID v1: %s\n"
+
+#~ msgid "tox 2 ID found: %s %s\n"
+#~ msgstr "Trovato Tox ID v2: %s %s\n"
