@@ -25,22 +25,36 @@ namespace Venom {
     PIPELINE
   }
 
-  public struct CallInfo {
+  public struct AudioCallInfo {
     bool   active;
-    bool   video;
     bool   muted;
     int    volume;
   }
 
-  public enum AVStatusChangeType {
+  public struct VideoCallInfo {
+    bool active;
+  }
+
+  public enum AudioStatusChangeType {
     START,
+    START_PREVIEW,
     END,
+    END_PREVIEW,
     MUTE,
-    VOLUME
+    VOLUME,
+    KILL
+  }
+
+  public enum VideoStatusChangeType {
+    START,
+    START_PREVIEW,
+    END,
+    END_PREVIEW,
+    KILL
   }
 
   public struct AVStatusChange {
-    AVStatusChangeType type;
+    int type;
     int32 call_index;
     int var1;
   }
@@ -72,9 +86,9 @@ namespace Venom {
 
 
     private const int MAX_CALLS = 16;
-    CallInfo[] calls = new CallInfo[MAX_CALLS];
 
-    private AsyncQueue<AVStatusChange?> status_changes = new AsyncQueue<AVStatusChange?>();
+    private AsyncQueue<AVStatusChange?> audio_status_changes = new AsyncQueue<AVStatusChange?>();
+    private AsyncQueue<AVStatusChange?> video_status_changes = new AsyncQueue<AVStatusChange?>();
 
     private Gst.Pipeline pipeline_in;
     private Gst.AppSrc   audio_source_in;
@@ -96,7 +110,7 @@ namespace Venom {
     private Gst.AppSink  video_sink_out;
 
     private Thread<int> audio_thread = null;
-    private bool running = false;
+    private Thread<int> video_thread = null;
 
     // settings in use by audio in pipeline
     private ToxAV.CodecSettings current_audio_settings = ToxAV.DefaultCodecSettings;
@@ -125,8 +139,8 @@ namespace Venom {
     }
 
     public static void free() {
+      Logger.log(LogLevel.DEBUG, "Audiomanager free called");
       instance = null;
-      Logger.log(LogLevel.INFO, "AudioManager instance freed");
     }
 
     private AudioManager(string[] args) throws AudioManagerError {
@@ -220,12 +234,19 @@ namespace Venom {
     }
 
     ~AudioManager() {
-      running = false;
-      if(audio_thread != null) {
-        audio_thread.join();
-      }
+      Logger.log(LogLevel.INFO, "Audiomanager destructor called");
+      audio_status_changes.push( AVStatusChange() {
+        type = VideoStatusChangeType.KILL
+      });
+      video_status_changes.push( AVStatusChange() {
+        type = VideoStatusChangeType.KILL
+      });
+
       destroy_audio_pipeline();
       destroy_video_pipeline();
+
+      join();
+      
       Gst.deinit();
       Logger.log(LogLevel.INFO, "Gstreamer deinitialized");
     }
@@ -283,6 +304,12 @@ namespace Venom {
       video_pipeline_in.set_state(Gst.State.PAUSED);
       video_pipeline_out.set_state(Gst.State.PAUSED);
       Logger.log(LogLevel.INFO, "Video pipeline set to paused");
+    }
+
+    private void destroy_video_pipeline() {
+      video_pipeline_in.set_state(Gst.State.NULL);
+      video_pipeline_out.set_state(Gst.State.NULL);
+      Logger.log(LogLevel.INFO, "Video pipeline destroyed");
     }
 
     private string get_audio_caps_from_codec_settings(ref ToxAV.CodecSettings settings) {
@@ -357,7 +384,6 @@ namespace Venom {
       Logger.log(LogLevel.DEBUG, "pushed %u bytes to VIDEO_IN pipeline".printf(len));
    }
 
-
     //TODO: Should send this function args for making the vpx.image
     private Vpx.Image make_vpx_image() {
        Gst.Buffer gst_buf = video_sink_out.pull_buffer();
@@ -371,22 +397,74 @@ namespace Venom {
        return my_image;
     }
 
-
-    private bool video_running = false;
     private int video_thread_fun() {
       Logger.log(LogLevel.INFO, "starting video thread...");
       set_video_pipeline_playing();
+
+      VideoCallInfo[] calls = new VideoCallInfo[MAX_CALLS];
       ToxAV.AV_Error prep_frame_ret = 0, send_video_ret = 0;
       uint8[] video_enc_buffer = new uint8[800 * 600 * 4];
-      while(video_running) {
+      int  number_of_calls = 0;
+      bool preview = false;
+
+      bool running = true;
+      while(running) {
+        AVStatusChange? c = video_status_changes.try_pop();
+        if(c != null) {
+          switch(c.type) {
+            case VideoStatusChangeType.START:
+              Logger.log(LogLevel.DEBUG, "Starting video session #%i".printf(c.call_index));
+              if(calls[c.call_index].active == false) {
+                number_of_calls++;
+              }
+              calls[c.call_index].active = true;
+              break;
+            case VideoStatusChangeType.START_PREVIEW:
+              Logger.log(LogLevel.DEBUG, "Starting video preview");
+              preview = true;
+              break;
+            case VideoStatusChangeType.END:
+              Logger.log(LogLevel.DEBUG, "Ending video session %i".printf(c.call_index));
+              if(calls[c.call_index].active == true) {
+                number_of_calls--;
+              }
+              calls[c.call_index].active = false;
+              break;
+            case VideoStatusChangeType.END_PREVIEW:
+              Logger.log(LogLevel.DEBUG, "Stopping video preview %i".printf(c.call_index));
+              preview = false;
+              break;
+            case VideoStatusChangeType.KILL:
+              Logger.log(LogLevel.DEBUG, "Video thread received kill message");
+              running = false;
+              continue;
+            default:
+              Logger.log(LogLevel.ERROR, "unknown av status change type");
+              break;
+          }
+        }
+
+        // block until something gets pushed to video_status_changes
+        if(number_of_calls == 0 && !preview) {
+          set_video_pipeline_paused();
+          c = video_status_changes.pop();
+          video_status_changes.push(c);
+          set_video_pipeline_playing();
+          continue;
+        }
+
+        Vpx.Image out_image = make_vpx_image();     
+
+        if(preview) {
+          video_buffer_in(out_image);
+        }
+
         for(int i = 0; i < MAX_CALLS; i++) {
-          if(calls[i].active && calls[i].video) {
-            Vpx.Image out_image = make_vpx_image();                
+          if(calls[i].active) {
             prep_frame_ret = toxav.prepare_video_frame(i, video_enc_buffer, out_image);
             if(prep_frame_ret <= 0) { 
                Logger.log(LogLevel.WARNING, "prepare_video_frame returned an error: %i".printf(prep_frame_ret));
             } else {
-              Logger.log(LogLevel.DEBUG, "prep_frame_ret_video = %i".printf(prep_frame_ret));
               send_video_ret = toxav.send_video(i, video_enc_buffer, prep_frame_ret);
               if(send_video_ret != ToxAV.AV_Error.NONE) {
                 Logger.log(LogLevel.WARNING, "send_video returned %d".printf(send_video_ret));
@@ -403,23 +481,25 @@ namespace Venom {
     private int audio_thread_fun() {
       Logger.log(LogLevel.INFO, "starting audio thread...");
       set_audio_pipeline_playing();
+
       int perframe = (int)(ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000;
       int buffer_size;
       int16[] buffer = new int16[perframe];
       uint8[] enc_buffer = new uint8[perframe*2];
       ToxAV.AV_Error prep_frame_ret = 0, send_audio_ret = 0;
-      int number_of_calls = 0;
-      int number_of_video_calls = 0;
-      Thread<int> video_thread = null;
 
+      AudioCallInfo[] calls = new AudioCallInfo[MAX_CALLS];
+      int number_of_calls = 0;
+      bool preview = false;
+
+      bool running = true;
       while(running) {
         // calling try_pop once per cycle should be enough
-        AVStatusChange? c = status_changes.try_pop();
+        AVStatusChange? c = audio_status_changes.try_pop();
         if(c != null) {
           switch(c.type) {
-            case AVStatusChangeType.START:
-              Logger.log(LogLevel.DEBUG, "Starting av transmission %i".printf(c.call_index));
-              bool video = (c.var1 != 0);
+            case AudioStatusChangeType.START:
+              Logger.log(LogLevel.DEBUG, "Starting audio session %i".printf(c.call_index));
               ToxAV.AV_Error e = toxav.prepare_transmission(
                 c.call_index,
                 ToxAV.JITTER_BUFFER_DEFAULT_CAPACITY,
@@ -431,56 +511,59 @@ namespace Venom {
               } else {
                 number_of_calls++;
                 calls[c.call_index].active = true;
-                calls[c.call_index].video = video;
-                if(video) {
-                  if(number_of_video_calls == 0) {
-                    video_running = true;
-                    video_thread = new Thread<int>("toxvideothread", this.video_thread_fun);
-                  }
-                  number_of_video_calls++;
-                }
               }
               break;
-            case AVStatusChangeType.END:
-              Logger.log(LogLevel.DEBUG, "Shutting down av transmission %i".printf(c.call_index));
+            case AudioStatusChangeType.START_PREVIEW:
+              Logger.log(LogLevel.DEBUG, "Starting audio preview");
+              preview = true;
+              break;
+            case AudioStatusChangeType.END:
+              Logger.log(LogLevel.DEBUG, "Ending audio session %i".printf(c.call_index));
               ToxAV.AV_Error e = toxav.kill_transmission(c.call_index);
               if(e != ToxAV.AV_Error.NONE) {
-                Logger.log(LogLevel.FATAL, "Could not shutdown AV transmission: %s".printf(e.to_string()));
+                Logger.log(LogLevel.FATAL, "Could not shutdown Audio transmission: %s".printf(e.to_string()));
               } else {
                 number_of_calls--;
                 calls[c.call_index].active = false;
-                if(calls[c.call_index].video) {
-                  number_of_video_calls--;
-                  if(number_of_video_calls <= 0) {
-                    video_running = false;
-                    video_thread.join();
-                  }
-                }
               }
               break;
-            case AVStatusChangeType.MUTE:
-              Logger.log(LogLevel.DEBUG, (c.var1 == 1) ? "Muting %i".printf(c.call_index) : "Unmuting %i".printf(c.call_index));
-              calls[c.call_index].muted = (c.var1 == 1);
+            case AudioStatusChangeType.END_PREVIEW:
+              Logger.log(LogLevel.DEBUG, "Ending audio preview");
+              preview = false;
               break;
-            case AVStatusChangeType.VOLUME:
+            case AudioStatusChangeType.MUTE:
+              bool muted = (c.var1 == 1);
+              Logger.log(LogLevel.DEBUG, muted ? "Muting %i".printf(c.call_index) : "Unmuting %i".printf(c.call_index));
+              calls[c.call_index].muted = muted;
+              break;
+            case AudioStatusChangeType.VOLUME:
               calls[c.call_index].volume = c.var1;
               Logger.log(LogLevel.DEBUG, "Set receive volume for %i to %i".printf(c.call_index, c.var1));
               //FIXME this only works for one contact right now
               audio_volume_in.set("volume", ((double)c.var1) / 100.0);
               break;
+            case AudioStatusChangeType.KILL:
+              Logger.log(LogLevel.DEBUG, "Audio thread received kill message");
+              running = false;
+              continue;
             default:
               Logger.log(LogLevel.ERROR, "unknown av status change type");
               break;
           }
         }
 
-        // read samples from pipeline
-        buffer_size = buffer_out(buffer);
-        if(buffer_size <= 0) {
-          Logger.log(LogLevel.WARNING, "Could not read samples from audio pipeline!");
-          Thread.usleep(1000);
+        // block until something gets pushed to audio_status_changes
+        if(number_of_calls == 0 && !preview) {
+          set_audio_pipeline_paused();
+          c = audio_status_changes.pop();
+          audio_status_changes.push(c);
+          set_audio_pipeline_playing();
           continue;
         }
+
+        // read samples from pipeline
+        buffer_size = buffer_out(buffer);
+
         // distribute samples across peers
         for(int i = 0; i < MAX_CALLS; i++) {
           if(calls[i].active) {
@@ -495,33 +578,28 @@ namespace Venom {
             }
           }
         }
-
-
-        if(number_of_calls <= 0 && status_changes.length() == 0) {
-          Logger.log(LogLevel.INFO, "No remaining calls, stopping audio thread.");
-          number_of_calls = 0;
-          running = false;
-        }
       }
 
-      video_running = false;
       Logger.log(LogLevel.INFO, "stopping audio thread...");
       set_audio_pipeline_paused();
       return 0;
     }
 
     public int join() {
+      int ret = 0;
       if(audio_thread != null) {
-        return audio_thread.join();
+        ret |= audio_thread.join();
       }
-      return -1;
+      if(video_thread != null) {
+        ret |= video_thread.join();
+      }
+      return ret;
     }
 
     // functions to control the AV Manager
-
     public void set_volume(Contact c, int volume) {
-      status_changes.push( AVStatusChange() {
-        type = AVStatusChangeType.VOLUME,
+      audio_status_changes.push( AVStatusChange() {
+        type = AudioStatusChangeType.VOLUME,
         call_index = c.call_index,
         var1 = volume
       });
@@ -529,8 +607,8 @@ namespace Venom {
 
     public void set_mute(Contact c, bool mute) {
       int imute = (mute ? 1 : 0);
-      status_changes.push( AVStatusChange() {
-        type = AVStatusChangeType.MUTE,
+      audio_status_changes.push( AVStatusChange() {
+        type = AudioStatusChangeType.MUTE,
         call_index = c.call_index,
         var1 = imute
       });
@@ -538,29 +616,41 @@ namespace Venom {
 
     public void on_start_call(Contact c) {
       int video = c.video ? 1 : 0;
-      status_changes.push( AVStatusChange() {
-        type = AVStatusChangeType.START,
+      audio_status_changes.push( AVStatusChange() {
+        type = AudioStatusChangeType.START,
         call_index = c.call_index,
         var1 = video
       });
 
-      if(!running) {
-        running = true;
+      if(c.video) {
+        video_status_changes.push( AVStatusChange() {
+          type = VideoStatusChangeType.START,
+          call_index = c.call_index
+        });
+      }
+
+      if(audio_thread == null) {
         audio_thread = new GLib.Thread<int>("toxaudiothread", this.audio_thread_fun);
+      }
+
+      // start video thread on first video call
+      if(c.video && video_thread == null) {
+        video_thread = new Thread<int>("toxvideothread", this.video_thread_fun);
       }
     }
 
     public void on_end_call(Contact c) {
-      if(!running) {
-        Logger.log(LogLevel.INFO, "No av thread running");
-        return;
-      }
-
-      status_changes.push( AVStatusChange() {
-        type = AVStatusChangeType.END,
+      audio_status_changes.push( AVStatusChange() {
+        type = AudioStatusChangeType.END,
         call_index = c.call_index
       });
 
+      if(c.video) {
+        video_status_changes.push( AVStatusChange() {
+          type = VideoStatusChangeType.END,
+          call_index = c.call_index
+        });
+      }
     }
 
   }
