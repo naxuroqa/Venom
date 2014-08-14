@@ -21,6 +21,7 @@ SET(TRANSLATIONS
   de
   fr
   it
+  pl
   ru
 )
 
