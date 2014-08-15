@@ -112,6 +112,40 @@ namespace Venom {
       this.ipv6 = ipv6;
 
       Tox.Options options = Tox.Options();
+
+      string[] proxy_strings = {};
+      ProxyResolver proxy_resolver = ProxyResolver.get_default();
+      try {
+        proxy_strings = proxy_resolver.lookup("socks://tox.im");
+      } catch (Error e) {
+        Logger.log(LogLevel.ERROR, "Error when looking up proxy settings");
+      }
+
+      Regex proxy_regex = null;
+      try {
+         proxy_regex = new GLib.Regex("^(?P<protocol>socks5)://((?P<user>[^:]*)(:(?P<password>.*))?@)?(?P<host>.*):(?P<port>.*)");
+      } catch (GLib.Error e) {
+        Logger.log(LogLevel.FATAL, "Error creating tox uri regex: " + e.message);
+      }
+
+      foreach(unowned string proxy in proxy_strings) {
+        if(proxy.has_prefix("socks5:")) {
+          Logger.log(LogLevel.INFO, "socks5 proxy found: " + proxy);
+          GLib.MatchInfo info = null;
+          if(proxy_regex != null && proxy_regex.match(proxy, 0, out info)) {
+            string proxy_host = info.fetch_named("host");
+            string proxy_port = info.fetch_named("port");
+            Logger.log(LogLevel.DEBUG, "parsed host: " + proxy_host + " port: " + proxy_port);
+            //FIXME currently commented out since it crashes the core
+            //options.proxy_enabled = 1;
+            //Memory.copy(options.proxy_address, proxy_host.data, int.min(proxy_host.length, options.proxy_address.length));
+            //options.proxy_port = (uint16)int.parse(proxy_port);
+          } else {
+            Logger.log(LogLevel.INFO, "socks5 proxy does not match regex");
+          }
+        }
+      }
+
       options.ipv6enabled = ipv6 ? 1 : 0;
 
       // create handle
