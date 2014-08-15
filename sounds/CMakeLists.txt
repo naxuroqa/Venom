@@ -32,4 +32,4 @@ SET(VENOM_SOUNDS
   transfer-complete.wav
   transfer-pending.wav
 )
-INSTALL(FILES ${VENOM_THEMES} DESTINATION "${COMMON_DATA_DIR}/venom/sounds")
+INSTALL(FILES ${VENOM_SOUNDS} DESTINATION "${COMMON_DATA_DIR}/venom/sounds")
