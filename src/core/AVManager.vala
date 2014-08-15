@@ -215,6 +215,13 @@ namespace Venom {
       video_sink_out   = video_pipeline_out.get_by_name(VIDEO_SINK_OUT) as Gst.AppSink;
 
       video_out_bus = video_pipeline_out.get_bus();
+ 
+      //set the bus callbacks
+      audio_in_bus.add_watch( bus_callback);
+      audio_out_bus.add_watch(bus_callback);
+      video_in_bus.add_watch( bus_callback);
+      video_out_bus.add_watch(bus_callback);
+      
 
       // caps
       Gst.Caps caps  = Gst.Caps.from_string(get_audio_caps_from_codec_settings(ref default_settings));
@@ -262,6 +269,18 @@ namespace Venom {
       
       Gst.deinit();
       Logger.log(LogLevel.INFO, "Gstreamer deinitialized");
+    }
+
+    private bool bus_callback(Gst.Bus bus, Gst.Message message) { 
+      if(bus == audio_in_bus)  
+        stdout.printf("Audio_in_bus with message: %d\n", message.type);
+      if(bus == audio_out_bus)
+        stdout.printf("Audio_out_bus with message: %d\n", message.type);
+      if(bus == video_in_bus) 
+        stdout.printf("Video_in_bus with message: %d\n", message.type);
+      if(bus == video_out_bus) 
+        stdout.printf("Video_out_bus with message: %d\n", message.type);
+      return true;
     }
 
     private void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] samples) {
