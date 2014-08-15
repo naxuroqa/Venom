@@ -131,11 +131,11 @@ namespace Venom {
     public static AVManager instance {get; private set;}
 
     public static void init() throws AVManagerError {
-#if DEBUG
-      instance = new AVManager({"", "--gst-debug-level=3"});
-#else
+//#if DEBUG
+//      instance = new AVManager({"", "--gst-debug-level=3"});
+//#else
       instance = new AVManager({""});
-#endif
+//#endif
     }
 
     public static void free() {
@@ -649,5 +649,35 @@ namespace Venom {
       }
     }
 
+    public void play_sound(string location) {
+      Logger.log(LogLevel.DEBUG, "playing sound " + location);
+      Gst.Element playbin = Gst.ElementFactory.make("playbin2", "playbin");
+      Gst.Element sink    = Gst.ElementFactory.make("autoaudiosink", "sink");
+      playbin.set("uri", location,
+                  "audio-sink", sink);
+      Gst.Bus bus = ((Gst.Pipeline) playbin).get_bus();
+      bus.add_watch((bus, message) => {
+        Error e;
+        switch(message.type) {
+          case Gst.MessageType.ERROR:
+            message.parse_error(out e, null);
+            Logger.log(LogLevel.ERROR, "Error playing sound: " + e.message);
+            break;
+          case Gst.MessageType.EOS:
+            playbin.set_state(Gst.State.NULL);
+            playbin.unref();
+            Logger.log(LogLevel.DEBUG, "sound finished playing");
+            break;
+          case Gst.MessageType.WARNING:
+            message.parse_warning(out e, null);
+            Logger.log(LogLevel.WARNING, "Error playing sound: " + e.message);
+            break;
+          default:
+            break;
+        }
+        return true;
+      });
+      playbin.set_state(Gst.State.PLAYING);
+    }
   }
 }

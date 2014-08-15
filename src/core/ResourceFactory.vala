@@ -35,7 +35,9 @@ namespace Venom {
     }
 
     private ResourceFactory () {
-      string theme_folder = Path.build_filename(Tools.find_data_dir(), "theme");
+      string data_dir = Tools.find_data_dir();
+      theme_directory = Path.build_filename(data_dir, "theme");
+      sounds_directory = Path.build_filename(data_dir, "sounds");
 
       arrow      = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/arrow_white.png");
       send_file  = load_image_from_resource("/org/gtk/venom/pixmaps/button_icons/attach.png");
@@ -63,7 +65,7 @@ namespace Venom {
       default_contact   = load_image_from_resource("/org/gtk/venom/pixmaps/user_icons/default_contact.png");
       default_groupchat = load_image_from_resource("/org/gtk/venom/pixmaps/user_icons/default_groupchat.png");
 
-      default_theme_filename = Path.build_filename(theme_folder, "default.css");
+      default_theme_filename = Path.build_filename(theme_directory, "default.css");
 
 
       tox_config_dir = Path.build_filename(GLib.Environment.get_user_config_dir(), "tox");
@@ -104,6 +106,8 @@ namespace Venom {
 
     public Gdk.Pixbuf arrow {get; private set;}
 
+    public string sounds_directory {get; set;}
+    public string theme_directory {get; set;}
     public string default_theme_filename {get; private set;}
     public string tox_config_dir {get; private set;}
     public string data_filename {get; set;}

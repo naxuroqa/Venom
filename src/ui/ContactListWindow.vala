@@ -81,7 +81,7 @@ namespace Venom {
       init_save_session_hooks();
       init_user();
 
-      on_ownconnectionstatus(false);
+      //on_ownconnectionstatus(false);
 
       Logger.log(LogLevel.INFO, "ID: " + Tools.bin_to_hexstring(session.get_address()));
       if(ResourceFactory.instance.offline_mode) {
@@ -99,6 +99,7 @@ namespace Venom {
     public void cleanup() {
       if(cleaned_up)
         return;
+
       Logger.log(LogLevel.DEBUG, "Ending session...");
       // Stop background thread
       session.stop();
@@ -633,10 +634,13 @@ namespace Venom {
       }
     }
 
-    public void set_urgency () {
+    public void set_urgency (string? sound = null) {
       if(!is_active && Settings.instance.enable_urgency_notification) {
         this.set_urgency_hint(true);
         this.set_title("* %s".printf(this.our_title));
+        if(sound != null) {
+          AVManager.instance.play_sound(sound);
+        }
       }
     }
 
@@ -694,7 +698,7 @@ namespace Venom {
         c.unread_messages++;
         contact_list_tree_view.update_entry(c);
       }
-      this.set_urgency();
+      this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "new-message.wav"));
     }
     private void on_action(Contact c, string action) {
       Logger.log(LogLevel.DEBUG, "[ac] %i:%s".printf(c.friend_id, action));
@@ -704,7 +708,7 @@ namespace Venom {
         c.unread_messages++;
         contact_list_tree_view.update_entry(c);
       }
-      this.set_urgency();
+      this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "new-message.wav"));
     }
     private void on_namechange(Contact c, string? old_name) {
       Logger.log(LogLevel.INFO, old_name + " changed name to " + c.name);
@@ -731,9 +735,11 @@ namespace Venom {
       if(status) {
         image_status.set_tooltip_text(_("Connected to the network"));
         session.set_user_status(user_status);
+        AVManager.instance.play_sound(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "log-in.wav"));
       } else {
         image_status.set_tooltip_text(_("Disconnected from the network"));
         on_ownuserstatus(UserStatus.OFFLINE);
+        AVManager.instance.play_sound(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "log-out.wav"));
       }
       image_status.show();
       spinner_status.hide();
@@ -768,7 +774,7 @@ namespace Venom {
 
     private void on_group_invite(Contact c, GroupChat g) {
       Logger.log(LogLevel.INFO, "Group invite from %s with public key %s".printf(c.name, Tools.bin_to_hexstring(g.public_key)));
-      this.set_urgency();
+      this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "new-message.wav"));
       Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
@@ -814,7 +820,7 @@ namespace Venom {
       GroupMessage group_message = new GroupMessage.incoming(g, gcc, message);
       // only set urgency in groupchat if the message contains our name
       if(User.instance.name in message) {
-        this.set_urgency();
+        this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "new-message.wav"));
         group_message.important = true;
       }
       incoming_group_message(group_message);
@@ -844,7 +850,7 @@ namespace Venom {
       GroupActionMessage group_message = new GroupActionMessage.incoming(g, gcc, message);
       // only set urgency in groupchat if the message contains our name
       if(User.instance.name in message) {
-        this.set_urgency();
+        this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "new-message.wav"));
         group_message.important = true;
       }
       incoming_group_action(group_message);
@@ -857,7 +863,7 @@ namespace Venom {
     }
 
     private void on_av_invite(Contact c) {
-      this.set_urgency();
+      this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, (c.video ? "incoming-video-call.wav" : "incoming-call")));
       if(c.auto_video && c.video || c.auto_audio && !c.video) {
         //Auto accept
         session.answer_call(c);
@@ -947,7 +953,7 @@ namespace Venom {
         ft.status = FileTransferStatus.IN_PROGRESS;
       }
 
-      this.set_urgency();
+      this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "transfer-pending.wav"));
     }
 
     private void send_file(int friendnumber, uint8 filenumber) {

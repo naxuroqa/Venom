@@ -32,11 +32,12 @@ namespace Venom {
           return dir;
         }
       }
+      string current_dir = GLib.Environment.get_current_dir();
       // Check for common directories on portable versions
       string[] portable_directories = {
         Path.build_filename(GLib.Environment.get_user_data_dir(), "venom"),
-        Path.build_filename("share", "venom"),
-        Path.build_filename("..", "share", "venom")
+        Path.build_filename(current_dir, "share", "venom"),
+        Path.build_filename(current_dir, "..", "share", "venom")
       };
       foreach (string s in portable_directories) {
         File f = File.new_for_path(s);
@@ -48,7 +49,7 @@ namespace Venom {
 
       // Assume that our current pwd is our data dir
       Logger.log(LogLevel.INFO, "Assuming current working directory is data directoy");
-      return "";
+      return current_dir;
     }
 
     public static void create_path_for_file(string filename, int mode) {
