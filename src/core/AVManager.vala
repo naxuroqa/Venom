@@ -271,21 +271,23 @@ namespace Venom {
       Logger.log(LogLevel.INFO, "Gstreamer deinitialized");
     }
 
-    private bool bus_callback(Gst.Bus bus, Gst.Message message) { 
-      if(bus == audio_in_bus)  
-        stdout.printf("Audio_in_bus with message: %d\n", message.type);
-      if(bus == audio_out_bus)
-        stdout.printf("Audio_out_bus with message: %d\n", message.type);
-      if(bus == video_in_bus) 
-        stdout.printf("Video_in_bus with message: %d\n", message.type);
-      if(bus == video_out_bus) 
-        stdout.printf("Video_out_bus with message: %d\n", message.type);
+    private bool bus_callback(Gst.Bus bus, Gst.Message message) {
+      if(bus == audio_in_bus) {
+        Logger.log(LogLevel.DEBUG, "Audio_in_bus with message: "  + message.type.get_name());
+      } else if(bus == audio_out_bus) {
+        Logger.log(LogLevel.DEBUG, "Audio_out_bus with message: " + message.type.get_name());
+      } else if(bus == video_in_bus) {
+        Logger.log(LogLevel.DEBUG, "Video_in_bus with message: "  + message.type.get_name());
+      } else if(bus == video_out_bus) {
+        Logger.log(LogLevel.DEBUG, "Video_out_bus with message: " + message.type.get_name());
+      }
       return true;
     }
 
     private void audio_receive_callback(ToxAV.ToxAV toxav, int32 call_index, int16[] samples) {
       //Logger.log(LogLevel.DEBUG, "Received audio samples (%d bytes)".printf(samples.length * 2));
-      samples_in(call_index, samples);
+      set_audio_caps(call_index);
+      play_audio_buffer(samples, samples.length);
     }
 
     private void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) {
@@ -344,16 +346,9 @@ namespace Venom {
       return "audio/x-raw-int,channels=(int)%u,rate=(int)%u,signed=(boolean)true,width=(int)16,depth=(int)16,endianness=(int)1234".printf(settings.audio_channels, settings.audio_sample_rate);
     }
 
-    private void samples_in(int32 call_index, int16[] buffer) {
-      int len = buffer.length * 2;
-      Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len);
-      Memory.copy(gst_buf.data, buffer, len);
-
+    private void set_audio_caps(int32 call_index) {
       ToxAV.CodecSettings settings = ToxAV.CodecSettings();
       ToxAV.AV_Error ret = toxav.get_peer_csettings(call_index, 0, ref settings);
-
-      //gst_buf.duration = -1; // settings.audio_frame_duration * Gst.MSECOND;
-      //gst_buf.timestamp = -1;
 
       if(ret != ToxAV.AV_Error.NONE) {
         Logger.log(LogLevel.WARNING, "Could not acquire codec settings for contact %i, assuming default settings".printf(call_index));
@@ -367,13 +362,18 @@ namespace Venom {
         Logger.log(LogLevel.INFO, "Changing caps to " + caps_string);
         audio_source_in.caps = Gst.Caps.from_string(caps_string);
       }
-
-      audio_source_in.push_buffer(gst_buf);
-      //Logger.log(LogLevel.DEBUG, "pushed %i bytes to IN pipeline".printf(len));
-      return;
     }
 
-    private int buffer_out(int16[] dest) {
+    private void play_audio_buffer(int16[] buffer, int buffer_length) {
+      int len = buffer_length * 2;
+      Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len);
+      Memory.copy(gst_buf.data, buffer, len);
+      gst_buf.duration = -1; // settings.audio_frame_duration * Gst.MSECOND;
+      gst_buf.timestamp = -1;
+      audio_source_in.push_buffer(gst_buf);
+    }
+
+    private int record_audio_buffer(ref int16[] dest) {
       Gst.Buffer gst_buf = audio_sink_out.pull_buffer();
       //Allocate the new buffer here, we will return this buffer (it is dest)
       int len = int.min(gst_buf.data.length, dest.length * 2);
@@ -382,10 +382,9 @@ namespace Venom {
       return len / 2;
     }
 
-
     private void video_buffer_in(Vpx.Image frame) { 
       uint len = frame.d_w * frame.d_h;
-      Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len + len/2  );
+      Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len + len / 2);
       uint8[] y = {};
       uint8[] u = {};
       uint8[] v = {};
@@ -413,16 +412,25 @@ namespace Venom {
    }
 
     //TODO: Should send this function args for making the vpx.image
-    private Vpx.Image make_vpx_image() {
-       Gst.Buffer gst_buf = video_sink_out.pull_buffer();
-       Logger.log(LogLevel.DEBUG, "pulled %i bytes form VIDEO_OUT pipeline".printf(gst_buf.data.length));
-       //These should be args and not constants... but w/e for now :P
-       Logger.log(LogLevel.DEBUG, "Buffer caps: " + gst_buf.caps.to_string());
-       Vpx.Image my_image = Vpx.Image.wrap(null, Vpx.ImageFormat.I420, 640, 480, 0, gst_buf.data);
-       uint8* temp = my_image.planes[1];
-       my_image.planes[1] = my_image.planes[2];
-       my_image.planes[2] = temp;
-       return my_image;
+    private Vpx.Image? make_vpx_image() {
+      Gst.Buffer gst_buf = video_sink_out.pull_buffer();
+      Logger.log(LogLevel.DEBUG, "pulled %i bytes form VIDEO_OUT pipeline".printf(gst_buf.data.length));
+
+      unowned Gst.Structure structure = gst_buf.caps.get_structure(0);
+      int height=0, width=0;
+      if(!structure.get_int("height", out height) || !structure.get_int("width", out width)) {
+        Logger.log(LogLevel.ERROR, "Error retrieving heigth and width from caps: " + gst_buf.caps.to_string());
+        return null;
+      }
+
+      Vpx.Image my_image = Vpx.Image.wrap(null, Vpx.ImageFormat.I420, height, width, 0, gst_buf.data);
+
+      // switch u and v
+      uint8* temp = my_image.planes[1];
+      my_image.planes[1] = my_image.planes[2];
+      my_image.planes[2] = temp;
+
+      return my_image;
     }
 
     private int video_thread_fun() {
@@ -482,6 +490,9 @@ namespace Venom {
         }
 
         Vpx.Image out_image = make_vpx_image();     
+        if(out_image == null) {
+          continue;
+        }
 
         if(preview) {
           video_buffer_in(out_image);
@@ -590,7 +601,11 @@ namespace Venom {
         }
 
         // read samples from pipeline
-        buffer_size = buffer_out(buffer);
+        buffer_size = record_audio_buffer(ref buffer);
+
+        if(preview) {
+          play_audio_buffer(buffer, buffer_size);
+        }
 
         // distribute samples across peers
         for(int i = 0; i < MAX_CALLS; i++) {
