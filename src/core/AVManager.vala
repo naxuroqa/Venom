@@ -474,7 +474,7 @@ namespace Venom {
 
         // block until something gets pushed to video_status_changes
         if(number_of_calls == 0 && !preview) {
-          set_video_pipeline_paused();
+          destroy_video_pipeline();
           c = video_status_changes.pop();
           video_status_changes.push(c);
           set_video_pipeline_playing();
@@ -582,7 +582,7 @@ namespace Venom {
 
         // block until something gets pushed to audio_status_changes
         if(number_of_calls == 0 && !preview) {
-          set_audio_pipeline_paused();
+          destroy_audio_pipeline();
           c = audio_status_changes.pop();
           audio_status_changes.push(c);
           set_audio_pipeline_playing();
@@ -679,6 +679,36 @@ namespace Venom {
           call_index = c.call_index
         });
       }
+    }
+
+    public void start_audio_preview() {
+      audio_status_changes.push( AVStatusChange() {
+        type = AudioStatusChangeType.START_PREVIEW
+      });
+      if(audio_thread == null) {
+        audio_thread = new GLib.Thread<int>("toxaudiothread", this.audio_thread_fun);
+      }
+    }
+
+    public void end_audio_preview() {
+      audio_status_changes.push( AVStatusChange() {
+        type = AudioStatusChangeType.END_PREVIEW
+      });
+    }
+
+    public void start_video_preview() {
+      video_status_changes.push( AVStatusChange() {
+        type = VideoStatusChangeType.START_PREVIEW
+      });
+      if(video_thread == null) {
+        video_thread = new Thread<int>("toxvideothread", this.video_thread_fun);
+      }
+    }
+
+    public void end_video_preview() {
+      video_status_changes.push( AVStatusChange() {
+        type = VideoStatusChangeType.END_PREVIEW
+      });
     }
 
     public void play_sound(string location) {
