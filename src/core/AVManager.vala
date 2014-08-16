@@ -347,7 +347,7 @@ namespace Venom {
       ToxAV.AV_Error ret = toxav.get_peer_csettings(call_index, 0, ref settings);
 
       if(ret != ToxAV.AV_Error.NONE) {
-        Logger.log(LogLevel.WARNING, "Could not acquire codec settings for contact %i, assuming default settings".printf(call_index));
+        Logger.log(LogLevel.DEBUG, "Could not acquire codec settings for contact %i, assuming default settings".printf(call_index));
         settings = ToxAV.DefaultCodecSettings;
       }
 
@@ -399,7 +399,6 @@ namespace Venom {
         }
       }
 
-
       Memory.copy(gst_buf.data , y, len);
       Memory.copy((uint8*)gst_buf.data + len , v, len / 4);
       Memory.copy((uint8*)gst_buf.data + len + len/4,  u, len / 4);
@@ -422,7 +421,7 @@ namespace Venom {
         return null;
       }
 
-      Vpx.Image my_image = Vpx.Image.wrap(null, Vpx.ImageFormat.I420, height, width, 0, gst_buf.data);
+      Vpx.Image my_image = Vpx.Image.wrap(null, Vpx.ImageFormat.I420, width, height, 0, gst_buf.data);
 
       // switch u and v
       uint8* temp = my_image.planes[1];
@@ -504,11 +503,11 @@ namespace Venom {
           if(calls[i].active) {
             prep_frame_ret = toxav.prepare_video_frame(i, video_enc_buffer, out_image);
             if(prep_frame_ret <= 0) { 
-               Logger.log(LogLevel.WARNING, "prepare_video_frame returned an error: %i".printf(prep_frame_ret));
+               Logger.log(LogLevel.WARNING, "prepare_video_frame returned an error: " + prep_frame_ret.to_string());
             } else {
               send_video_ret = toxav.send_video(i, video_enc_buffer, prep_frame_ret);
               if(send_video_ret != ToxAV.AV_Error.NONE) {
-                Logger.log(LogLevel.WARNING, "send_video returned %d".printf(send_video_ret));
+                Logger.log(LogLevel.WARNING, "send_video returned " + send_video_ret.to_string());
               }
             }
           }
