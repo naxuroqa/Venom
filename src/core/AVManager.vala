@@ -193,7 +193,7 @@ namespace Venom {
       try {
         video_pipeline_in = Gst.parse_launch("appsrc name=" + VIDEO_SOURCE_IN +
                                           " ! ffmpegcolorspace name=" + VIDEO_CONVERTER +
-                                          " ! xvimagesink name=" + VIDEO_SINK_IN) as Gst.Pipeline;
+                                          " ! autovideosink name=" + VIDEO_SINK_IN) as Gst.Pipeline;
       } catch (Error e) {
         throw new AVManagerError.PIPELINE("Error creating the video input pipeline: " + e.message);
       }
@@ -272,6 +272,7 @@ namespace Venom {
     }
 
     private bool bus_callback(Gst.Bus bus, Gst.Message message) {
+      Error e;
       if(bus == audio_in_bus) {
         Logger.log(LogLevel.DEBUG, "Audio_in_bus with message: "  + message.type.get_name());
       } else if(bus == audio_out_bus) {
@@ -280,6 +281,19 @@ namespace Venom {
         Logger.log(LogLevel.DEBUG, "Video_in_bus with message: "  + message.type.get_name());
       } else if(bus == video_out_bus) {
         Logger.log(LogLevel.DEBUG, "Video_out_bus with message: " + message.type.get_name());
+        switch(message.type) {
+          case Gst.MessageType.ERROR:
+            message.parse_error(out e, null);
+            Logger.log(LogLevel.ERROR, e.message);
+            video_pipeline_out.set_state(Gst.State.NULL);
+            break;
+          case Gst.MessageType.WARNING:
+            message.parse_warning(out e, null);
+            Logger.log(LogLevel.WARNING, e.message);
+            break;
+          default:
+            break;
+        }
       }
       return true;
     }
@@ -306,18 +320,6 @@ namespace Venom {
       Logger.log(LogLevel.INFO, "Audio pipeline destroyed");
     }
 
-    private void destroy_video_pipeline() {
-      video_pipeline_in.set_state(Gst.State.NULL);
-      video_pipeline_out.set_state(Gst.State.NULL);
-      Logger.log(LogLevel.INFO, "Video pipeline destroyed");
-    }
-
-    private void set_audio_pipeline_paused() {
-      pipeline_in.set_state(Gst.State.PAUSED);
-      pipeline_out.set_state(Gst.State.PAUSED);
-      Logger.log(LogLevel.INFO, "Audio pipeline set to paused");
-    }
-
     private void set_audio_pipeline_playing() {
       pipeline_in.set_state(Gst.State.PLAYING);
       pipeline_out.set_state(Gst.State.PLAYING);
@@ -328,12 +330,6 @@ namespace Venom {
       video_pipeline_in.set_state(Gst.State.PLAYING);
       video_pipeline_out.set_state(Gst.State.PLAYING);
       Logger.log(LogLevel.INFO, "Video pipeline set to playing");
-    }
-
-    private void set_video_pipeline_paused() { 
-      video_pipeline_in.set_state(Gst.State.PAUSED);
-      video_pipeline_out.set_state(Gst.State.PAUSED);
-      Logger.log(LogLevel.INFO, "Video pipeline set to paused");
     }
 
     private void destroy_video_pipeline() {
@@ -414,6 +410,9 @@ namespace Venom {
     //TODO: Should send this function args for making the vpx.image
     private Vpx.Image? make_vpx_image() {
       Gst.Buffer gst_buf = video_sink_out.pull_buffer();
+      if(gst_buf == null) {
+        return null;
+      }
       Logger.log(LogLevel.DEBUG, "pulled %i bytes form VIDEO_OUT pipeline".printf(gst_buf.data.length));
 
       unowned Gst.Structure structure = gst_buf.caps.get_structure(0);
@@ -475,7 +474,7 @@ namespace Venom {
               running = false;
               continue;
             default:
-              Logger.log(LogLevel.ERROR, "unknown av status change type");
+              Logger.log(LogLevel.ERROR, "unknown video status change type");
               break;
           }
         }
@@ -489,8 +488,11 @@ namespace Venom {
           continue;
         }
 
-        Vpx.Image out_image = make_vpx_image();     
+        Vpx.Image out_image = make_vpx_image();
         if(out_image == null) {
+          // either eos or pipeline stopped
+          Logger.log(LogLevel.DEBUG, "Pulled null buffer from video device");
+          Thread.usleep(10000);
           continue;
         }
 
@@ -513,7 +515,7 @@ namespace Venom {
         }
       }
       Logger.log(LogLevel.INFO, "stopping video thread...");
-      set_video_pipeline_paused();
+      destroy_video_pipeline();
       return 0;
     }
 
@@ -624,7 +626,7 @@ namespace Venom {
       }
 
       Logger.log(LogLevel.INFO, "stopping audio thread...");
-      set_audio_pipeline_paused();
+      destroy_audio_pipeline();
       return 0;
     }
 
