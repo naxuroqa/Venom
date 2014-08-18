@@ -281,6 +281,7 @@ namespace Venom {
         Logger.log(LogLevel.DEBUG, "Video_in_bus with message: "  + message.type.get_name());
       } else if(bus == video_out_bus) {
         Logger.log(LogLevel.DEBUG, "Video_out_bus with message: " + message.type.get_name());
+
         switch(message.type) {
           case Gst.MessageType.ERROR:
             message.parse_error(out e, null);
@@ -291,6 +292,23 @@ namespace Venom {
             message.parse_warning(out e, null);
             Logger.log(LogLevel.WARNING, e.message);
             break;
+          case Gst.MessageType.EOS:
+            stdout.printf(message.src.name);
+            break;
+
+          case Gst.MessageType.STATE_CHANGED:
+	  // We are only interested in state-changed messages from the pipeline:
+	      Gst.State old_state;
+	      Gst.State new_state;
+	      Gst.State pending_state;
+
+	      message.parse_state_changed (out old_state, out new_state, out pending_state);
+	      stdout.printf ("Pipeline state changed from %d to %d:\n",
+	      (old_state),
+	      (new_state));
+	    
+	    break;
+
           default:
             break;
         }
