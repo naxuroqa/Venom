@@ -112,11 +112,11 @@ namespace Venom {
 
     public static string remove_whitespace(string str) {
       try {
-			var regex = new GLib.Regex ("\\s");
-			  return(regex.replace(str, -1, 0, ""));
-		  } catch (GLib.RegexError e) {
-			  GLib.assert_not_reached ();
-		  }
+      var regex = new GLib.Regex ("\\s");
+        return(regex.replace(str, -1, 0, ""));
+      } catch (GLib.RegexError e) {
+        GLib.assert_not_reached ();
+      }
     }
 
     public static string markup_uris(string text) {
@@ -124,11 +124,11 @@ namespace Venom {
       string ret;
       try {
         ret = Tools.uri_regex.replace(escaped_text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
-		  } catch (GLib.RegexError e) {
-		    Logger.log(LogLevel.ERROR, "Error when doing uri markup: " + e.message);
-			  return text;
-		  }
-		  return ret;
+      } catch (GLib.RegexError e) {
+        Logger.log(LogLevel.ERROR, "Error when doing uri markup: " + e.message);
+        return text;
+      }
+      return ret;
     }
 
     public static string friend_add_error_to_string(Tox.FriendAddError friend_add_error) {
