@@ -94,7 +94,7 @@ namespace Venom {
 
     public void on_id_changed() {
 #if ENABLE_QR_ENCODE
-      image_qr_code.pixbuf = UITools.qr_encode("tox://" + user_id);
+      image_qr_code.pixbuf = UITools.qr_encode("tox:" + user_id);
       image_qr_code.show();
 #endif
     }
