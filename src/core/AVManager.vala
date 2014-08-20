@@ -293,7 +293,7 @@ namespace Venom {
             Logger.log(LogLevel.WARNING, e.message);
             break;
           case Gst.MessageType.EOS:
-            stdout.printf(message.src.name);
+            Logger.log(LogLevel.DEBUG, message.src.name);
             break;
 
           case Gst.MessageType.STATE_CHANGED:
@@ -303,10 +303,9 @@ namespace Venom {
 	      Gst.State pending_state;
 
 	      message.parse_state_changed (out old_state, out new_state, out pending_state);
-	      stdout.printf ("Pipeline state changed from %d to %d:\n",
-	      (old_state),
-	      (new_state));
-	    
+	      Logger.log(LogLevel.DEBUG, "Pipeline state changed from %d to %d:\n".printf(
+	        old_state, new_state)
+	      );
 	    break;
 
           default:
