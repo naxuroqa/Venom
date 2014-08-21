@@ -35,8 +35,7 @@ PKG_CHECK_MODULES_FULLPATH(GSTREAMER REQUIRED gstreamer-0.10>=0.10.16 gstreamer-
 PKG_CHECK_MODULES_FULLPATH(GDKX11    REQUIRED gdk-x11-3.0)
 PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
 PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
-PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
-PKG_CHECK_MODULES_FULLPATH(TOXAV  REQUIRED libtoxav>=0.0 vpx)
+PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0 libtoxav>=0.0)
 
 IF(APPLE)
   PKG_CHECK_MODULES_FULLPATH(OVERLAY REQUIRED gdk-x11-3.0)
@@ -116,7 +115,6 @@ SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GETTEXT_CFLAGS}
                   ${SQLITE_CFLAGS} ${SQLITE_CFLAGS_OTHER}
                   ${JSON_CFLAGS}   ${JSON_CFLAGS_OTHER}
                   ${TOX_CFLAGS}    ${TOX_CFLAGS_OTHER}
-                  ${TOXAV_CFLAGS}  ${TOXAV_CFLAGS_OTHER}
                   ${VENOM_CFLAGS_OPT}
 )
 
@@ -262,7 +260,6 @@ ADD_EXECUTABLE( toxav_test EXCLUDE_FROM_ALL
 TARGET_LINK_LIBRARIES( venom
                        ${VENOM_LIBRARIES_OPT}
                        ${TOX_LIBRARIES}
-                       ${TOXAV_LIBRARIES}
                        ${SQLITE_LIBRARIES}
                        ${GIO_LIBRARIES}
                        ${GSTREAMER_LIBRARIES}
@@ -274,7 +271,6 @@ TARGET_LINK_LIBRARIES( venom
 
 TARGET_LINK_LIBRARIES( toxav_test
                        ${TOX_LIBRARIES}
-                       ${TOXAV_LIBRARIES}
                        ${GSTREAMER_LIBRARIES}
                        ${OVERLAY_LIBRARIES}
                        ${GTK_LIBRARIES}
