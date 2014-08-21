@@ -5,6 +5,7 @@
 * Ensure compatiblity with Windows
 
 [0.4]
+* Queued offline messages
 * Add integrated toxme.se support
   * see (https://github.com/Tox/toxme.se/blob/master/api.md)
 * Rework notification system

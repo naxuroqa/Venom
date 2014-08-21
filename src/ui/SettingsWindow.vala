@@ -24,6 +24,9 @@ namespace Venom {
     private Gtk.Dialog dialog;
     public signal void destroy();
 
+    private Gtk.ToggleButton audio_preview_button;
+    private Gtk.ToggleButton video_preview_button;
+
     public SettingsWindow( Gtk.Window parent ) {
       Gtk.Builder builder = new Gtk.Builder();
       try {
@@ -54,6 +57,32 @@ namespace Venom {
         (binding, srcval, ref targetval) => {targetval.set_int((bool)srcval ? 0 : 1); return true;},
         (binding, srcval, ref targetval) => {targetval.set_boolean((int)srcval == 0); return true;}
       );
+      audio_preview_button = builder.get_object("audio_preview_button") as Gtk.ToggleButton;
+      video_preview_button = builder.get_object("video_preview_button") as Gtk.ToggleButton;
+      audio_preview_button.toggled.connect(() => {
+        if(audio_preview_button.active) {
+          AVManager.instance.start_audio_preview();
+        } else {
+          AVManager.instance.end_audio_preview();
+        }
+      });
+      video_preview_button.toggled.connect(() => {
+        if(video_preview_button.active) {
+          AVManager.instance.start_video_preview();
+        } else {
+          AVManager.instance.end_video_preview();
+        }
+      });
+      
+    }
+
+    ~SettingsWindow() {
+      if(audio_preview_button.active) {
+        AVManager.instance.end_audio_preview();
+      }
+      if(video_preview_button.active) {
+        AVManager.instance.end_video_preview();
+      }
     }
 
     public void show_all() {

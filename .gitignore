@@ -2,6 +2,9 @@
 icons/CMakeFiles
 icons/Makefile
 icons/cmake_install.cmake
+sounds/CMakeFiles
+sounds/Makefile
+sounds/cmake_install.cmake
 theme/CMakeFiles
 theme/Makefile
 theme/cmake_install.cmake

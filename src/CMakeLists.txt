@@ -31,12 +31,11 @@ FIND_PACKAGE(PkgConfig REQUIRED)
 PKG_CHECK_MODULES_FULLPATH(GTK    REQUIRED gtk+-3.0>=3.4)
 PKG_CHECK_MODULES_FULLPATH(GIO    REQUIRED gio-2.0>=2.32)
 PKG_CHECK_MODULES_FULLPATH(GLIB   REQUIRED glib-2.0>=2.32)
-PKG_CHECK_MODULES_FULLPATH(GSTREAMER REQUIRED gstreamer-0.10>=0.10.14 gstreamer-interfaces-0.10>=0.10.14 gstreamer-app-0.10>=0.10.14)
+PKG_CHECK_MODULES_FULLPATH(GSTREAMER REQUIRED gstreamer-0.10>=0.10.16 gstreamer-interfaces-0.10>=0.10.16 gstreamer-app-0.10>=0.10.16 gstreamer-video-0.10>=0.10.16)
 PKG_CHECK_MODULES_FULLPATH(GDKX11    REQUIRED gdk-x11-3.0)
 PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
 PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
-PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
-PKG_CHECK_MODULES_FULLPATH(TOXAV  REQUIRED libtoxav>=0.0)
+PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0 libtoxav>=0.0)
 
 IF(APPLE)
   PKG_CHECK_MODULES_FULLPATH(OVERLAY REQUIRED gdk-x11-3.0)
@@ -116,7 +115,6 @@ SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GETTEXT_CFLAGS}
                   ${SQLITE_CFLAGS} ${SQLITE_CFLAGS_OTHER}
                   ${JSON_CFLAGS}   ${JSON_CFLAGS_OTHER}
                   ${TOX_CFLAGS}    ${TOX_CFLAGS_OTHER}
-                  ${TOXAV_CFLAGS}  ${TOXAV_CFLAGS_OTHER}
                   ${VENOM_CFLAGS_OPT}
 )
 
@@ -130,7 +128,7 @@ CONFIGURE_FILE( config.h.in config.h )
 # define our source files
 SET( VENOM_SRC
   Main.vala
-  core/AudioManager.vala
+  core/AVManager.vala
   core/Contact.vala
   core/ContactStorage.vala
   core/DhtNode.vala
@@ -198,6 +196,7 @@ VALA_PRECOMPILE( VALA_C_VENOM
     gstreamer-0.10
     gstreamer-app-0.10
     gstreamer-interfaces-0.10
+    gstreamer-video-0.10
     gtk+-3.0
     json-glib-1.0
     libnotify
@@ -261,7 +260,6 @@ ADD_EXECUTABLE( toxav_test EXCLUDE_FROM_ALL
 TARGET_LINK_LIBRARIES( venom
                        ${VENOM_LIBRARIES_OPT}
                        ${TOX_LIBRARIES}
-                       ${TOXAV_LIBRARIES}
                        ${SQLITE_LIBRARIES}
                        ${GIO_LIBRARIES}
                        ${GSTREAMER_LIBRARIES}
@@ -273,7 +271,6 @@ TARGET_LINK_LIBRARIES( venom
 
 TARGET_LINK_LIBRARIES( toxav_test
                        ${TOX_LIBRARIES}
-                       ${TOXAV_LIBRARIES}
                        ${GSTREAMER_LIBRARIES}
                        ${OVERLAY_LIBRARIES}
                        ${GTK_LIBRARIES}
