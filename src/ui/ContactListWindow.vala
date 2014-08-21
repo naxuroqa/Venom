@@ -356,6 +356,12 @@ namespace Venom {
       session.on_av_ending.connect(AVManager.instance.on_end_call);
       //av protocol
       session.on_av_peer_timeout.connect(AVManager.instance.on_end_call);
+      //disconnecting peers
+      session.on_connection_status.connect((c) => {
+        if(!c.online && c.call_state != CallState.ENDED) {
+          AVManager.instance.on_end_call(c);
+        }
+      });
 
       //file signals
       session.on_file_sendrequest.connect(this.on_file_sendrequest);
