@@ -81,9 +81,7 @@ namespace Venom {
     private const string VIDEO_CONVERTER_OUT = "videoConverterOut";
     private const string VIDEO_SINK_OUT     = "videoSinkOut";  
 
-    private const string VIDEO_CAPS_IN   = "video/x-raw-yuv,format=(fourcc)I420,width=640,height=480,framerate=24/1";
     private const string VIDEO_CAPS_OUT  = "video/x-raw-yuv,format=(fourcc)I420,width=640,height=480";
-
 
     private const int MAX_CALLS = 16;
 
@@ -204,8 +202,9 @@ namespace Venom {
 
       // output video pipeline
       try {
-        video_pipeline_out = Gst.parse_launch("v4l2src name=" + VIDEO_SOURCE_OUT +
-                                           " ! ffmpegcolorspace name=" + VIDEO_CONVERTER_OUT + 
+        video_pipeline_out = Gst.parse_launch("autovideosrc name=" + VIDEO_SOURCE_OUT +
+                                           " ! ffmpegcolorspace name=" + VIDEO_CONVERTER_OUT +
+                                           " ! videoscale" +
                                            " ! appsink name=" + VIDEO_SINK_OUT) as Gst.Pipeline;
       } catch (Error e) {
         throw new AVManagerError.PIPELINE("Error creating the video output pipeline: " + e.message);
@@ -225,7 +224,7 @@ namespace Venom {
 
       // caps
       Gst.Caps caps  = Gst.Caps.from_string(get_audio_caps_from_codec_settings(ref default_settings));
-      Gst.Caps vcaps_in = Gst.Caps.from_string(VIDEO_CAPS_IN);
+      Gst.Caps vcaps_in = Gst.Caps.from_string(get_video_in_caps_from_dimensions(640, 480));
       Gst.Caps vcaps_out = Gst.Caps.from_string(VIDEO_CAPS_OUT);
       Logger.log(LogLevel.INFO, "Audio caps are [" + caps.to_string() + "]");
       Logger.log(LogLevel.INFO, "Video(IN) caps are [" + vcaps_in.to_string() + "]");
@@ -323,6 +322,7 @@ namespace Venom {
 
     private void video_receive_callback(ToxAV.ToxAV toxav, int32 call_index, Vpx.Image frame) {
       Logger.log(LogLevel.DEBUG, "Got video frame, of size: %u".printf(frame.d_w * frame.d_h));
+      set_video_in_caps(frame.d_w, frame.d_h);
       video_buffer_in(frame);
     }
 
@@ -355,8 +355,27 @@ namespace Venom {
       Logger.log(LogLevel.INFO, "Video pipeline destroyed");
     }
 
-    private string get_audio_caps_from_codec_settings(ref ToxAV.CodecSettings settings) {
+    private static string get_audio_caps_from_codec_settings(ref ToxAV.CodecSettings settings) {
       return "audio/x-raw-int,channels=(int)%u,rate=(int)%u,signed=(boolean)true,width=(int)16,depth=(int)16,endianness=(int)1234".printf(settings.audio_channels, settings.audio_sample_rate);
+    }
+
+    private static string get_video_in_caps_from_dimensions(uint w, uint h, uint framerate = 24) {
+      return "video/x-raw-yuv,format=(fourcc)I420,width=%u,height=%u,framerate=%u/1".printf(w, h, framerate);
+    }
+
+    uint w_ = 640;
+    uint h_ = 480;
+    private void set_video_in_caps(uint w, uint h) {
+      if(h == h_ && w == w_) {
+        return;
+      }
+      w_ = w;
+      h_ = h;
+      string caps_string = get_video_in_caps_from_dimensions(w_, h_);
+      Logger.log(LogLevel.INFO, "Changing video caps to " + caps_string);
+      video_pipeline_in.set_state(Gst.State.NULL);
+      video_source_in.caps = Gst.Caps.from_string(caps_string);
+      video_pipeline_in.set_state(Gst.State.PLAYING);
     }
 
     private void set_audio_caps(int32 call_index) {
@@ -395,46 +414,65 @@ namespace Venom {
       return len / 2;
     }
 
-    private void video_buffer_in(Vpx.Image frame) { 
-      uint len = frame.d_w * frame.d_h;
-      Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(len + len / 2);
-      uint8[] y = {};
-      uint8[] u = {};
-      uint8[] v = {};
+    private void video_buffer_in(Vpx.Image frame) {
+      int w = (int)frame.d_w, h = (int)frame.d_h;
+      //Logger.log(LogLevel.DEBUG, "received new vpx frame of size %ix%i".printf(w, h));
+      int comp_offset_y = Gst.video_format_get_component_offset(Gst.VideoFormat.I420, 0, w, h);
+      int comp_offset_u = Gst.video_format_get_component_offset(Gst.VideoFormat.I420, 1, w, h);
+      int comp_offset_v = Gst.video_format_get_component_offset(Gst.VideoFormat.I420, 2, w, h);
+      //Logger.log(LogLevel.DEBUG, "comp_offset_y: %i, comp_offset_u: %i, comp_offset_v: %i".printf(comp_offset_y, comp_offset_u, comp_offset_v));
+      int row_stride_y = Gst.video_format_get_row_stride(Gst.VideoFormat.I420, 0, w);
+      int row_stride_u = Gst.video_format_get_row_stride(Gst.VideoFormat.I420, 1, w);
+      int row_stride_v = Gst.video_format_get_row_stride(Gst.VideoFormat.I420, 2, w);
+      //Logger.log(LogLevel.DEBUG, "row_stride_y: %i, row_stride_u: %i, row_stride_v: %i".printf(row_stride_y, row_stride_u, row_stride_v));
+      int pixel_stride_y = Gst.video_format_get_pixel_stride(Gst.VideoFormat.I420, 0);
+      int pixel_stride_u = Gst.video_format_get_pixel_stride(Gst.VideoFormat.I420, 1);
+      int pixel_stride_v = Gst.video_format_get_pixel_stride(Gst.VideoFormat.I420, 2);
+      //Logger.log(LogLevel.DEBUG, "pixel_stride_y: %i, pixel_stride_u: %i, pixel_stride_v: %i".printf(pixel_stride_y, pixel_stride_u, pixel_stride_v));
+
+      Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(Gst.video_format_get_size(Gst.VideoFormat.I420, w, h));
+      //Logger.log(LogLevel.DEBUG, "Created buffer of size %i".printf(gst_buf.data.length));
+      unowned uint8[] y = gst_buf.data[comp_offset_y:comp_offset_u];
+      unowned uint8[] u = gst_buf.data[comp_offset_u:comp_offset_v];
+      unowned uint8[] v = gst_buf.data[comp_offset_v:gst_buf.data.length];
 
       int i, j;
+      int offset_y = 0;
       for (i = 0; i < frame.d_h; ++i) {
+        offset_y = i * row_stride_y;
         for (j = 0; j < frame.d_w; ++j) {
-          y += *(*(frame.planes + 0)+((i * frame.stride[0]) + j));
+          y[offset_y] = *(*(frame.planes + 0) + ((i * frame.stride[0]) + j));
+          offset_y += pixel_stride_y;
         }
       }
 
+      int offset_u = 0, offset_v = 0;
       for(i = 0; i < frame.d_h / 2; ++i) {
-        for(j = 0; j < frame.d_w / 2; ++j) {  
-          u += *(*(frame.planes + 1)+ (i * frame.stride[1]) + j);
-          v += *(*(frame.planes + 2)+ (i * frame.stride[2]) + j);
+        offset_u = i * row_stride_u;
+        offset_v = i * row_stride_v;
+        for(j = 0; j < frame.d_w / 2; ++j) {
+          v[offset_v] = *(*(frame.planes + 1) + ((i * frame.stride[1]) + j));
+          u[offset_u] = *(*(frame.planes + 2) + ((i * frame.stride[2]) + j));
+          offset_v += pixel_stride_v;
+          offset_u += pixel_stride_u;
         }
       }
 
-      Memory.copy(gst_buf.data , y, len);
-      Memory.copy((uint8*)gst_buf.data + len , v, len / 4);
-      Memory.copy((uint8*)gst_buf.data + len + len/4,  u, len / 4);
       video_source_in.push_buffer(gst_buf);
-      Logger.log(LogLevel.DEBUG, "pushed %u bytes to VIDEO_IN pipeline".printf(len));
+      Logger.log(LogLevel.DEBUG, "pushed %u bytes to VIDEO_IN pipeline".printf(gst_buf.data.length));
    }
 
-    //TODO: Should send this function args for making the vpx.image
     private Vpx.Image? make_vpx_image() {
       Gst.Buffer gst_buf = video_sink_out.pull_buffer();
       if(gst_buf == null) {
         return null;
       }
-      Logger.log(LogLevel.DEBUG, "pulled %i bytes form VIDEO_OUT pipeline".printf(gst_buf.data.length));
+      //Logger.log(LogLevel.DEBUG, "pulled %i bytes form VIDEO_OUT pipeline".printf(gst_buf.data.length));
 
       unowned Gst.Structure structure = gst_buf.caps.get_structure(0);
       int height=0, width=0;
       if(!structure.get_int("height", out height) || !structure.get_int("width", out width)) {
-        Logger.log(LogLevel.ERROR, "Error retrieving heigth and width from caps: " + gst_buf.caps.to_string());
+        Logger.log(LogLevel.ERROR, "Error retrieving height and width from caps: " + gst_buf.caps.to_string());
         return null;
       }
 

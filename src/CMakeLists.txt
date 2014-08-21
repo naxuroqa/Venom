@@ -31,7 +31,7 @@ FIND_PACKAGE(PkgConfig REQUIRED)
 PKG_CHECK_MODULES_FULLPATH(GTK    REQUIRED gtk+-3.0>=3.4)
 PKG_CHECK_MODULES_FULLPATH(GIO    REQUIRED gio-2.0>=2.32)
 PKG_CHECK_MODULES_FULLPATH(GLIB   REQUIRED glib-2.0>=2.32)
-PKG_CHECK_MODULES_FULLPATH(GSTREAMER REQUIRED gstreamer-0.10>=0.10.14 gstreamer-interfaces-0.10>=0.10.14 gstreamer-app-0.10>=0.10.14)
+PKG_CHECK_MODULES_FULLPATH(GSTREAMER REQUIRED gstreamer-0.10>=0.10.16 gstreamer-interfaces-0.10>=0.10.16 gstreamer-app-0.10>=0.10.16 gstreamer-video-0.10>=0.10.16)
 PKG_CHECK_MODULES_FULLPATH(GDKX11    REQUIRED gdk-x11-3.0)
 PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
 PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
@@ -198,6 +198,7 @@ VALA_PRECOMPILE( VALA_C_VENOM
     gstreamer-0.10
     gstreamer-app-0.10
     gstreamer-interfaces-0.10
+    gstreamer-video-0.10
     gtk+-3.0
     json-glib-1.0
     libnotify
