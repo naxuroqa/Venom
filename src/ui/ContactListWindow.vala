@@ -641,13 +641,16 @@ namespace Venom {
     }
 
     public void set_urgency (string? sound = null) {
-      if(!is_active && Settings.instance.enable_urgency_notification) {
-        this.set_urgency_hint(true);
-        this.set_title("* %s".printf(this.our_title));
-        if(sound != null) {
-          AVManager.instance.play_sound(sound);
-        }
+      if(is_active) {
+        return;
       }
+      if(Settings.instance.enable_urgency_notification) {
+        this.set_urgency_hint(true);
+      }
+      if(sound != null && Settings.instance.enable_notify_sounds) {
+        AVManager.instance.play_sound(sound);
+      }
+      this.set_title("* %s".printf(this.our_title));
     }
 
     private bool on_treeview_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
@@ -741,11 +744,15 @@ namespace Venom {
       if(status) {
         image_status.set_tooltip_text(_("Connected to the network"));
         session.set_user_status(user_status);
-        AVManager.instance.play_sound(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "log-in.wav"));
+        if(Settings.instance.enable_notify_sounds) {
+          AVManager.instance.play_sound(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "log-in.wav"));
+        }
       } else {
         image_status.set_tooltip_text(_("Disconnected from the network"));
         on_ownuserstatus(UserStatus.OFFLINE);
-        AVManager.instance.play_sound(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "log-out.wav"));
+        if(Settings.instance.enable_notify_sounds) {
+          AVManager.instance.play_sound(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "log-out.wav"));
+        }
       }
       image_status.show();
       spinner_status.hide();

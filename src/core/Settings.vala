@@ -28,27 +28,29 @@ namespace Venom {
     public const string URGENCY_NOTIFICATION_KEY = "enable-urgency-notification";
     public const string TRAY_KEY = "enable-tray";
     public const string NOTIFY_KEY = "enable-notify";
+    public const string NOTIFY_SOUNDS_KEY = "enable-notify-sounds";
     public const string DEC_BINARY_PREFIX_KEY = "dec-binary-prefix";
     public const string SEND_TYPING_STATUS_KEY = "send-typing-status";
     public const string SHOW_TYPING_STATUS_KEY = "show-typing-status";
     public const string DEFAULT_HOST_KEY = "default-host";
     public const string MIC_VOLUME_KEY = "mic-volume";
 
-    public bool   enable_logging              { get; set; default = false;     }
-    public bool   enable_urgency_notification { get; set; default = true;      }
-    public bool   log_indefinitely            { get; set; default = true;      }
+    public int    contactlist_height          { get; set; default = 600;       }
+    public int    contactlist_width           { get; set; default = 200;       }
     public int    days_to_log                 { get; set; default = 180;       }
     public bool   dec_binary_prefix           { get; set; default = true;      }
+    public string default_host                { get; set; default = "toxme.se";}
+    public bool   enable_logging              { get; set; default = false;     }
+    public bool   enable_notify               { get; set; default = true;      }
+    public bool   enable_notify_sounds        { get; set; default = true;      }
+    public bool   enable_urgency_notification { get; set; default = true;      }
+    public bool   enable_tray                 { get; set; default = true;      }
+    public bool   log_indefinitely            { get; set; default = true;      }
+    public double mic_volume                  { get; set; default = 1.0;       }
     public bool   send_typing_status          { get; set; default = false;     }
     public bool   show_typing_status          { get; set; default = true;      }
-    public int    contactlist_width           { get; set; default = 200;       }
-    public int    contactlist_height          { get; set; default = 600;       }
-    public int    window_width                { get; set; default = 600;       }
     public int    window_height               { get; set; default = 600;       }
-    public string default_host                { get; set; default = "toxme.se";}
-    public bool   enable_tray                 { get; set; default = true;      }
-    public bool   enable_notify               { get; set; default = true;      }
-    public double mic_volume                  { get; set; default = 1.0;       }
+    public int    window_width                { get; set; default = 600;       }
 
     private static Settings? _instance;
     public static Settings instance {

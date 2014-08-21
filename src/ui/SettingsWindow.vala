@@ -52,6 +52,7 @@ namespace Venom {
 #else
       (builder.get_object("notify_checkbutton") as Gtk.Widget).sensitive = false;
 #endif
+      settings.bind_property(Settings.NOTIFY_SOUNDS_KEY, builder.get_object("notify_sounds_checkbutton"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings.bind_property(Settings.DEFAULT_HOST_KEY, builder.get_object("default_host_entry"), "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings.bind_property(Settings.DEC_BINARY_PREFIX_KEY, builder.get_object("filesize_prefix_combobox"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL,
         (binding, srcval, ref targetval) => {targetval.set_int((bool)srcval ? 0 : 1); return true;},
