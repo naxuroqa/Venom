@@ -21,6 +21,7 @@ SET(TRANSLATIONS
   de
   it
   ru
+  zh_CN
 )
 
 IF (XGETTEXT_FOUND)
