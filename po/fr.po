@@ -35,7 +35,7 @@ msgstr "%s <i>(%s)</i>"
 #: core/Message.vala:171
 #, c-format
 msgid "%s in %s says:"
-msgstr ""
+msgstr "%s dans %s dit :"
 
 #: core/Message.vala:216
 #, fuzzy, c-format
@@ -45,12 +45,12 @@ msgstr "%s est maintenant %s.\n"
 #: ui/ConversationWidget.vala:68
 #, c-format
 msgid "%s is typing..."
-msgstr "%s écris..."
+msgstr "%s écris…"
 
 #: core/Message.vala:92
 #, c-format
 msgid "%s says:"
-msgstr ""
+msgstr "%s dit :"
 
 #: ui/ContactListWindow.vala:776
 #, c-format
@@ -60,7 +60,7 @@ msgstr "'%s' vous a invité dans un groupe de chat, acceptez-vous ?"
 #: Main.vala:50
 #, c-format
 msgid "'%s' not a positive number"
-msgstr ""
+msgstr "'%s' n'est pas un nombre positif"
 
 #: ui/ConversationWidget.vala:59 ui/GroupConversationWidget.vala:47
 #, c-format
@@ -90,7 +90,7 @@ msgstr "Ajouter le contact"
 
 #: ui/ContactListWindow.vala:1274 ui/ContactListWindow.vala:1285
 msgid "Adding Friend failed"
-msgstr "Echec de l'ajout de l'ami"
+msgstr "Échec de l'ajout de l'ami"
 
 #: ui/ContactListWindow.vala:211
 msgid "All"
@@ -115,11 +115,11 @@ msgstr "Occupé"
 
 #: ui/conversation_window.ui:156
 msgid "Call contact"
-msgstr "Appeller le contact"
+msgstr "Appeler le contact"
 
 #: ui/conversation_window.ui:175
 msgid "Call contact with video"
-msgstr "Appeller le contact avec la vidéo"
+msgstr "Appeler le contact avec la vidéo"
 
 #: core/SqliteTools.vala:75
 #, c-format
@@ -132,11 +132,11 @@ msgstr "Impossible d'envoyer à sa propre clé"
 
 #: ui/FileTransferChatEntry.vala:119
 msgid "Canceled"
-msgstr "Annullé"
+msgstr "Annulé"
 
 #: ui/contact_list.ui:72
 msgid "Change _Status"
-msgstr "Changer _Statut"
+msgstr "Changer le _statut"
 
 #: ui/ContactListWindow.vala:732
 msgid "Connected to the network"
@@ -202,7 +202,7 @@ msgstr ""
 
 #: ui/UserInfoWindow.vala:86
 msgid "Edit user information"
-msgstr "Éditer les Informations de l'utilisateur"
+msgstr "Éditer les informations de l'utilisateur"
 
 #: ui/add_contact_dialog.ui:40
 msgid "Enter a Tox ID here or a Tox URI"
@@ -256,7 +256,7 @@ msgstr "Erreur lors de la lecture depuis le flux."
 
 #: ui/UITools.vala:147
 msgid "Export tox data file"
-msgstr ""
+msgstr "Exporter les fichiers de données"
 
 #: ui/UITools.vala:169
 msgid "Exporting data file failed"
@@ -270,16 +270,16 @@ msgstr "Le fichier \"%d\" n'existe pas."
 #: ui/FileTransferChatEntry.vala:85
 #, fuzzy
 msgid "File received"
-msgstr "Le fichier a été rejetté"
+msgstr "Le fichier a été rejeté"
 
 #: ui/FileTransferChatEntry.vala:87
 #, fuzzy
 msgid "File sent"
-msgstr "Le fichier a été rejetté"
+msgstr "Le fichier a été rejeté"
 
 #: ui/FileTransferChatEntry.vala:94
 msgid "File was rejected"
-msgstr "Le fichier a été rejetté"
+msgstr "Le fichier a été rejeté"
 
 #: ui/settings_window.ui:235
 msgid "Flash window when a new message arrives"
@@ -304,11 +304,11 @@ msgstr "L'ID contiens des caractères invalides"
 
 #: ui/user_info_window.ui:40
 msgid "ID:"
-msgstr "ID Tox:"
+msgstr "ID Tox :"
 
 #: ui/user_info_window.ui:222
 msgid "Icon:"
-msgstr "Icône:"
+msgstr "Icône :"
 
 #: ui/UITools.vala:175
 msgid "Importing data files is currently not supported"
@@ -321,7 +321,7 @@ msgstr "L'index pour %s n'a pas été trouvé."
 
 #: ui/conversation_window.ui:291
 msgid "Insert Smiley"
-msgstr "Insérez un Smiley"
+msgstr "Insérez un smiley"
 
 #: ui/settings_window.ui:18
 msgid "KB/MB"
@@ -338,7 +338,7 @@ msgstr "Kb/Mb"
 #: core/Contact.vala:148
 #, c-format
 msgid "Last seen: %s"
-msgstr "Vu la dernière fois: %s"
+msgstr "Vu la dernière fois : %s"
 
 #: core/Tools.vala:137
 msgid "Message too long"
@@ -346,7 +346,7 @@ msgstr "Message trop long"
 
 #: ui/settings_window.ui:265
 msgid "Minimize to system tray"
-msgstr ""
+msgstr "Réduire en icône"
 
 #: ui/settings_window.ui:366
 msgid "Miscellaneous"
@@ -354,7 +354,7 @@ msgstr "Divers"
 
 #: ui/user_info_window.ui:192
 msgid "Name:"
-msgstr "Nom:"
+msgstr "Nom :"
 
 #: ui/ContactListWindow.vala:666
 #, c-format
@@ -409,7 +409,7 @@ msgstr ""
 
 #: ui/PinDialog.vala:49
 msgid "Please insert PIN..."
-msgstr "Insérez le PIN s'il vous plaît..."
+msgstr "Insérez le PIN s'il vous plaît…"
 
 #: ui/add_contact_dialog.ui:6
 msgid "Please let me add you to my contact list."
@@ -421,7 +421,7 @@ msgstr "Vie privée"
 
 #: ui/FileTransferChatEntry.vala:113
 msgid "Receiving failed"
-msgstr "Echec de la réception"
+msgstr "Échec de la réception"
 
 #: ui/ContactListWindow.vala:1264
 msgid "Resolving ID failed"
@@ -460,7 +460,7 @@ msgstr "Envoyer le message"
 
 #: ui/FileTransferChatEntry.vala:107
 msgid "Sending failed"
-msgstr "Echec de l'envoi"
+msgstr "Échec de l'envoi"
 
 #: ui/add_contact_dialog.ui:67
 msgid "Set a custom nickname for the friend you are about to add"
@@ -484,7 +484,7 @@ msgstr "Montrer la taille du fichier dans"
 
 #: ui/settings_window.ui:201
 msgid "Show me when others are typing"
-msgstr "Montrez-moi quand les autres tappent"
+msgstr "Montrez-moi quand les autres tapent"
 
 #: ui/settings_window.ui:250
 #, fuzzy
@@ -493,7 +493,7 @@ msgstr "Illuminer la fenêtre quand un message arrive"
 
 #: ui/user_info_window.ui:178
 msgid "Status message:"
-msgstr "Message de statut:"
+msgstr "Message de statut :"
 
 #: ui/Client.vala:182
 msgid "There is currently no help available"
@@ -510,7 +510,7 @@ msgstr "Toxant avec Venom v.%s"
 
 #: ui/MessageTextView.vala:27
 msgid "Type your message here..."
-msgstr "Écrivez votre message ici..."
+msgstr "Écrivez votre message ici…"
 
 #: core/Tools.vala:145
 msgid "Unknown error"
@@ -527,7 +527,7 @@ msgstr "[%s] "
 
 #: ui/ContactListWindow.vala:667
 msgid "_Accept"
-msgstr ""
+msgstr "_Accepter"
 
 #: ui/UITools.vala:94
 msgid "_Audio chat"
@@ -535,7 +535,7 @@ msgstr ""
 
 #: ui/UITools.vala:102
 msgid "_Automatically accept ..."
-msgstr ""
+msgstr "_Accepter automatiquement…"
 
 #: ui/contact_list.ui:96
 msgid "_Away"
@@ -543,7 +543,7 @@ msgstr "_Absent"
 
 #: ui/user_info_window.ui:254
 msgid "_Browse..."
-msgstr "_Navigue..."
+msgstr "_Naviguer…"
 
 #: ui/contact_list.ui:107
 msgid "_Busy"
@@ -565,7 +565,7 @@ msgstr "_Modifier l'utilisateur"
 
 #: ui/UITools.vala:88
 msgid "_File transfers"
-msgstr ""
+msgstr "_Transferts de fichiers"
 
 #: ui/contact_list.ui:149
 msgid "_Import data file"
@@ -573,7 +573,7 @@ msgstr ""
 
 #: ui/UITools.vala:108
 msgid "_Invite to ..."
-msgstr ""
+msgstr "_Inviter à…"
 
 #: ui/UITools.vala:124
 #, fuzzy
@@ -604,7 +604,7 @@ msgstr "_En ligne"
 
 #: ui/Client.vala:86
 msgid "_Quit"
-msgstr ""
+msgstr "_Quitter"
 
 #: ui/FileTransferChatEntry.vala:158 ui/UITools.vala:152
 #, fuzzy
@@ -613,7 +613,7 @@ msgstr "Sauvegarder"
 
 #: ui/Client.vala:83
 msgid "_Show/Hide Venom"
-msgstr ""
+msgstr "_Afficher/Masquer Venom"
 
 #: ui/add_contact_dialog.ui:27
 msgid "_Tox ID:"
@@ -621,15 +621,15 @@ msgstr "_ID Tox:"
 
 #: ui/UITools.vala:78
 msgid "_Unfriend"
-msgstr ""
+msgstr "_Supprimer le contact"
 
 #: ui/UITools.vala:98
 msgid "_Video chat"
-msgstr ""
+msgstr "_Chat vidéo"
 
 #: ui/contact_list.ui:306
 msgid "connecting..."
-msgstr "Connexion..."
+msgstr "Connexion…"
 
 #: ui/settings_window.ui:159
 msgid "days"
@@ -654,7 +654,7 @@ msgstr "personne de connecté"
 
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
-msgstr "Derheynn"
+msgstr "Derheynn, Antoine Turmel"
 
 #~ msgid "  %s\n"
 #~ msgstr " %s\n"
@@ -744,7 +744,7 @@ msgstr "Derheynn"
 #~ msgstr "Transfert de fichier terminé pour %s vers %s\n"
 
 #~ msgid "Ending session...\n"
-#~ msgstr "Fin de session...\n"
+#~ msgstr "Fin de session…\n"
 
 #, fuzzy
 #~ msgid "Error creating message log table: %s\n"
@@ -823,7 +823,7 @@ msgstr "Derheynn"
 #~ msgstr "Transfert de fichier terminé pour le fichier numéro %u"
 
 #~ msgid "File transfer was rejected for file number %u"
-#~ msgstr "Transfert de fichier rejetté pour le fichier numéro %u"
+#~ msgstr "Transfert de fichier rejeté pour le fichier numéro %u"
 
 #~ msgid "Friend could not be added.\n"
 #~ msgstr "Impossible d'ajouter l'ami.\n"
@@ -869,7 +869,7 @@ msgstr "Derheynn"
 #~ msgstr "Echec du chargement du widget de message\n"
 
 #~ msgid "No pin privided, aborting...\n"
-#~ msgstr "Pas de pin fourni, annulation...\n"
+#~ msgstr "Pas de pin fourni, annulation…\n"
 
 #~ msgid "Read incorrect number of bytes from file\n"
 #~ msgstr "Lecture d'un nombre d'octet incorrect depuis le fichier\n"
