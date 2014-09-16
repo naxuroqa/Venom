@@ -45,7 +45,7 @@ msgstr "%s est maintenant %s.\n"
 #: ui/ConversationWidget.vala:68
 #, c-format
 msgid "%s is typing..."
-msgstr "%s écris…"
+msgstr "%s écrit…"
 
 #: core/Message.vala:92
 #, c-format
@@ -119,12 +119,12 @@ msgstr "Appeler le contact"
 
 #: ui/conversation_window.ui:175
 msgid "Call contact with video"
-msgstr "Appeler le contact avec la vidéo"
+msgstr "Faire un appel vidéo"
 
 #: core/SqliteTools.vala:75
 #, c-format
 msgid "Can't open database: %d: %s\n"
-msgstr "Impossible d'ouvrir la base de donnée: %d: %s\n"
+msgstr "Impossible d'ouvrir la base de données: %d: %s\n"
 
 #: core/Tools.vala:141
 msgid "Can't send to own key"
@@ -198,7 +198,7 @@ msgstr "Déconnecté du réseau"
 
 #: ui/contact_list.ui:141
 msgid "E_xport data file"
-msgstr ""
+msgstr "Exporter la base de données"
 
 #: ui/UserInfoWindow.vala:86
 msgid "Edit user information"
@@ -256,7 +256,7 @@ msgstr "Erreur lors de la lecture depuis le flux."
 
 #: ui/UITools.vala:147
 msgid "Export tox data file"
-msgstr "Exporter les fichiers de données"
+msgstr "Exporter la base de données Tox"
 
 #: ui/UITools.vala:169
 msgid "Exporting data file failed"
@@ -270,12 +270,12 @@ msgstr "Le fichier \"%d\" n'existe pas."
 #: ui/FileTransferChatEntry.vala:85
 #, fuzzy
 msgid "File received"
-msgstr "Le fichier a été rejeté"
+msgstr "Le fichier a été reçu"
 
 #: ui/FileTransferChatEntry.vala:87
 #, fuzzy
 msgid "File sent"
-msgstr "Le fichier a été rejeté"
+msgstr "Le fichier a été envoyé"
 
 #: ui/FileTransferChatEntry.vala:94
 msgid "File was rejected"
@@ -283,7 +283,7 @@ msgstr "Le fichier a été rejeté"
 
 #: ui/settings_window.ui:235
 msgid "Flash window when a new message arrives"
-msgstr "Illuminer la fenêtre quand un message arrive"
+msgstr "Faire clignoter la fenêtre quand un message arrive"
 
 #: core/Tools.vala:143
 msgid "Friend request already sent"
@@ -300,7 +300,7 @@ msgstr "Chat de groupe #%i"
 
 #: ui/AddContactDialog.vala:96
 msgid "ID contains invalid characters"
-msgstr "L'ID contiens des caractères invalides"
+msgstr "L'ID contient des caractères invalides"
 
 #: ui/user_info_window.ui:40
 msgid "ID:"
@@ -354,7 +354,7 @@ msgstr "Divers"
 
 #: ui/user_info_window.ui:192
 msgid "Name:"
-msgstr "Nom :"
+msgstr "Pseudo :"
 
 #: ui/ContactListWindow.vala:666
 #, c-format
@@ -363,7 +363,7 @@ msgid ""
 "Do you want to accept?"
 msgstr ""
 "Nouvelle demande d'ami de '%s'.\n"
-"Voulez-vous accepter ?"
+"Voulez-vous l'accepter ?"
 
 #: ui/AddContactDialog.vala:90
 msgid "No ID given"
@@ -464,7 +464,7 @@ msgstr "Échec de l'envoi"
 
 #: ui/add_contact_dialog.ui:67
 msgid "Set a custom nickname for the friend you are about to add"
-msgstr "Définissez un pseudonyme personnalisé pour l'ami que vous ajoutez"
+msgstr "Définissez un pseudo personnalisé pour l'ami que vous ajoutez"
 
 #: core/Tools.vala:149
 msgid "Set new nospam"
@@ -489,7 +489,7 @@ msgstr "Montrez-moi quand les autres tapent"
 #: ui/settings_window.ui:250
 #, fuzzy
 msgid "Show notification when a new message arrives"
-msgstr "Illuminer la fenêtre quand un message arrive"
+msgstr "Afficher une notification quand un message arrive"
 
 #: ui/user_info_window.ui:178
 msgid "Status message:"
@@ -506,7 +506,7 @@ msgstr "Utilisateur de Tox"
 #: core/ResourceFactory.vala:75
 #, c-format
 msgid "Toxing on Venom v.%s"
-msgstr "Toxant avec Venom v.%s"
+msgstr "Toxe sur Venom v.%s"
 
 #: ui/MessageTextView.vala:27
 msgid "Type your message here..."
@@ -553,7 +553,7 @@ msgstr "_Occupé"
 #: ui/UITools.vala:150
 #, fuzzy
 msgid "_Cancel"
-msgstr "Annullé"
+msgstr "Annulé"
 
 #: ui/contact_list.ui:61
 msgid "_Copy ID to clipboard"
@@ -569,7 +569,7 @@ msgstr "_Transferts de fichiers"
 
 #: ui/contact_list.ui:149
 msgid "_Import data file"
-msgstr ""
+msgstr "Importer la base de données"
 
 #: ui/UITools.vala:108
 msgid "_Invite to ..."
@@ -578,12 +578,12 @@ msgstr "_Inviter à…"
 #: ui/UITools.vala:124
 #, fuzzy
 msgid "_Invite to new groupchat"
-msgstr "Créer un groupe"
+msgstr "Inviter à un nouveau groupe"
 
 #: ui/UITools.vala:138
 #, fuzzy
 msgid "_Leave groupchat"
-msgstr "Créer un groupe"
+msgstr "Quitter le groupe"
 
 #: ui/add_contact_dialog.ui:94
 msgid "_Message (optional):"
@@ -596,7 +596,7 @@ msgstr "Créer un groupe"
 
 #: ui/add_contact_dialog.ui:54
 msgid "_Nickname (optional):"
-msgstr "_Pseudonyme (optionnel):"
+msgstr "_Pseudo (optionnel):"
 
 #: ui/contact_list.ui:85
 msgid "_Online"
@@ -768,10 +768,10 @@ msgstr "Derheynn, Antoine Turmel"
 #~ "fichier: %s"
 
 #~ msgid "Error opening database: %s\n"
-#~ msgstr "Erreur lors de l'ouverture de la base de donnée: %s\n"
+#~ msgstr "Erreur lors de l'ouverture de la base de données: %s\n"
 
 #~ msgid "Error reading configs:%s\n"
-#~ msgstr "Erreur lors de la lecture des configurations: %s\n"
+#~ msgstr "Erreur lors de la lecture du fichier de configuration: %s\n"
 
 #~ msgid "Error resolving name: %s\n"
 #~ msgstr "Erreur lors de la résolution du nom: %s\n"
@@ -807,7 +807,7 @@ msgstr "Derheynn, Antoine Turmel"
 
 #~ msgid "Error writing contact to sqlite database: %s\n"
 #~ msgstr ""
-#~ "Erreur lors de l'écriture du contact dans la base de donnée sqlite: %s\n"
+#~ "Erreur lors de l'écriture du contact dans la base de données sqlite: %s\n"
 
 #~ msgid "Error writing message to sqlite database: %s\n"
 #~ msgstr ""
@@ -878,10 +878,10 @@ msgstr "Derheynn, Antoine Turmel"
 #~ msgstr "Le contact %s a été récupéré depuis le fichier de sauvegarde.\n"
 
 #~ msgid "SQLite database closed.\n"
-#~ msgstr "Base de donnée SQLite fermée.\n"
+#~ msgstr "Base de données SQLite fermée.\n"
 
 #~ msgid "SQLite database created.\n"
-#~ msgstr "Base de donnée SQLite créée.\n"
+#~ msgstr "Base de données SQLite créée.\n"
 
 #~ msgid "Saving session file failed: %s\n"
 #~ msgstr "Echec lors de la sauvegarde de la session: %s\n"
