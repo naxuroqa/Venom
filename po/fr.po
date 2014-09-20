@@ -40,7 +40,7 @@ msgstr "%s dans %s dit :"
 #: core/Message.vala:216
 #, fuzzy, c-format
 msgid "%s in %s:"
-msgstr "%s est maintenant %s.\n"
+msgstr "%s s'appelle maintenant %s.\n"
 
 #: ui/ConversationWidget.vala:68
 #, c-format
@@ -55,7 +55,7 @@ msgstr "%s dit :"
 #: ui/ContactListWindow.vala:776
 #, c-format
 msgid "'%s' has invited you to a groupchat, do you want to accept?"
-msgstr "'%s' vous a invité dans un groupe de chat, acceptez-vous ?"
+msgstr "'%s' vous a invité dans un groupe, acceptez-vous ?"
 
 #: Main.vala:50
 #, c-format
@@ -212,14 +212,14 @@ msgstr "Entrez ici un ID ou URI Tox"
 #, c-format
 msgid "Error creating contacts insert statement: %d: %s\n"
 msgstr ""
-"Erreur lors de la création de la déclaration d'insertion de contacts: %d: "
+"Erreur lors de l'ajout des contacts: %d: "
 "%s\n"
 
 #: core/ContactStorage.vala:113
 #, c-format
 msgid "Error creating contacts select statement: %d: %s\n"
 msgstr ""
-"Erreur lors de la création de la déclaration de sélection de contacts: %d: "
+"Erreur lors de la récupération des contacts: %d: "
 "%s\n"
 
 #: core/ContactStorage.vala:103
@@ -231,14 +231,14 @@ msgstr "Erreur lors de la création de la table des contacts: %s\n"
 #, c-format
 msgid "Error creating dht nodes insert statement: %d: %s\n"
 msgstr ""
-"Erreur lors de la création de la déclaration d'insertion de nœuds DHT: %d: "
+"Erreur lors de l'ajout de nœuds DHT: %d: "
 "%s\n"
 
 #: core/DhtNodeStorage.vala:182
 #, c-format
 msgid "Error creating dht nodes select statement: %d: %s\n"
 msgstr ""
-"Erreur lors de la création de la déclaration de sélection de nœuds DHT: %d: "
+"Erreur lors de la récupération des nœuds DHT: %d: "
 "%s\n"
 
 #: core/DhtNodeStorage.vala:172
@@ -248,19 +248,19 @@ msgstr "Erreur lors de la création de la table des nœuds DHT: %s\n"
 
 #: core/ToxSession.vala:850
 msgid "Error while loading messenger data."
-msgstr "Erreur lors du chargement des données du messager."
+msgstr "Erreur lors du chargement des données du correspondant."
 
 #: core/ToxSession.vala:844
 msgid "Error while reading from stream."
-msgstr "Erreur lors de la lecture depuis le flux."
+msgstr "Erreur lors de la lecture du flux."
 
 #: ui/UITools.vala:147
 msgid "Export tox data file"
-msgstr "Exporter la base de données Tox"
+msgstr "Exporter le fichier de configuration Tox"
 
 #: ui/UITools.vala:169
 msgid "Exporting data file failed"
-msgstr ""
+msgstr "echec de l'exportation du fichier de configuration"
 
 #: core/ToxSession.vala:837
 #, c-format
@@ -296,7 +296,7 @@ msgstr "Demande d'ami envoyée avec succès"
 #: core/GroupChat.vala:45
 #, c-format
 msgid "Groupchat #%i"
-msgstr "Chat de groupe #%i"
+msgstr "Groupe #%i"
 
 #: ui/AddContactDialog.vala:96
 msgid "ID contains invalid characters"
@@ -312,7 +312,7 @@ msgstr "Icône :"
 
 #: ui/UITools.vala:175
 msgid "Importing data files is currently not supported"
-msgstr ""
+msgstr "L'import de fichier de configuration n'est pas encore supporté"
 
 #: core/SqliteTools.vala:37 core/SqliteTools.vala:47 core/SqliteTools.vala:57
 #, c-format
@@ -321,7 +321,7 @@ msgstr "L'index pour %s n'a pas été trouvé."
 
 #: ui/conversation_window.ui:291
 msgid "Insert Smiley"
-msgstr "Insérez un smiley"
+msgstr "Insérer un smiley"
 
 #: ui/settings_window.ui:18
 msgid "KB/MB"
@@ -346,7 +346,7 @@ msgstr "Message trop long"
 
 #: ui/settings_window.ui:265
 msgid "Minimize to system tray"
-msgstr "Réduire en icône"
+msgstr "Réduire dans la zone de notification"
 
 #: ui/settings_window.ui:366
 msgid "Miscellaneous"
@@ -375,7 +375,7 @@ msgstr "Aucun message inclu"
 
 #: ui/contact_list.ui:118
 msgid "O_ffline"
-msgstr "O_ffline"
+msgstr "_déconnecté "
 
 #: core/Contact.vala:129 core/Contact.vala:139 core/ToxSession.vala:37
 msgid "Offline"
@@ -404,12 +404,12 @@ msgid ""
 "Please insert PIN for \n"
 "<b>%s</b>"
 msgstr ""
-"Saisissez le pin pour \n"
+"Saisissez le code PIN pour \n"
 "<b>%s</b>"
 
 #: ui/PinDialog.vala:49
 msgid "Please insert PIN..."
-msgstr "Insérez le PIN s'il vous plaît…"
+msgstr "Saisissez le code PIN s'il vous plaît…"
 
 #: ui/add_contact_dialog.ui:6
 msgid "Please let me add you to my contact list."
@@ -448,7 +448,7 @@ msgstr "Sélectionnez un fichier à envoyer"
 
 #: ui/add_contact_dialog.ui:113
 msgid "Send a custom message to be displayed to the friend you are adding"
-msgstr "Envoyez un message personnalisé à afficher à l'ami que vous ajoutez"
+msgstr "Envoyez un message personnalisé à l'ami que vous ajoutez"
 
 #: ui/conversation_window.ui:309
 msgid "Send file"
@@ -531,7 +531,7 @@ msgstr "_Accepter"
 
 #: ui/UITools.vala:94
 msgid "_Audio chat"
-msgstr ""
+msgstr "Chat _audio"
 
 #: ui/UITools.vala:102
 msgid "_Automatically accept ..."
@@ -553,7 +553,7 @@ msgstr "_Occupé"
 #: ui/UITools.vala:150
 #, fuzzy
 msgid "_Cancel"
-msgstr "Annulé"
+msgstr "Annuler"
 
 #: ui/contact_list.ui:61
 msgid "_Copy ID to clipboard"
@@ -561,7 +561,7 @@ msgstr "_Copier l'ID vers le presse-papier"
 
 #: ui/contact_list.ui:50
 msgid "_Edit user"
-msgstr "_Modifier l'utilisateur"
+msgstr "_Modifier mon profil"
 
 #: ui/UITools.vala:88
 msgid "_File transfers"
@@ -569,7 +569,7 @@ msgstr "_Transferts de fichiers"
 
 #: ui/contact_list.ui:149
 msgid "_Import data file"
-msgstr "Importer la base de données"
+msgstr "Importer un fichier de configuration"
 
 #: ui/UITools.vala:108
 msgid "_Invite to ..."
@@ -617,7 +617,7 @@ msgstr "_Afficher/Masquer Venom"
 
 #: ui/add_contact_dialog.ui:27
 msgid "_Tox ID:"
-msgstr "_ID Tox:"
+msgstr "ID _Tox:"
 
 #: ui/UITools.vala:78
 msgid "_Unfriend"
@@ -654,7 +654,7 @@ msgstr "personne de connecté"
 
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
-msgstr "Derheynn, Antoine Turmel"
+msgstr "Derheynn, Antoine Turmel, Raphaël GUIGNARD"
 
 #~ msgid "  %s\n"
 #~ msgstr " %s\n"
@@ -714,10 +714,10 @@ msgstr "Derheynn, Antoine Turmel"
 #~ msgstr "ID Tox Copié vers le presse-papier\n"
 
 #~ msgid "Could not change user name!\n"
-#~ msgstr "Impossible de changer le nom d'utilisateur\n"
+#~ msgstr "Impossible de changer le pseudo\n"
 
 #~ msgid "Could not change user statusmessage!\n"
-#~ msgstr "Impossible de changer le message de statut !\n"
+#~ msgstr "Impossible de changer le statut !\n"
 
 #~ msgid "Could not create a new groupchat.\n"
 #~ msgstr "Impossible de créer un nouveau groupe.\n"
@@ -752,15 +752,15 @@ msgstr "Derheynn, Antoine Turmel"
 
 #~ msgid "Error creating tox dns regex: %s\n"
 #~ msgstr ""
-#~ "Erreur lors de la création de l'expression régulière des DNS Tox: %s\n"
+#~ "Erreur lors de la création du regex des DNS Tox: %s\n"
 
 #~ msgid "Error creating tox uri regex: %s\n"
 #~ msgstr ""
-#~ "Erreur lors de la création de l'expression régulière des URI Tox: %s\n"
+#~ "Erreur lors de la création du regex des URI Tox: %s\n"
 
 #~ msgid "Error matching uri regex: %s\n"
 #~ msgstr ""
-#~ "Erreur lors de l'appariement des l'expressions régulières des URI: %s\n"
+#~ "Erreur lors de l'appariement du regex des URI: %s\n"
 
 #~ msgid "Error occured while getting file size: %s"
 #~ msgstr ""
@@ -782,7 +782,7 @@ msgstr "Derheynn, Antoine Turmel"
 #~ "%s\n"
 
 #~ msgid "Error saving configs:%s\n"
-#~ msgstr "Erreur lors de la sauvegarde des configurations: %s\n"
+#~ msgstr "Erreur lors de la sauvegarde de la configuration: %s\n"
 
 #~ msgid "Error when doing uri markup: %s"
 #~ msgstr "Erreur lors du balisage des URI: %s"
@@ -848,7 +848,7 @@ msgstr "Derheynn, Antoine Turmel"
 #~ msgstr "Erreur I/O lors de la tentative de lecture du flux de fichier: %s\n"
 
 #~ msgid "ID: %s\n"
-#~ msgstr "ID Tox: %s\n"
+#~ msgstr "ID : %s\n"
 
 #~ msgid "Invalid record\n"
 #~ msgstr "Enregistrement DNS invalide\n"
@@ -893,7 +893,7 @@ msgstr "Derheynn, Antoine Turmel"
 #~ msgstr "Sauvegarde des données de session Tox\n"
 
 #~ msgid "Session ended gracefully.\n"
-#~ msgstr "Fin de la session.\n"
+#~ msgstr "Session fermée avec succés.\n"
 
 #~ msgid "Settings saved.\n"
 #~ msgstr "Paramètres sauvegardés.\n"
@@ -905,18 +905,18 @@ msgstr "Derheynn, Antoine Turmel"
 #~ msgstr "Thème rafraichi\n"
 
 #~ msgid "Trying to send unknown file"
-#~ msgstr "Tentative d'envoi du fichier inconnu"
+#~ msgstr "Tentative d'envoi d'un fichier inconnu"
 
 #~ msgid "Unknown error while trying to read file: %s\n"
 #~ msgstr ""
-#~ "Une erreur inconnue est survenue lors de la tentative du lecture du "
+#~ "Une erreur inconnue est survenue lors de la tentative de lecture du "
 #~ "fichier: %s\n"
 
 #~ msgid "Using Gtk.TextView to display messages\n"
-#~ msgstr "Usage de Gtk.TextView pour afficher les messages\n"
+#~ msgstr "Utilisation de Gtk.TextView pour afficher les messages\n"
 
 #~ msgid "Using data file \"%s\"\n"
-#~ msgstr "Usage du fichier de donnée \"%s\"\n"
+#~ msgstr "Utilisation du fichier de configuration \"%s\"\n"
 
 #~ msgid "Venom (%s)"
 #~ msgstr "Venom (%s)"
@@ -946,7 +946,7 @@ msgstr "Derheynn, Antoine Turmel"
 #~ msgstr "échec de l'envoi du fichier %s à %s"
 
 #~ msgid "groupchat #%i"
-#~ msgstr "chat de groupe #%i"
+#~ msgstr "groupe #%i"
 
 #~ msgid "lost"
 #~ msgstr "perdu"
