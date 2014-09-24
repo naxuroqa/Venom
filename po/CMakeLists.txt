@@ -19,6 +19,7 @@
 
 SET(TRANSLATIONS
   de
+  es
   it
   ru
   zh_CN

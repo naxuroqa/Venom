@@ -11,12 +11,12 @@ msgstr ""
 "PO-Revision-Date: 2014-09-19 20:11-0000\n"
 "Last-Translator: oxichem <auburnfoliage@hush.ai>\n"
 "Language-Team: oxichem <auburnfoliage@hush.ai>\n"
+"Language: es_419\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.6.9\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: es_419\n"
 
 #: core/ToxSession.vala:725
 #, c-format
@@ -106,6 +106,14 @@ msgstr "<%s> %s:%s\n"
 msgid "<b>%s</b>"
 msgstr "<b>%s</b>"
 
+#: ui/user_info_window.ui:119
+msgid "<b>Tox</b>"
+msgstr "<b>Tox</b>"
+
+#: ui/user_info_window.ui:282
+msgid "<b>User</b>"
+msgstr "<b>Usuario</b>"
+
 #: core/Contact.vala:72 core/Contact.vala:86 ui/ConversationView.vala:55
 #, c-format
 msgid "<i>%s</i>"
@@ -159,6 +167,14 @@ msgstr "Checksum erroneo"
 msgid "Busy"
 msgstr "Ocupado"
 
+#: ui/conversation_window.ui:156
+msgid "Call contact"
+msgstr "Llamar contacto"
+
+#: ui/conversation_window.ui:174
+msgid "Call contact with video"
+msgstr "Iniciar videollamada con contacto"
+
 #: core/Tools.vala:158 core/Tools.vala:171
 #, c-format
 msgid "Can't create action regex: %s.\n"
@@ -176,6 +192,10 @@ msgstr "No se puede enviar a la clave propia"
 #: ui/FileTransferChatEntry.vala:119
 msgid "Canceled"
 msgstr "Cancelado"
+
+#: ui/contact_list.ui:72
+msgid "Change _Status"
+msgstr "Cambiar _Estado"
 
 #: ui/ContactListWindow.vala:670
 msgid "Connected to the network"
@@ -275,6 +295,14 @@ msgstr ""
 msgid "Could not resolve ID from DNS record\n"
 msgstr "No se pudo resolver el Tox ID del record de DNS\n"
 
+#: ui/contact_list.ui:416
+msgid "Create groupchat"
+msgstr "Crear un chat grupal"
+
+#: ui/settings_window.ui:301
+msgid "Default Tox DNS ID suffix:"
+msgstr "Sufijo de fault de ID DNS de Tox:"
+
 #: ui/FileTransferChatEntry.vala:125 ui/FileTransferChatEntry.vala:129
 msgid "Disconnected"
 msgstr "Desconectado"
@@ -296,6 +324,10 @@ msgstr "Finalizó transferencia de archivo para %s de %s\n"
 #, c-format
 msgid "Ending session...\n"
 msgstr "Finalizando sesión...\n"
+
+#: ui/add_contact_dialog.ui:40
+msgid "Enter a Tox ID here or a Tox URI"
+msgstr "Inserte un Tox ID o un Tox URI aquí"
 
 #: core/ContactStorage.vala:108
 #, c-format
@@ -454,6 +486,10 @@ msgstr "Transferencia de archivo rechazada para número de archivo %u"
 msgid "File was rejected"
 msgstr "El archivo fue rechazado."
 
+#: ui/settings_window.ui:236
+msgid "Flash window when a new message arrives"
+msgstr "Parpadear ventana cuando llega un nuevo mensaje"
+
 #: ui/ContactListWindow.vala:614
 #, c-format
 msgid "Friend could not be added.\n"
@@ -506,15 +542,27 @@ msgstr "Error de I/O al intentar leer archivo: %s\n"
 msgid "ID contains invalid characters"
 msgstr "El Tox ID contiene caracteres invalidos"
 
+#: ui/user_info_window.ui:40
+msgid "ID:"
+msgstr "ID:"
+
 #: ui/ContactListWindow.vala:86
 #, c-format
 msgid "ID: %s\n"
 msgstr "Tox ID: %s\n"
 
+#: ui/user_info_window.ui:222
+msgid "Icon:"
+msgstr "Ícono:"
+
 #: core/SqliteTools.vala:37 core/SqliteTools.vala:47 core/SqliteTools.vala:57
 #, c-format
 msgid "Index for %s not found."
 msgstr "Índice para %s no encontrado."
+
+#: ui/conversation_window.ui:290
+msgid "Insert Smiley"
+msgstr "Insertar Smiley"
 
 #: core/ToxDns.vala:113
 #, c-format
@@ -530,6 +578,18 @@ msgstr "URI de Tox invalido\n"
 #, c-format
 msgid "Joined Groupchat #%i\n"
 msgstr "Unido al chat grupal #%i\n"
+
+#: ui/settings_window.ui:18
+msgid "KB/MB"
+msgstr "KB/MB"
+
+#: ui/settings_window.ui:78
+msgid "Keep history"
+msgstr "Mantener historial"
+
+#: ui/settings_window.ui:14
+msgid "KiB/MiB"
+msgstr "KiB/MiB"
 
 #: core/Contact.vala:117
 #, c-format
@@ -555,6 +615,14 @@ msgstr "Carga del widget de mensaje fallida!\n"
 msgid "Message too long"
 msgstr "Mensaje demasiado largo"
 
+#: ui/settings_window.ui:337
+msgid "Miscellaneous"
+msgstr "Misceláneo"
+
+#: ui/user_info_window.ui:192
+msgid "Name:"
+msgstr "Nombre:"
+
 #: ui/ContactListWindow.vala:604
 #, c-format
 msgid ""
@@ -577,6 +645,10 @@ msgstr "Ningún mensaje incluido"
 msgid "No pin privided, aborting...\n"
 msgstr "No hay PIN provisto, abortando...\n"
 
+#: ui/contact_list.ui:118
+msgid "O_ffline"
+msgstr "F_uera de línea"
+
 #: core/Contact.vala:98 core/Contact.vala:108 core/ToxSession.vala:37
 msgid "Offline"
 msgstr "Fuera de línea"
@@ -585,6 +657,10 @@ msgstr "Fuera de línea"
 #: ui/ContactListWindow.vala:208
 msgid "Online"
 msgstr "En línea"
+
+#: ui/contact_list.ui:449
+msgid "Open preferences"
+msgstr "Abrir preferencias"
 
 #: core/Tools.vala:146
 msgid "Out of memory"
@@ -606,6 +682,14 @@ msgstr ""
 #: ui/PinDialog.vala:49
 msgid "Please insert PIN..."
 msgstr "Por favor insertar PIN..."
+
+#: ui/add_contact_dialog.ui:6
+msgid "Please let me add you to my contact list."
+msgstr "Por favor dejame agregarte a mi lista de contactos."
+
+#: ui/settings_window.ui:221
+msgid "Privacy"
+msgstr "Privacidad"
 
 #: ui/ContactListWindow.vala:869
 #, c-format
@@ -673,6 +757,18 @@ msgstr "Seleccionar"
 msgid "Select a file to send"
 msgstr "Seleccionar un archivo a enviar"
 
+#: ui/add_contact_dialog.ui:113
+msgid "Send a custom message to be displayed to the friend you are adding"
+msgstr "Envíe un mensaje personalizado para el contacto que está agregando"
+
+#: ui/conversation_window.ui:308
+msgid "Send file"
+msgstr "Enviar archivo"
+
+#: ui/conversation_window.ui:341
+msgid "Send message"
+msgstr "Enviar mensaje"
+
 #: ui/FileTransferChatEntry.vala:107
 msgid "Sending failed"
 msgstr "Envio fallido"
@@ -682,19 +778,44 @@ msgstr "Envio fallido"
 msgid "Session ended gracefully.\n"
 msgstr "Sesión terminada con éxito.\n"
 
+#: ui/add_contact_dialog.ui:67
+msgid "Set a custom nickname for the friend you are about to add"
+msgstr ""
+"Establezca un nombre personalizado para el contacto que está por agregar"
+
 #: core/Tools.vala:144
 msgid "Set new nospam"
 msgstr "Establecer nuevo valor nospam"
+
+#: ui/settings_window.ui:30
+msgid "Settings"
+msgstr "Opciones"
 
 #: core/Settings.vala:102
 #, c-format
 msgid "Settings saved.\n"
 msgstr "Opciones guardadas.\n"
 
+#: ui/settings_window.ui:186
+msgid "Show _others when I am typing"
+msgstr "Mostrar a _otros cuando estoy escribiendo"
+
+#: ui/settings_window.ui:258
+msgid "Show filesize in"
+msgstr "Mostrar tamaño de archivo en"
+
+#: ui/settings_window.ui:202
+msgid "Show me when others are typing"
+msgstr "Mostrarme cuando otros escriben"
+
 #: Main.vala:70
 #, c-format
 msgid "Starting in offline mode\n"
 msgstr "Starting in offline mode\n"
+
+#: ui/user_info_window.ui:178
+msgid "Status message:"
+msgstr "Estado:"
 
 #: ui/ContactListWindow.vala:408
 #, c-format
@@ -786,6 +907,54 @@ msgstr "[rr] %s:%u\n"
 msgid "[us] %s:%i\n"
 msgstr "[us] %s:%i\n"
 
+#: ui/contact_list.ui:96
+msgid "_Away"
+msgstr "_Ausente"
+
+#: ui/user_info_window.ui:254
+msgid "_Browse..."
+msgstr "_Examinar..."
+
+#: ui/contact_list.ui:107
+msgid "_Busy"
+msgstr "_Ocupado"
+
+#: ui/contact_list.ui:61
+msgid "_Copy ID to clipboard"
+msgstr "_Copiar ID al portapapeles"
+
+#: ui/contact_list.ui:50
+msgid "_Edit user"
+msgstr "_Editar usuario"
+
+#: ui/add_contact_dialog.ui:94
+msgid "_Message (optional):"
+msgstr "_Mensaje (opcional):"
+
+#: ui/add_contact_dialog.ui:54
+msgid "_Nickname (optional):"
+msgstr "_Sobrenombre (opcional):"
+
+#: ui/contact_list.ui:85
+msgid "_Online"
+msgstr "_En Línea"
+
+#: ui/add_contact_dialog.ui:27
+msgid "_Tox ID:"
+msgstr "_Tox ID:"
+
+#: ui/contact_list.ui:278
+msgid "connecting..."
+msgstr "conectando..."
+
+#: ui/settings_window.ui:160
+msgid "days"
+msgstr "días"
+
+#: ui/settings_window.ui:127
+msgid "delete after"
+msgstr "eliminar despues de"
+
 #: Main.vala:49
 #, c-format
 msgid "error: %s\n"
@@ -804,6 +973,10 @@ msgstr "falló el envio de archivo %s a %s"
 #, c-format
 msgid "groupchat #%i"
 msgstr "chat grupal #%i"
+
+#: ui/settings_window.ui:104
+msgid "indefinitely"
+msgstr "indefinidamente"
 
 #: ui/ContactListWindow.vala:668
 msgid "lost"
@@ -849,176 +1022,3 @@ msgstr "ID de tox 2 encontrado: %s %s\n"
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
 msgstr "oxichem"
-
-#: ui/add_contact_dialog.ui:6
-msgid "Please let me add you to my contact list."
-msgstr "Por favor dejame agregarte a mi lista de contactos."
-
-#: ui/add_contact_dialog.ui:27
-msgid "_Tox ID:"
-msgstr "_Tox ID:"
-
-#: ui/add_contact_dialog.ui:40
-msgid "Enter a Tox ID here or a Tox URI"
-msgstr "Inserte un Tox ID o un Tox URI aquí"
-
-#: ui/add_contact_dialog.ui:54
-msgid "_Nickname (optional):"
-msgstr "_Sobrenombre (opcional):"
-
-#: ui/add_contact_dialog.ui:67
-msgid "Set a custom nickname for the friend you are about to add"
-msgstr ""
-"Establezca un nombre personalizado para el contacto que está por agregar"
-
-#: ui/add_contact_dialog.ui:94
-msgid "_Message (optional):"
-msgstr "_Mensaje (opcional):"
-
-#: ui/add_contact_dialog.ui:113
-msgid "Send a custom message to be displayed to the friend you are adding"
-msgstr "Envíe un mensaje personalizado para el contacto que está agregando"
-
-#: ui/contact_list.ui:50
-msgid "_Edit user"
-msgstr "_Editar usuario"
-
-#: ui/contact_list.ui:61
-msgid "_Copy ID to clipboard"
-msgstr "_Copiar ID al portapapeles"
-
-#: ui/contact_list.ui:72
-msgid "Change _Status"
-msgstr "Cambiar _Estado"
-
-#: ui/contact_list.ui:85
-msgid "_Online"
-msgstr "_En Línea"
-
-#: ui/contact_list.ui:96
-msgid "_Away"
-msgstr "_Ausente"
-
-#: ui/contact_list.ui:107
-msgid "_Busy"
-msgstr "_Ocupado"
-
-#: ui/contact_list.ui:118
-msgid "O_ffline"
-msgstr "F_uera de línea"
-
-#: ui/contact_list.ui:278
-msgid "connecting..."
-msgstr "conectando..."
-
-#: ui/contact_list.ui:416
-msgid "Create groupchat"
-msgstr "Crear un chat grupal"
-
-#: ui/contact_list.ui:449
-msgid "Open preferences"
-msgstr "Abrir preferencias"
-
-#: ui/conversation_window.ui:156
-msgid "Call contact"
-msgstr "Llamar contacto"
-
-#: ui/conversation_window.ui:174
-msgid "Call contact with video"
-msgstr "Iniciar videollamada con contacto"
-
-#: ui/conversation_window.ui:290
-msgid "Insert Smiley"
-msgstr "Insertar Smiley"
-
-#: ui/conversation_window.ui:308
-msgid "Send file"
-msgstr "Enviar archivo"
-
-#: ui/conversation_window.ui:341
-msgid "Send message"
-msgstr "Enviar mensaje"
-
-#: ui/settings_window.ui:14
-msgid "KiB/MiB"
-msgstr "KiB/MiB"
-
-#: ui/settings_window.ui:18
-msgid "KB/MB"
-msgstr "KB/MB"
-
-#: ui/settings_window.ui:30
-msgid "Settings"
-msgstr "Opciones"
-
-#: ui/settings_window.ui:78
-msgid "Keep history"
-msgstr "Mantener historial"
-
-#: ui/settings_window.ui:104
-msgid "indefinitely"
-msgstr "indefinidamente"
-
-#: ui/settings_window.ui:127
-msgid "delete after"
-msgstr "eliminar despues de"
-
-#: ui/settings_window.ui:160
-msgid "days"
-msgstr "días"
-
-#: ui/settings_window.ui:186
-msgid "Show _others when I am typing"
-msgstr "Mostrar a _otros cuando estoy escribiendo"
-
-#: ui/settings_window.ui:202
-msgid "Show me when others are typing"
-msgstr "Mostrarme cuando otros escriben"
-
-#: ui/settings_window.ui:221
-msgid "Privacy"
-msgstr "Privacidad"
-
-#: ui/settings_window.ui:236
-msgid "Flash window when a new message arrives"
-msgstr "Parpadear ventana cuando llega un nuevo mensaje"
-
-#: ui/settings_window.ui:258
-msgid "Show filesize in"
-msgstr "Mostrar tamaño de archivo en"
-
-#: ui/settings_window.ui:301
-msgid "Default Tox DNS ID suffix:"
-msgstr "Sufijo de fault de ID DNS de Tox:"
-
-#: ui/settings_window.ui:337
-msgid "Miscellaneous"
-msgstr "Misceláneo"
-
-#: ui/user_info_window.ui:40
-msgid "ID:"
-msgstr "ID:"
-
-#: ui/user_info_window.ui:119
-msgid "<b>Tox</b>"
-msgstr "<b>Tox</b>"
-
-#: ui/user_info_window.ui:178
-msgid "Status message:"
-msgstr "Estado:"
-
-#: ui/user_info_window.ui:192
-msgid "Name:"
-msgstr "Nombre:"
-
-#: ui/user_info_window.ui:222
-msgid "Icon:"
-msgstr "Ícono:"
-
-#: ui/user_info_window.ui:254
-msgid "_Browse..."
-msgstr "_Examinar..."
-
-#: ui/user_info_window.ui:282
-msgid "<b>User</b>"
-msgstr "<b>Usuario</b>"
