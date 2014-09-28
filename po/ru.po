@@ -1,6 +1,6 @@
-# Russian translation for PACKAGE package.
-# Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# Russian translation for Venom package.
+# Copyright (C) 2014 VENOM COPYRIGHT HOLDER
+# This file is distributed under the same license as the Venom package.
 # herrniemand, 2014.
 #
 msgid ""
@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-08-14 19:33+0200\n"
-"PO-Revision-Date: 2014-07-03 12:46+1200\n"
-"Last-Translator: Ackermann Yuriy <ackermann.yuriy@gmail.com>\n"
+"PO-Revision-Date: 2014-09-28 18:25+0400\n"
+"Last-Translator: X-NicON <xnicon@ya.ru>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.9\n"
 
 #: core/GroupChat.vala:52
 #, c-format
@@ -35,12 +35,12 @@ msgstr "%s <i>(%s)</i>"
 #: core/Message.vala:171
 #, c-format
 msgid "%s in %s says:"
-msgstr ""
+msgstr "%s в %s сказал:"
 
 #: core/Message.vala:216
-#, fuzzy, c-format
+#, c-format
 msgid "%s in %s:"
-msgstr "%s сейчас %s.\n"
+msgstr "%s в %s:"
 
 #: ui/ConversationWidget.vala:68
 #, c-format
@@ -50,7 +50,7 @@ msgstr "%s пишет..."
 #: core/Message.vala:92
 #, c-format
 msgid "%s says:"
-msgstr ""
+msgstr "%s сказал:"
 
 #: ui/ContactListWindow.vala:776
 #, c-format
@@ -60,7 +60,7 @@ msgstr "'%s' пригласил вас в групповой чат. Приня�
 #: Main.vala:50
 #, c-format
 msgid "'%s' not a positive number"
-msgstr ""
+msgstr "'%s' не положительное число"
 
 #: ui/ConversationWidget.vala:59 ui/GroupConversationWidget.vala:47
 #, c-format
@@ -97,9 +97,9 @@ msgid "All"
 msgstr "Все"
 
 #: ui/ContactListWindow.vala:1196 ui/ContactListWindow.vala:1233
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to remove '%s' from your contact list?"
-msgstr "Вы уверены что хотите удалить '%s' из друзей?"
+msgstr "Вы уверены, что хотите удалить '%s' из списка контактов?"
 
 #: core/ToxSession.vala:33
 msgid "Away"
@@ -167,9 +167,8 @@ msgid "Could not bind text to %s"
 msgstr "Не удалось привязать текст к %s."
 
 #: ui/UITools.vala:169
-#, fuzzy
 msgid "Could not export data file: "
-msgstr "Не удалось добавить друга: %s.\n"
+msgstr "Не удалось экспортировать данные в файл:"
 
 #: ui/ContactListWindow.vala:130
 #, c-format
@@ -178,9 +177,7 @@ msgstr "Не удалось загрузить тему из \"%s\""
 
 #: ui/ContactListWindow.vala:1264
 msgid "Could not resolve ID from DNS record\n"
-msgstr ""
-"Не удалось \n"
-" Impossibile risolvere il Tox ID dal record DNS\n"
+msgstr "Не удалось получить Tox ID через DNS-запись\n"
 
 #: ui/contact_list.ui:444
 msgid "Create groupchat"
@@ -200,7 +197,7 @@ msgstr "Отключен от сети"
 
 #: ui/contact_list.ui:141
 msgid "E_xport data file"
-msgstr ""
+msgstr "_Экспортировать файл данных"
 
 #: ui/UserInfoWindow.vala:86
 msgid "Edit user information"
@@ -250,11 +247,11 @@ msgstr "Ошибка при чтении из потока."
 
 #: ui/UITools.vala:147
 msgid "Export tox data file"
-msgstr ""
+msgstr "Экспортировать данные Tox в файл"
 
 #: ui/UITools.vala:169
 msgid "Exporting data file failed"
-msgstr ""
+msgstr "Не удалось экспортировать данные в файл"
 
 #: core/ToxSession.vala:837
 #, c-format
@@ -262,14 +259,12 @@ msgid "File \"%d\" does not exist."
 msgstr "Файл \"%d\" не существует."
 
 #: ui/FileTransferChatEntry.vala:85
-#, fuzzy
 msgid "File received"
-msgstr "Пользователь отклонил прием файла."
+msgstr "Файл получен"
 
 #: ui/FileTransferChatEntry.vala:87
-#, fuzzy
 msgid "File sent"
-msgstr "Пользователь отклонил прием файла."
+msgstr "Файл отправлен"
 
 #: ui/FileTransferChatEntry.vala:94
 msgid "File was rejected"
@@ -306,7 +301,7 @@ msgstr "Иконка:"
 
 #: ui/UITools.vala:175
 msgid "Importing data files is currently not supported"
-msgstr ""
+msgstr "Функция импорта файлов-данных Tox, ещё не поддерживается"
 
 #: core/SqliteTools.vala:37 core/SqliteTools.vala:47 core/SqliteTools.vala:57
 #, c-format
@@ -340,7 +335,7 @@ msgstr "Размер сообщения превышает максимальн�
 
 #: ui/settings_window.ui:265
 msgid "Minimize to system tray"
-msgstr ""
+msgstr "Сворачивать в системный трей"
 
 #: ui/settings_window.ui:366
 msgid "Miscellaneous"
@@ -481,9 +476,8 @@ msgid "Show me when others are typing"
 msgstr "Показывать мне когда остальные печатают."
 
 #: ui/settings_window.ui:250
-#, fuzzy
 msgid "Show notification when a new message arrives"
-msgstr "Оповещать о приходе нового сообщения."
+msgstr "Оповещать о получении нового сообщения."
 
 #: ui/user_info_window.ui:178
 msgid "Status message:"
@@ -521,15 +515,15 @@ msgstr "[%s] "
 
 #: ui/ContactListWindow.vala:667
 msgid "_Accept"
-msgstr ""
+msgstr "_Принять"
 
 #: ui/UITools.vala:94
 msgid "_Audio chat"
-msgstr ""
+msgstr "_Аудио чат"
 
 #: ui/UITools.vala:102
 msgid "_Automatically accept ..."
-msgstr ""
+msgstr "Принимать _автоматически..."
 
 #: ui/contact_list.ui:96
 msgid "_Away"
@@ -545,9 +539,8 @@ msgstr "_Занят"
 
 #: ui/ContactListWindow.vala:667 ui/FileTransferChatEntry.vala:157
 #: ui/UITools.vala:150
-#, fuzzy
 msgid "_Cancel"
-msgstr "Отменено"
+msgstr "_Отменить"
 
 #: ui/contact_list.ui:61
 msgid "_Copy ID to clipboard"
@@ -559,32 +552,29 @@ msgstr "_Редактировать пользователя"
 
 #: ui/UITools.vala:88
 msgid "_File transfers"
-msgstr ""
+msgstr "Передачу файлов"
 
 #: ui/contact_list.ui:149
 msgid "_Import data file"
-msgstr ""
+msgstr "Импортировать данные Tox из файла"
 
 #: ui/UITools.vala:108
 msgid "_Invite to ..."
-msgstr ""
+msgstr "Пригласить в..."
 
 #: ui/UITools.vala:124
-#, fuzzy
 msgid "_Invite to new groupchat"
-msgstr "Создать групповой чат"
+msgstr "Пригласить в групповой чат"
 
 #: ui/UITools.vala:138
-#, fuzzy
 msgid "_Leave groupchat"
-msgstr "Создать групповой чат"
+msgstr "Покинуть чат"
 
 #: ui/add_contact_dialog.ui:94
 msgid "_Message (optional):"
 msgstr "_Статус (необязательный):"
 
 #: ui/UITools.vala:112
-#, fuzzy
 msgid "_New groupchat"
 msgstr "Создать групповой чат"
 
@@ -598,16 +588,15 @@ msgstr "_В сети"
 
 #: ui/Client.vala:86
 msgid "_Quit"
-msgstr ""
+msgstr "_Выход"
 
 #: ui/FileTransferChatEntry.vala:158 ui/UITools.vala:152
-#, fuzzy
 msgid "_Save"
-msgstr "Сохранить"
+msgstr "_Сохранить"
 
 #: ui/Client.vala:83
 msgid "_Show/Hide Venom"
-msgstr ""
+msgstr "_Показать/Скрыть Venom"
 
 #: ui/add_contact_dialog.ui:27
 msgid "_Tox ID:"
@@ -615,11 +604,11 @@ msgstr "_Tox ID:"
 
 #: ui/UITools.vala:78
 msgid "_Unfriend"
-msgstr ""
+msgstr "Удлаить из списка контактов"
 
 #: ui/UITools.vala:98
 msgid "_Video chat"
-msgstr ""
+msgstr "_Видео чат"
 
 #: ui/contact_list.ui:306
 msgid "connecting..."
@@ -627,7 +616,7 @@ msgstr "подключение..."
 
 #: ui/settings_window.ui:159
 msgid "days"
-msgstr "дни"
+msgstr "дней"
 
 #: ui/settings_window.ui:126
 msgid "delete after"
@@ -648,7 +637,7 @@ msgstr "никто не подключен"
 
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
-msgstr "Ackermann Yuriy"
+msgstr "Ackermann Yuriy\nX-NicON"
 
 #~ msgid "  %s\n"
 #~ msgstr "  %s\n"
