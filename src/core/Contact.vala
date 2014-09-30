@@ -97,10 +97,10 @@ namespace Venom {
         if(alias == "") {
           return name;
         } else {
-          return _("%s <i>(%s)</i>").printf(Markup.escape_text(name), Markup.escape_text(alias));
+          return "%s <i>(%s)</i>".printf(Markup.escape_text(name), Markup.escape_text(alias));
         }
       } else if (alias != "") {
-        return _("<i>%s</i>").printf(Markup.escape_text(alias));
+        return "<i>%s</i>".printf(Markup.escape_text(alias));
       } else {
         return Tools.bin_to_hexstring(public_key);
       }
@@ -111,10 +111,10 @@ namespace Venom {
         if(alias == "") {
           return name;
         } else {
-          return _("%s <i>(%s)</i>").printf(Tools.markup_uris(name), Tools.markup_uris(alias));
+          return "%s <i>(%s)</i>".printf(Tools.markup_uris(name), Tools.markup_uris(alias));
         }
       } else if (alias != "") {
-        return _("<i>%s</i>").printf(Tools.markup_uris(alias));
+        return "<i>%s</i>".printf(Tools.markup_uris(alias));
       } else {
         return Tools.bin_to_hexstring(public_key);
       }

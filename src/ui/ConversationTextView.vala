@@ -136,9 +136,7 @@ namespace Venom {
       Gtk.TextIter text_end;
       string text;
       buffer.get_end_iter(out text_end);
-      text = _("[%s] ").printf(
-        message.get_time_plain()
-      );
+      text = "[%s] ".printf(message.get_time_plain());
       buffer.insert_with_tags(text_end, text, text.length, grey_tag);
 
       buffer.get_end_iter(out text_end);
