@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-30 23:00+0400\n"
-"PO-Revision-Date: 2014-10-01 01:49+0400\n"
+"POT-Creation-Date: 2014-10-01 15:44+0400\n"
+"PO-Revision-Date: 2014-10-01 15:53+0400\n"
 "Last-Translator: X-NicON <x-icon@ya.ru>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -62,19 +62,19 @@ msgstr "Удлаить из контактов"
 
 #: ui/UITools.vala:88
 msgid "_File transfers"
-msgstr "Передачу файлов"
+msgstr "Файлы"
 
 #: ui/UITools.vala:94
 msgid "_Audio chat"
-msgstr "_Аудио чат"
+msgstr "_Звонки"
 
 #: ui/UITools.vala:98
 msgid "_Video chat"
-msgstr "_Видео чат"
+msgstr "_Видеозвонки"
 
 #: ui/UITools.vala:102
 msgid "_Automatically accept ..."
-msgstr "Принимать _автоматически..."
+msgstr "Принимать _автоматически"
 
 #: ui/UITools.vala:108
 msgid "_Invite to ..."
@@ -97,9 +97,9 @@ msgid "Export tox data file"
 msgstr "Экспортировать данные Tox в файл"
 
 #: ui/UITools.vala:150 ui/ContactListWindow.vala:680
-#: ui/FileTransferChatEntry.vala:157
+#: ui/AddContactDialog.vala:74 ui/FileTransferChatEntry.vala:157
 msgid "_Cancel"
-msgstr "_Отменить"
+msgstr "_Отмена"
 
 #: ui/UITools.vala:152 ui/FileTransferChatEntry.vala:158
 msgid "_Save"
@@ -175,7 +175,7 @@ msgstr "Уведомления"
 
 #: ui/settings_window.ui:323 ui/settings_window.ui:398
 msgid "Recording device"
-msgstr "Устройство записи"
+msgstr "Устройство"
 
 #: ui/settings_window.ui:337 ui/settings_window.ui:412
 msgid "System default"
@@ -187,11 +187,11 @@ msgstr "Тест"
 
 #: ui/settings_window.ui:367
 msgid "Audio"
-msgstr "_Аудио чат"
+msgstr "Микрофон"
 
 #: ui/settings_window.ui:442
 msgid "Video"
-msgstr "_Видео чат"
+msgstr "Видеокамера"
 
 #: ui/settings_window.ui:461
 msgid "Audio / Video"
@@ -217,7 +217,7 @@ msgstr "Разное"
 msgid "translator-credits"
 msgstr ""
 "Ackermann Yuriy\n"
-"X-NicON"
+"X-NicON <x-icon@ya.ru>"
 
 #: ui/PinDialog.vala:37
 #, c-format
@@ -312,7 +312,7 @@ msgstr "Вставьте Tox ID или Tox URI"
 
 #: ui/add_contact_dialog.ui:54
 msgid "_Nickname (optional):"
-msgstr "_Ник (необязательный):"
+msgstr "_Ник (необязательно):"
 
 #: ui/add_contact_dialog.ui:67
 msgid "Set a custom nickname for the friend you are about to add"
@@ -320,11 +320,15 @@ msgstr "Назначить имя для пользователя которог
 
 #: ui/add_contact_dialog.ui:94
 msgid "_Message (optional):"
-msgstr "_Статус (необязательный):"
+msgstr "_Сообщение (необязательно):"
 
 #: ui/add_contact_dialog.ui:113
 msgid "Send a custom message to be displayed to the friend you are adding"
 msgstr "Отправить сообщение, которое будет отображаться при запросе на добавление Вас в контакты."
+
+#: ui/AddContactDialog.vala:74
+msgid "_Add"
+msgstr "_Добавить"
 
 #: ui/AddContactDialog.vala:76 ui/contact_list.ui:427
 msgid "Add contact"
@@ -332,7 +336,7 @@ msgstr "Добавить контакт"
 
 #: ui/AddContactDialog.vala:90
 msgid "No ID given"
-msgstr "ID не был предоставлен."
+msgstr "Tox ID не указан"
 
 #: ui/AddContactDialog.vala:96
 msgid "ID contains invalid characters"

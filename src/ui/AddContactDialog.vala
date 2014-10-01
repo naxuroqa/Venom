@@ -71,7 +71,7 @@ namespace Venom {
         Logger.log(LogLevel.FATAL, "Failed to compile regex:" + re.message);
       }
 
-      this.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Ok", Gtk.ResponseType.OK, null);
+      this.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Add"), Gtk.ResponseType.OK, null);
       this.set_default_response(Gtk.ResponseType.OK);
       this.title = _("Add contact");
       this.set_default_size(400, 250);

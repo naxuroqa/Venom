@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Venom \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-30 23:00+0400\n"
+"POT-Creation-Date: 2014-10-01 15:44+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,7 +97,7 @@ msgid "Export tox data file"
 msgstr ""
 
 #: ui/UITools.vala:150 ui/ContactListWindow.vala:680
-#: ui/FileTransferChatEntry.vala:157
+#: ui/AddContactDialog.vala:74 ui/FileTransferChatEntry.vala:157
 msgid "_Cancel"
 msgstr ""
 
@@ -318,6 +318,10 @@ msgstr ""
 
 #: ui/add_contact_dialog.ui:113
 msgid "Send a custom message to be displayed to the friend you are adding"
+msgstr ""
+
+#: ui/AddContactDialog.vala:74
+msgid "_Add"
 msgstr ""
 
 #: ui/AddContactDialog.vala:76 ui/contact_list.ui:427
