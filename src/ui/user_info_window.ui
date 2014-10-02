@@ -116,7 +116,7 @@
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">&lt;b&gt;Tox&lt;/b&gt;</property>
+            <property name="label">&lt;b&gt;Tox&lt;/b&gt;</property>
             <property name="use_markup">True</property>
           </object>
         </child>
