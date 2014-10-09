@@ -19,10 +19,12 @@
 
 SET(TRANSLATIONS
   de
+  es
   fr
   it
   pl
   ru
+  zh_CN
 )
 
 IF (XGETTEXT_FOUND)
