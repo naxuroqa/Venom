@@ -45,7 +45,7 @@ namespace Venom {
 
       get_content_area().add(content_box);
 
-      add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Ok", Gtk.ResponseType.OK, null);
+      add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Ok"), Gtk.ResponseType.OK, null);
       title = _("Please insert PIN...");
       pin = "000000";
 
