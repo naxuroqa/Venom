@@ -56,6 +56,55 @@ msgstr ""
 msgid "<b>User</b>"
 msgstr ""
 
+#: ui/UITools.vala:45 ui/UITools.vala:58
+#, c-format
+msgid "%llu bytes"
+msgstr ""
+
+#: ui/UITools.vala:46
+#, c-format
+msgid "%.2lf KiB"
+msgstr ""
+
+#: ui/UITools.vala:47
+#, c-format
+msgid "%.2lf MiB"
+msgstr ""
+
+#: ui/UITools.vala:48
+#, c-format
+msgid "%.2lf GiB"
+msgstr ""
+
+#: ui/UITools.vala:49
+#, c-format
+msgid "%.2lf TiB"
+msgstr ""
+
+#: ui/UITools.vala:50 ui/UITools.vala:63
+msgid "really big file"
+msgstr ""
+
+#: ui/UITools.vala:59
+#, c-format
+msgid "%.2lf KB"
+msgstr ""
+
+#: ui/UITools.vala:60
+#, c-format
+msgid "%.2lf MB"
+msgstr ""
+
+#: ui/UITools.vala:61
+#, c-format
+msgid "%.2lf GB"
+msgstr ""
+
+#: ui/UITools.vala:62
+#, c-format
+msgid "%.2lf TB"
+msgstr ""
+
 #: ui/UITools.vala:78
 msgid "_Unfriend"
 msgstr ""
@@ -96,24 +145,27 @@ msgstr ""
 msgid "Export tox data file"
 msgstr ""
 
-#: ui/UITools.vala:150 ui/ContactListWindow.vala:680
+#: ui/UITools.vala:148 ui/PinDialog.vala:48 ui/ContactListWindow.vala:680
+#: ui/ContactListWindow.vala:797 ui/ContactListWindow.vala:891
+#: ui/ContactListWindow.vala:1216 ui/ContactListWindow.vala:1253
 #: ui/AddContactDialog.vala:74 ui/FileTransferChatEntry.vala:157
+#: ui/UserInfoWindow.vala:82
 msgid "_Cancel"
 msgstr ""
 
-#: ui/UITools.vala:152 ui/FileTransferChatEntry.vala:158
+#: ui/UITools.vala:148 ui/FileTransferChatEntry.vala:158
 msgid "_Save"
 msgstr ""
 
-#: ui/UITools.vala:169
+#: ui/UITools.vala:164
 msgid "Exporting data file failed"
 msgstr ""
 
-#: ui/UITools.vala:169
+#: ui/UITools.vala:164
 msgid "Could not export data file: "
 msgstr ""
 
-#: ui/UITools.vala:175
+#: ui/UITools.vala:170
 msgid "Importing data files is currently not supported"
 msgstr ""
 
@@ -224,6 +276,10 @@ msgid ""
 "<b>%s</b>"
 msgstr ""
 
+#: ui/PinDialog.vala:48
+msgid "_Ok"
+msgstr ""
+
 #: ui/PinDialog.vala:49
 msgid "Please insert PIN..."
 msgstr ""
@@ -253,7 +309,8 @@ msgid ""
 "Do you want to accept?"
 msgstr ""
 
-#: ui/ContactListWindow.vala:680
+#: ui/ContactListWindow.vala:680 ui/ContactListWindow.vala:797
+#: ui/ContactListWindow.vala:891
 msgid "_Accept"
 msgstr ""
 
@@ -270,9 +327,26 @@ msgstr ""
 msgid "'%s' has invited you to a groupchat, do you want to accept?"
 msgstr ""
 
+#: ui/ContactListWindow.vala:890
+#, c-format
+msgid "'%s' is calling (%s) ..."
+msgstr ""
+
+#: ui/ContactListWindow.vala:890
+msgid "Video call"
+msgstr ""
+
+#: ui/ContactListWindow.vala:890
+msgid "Audio only"
+msgstr ""
+
 #: ui/ContactListWindow.vala:1215 ui/ContactListWindow.vala:1252
 #, c-format
 msgid "Are you sure you want to remove '%s' from your contact list?"
+msgstr ""
+
+#: ui/ContactListWindow.vala:1216 ui/ContactListWindow.vala:1253
+msgid "_Delete"
 msgstr ""
 
 #: ui/ContactListWindow.vala:1283
@@ -457,16 +531,32 @@ msgstr ""
 msgid "Send message"
 msgstr ""
 
+#: ui/Client.vala:49
+msgid "P_references"
+msgstr ""
+
+#: ui/Client.vala:53
+msgid "_Help"
+msgstr ""
+
+#: ui/Client.vala:57
+msgid "_About"
+msgstr ""
+
+#: ui/Client.vala:60 ui/Client.vala:86
+msgid "_Quit"
+msgstr ""
+
 #: ui/Client.vala:83
 msgid "_Show/Hide Venom"
 msgstr ""
 
-#: ui/Client.vala:86
-msgid "_Quit"
-msgstr ""
-
 #: ui/Client.vala:182
 msgid "There is currently no help available"
+msgstr ""
+
+#: ui/UserInfoWindow.vala:83
+msgid "_Apply"
 msgstr ""
 
 #: ui/UserInfoWindow.vala:86
