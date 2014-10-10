@@ -363,7 +363,7 @@ namespace Venom {
     public void button_send_file_clicked(Gtk.Button source){
       Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog(_("Select a file to send"),null,
                                                                               Gtk.FileChooserAction.OPEN,
-                                                                              "_Cancel", Gtk.ResponseType.CANCEL,
+                                                                              !("_Cancel"), Gtk.ResponseType.CANCEL,
                                                                               _("Select"), Gtk.ResponseType.ACCEPT);
       int response = file_selection_dialog.run();
       if(response != Gtk.ResponseType.ACCEPT){

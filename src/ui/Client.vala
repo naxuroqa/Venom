@@ -46,18 +46,18 @@ namespace Venom {
 
         // Create menu
         GLib.Menu menu_prefs = new GLib.Menu();
-        GLib.MenuItem item = new GLib.MenuItem ("P_references", "app.preferences");
+        GLib.MenuItem item = new GLib.MenuItem (_("P_references"), "app.preferences");
         menu_prefs.append_item(item);
 
         GLib.Menu menu_common = new GLib.Menu();
-        item = new GLib.MenuItem ("_Help", "app.help");
+        item = new GLib.MenuItem (_("_Help"), "app.help");
         item.set_attribute("accel", "s", "F1");
         menu_common.append_item(item);
 
-        item = new GLib.MenuItem ("_About", "app.about");
+        item = new GLib.MenuItem (_("_About"), "app.about");
         menu_common.append_item(item);
 
-        item = new GLib.MenuItem ("_Quit", "app.quit");
+        item = new GLib.MenuItem (_("_Quit"), "app.quit");
         item.set_attribute("accel", "s", "<Primary>q");
         menu_common.append_item(item);
 
