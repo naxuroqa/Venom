@@ -159,7 +159,8 @@ namespace Venom {
           Gtk.DialogFlags.MODAL,
           Gtk.MessageType.INFO,
           Gtk.ButtonsType.OK,
-          _("There is currently no help available")
+          _("There is currently no help available"),
+          null
       );
       dialog.transient_for = contact_list_window;
       dialog.run();

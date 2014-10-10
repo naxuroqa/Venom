@@ -27,7 +27,8 @@ namespace Venom {
         Gtk.DialogFlags.MODAL,
         Gtk.MessageType.ERROR,
         Gtk.ButtonsType.CLOSE,
-        message
+        message,
+        null
       );
       if(secondary_text != null)
         dialog.secondary_text = secondary_text;
