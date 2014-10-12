@@ -26,19 +26,25 @@ namespace Venom {
         "naxuroqa <naxuroqa@gmail.com>",
         "Denys Han <h.denys@gmail.com>",
         "Andrii Titov <concuror@gmail.com>",
-        "Maxim Golubev <3demax@gmail.com>",
+        "notsecure <notsecure@marek.ca>",
         "Fukukami",
+        "Mario Daniel Ruiz Saavedra <desiderantes@rocketmail.com>",
+        "fshp <franchesko.salias.hudro.pedros@gmail.com>",
+        "Bahkuh <philip_hq@hotmail.com>",
+        "Joel Leclerc <lkjoel@ubuntu.com>",
+        "infirit <infirit@gmail.com>",
+        "Maxim Golubev <3demax@gmail.com>",
         null
       };
       artists = {
-        "ItsDuke",
+        "ItsDuke <anondelivers.org@gmail.com>",
         null
       };
       string [] packagers = {
-        "stqism <sean@tox.im>",
+        "Sean <sean@tox.im>",
         null
       };
-      this.add_credit_section("Packagers", (string) packagers);
+      this.add_credit_section(_("Packagers"), packagers);
       comments = Config.SHORT_DESCRIPTION;
       copyright = Config.COPYRIGHT_NOTICE;
       license_type = Gtk.License.GPL_3_0;
