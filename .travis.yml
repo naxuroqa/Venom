@@ -9,7 +9,7 @@ before_install:
 
 before_script:
   #installing libsodium, needed for Core
-  - _libsodium_ver=0.4.5
+  - _libsodium_ver=0.7.0
   - git clone git://github.com/jedisct1/libsodium.git > /dev/null
   - pushd libsodium
   - git checkout tags/${_libsodium_ver} > /dev/null
@@ -19,9 +19,10 @@ before_script:
   - sudo make install > /dev/null
   - popd
   #installing libopus, needed for audio encoding/decoding
-  - wget http://downloads.xiph.org/releases/opus/opus-1.0.3.tar.gz > /dev/null
-  - tar xzf opus-1.0.3.tar.gz > /dev/null
-  - pushd opus-1.0.3
+  - _opus_ver=1.0.3
+  - wget http://downloads.xiph.org/releases/opus/opus-${_opus_ver}.tar.gz > /dev/null
+  - tar xzf opus-${_opus_ver}.tar.gz > /dev/null
+  - pushd opus-${_opus_ver}
   - ./configure --prefix=/usr > /dev/null
   - make -j3 > /dev/null
   - sudo make install > /dev/null
@@ -37,7 +38,7 @@ before_script:
   - git clone http://github.com/irungentoo/ProjectTox-Core.git > /dev/null
   - pushd ProjectTox-Core
   - autoreconf -i > /dev/null
-  - ./configure --prefix=/usr --disable-testing --disable-ntox --disable-dht-bootstrap-daemon > /dev/null
+  - ./configure --prefix=/usr --disable-ntox --disable-daemon > /dev/null
   - make -j3 > /dev/null
   - sudo make install > /dev/null
   - popd
