@@ -28,16 +28,21 @@ namespace Venom {
 
       if( message.is_action ) {
         name_label.set_text( message.get_sender_plain() );
-      } else if(!following) {
-        if(message.message_direction == MessageDirection.OUTGOING) {
-          name_label.get_style_context().add_class("own_name");
-        }
+      } else if(!following) {  
+        if( message.message_direction == MessageDirection.OUTGOING ) {
+          name_label.get_style_context().add_class("own_name");  
+          message_label.get_style_context().add_class("own_message");
+        }      
         if(short_names) {
           name_label.set_text( Tools.shorten_name( message.get_sender_plain() ) );
         } else {
           name_label.set_text( message.get_sender_plain() );
         }
       } else {
+        if( message.message_direction == MessageDirection.OUTGOING ) {
+          name_label.get_style_context().add_class("own_name");  
+          message_label.get_style_context().add_class("own_message");
+        }          
         name_label.set_text("");
         name_label.set_size_request(offset, -1);
       }
