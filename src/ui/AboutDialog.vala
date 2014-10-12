@@ -24,6 +24,7 @@ namespace Venom {
     public AboutDialog() {
       authors = {
         "naxuroqa <naxuroqa@gmail.com>",
+        "John Poulakos <jhn1291@gmail.com>",
         "Denys Han <h.denys@gmail.com>",
         "Andrii Titov <concuror@gmail.com>",
         "notsecure <notsecure@marek.ca>",
