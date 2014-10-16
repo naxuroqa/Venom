@@ -43,12 +43,12 @@ namespace Venom {
         uint64 tebibyte = gibibyte * 1024;
         uint64 pebibyte = tebibyte * 1024;
 
-        if(size < kibibyte) return "%llu bytes".printf(size);
-        if(size < mebibyte) return "%.2lf KiB".printf( (double) size / kibibyte );
-        if(size < gibibyte) return "%.2lf MiB".printf( (double) size / mebibyte );
-        if(size < tebibyte) return "%.2lf GiB".printf( (double) size / gibibyte );
-        if(size < pebibyte) return "%.2lf TiB".printf( (double) size / tebibyte );
-        return "really big file";
+        if(size < kibibyte) return _("%llu bytes").printf(size);
+        if(size < mebibyte) return _("%.2lf KiB").printf( (double) size / kibibyte );
+        if(size < gibibyte) return _("%.2lf MiB").printf( (double) size / mebibyte );
+        if(size < tebibyte) return _("%.2lf GiB").printf( (double) size / gibibyte );
+        if(size < pebibyte) return _("%.2lf TiB").printf( (double) size / tebibyte );
+
       } else {
         uint64 kilobyte = 1000;
         uint64 megabyte = kilobyte * 1000;
@@ -56,13 +56,14 @@ namespace Venom {
         uint64 terabyte = gigabyte * 1000;
         uint64 petabyte = terabyte * 1000;
 
-        if(size < kilobyte) return "%llu bytes".printf(size);
-        if(size < megabyte) return "%.2lf kB".printf( (double) size / kilobyte );
-        if(size < gigabyte) return "%.2lf MB".printf( (double) size / megabyte );
-        if(size < terabyte) return "%.2lf GB".printf( (double) size / gigabyte );
-        if(size < petabyte) return "%.2lf TB".printf( (double) size / terabyte );
-        return "really big file";
+        if(size < kilobyte) return _("%llu bytes").printf(size);
+        if(size < megabyte) return _("%.2lf KB").printf( (double) size / kilobyte );
+        if(size < gigabyte) return _("%.2lf MB").printf( (double) size / megabyte );
+        if(size < terabyte) return _("%.2lf GB").printf( (double) size / gigabyte );
+        if(size < petabyte) return _("%.2lf TB").printf( (double) size / terabyte );
       }
+
+      return _("really big file");
     }
 
     private static Gtk.Menu context_menu = null;
@@ -149,9 +150,9 @@ namespace Venom {
         parent,
         Gtk.FileChooserAction.SAVE,
         _("_Cancel"),
-				Gtk.ResponseType.CANCEL,
-				_("_Save"),
-				Gtk.ResponseType.ACCEPT
+        Gtk.ResponseType.CANCEL,
+        _("_Save"),
+        Gtk.ResponseType.ACCEPT
       );
       dialog.set_filename(ResourceFactory.instance.data_filename);
       dialog.transient_for = parent;

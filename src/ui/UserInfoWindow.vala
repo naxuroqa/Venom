@@ -79,8 +79,8 @@ namespace Venom {
       button_copy_id.clicked.connect(() => {application.activate_action("copy-id",  null);});
       notify["user-id"].connect(() => {on_id_changed();});
 
-      this.add_button("_Cancel", Gtk.ResponseType.CANCEL);
-      button_apply = this.add_button("_Apply", Gtk.ResponseType.APPLY);
+      this.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL);
+      button_apply = this.add_button(_("_Apply"), Gtk.ResponseType.APPLY);
 
       this.set_default_response(Gtk.ResponseType.APPLY);
       this.title = _("Edit user information");
