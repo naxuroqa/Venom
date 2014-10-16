@@ -794,7 +794,7 @@ namespace Venom {
                                   Gtk.ButtonsType.NONE,
                                   _("'%s' has invited you to a groupchat, do you want to accept?"),
                                     (c.name != null && c.name != "") ? c.name : Tools.bin_to_hexstring(c.public_key));
-      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
+      message_dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Accept"), Gtk.ResponseType.ACCEPT, null);
 
       int response = message_dialog.run();
       message_dialog.destroy();
@@ -887,8 +887,8 @@ namespace Venom {
                                   Gtk.MessageType.QUESTION,
                                   Gtk.ButtonsType.NONE,
                                   "");
-      message_dialog.set_markup("'%s' is calling (%s) ...".printf(c.get_name_string(), c.video ? "Video call" : "Audio only"));
-      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
+      message_dialog.set_markup(_("'%s' is calling (%s) ...").printf(c.get_name_string(), c.video ? _("Video call") : _("Audio only")));
+      message_dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Accept"), Gtk.ResponseType.ACCEPT, null);
       //close message dialog when callstate changes (timeout, cancel, ...)
       c.notify["call-state"].connect(() => {
         message_dialog.destroy();
@@ -1213,7 +1213,7 @@ namespace Venom {
                                   Gtk.MessageType.WARNING,
                                   Gtk.ButtonsType.NONE,
                                   _("Are you sure you want to remove '%s' from your contact list?"), name);
-      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Delete", Gtk.ResponseType.OK, null);
+      message_dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Delete"), Gtk.ResponseType.OK, null);
       int response = message_dialog.run();
       message_dialog.destroy();
       if(response != Gtk.ResponseType.OK)
@@ -1250,7 +1250,7 @@ namespace Venom {
                                   Gtk.MessageType.WARNING,
                                   Gtk.ButtonsType.NONE,
                                   _("Are you sure you want to remove '%s' from your contact list?"), name);
-      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Delete", Gtk.ResponseType.OK, null);
+      message_dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Delete"), Gtk.ResponseType.OK, null);
       int response = message_dialog.run();
       message_dialog.destroy();
       if(response != Gtk.ResponseType.OK)
