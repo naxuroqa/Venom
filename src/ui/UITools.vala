@@ -148,7 +148,11 @@ namespace Venom {
       Gtk.FileChooserDialog dialog = new Gtk.FileChooserDialog(
         _("Export tox data file"),
         parent,
-        Gtk.FileChooserAction.SAVE,_("_Cancel"),Gtk.ResponseType.CANCEL,_("_Save"),Gtk.ResponseType.ACCEPT
+        Gtk.FileChooserAction.SAVE,
+        _("_Cancel"),
+        Gtk.ResponseType.CANCEL,
+        _("_Save"),
+        Gtk.ResponseType.ACCEPT
       );
       dialog.set_filename(ResourceFactory.instance.data_filename);
       dialog.transient_for = parent;
