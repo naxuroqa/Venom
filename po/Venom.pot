@@ -939,7 +939,7 @@ msgid "KB/MB"
 msgstr ""
 
 #: ui/settings_window.ui:30
-msgid "Settings"
+msgid "Preferences"
 msgstr ""
 
 #: ui/settings_window.ui:78

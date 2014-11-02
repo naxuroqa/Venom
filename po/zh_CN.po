@@ -779,8 +779,8 @@ msgid "Set new nospam"
 msgstr ""
 
 #: ui/settings_window.ui:30
-msgid "Settings"
-msgstr "设置"
+msgid "Preferences"
+msgstr "首选项"
 
 #: core/Settings.vala:102
 #, c-format
