@@ -788,8 +788,8 @@ msgid "Set new nospam"
 msgstr "Установить новый NoSpam"
 
 #: ui/settings_window.ui:30
-msgid "Settings"
-msgstr "Настройки"
+msgid "Preferences"
+msgstr "Параметры"
 
 #: core/Settings.vala:102
 #, c-format
