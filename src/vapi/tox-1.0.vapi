@@ -90,6 +90,13 @@ namespace Tox {
     PEER_DEL,
     PEER_NAME
   }
+  
+  [CCode (cname = "guint8", cprefix = "TOX_PROXY_", has_type_id = false)]
+  public enum ProxyType{
+    NONE,
+    SOCKS5,
+    HTTP
+  }
 
   [CCode (cname = "Tox_Options",  destroy_function = "", has_type_id = false)]
   public struct Options {
@@ -108,7 +115,7 @@ namespace Tox {
      */
     uint8 udp_disabled;
     /* Enable proxy support. (only basic TCP socks5 proxy currently supported.) (default: 0 (disabled))*/
-    uint8 proxy_enabled;
+    ProxyType proxy_type;
     /* Proxy ip or domain in NULL terminated string format. */
     char proxy_address[256];
     /* Proxy port: in host byte order. */
