@@ -1,7 +1,9 @@
 Venom [![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=master)](https://travis-ci.org/naxuroqa/Venom) [![tip for next commit](http://tip4commit.com/projects/634.svg)](http://tip4commit.com/projects/634)
 =====
 
-a cross-platform graphical user interface for [Tox](https://github.com/irungentoo/ProjectTox-Core) written in [Vala](https://wiki.gnome.org/Vala) using [GTK+](http://gtk.org).
+###*Notice: This client is no longer maintained, and will not compile against the current version of Toxcore. If you are looking for a Tox Client, please check the [official downloads page.](https://downloads.tox.im)*
+
+A cross-platform graphical user interface for [Tox](https://github.com/irungentoo/ProjectTox-Core) written in [Vala](https://wiki.gnome.org/Vala) using [GTK+](http://gtk.org).
 
 Installing
 ----------
