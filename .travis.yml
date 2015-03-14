@@ -9,7 +9,7 @@ before_install:
 
 before_script:
   #installing libsodium, needed for Core
-  - _libsodium_ver=0.7.0
+  - _libsodium_ver=1.0.2
   - git clone git://github.com/jedisct1/libsodium.git > /dev/null
   - pushd libsodium
   - git checkout tags/${_libsodium_ver} > /dev/null
