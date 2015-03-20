@@ -114,7 +114,7 @@ namespace Venom {
           if(proxy_regex != null && proxy_regex.match(proxy, 0, out info)) {
             string proxy_host = info.fetch_named("host");
             string proxy_port = info.fetch_named("port");
-            options.proxy_enabled = 1;
+            options.proxy_type = Tox.ProxyType.SOCKS5;
             options.udp_disabled = 1;
             Memory.copy(*(&options.proxy_address), proxy_host.data, int.min(proxy_host.length, options.proxy_address.length));
             options.proxy_port = (uint16)int.parse(proxy_port);
