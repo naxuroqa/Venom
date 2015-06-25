@@ -24,6 +24,9 @@ namespace Venom {
     private Gtk.Dialog dialog;
     public signal void destroy();
 
+    private Gtk.ToggleButton audio_preview_button;
+    private Gtk.ToggleButton video_preview_button;
+
     public SettingsWindow( Gtk.Window parent ) {
       Gtk.Builder builder = new Gtk.Builder();
       try {
@@ -49,11 +52,38 @@ namespace Venom {
 #else
       (builder.get_object("notify_checkbutton") as Gtk.Widget).sensitive = false;
 #endif
+      settings.bind_property(Settings.NOTIFY_SOUNDS_KEY, builder.get_object("notify_sounds_checkbutton"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings.bind_property(Settings.DEFAULT_HOST_KEY, builder.get_object("default_host_entry"), "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings.bind_property(Settings.DEC_BINARY_PREFIX_KEY, builder.get_object("filesize_prefix_combobox"), "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL,
         (binding, srcval, ref targetval) => {targetval.set_int((bool)srcval ? 0 : 1); return true;},
         (binding, srcval, ref targetval) => {targetval.set_boolean((int)srcval == 0); return true;}
       );
+      audio_preview_button = builder.get_object("audio_preview_button") as Gtk.ToggleButton;
+      video_preview_button = builder.get_object("video_preview_button") as Gtk.ToggleButton;
+      audio_preview_button.toggled.connect(() => {
+        if(audio_preview_button.active) {
+          AVManager.instance.start_audio_preview();
+        } else {
+          AVManager.instance.end_audio_preview();
+        }
+      });
+      video_preview_button.toggled.connect(() => {
+        if(video_preview_button.active) {
+          AVManager.instance.start_video_preview();
+        } else {
+          AVManager.instance.end_video_preview();
+        }
+      });
+      
+    }
+
+    ~SettingsWindow() {
+      if(audio_preview_button.active) {
+        AVManager.instance.end_audio_preview();
+      }
+      if(video_preview_button.active) {
+        AVManager.instance.end_video_preview();
+      }
     }
 
     public void show_all() {

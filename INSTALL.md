@@ -30,21 +30,21 @@ Additionally to the tox build dependencies, you will need:
 
 Ubuntu >= 12.10 (Quantal Quetzal) / Linux Mint / Debian:
 
-    apt-get install valac cmake libgtk-3-dev libjson-glib-dev libsqlite3-dev libqrencode-dev libnotify-dev
+    apt-get install valac cmake libgtk-3-dev libjson-glib-dev libsqlite3-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libqrencode-dev libnotify-dev
 
 Ubuntu 12.04 (Precise Pangolin): (needs a ppa to get a newer version of valac as well as djbdns for dns resolution)
 
     apt-add-repository ppa:vala-team/ppa
     apt-get update
-    apt-get install valac cmake libgtk-3-dev libjson-glib-dev libsqlite3-dev libqrencode-dev libnotify-dev
+    apt-get install valac cmake libgtk-3-dev libjson-glib-dev libsqlite3-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libqrencode-dev libnotify-dev
 
 Fedora:
 
-    yum install vala cmake gtk3-devel json-glib-devel sqlite-devel qrencode-devel libnotify-devel
+    yum install vala cmake gtk3-devel json-glib-devel sqlite-devel gstreamer-devel gstreamer-plugins-base-devel qrencode-devel libnotify-devel
 
 Arch Linux: (There is an [aur-package](https://aur.archlinux.org/packages/venom-git))
 
-    pacman -S vala cmake gtk3 json-glib sqlite qrencode libnotify
+    pacman -S vala cmake gtk3 json-glib sqlite gstreamer0.10 gstreamer0.10-base-plugins qrencode libnotify
 
 Building and installing Venom
 -----------------------------

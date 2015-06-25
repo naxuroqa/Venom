@@ -44,7 +44,7 @@ namespace Venom {
 
     public void update_groupchat_info() {
       // update groupchat name
-      label_groupchat_name.label.label = _("<b>%s</b>").printf(groupchat.get_name_string_with_hyperlinks());
+      label_groupchat_name.label.label = "<b>%s</b>".printf(groupchat.get_name_string_with_hyperlinks());
 
       // update groupchat status message
       label_groupchat_statusmessage.label = groupchat.get_status_string_with_hyperlinks();
@@ -85,8 +85,8 @@ namespace Venom {
       box_user_info.remove(label_groupchat_name_);
       label_groupchat_name = new EditableLabel.with_label(label_groupchat_name_);
       box_user_info.pack_start(label_groupchat_name, false);
-      label_groupchat_name.button_cancel.get_style_context().add_class("callbutton");
-      label_groupchat_name.button_ok.get_style_context().add_class("callbutton");
+      label_groupchat_name.button_cancel.get_style_context().add_class("sendbutton");
+      label_groupchat_name.button_ok.get_style_context().add_class("sendbutton");
       label_groupchat_name.show_all();
       label_groupchat_name.show_entry.connect_after(() => {
         label_groupchat_name.entry.text = groupchat.local_name;
@@ -96,13 +96,9 @@ namespace Venom {
         groupchat_changed(groupchat);
       });
 
-      //TODO
-      //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
-      //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
+      (builder.get_object("button_call") as Gtk.Button).sensitive = false;
+      (builder.get_object("button_call_video") as Gtk.Button).sensitive = false;
       Gtk.Button button_send = builder.get_object("button_send") as Gtk.Button;
-      //Gtk.Button button_send_file = builder.get_object("button_send_file") as Gtk.Button;
-
-      //button_send_file.clicked.connect(button_send_file_clicked);
 
       Gtk.Paned paned_sidebar = builder.get_object("paned_sidebar") as Gtk.Paned;
       Gtk.ScrolledWindow sidebar_scrolled_window = new Gtk.ScrolledWindow(null, null);

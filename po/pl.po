@@ -1,38 +1,40 @@
-# Russian translation for Venom package.
-# Copyright (C) 2014 VENOM COPYRIGHT HOLDER
-# This file is distributed under the same license as the Venom package.
-# herrniemand, 2014.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-10 04:00+0400\n"
-"PO-Revision-Date: 2014-10-10 04:07+0400\n"
-"Last-Translator: X-NicON <x-icon@ya.ru>\n"
-"Language-Team: Russian\n"
-"Language: ru\n"
+"PO-Revision-Date: 2014-08-14 20:22+0100\n"
+"Last-Translator: Zetok Zalbavar <zexavexxe@gmail.com>\n"
+"Language-Team: \n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.9\n"
+"X-Generator: Poedit 1.5.5\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: ../src/\n"
 
 #: Main.vala:50
 #, c-format
 msgid "'%s' not a positive number"
-msgstr "'%s' не положительное число"
+msgstr ""
 
 #: Main.vala:68
 #, c-format
 msgid "error: %s\n"
-msgstr "ошибка: %s\n"
+msgstr "błąd: %s\n"
 
 #: Main.vala:69
 #, c-format
 msgid "Run '%s --help' to see a full list of available command line options.\n"
-msgstr ""
-"Используйте '%s --help' чтобы увидеть полный список доступных параметров "
-"командной строки.\n"
+msgstr "Uruchom '%s --help' by zobaczyć pełną listę dostępnych opcji.\n"
 
 #: ui/user_info_window.ui:40
 msgid "ID:"
@@ -40,112 +42,112 @@ msgstr "ID:"
 
 #: ui/user_info_window.ui:178
 msgid "Status message:"
-msgstr "Статус:"
+msgstr "Status:"
 
 #: ui/user_info_window.ui:192
 msgid "Name:"
-msgstr "Имя:"
+msgstr "Nazwa:"
 
 #: ui/user_info_window.ui:222
 msgid "Icon:"
-msgstr "Иконка:"
+msgstr "Ikona:"
 
 #: ui/user_info_window.ui:254
 msgid "_Browse..."
-msgstr "_Обзор..."
+msgstr "_Przeglądaj..."
 
 #: ui/user_info_window.ui:282
 msgid "<b>User</b>"
-msgstr "<b>Пользователь</b>"
+msgstr "<b>Użytkownik</b>"
 
 #: ui/UITools.vala:45 ui/UITools.vala:58
 #, c-format
 msgid "%llu bytes"
-msgstr "%llu байт"
+msgstr ""
 
 #: ui/UITools.vala:46
 #, c-format
 msgid "%.2lf KiB"
-msgstr "%.2lf КиБ"
+msgstr ""
 
 #: ui/UITools.vala:47
 #, c-format
 msgid "%.2lf MiB"
-msgstr "%.2lf МиБ"
+msgstr ""
 
 #: ui/UITools.vala:48
 #, c-format
 msgid "%.2lf GiB"
-msgstr "%.2lf ГиБ"
+msgstr ""
 
 #: ui/UITools.vala:49
 #, c-format
 msgid "%.2lf TiB"
-msgstr "%.2lf ТиБ"
+msgstr ""
 
 #: ui/UITools.vala:59
 #, c-format
 msgid "%.2lf KB"
-msgstr "%.2lf КБ"
+msgstr ""
 
 #: ui/UITools.vala:60
 #, c-format
 msgid "%.2lf MB"
-msgstr "%.2lf МБ"
+msgstr ""
 
 #: ui/UITools.vala:61
 #, c-format
 msgid "%.2lf GB"
-msgstr "%.2lf ГБ"
+msgstr ""
 
 #: ui/UITools.vala:62
 #, c-format
 msgid "%.2lf TB"
-msgstr "%.2lf ТБ"
+msgstr ""
 
 #: ui/UITools.vala:65
 msgid "really big file"
-msgstr "Очень большой файл"
+msgstr ""
 
 #: ui/UITools.vala:79
 msgid "_Unfriend"
-msgstr "Удлаить из контактов"
+msgstr "_Usuń znajomego"
 
 #: ui/UITools.vala:89
 msgid "_File transfers"
-msgstr "Файлы"
+msgstr "Trans_fery plików"
 
 #: ui/UITools.vala:95
 msgid "_Audio chat"
-msgstr "_Звонки"
+msgstr "Czat _audio"
 
 #: ui/UITools.vala:99
 msgid "_Video chat"
-msgstr "_Видеозвонки"
+msgstr "Czat _video"
 
 #: ui/UITools.vala:103
 msgid "_Automatically accept ..."
-msgstr "Принимать _автоматически"
+msgstr "_Automatycznie akceptuj..."
 
 #: ui/UITools.vala:109
 msgid "_Invite to ..."
-msgstr "Пригласить в..."
+msgstr "_Zaproś do ..."
 
 #: ui/UITools.vala:113
 msgid "_New groupchat"
-msgstr "Создать групповой чат"
+msgstr "_Nowy czat grupowy"
 
 #: ui/UITools.vala:125
 msgid "_Invite to new groupchat"
-msgstr "Пригласить в чат"
+msgstr "_Zaproś do nowego czatu grupowego"
 
 #: ui/UITools.vala:139
 msgid "_Leave groupchat"
-msgstr "Покинуть чат"
+msgstr "_Opuść czat grupowy"
 
 #: ui/UITools.vala:148
 msgid "Export tox data file"
-msgstr "Экспортировать данные Tox в файл"
+msgstr "Eksportuj plik danych tox"
 
 #: ui/UITools.vala:150 ui/PinDialog.vala:48 ui/ContactListWindow.vala:680
 #: ui/ContactListWindow.vala:797 ui/ContactListWindow.vala:891
@@ -153,125 +155,125 @@ msgstr "Экспортировать данные Tox в файл"
 #: ui/AddContactDialog.vala:74 ui/FileTransferChatEntry.vala:157
 #: ui/UserInfoWindow.vala:82
 msgid "_Cancel"
-msgstr "_Отмена"
+msgstr "_Anuluj"
 
 #: ui/UITools.vala:150 ui/FileTransferChatEntry.vala:158
 msgid "_Save"
-msgstr "_Сохранить"
+msgstr "Zapi_sz"
 
 #: ui/UITools.vala:166
 msgid "Exporting data file failed"
-msgstr "Не удалось экспортировать данные в файл"
+msgstr "Eksport pliku danych nieudany"
 
 #: ui/UITools.vala:166
 msgid "Could not export data file: "
-msgstr "Не удалось экспортировать данные в файл:"
+msgstr "Nie udało się wyeksportować pliku danych: "
 
 #: ui/UITools.vala:172
 msgid "Importing data files is currently not supported"
-msgstr "Функция импорта файлов-данных Tox, ещё не поддерживается"
+msgstr "Importowanie pliku danych nie jest obecnie wspierane"
 
 #: ui/settings_window.ui:14
 msgid "KiB/MiB"
-msgstr "КиБ/МиБ"
+msgstr "KiB/MiB"
 
 #: ui/settings_window.ui:18
 msgid "KB/MB"
-msgstr "Кбайт/Мбайт"
+msgstr "KB/MB"
 
 #: ui/settings_window.ui:30
 msgid "Settings"
-msgstr "Настройки"
+msgstr "Ustawienia"
 
 #: ui/settings_window.ui:79
 msgid "Keep history"
-msgstr "Сохранять историю"
+msgstr "Trzymaj historię przez"
 
 #: ui/settings_window.ui:105
 msgid "indefinitely"
-msgstr "За всё время"
+msgstr "nieskończoność"
 
 #: ui/settings_window.ui:127
 msgid "delete after"
-msgstr "За последние"
+msgstr "usuń po"
 
 #: ui/settings_window.ui:160
 msgid "days"
-msgstr "дней"
+msgstr "dniach"
 
 #: ui/settings_window.ui:186
 msgid "Show _others when I am typing"
-msgstr "Показывать остальным когда я печатаю."
+msgstr "P_okaż innym gdy piszę"
 
 #: ui/settings_window.ui:202
 msgid "Show me when others are typing"
-msgstr "Показывать мне когда остальные печатают."
+msgstr "Pokaż gdy inni piszą"
 
 #: ui/settings_window.ui:221
 msgid "Privacy"
-msgstr "Приватность"
+msgstr "Prywatność"
 
 #: ui/settings_window.ui:236
 msgid "Flash window when a new message arrives"
-msgstr "Оповещать о приходе нового сообщения."
+msgstr "Migaj oknem gdy przychodzi nowa wiadomość"
 
 #: ui/settings_window.ui:251
 msgid "Play notification sounds"
-msgstr "Проигрывать звук оповещения"
+msgstr ""
 
 #: ui/settings_window.ui:266
 msgid "Show notification when a new message arrives"
-msgstr "Показывать всплывающее уведомление"
+msgstr "Pokaż powiadomienie gdy przychodzi nowa wiadomość"
 
 #: ui/settings_window.ui:288
 msgid "Notifications"
-msgstr "Уведомления"
+msgstr ""
 
 #: ui/settings_window.ui:323 ui/settings_window.ui:398
 msgid "Recording device"
-msgstr "Устройство"
+msgstr ""
 
 #: ui/settings_window.ui:337 ui/settings_window.ui:412
 msgid "System default"
-msgstr "Устройство по умолчанию"
+msgstr ""
 
 #: ui/settings_window.ui:348 ui/settings_window.ui:423
 msgid "Preview"
-msgstr "Тест"
+msgstr ""
 
 #: ui/settings_window.ui:367
+#, fuzzy
 msgid "Audio"
-msgstr "Микрофон"
+msgstr "Czat _audio"
 
 #: ui/settings_window.ui:442
+#, fuzzy
 msgid "Video"
-msgstr "Видеокамера"
+msgstr "Czat _video"
 
 #: ui/settings_window.ui:461
 msgid "Audio / Video"
-msgstr "Аудио / Видео"
+msgstr ""
 
 #: ui/settings_window.ui:477
 msgid "Minimize to system tray"
-msgstr "Сворачивать в системный трей"
+msgstr "Minimalizuj do systemowego traya"
 
 #: ui/settings_window.ui:499
 msgid "Default Tox DNS ID suffix:"
-msgstr "Стандартный DNS суфикс:"
+msgstr "Domyślny sufix Tox DNS ID:"
 
 #: ui/settings_window.ui:535
 msgid "Show filesize in"
-msgstr "Показать размер файла в"
+msgstr "Pokaż rozmiar pliku w"
 
 #: ui/settings_window.ui:578
 msgid "Miscellaneous"
-msgstr "Разное"
+msgstr "Różne"
 
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
-msgstr ""
-"Ackermann Yuriy <ackermann.yuriy@gmail.com>\n"
-"X-NicON <x-icon@ya.ru>"
+msgstr "Zetok Zalbavar <zexavexxe@gmail.com>"
 
 #: ui/PinDialog.vala:37
 #, c-format
@@ -279,34 +281,34 @@ msgid ""
 "Please insert PIN for \n"
 "<b>%s</b>"
 msgstr ""
-"Пожалуйста введите Пин-код для \n"
+"Proszę wprowadzić PIN dla \n"
 "<b>%s</b>"
 
 #: ui/PinDialog.vala:48
 msgid "_Ok"
-msgstr "_Ок"
+msgstr ""
 
 #: ui/PinDialog.vala:49
 msgid "Please insert PIN..."
-msgstr "Пожалуйста введите Пин-код..."
+msgstr "Proszę wprowadzić PIN..."
 
 #: ui/MessageTextView.vala:27
 msgid "Type your message here..."
-msgstr "Сообщение..."
+msgstr "Wpisz swoją wiadomość tutaj..."
 
 #: ui/ContactListWindow.vala:131
 #, c-format
 msgid "Could not read theme from \"%s\""
-msgstr "Не удалось загрузить тему из \"%s\""
+msgstr "Nie udało się odczytać motywu z \"%s\""
 
 #: ui/ContactListWindow.vala:210 core/ToxSession.vala:31
 #: core/GroupChatContact.vala:32
 msgid "Online"
-msgstr "В сети"
+msgstr "Online"
 
 #: ui/ContactListWindow.vala:212
 msgid "All"
-msgstr "Все"
+msgstr "Wszyscy"
 
 #: ui/ContactListWindow.vala:679
 #, c-format
@@ -314,349 +316,352 @@ msgid ""
 "New friend request from '%s'.\n"
 "Do you want to accept?"
 msgstr ""
-"'%s' хочет добавить вас в друзья.\n"
-"Принять?"
+"Nowe zapytanie o dodanie do znajomych od '%s'.\n"
+"Czy chcesz zaakceptować?"
 
 #: ui/ContactListWindow.vala:680 ui/ContactListWindow.vala:797
 #: ui/ContactListWindow.vala:891
 msgid "_Accept"
-msgstr "_Принять"
+msgstr "_Akceptuj"
 
 #: ui/ContactListWindow.vala:745
 msgid "Connected to the network"
-msgstr "Подключен"
+msgstr "Połączono z siecią"
 
 #: ui/ContactListWindow.vala:751
 msgid "Disconnected from the network"
-msgstr "Отключен от сети"
+msgstr "Rozłączono z siecią"
 
 #: ui/ContactListWindow.vala:795
 #, c-format
 msgid "'%s' has invited you to a groupchat, do you want to accept?"
-msgstr "'%s' пригласил вас в групповой чат. Принять?"
+msgstr "'%s' zaprosił cię do rozmowy grupowej, czy chcesz zaakceptować?"
 
 #: ui/ContactListWindow.vala:890
-#, c-format
+#, fuzzy, c-format
 msgid "'%s' is calling (%s) ..."
-msgstr "'%s' звонит (%s) ..."
+msgstr "%s pisze..."
 
 #: ui/ContactListWindow.vala:890
+#, fuzzy
 msgid "Video call"
-msgstr "Видеозвонок"
+msgstr "Czat _video"
 
 #: ui/ContactListWindow.vala:890
+#, fuzzy
 msgid "Audio only"
-msgstr "Голосовой разговор"
+msgstr "Czat _audio"
 
 #: ui/ContactListWindow.vala:1215 ui/ContactListWindow.vala:1252
 #, c-format
 msgid "Are you sure you want to remove '%s' from your contact list?"
-msgstr "Вы уверены, что хотите удалить '%s' из списка контактов?"
+msgstr "Czy na pewno chcesz usunąć '%s' z listy kontaktów?"
 
 #: ui/ContactListWindow.vala:1216 ui/ContactListWindow.vala:1253
 msgid "_Delete"
-msgstr "_Удалить"
+msgstr ""
 
 #: ui/ContactListWindow.vala:1283
 msgid "Resolving ID failed"
-msgstr "Ошибка при получении ID."
+msgstr "Rozwiązywanie ID nie powiodło się"
 
 #: ui/ContactListWindow.vala:1283
 msgid "Could not resolve ID from DNS record\n"
-msgstr "Не удалось получить Tox ID через DNS-запись\n"
+msgstr "Nie udało się rozwiązać ID z rekordu DNS\n"
 
 #: ui/ContactListWindow.vala:1293 ui/ContactListWindow.vala:1304
 msgid "Adding Friend failed"
-msgstr "При добавлении в друзья произошла ошибка."
+msgstr "Dodawanie znajomego nieudane"
 
 #: ui/ContactListWindow.vala:1293
 msgid "Could not add friend: Invalid ID\n"
-msgstr "Не удалось добавить друга: Недействительный ID.\n"
+msgstr "Nie udało się dodać znajomego: niepoprawny ID\n"
 
 #: ui/ContactListWindow.vala:1304
 #, c-format
 msgid "Could not add friend: %s.\n"
-msgstr "Не удалось добавить друга: %s.\n"
+msgstr "Nie udało się dodać znajomego: %s.\n"
 
 #: ui/add_contact_dialog.ui:6
 msgid "Please let me add you to my contact list."
-msgstr "Пожалуйста, добавьте меня в свой список контактов."
+msgstr "Proszę dodaj mnie do listy znajomych."
 
 #: ui/add_contact_dialog.ui:40
 msgid "Enter a Tox ID here or a Tox URI"
-msgstr "Вставьте Tox ID или Tox URI"
+msgstr "Wpisz tu Tox ID lub Tox URI"
 
 #: ui/add_contact_dialog.ui:54
 msgid "_Nickname (optional):"
-msgstr "_Ник (необязательно):"
+msgstr "_Nick (opcjonalny):"
 
 #: ui/add_contact_dialog.ui:67
 msgid "Set a custom nickname for the friend you are about to add"
-msgstr "Назначить имя для пользователя которого вы собираетесь добавить."
+msgstr "Ustaw własny nick dla dodawanego znajomego"
 
 #: ui/add_contact_dialog.ui:94
 msgid "_Message (optional):"
-msgstr "_Сообщение (необязательно):"
+msgstr "Wiado_mość (opcjonalna):"
 
 #: ui/add_contact_dialog.ui:113
 msgid "Send a custom message to be displayed to the friend you are adding"
 msgstr ""
-"Отправить сообщение, которое будет отображаться при запросе на добавление "
-"Вас в контакты."
+"Wyślij własną wiadomość, która będzie wyświetlona dla znajomego którego "
+"dodajesz"
 
 #: ui/AddContactDialog.vala:74
 msgid "_Add"
-msgstr "_Добавить"
+msgstr ""
 
 #: ui/AddContactDialog.vala:76 ui/contact_list.ui:427
 msgid "Add contact"
-msgstr "Добавить контакт"
+msgstr "Dodaj kontakt"
 
 #: ui/AddContactDialog.vala:90
 msgid "No ID given"
-msgstr "Tox ID не указан"
+msgstr "Nie podano ID"
 
 #: ui/AddContactDialog.vala:96
 msgid "ID contains invalid characters"
-msgstr "ID содержит недопустимые символы."
+msgstr "ID zawiera nieprawidłowe znaki"
 
 #: ui/AddContactDialog.vala:100
 msgid "Valid ID size"
-msgstr "Правильный размер Tox ID"
+msgstr "Poprawny rozmiar ID"
 
 #: ui/contact_list.ui:50
 msgid "_Edit user"
-msgstr "_Редактировать пользователя"
+msgstr "_Edytuj użytkownika"
 
 #: ui/contact_list.ui:61
 msgid "_Copy ID to clipboard"
-msgstr "_Скопировать Tox ID в буфер обмена"
+msgstr "Kopiuj ID do s_chowka"
 
 #: ui/contact_list.ui:72
 msgid "Change _Status"
-msgstr "Изменить _Статус"
+msgstr "Zmień _Status"
 
 #: ui/contact_list.ui:85
 msgid "_Online"
-msgstr "_В сети"
+msgstr "_Online"
 
 #: ui/contact_list.ui:96
 msgid "_Away"
-msgstr "_Отошел"
+msgstr "_Nieobecny"
 
 #: ui/contact_list.ui:107
 msgid "_Busy"
-msgstr "_Занят"
+msgstr "_Zajęty"
 
 #: ui/contact_list.ui:118
 msgid "O_ffline"
-msgstr "Не в сети"
+msgstr "O_ffline"
 
 #: ui/contact_list.ui:141
 msgid "E_xport data file"
-msgstr "_Экспортировать файл данных"
+msgstr "_Eksportuj plik danych"
 
 #: ui/contact_list.ui:149
 msgid "_Import data file"
-msgstr "Импортировать данные Tox из файла"
+msgstr "_Importuj plik danych"
 
 #: ui/contact_list.ui:306
 msgid "connecting..."
-msgstr "подключение..."
+msgstr "łączenie..."
 
 #: ui/contact_list.ui:444
 msgid "Create groupchat"
-msgstr "Создать групповой чат"
+msgstr "Utwórz czat grupowy"
 
 #: ui/contact_list.ui:477
 msgid "Open preferences"
-msgstr "Настройки"
+msgstr "Otwórz ustawienia"
 
 #: ui/ConversationWidget.vala:68
 #, c-format
 msgid "%s is typing..."
-msgstr "%s пишет..."
+msgstr "%s pisze..."
 
 #: ui/ConversationWidget.vala:364
 msgid "Select a file to send"
-msgstr "Выберите файл для отправки"
+msgstr "Wybierz plik do wysłania"
 
 #: ui/ConversationWidget.vala:367
 msgid "Select"
-msgstr "Выбрано"
+msgstr "Wybierz"
 
 #: ui/FileTransferChatEntry.vala:85
 msgid "File received"
-msgstr "Файл получен"
+msgstr "Plik odebrany"
 
 #: ui/FileTransferChatEntry.vala:87
 msgid "File sent"
-msgstr "Файл отправлен"
+msgstr "Plik wysłany"
 
 #: ui/FileTransferChatEntry.vala:94
 msgid "File was rejected"
-msgstr "Пользователь отклонил прием файла"
+msgstr "Plik został odrzucony"
 
 #: ui/FileTransferChatEntry.vala:104
 msgid "Paused"
-msgstr "Приостановлен"
+msgstr "Wstrzymany"
 
 #: ui/FileTransferChatEntry.vala:107
 msgid "Sending failed"
-msgstr "Отправка не удалась"
+msgstr "Wysyłanie nie powiodło się"
 
 #: ui/FileTransferChatEntry.vala:113
 msgid "Receiving failed"
-msgstr "Ошибка при получении"
+msgstr "Odbieranie nie powiodło się"
 
 #: ui/FileTransferChatEntry.vala:119
 msgid "Canceled"
-msgstr "Отменено"
+msgstr "Anulowane"
 
 #: ui/FileTransferChatEntry.vala:125 ui/FileTransferChatEntry.vala:129
 msgid "Disconnected"
-msgstr "Отключен"
+msgstr "Rozłączony"
 
 #: ui/FileTransferChatEntry.vala:155
 msgid "Save file"
-msgstr "Сохранить файл"
+msgstr "Zapisz plik"
 
 #: ui/conversation_window.ui:156
 msgid "Call contact"
-msgstr "Позвонить"
+msgstr "Zadzwoń do kontaktu"
 
 #: ui/conversation_window.ui:175
 msgid "Call contact with video"
-msgstr "Видеозвонок"
+msgstr "Zadzwoń do kontaku z wideo"
 
 #: ui/conversation_window.ui:291
 msgid "Insert Smiley"
-msgstr "Вставить смайлик"
+msgstr "Wstaw uśmiech"
 
 #: ui/conversation_window.ui:309
 msgid "Send file"
-msgstr "Отправить файл"
+msgstr "Wyślij plik"
 
 #: ui/conversation_window.ui:342
 msgid "Send message"
-msgstr "Отправить сообщение"
+msgstr "Wyślij wiadomość"
 
 #: ui/Client.vala:49
+#, fuzzy
 msgid "P_references"
-msgstr "_Настройки"
+msgstr "Otwórz ustawienia"
 
 #: ui/Client.vala:53
 msgid "_Help"
-msgstr "_Справка"
+msgstr ""
 
 #: ui/Client.vala:57
 msgid "_About"
-msgstr "_О программе"
+msgstr ""
 
 #: ui/Client.vala:60 ui/Client.vala:86
 msgid "_Quit"
-msgstr "_Выход"
+msgstr "_Wyjdź"
 
 #: ui/Client.vala:83
 msgid "_Show/Hide Venom"
-msgstr "_Показать/Скрыть Venom"
+msgstr "_Pokaż/Ukryj Venom"
 
 #: ui/Client.vala:182
 msgid "There is currently no help available"
-msgstr "Функция \"Помощь\" не доступна в данный момент."
+msgstr "Obecnie nie ma dostępnej pomocy"
 
 #: ui/UserInfoWindow.vala:83
 msgid "_Apply"
-msgstr "_Применить"
+msgstr ""
 
 #: ui/UserInfoWindow.vala:86
 msgid "Edit user information"
-msgstr "Профиль"
+msgstr "Edytuj informacje użytkownika"
 
 #: core/GroupChat.vala:45
 #, c-format
 msgid "Groupchat #%i"
-msgstr "Групповой чат #%i"
+msgstr "Czat grupowy #%i"
 
 #: core/GroupChat.vala:52
 #, c-format
 msgid "%i people connected"
-msgstr "%i человек подключено."
+msgstr "%i osób połączonych"
 
 #: core/GroupChat.vala:54
 #, c-format
 msgid "%i person connected"
-msgstr "%i человек подключен."
+msgstr "%i osoba połączona"
 
 #: core/GroupChat.vala:56
 msgid "no one connected"
-msgstr "никто не подключен"
+msgstr "nikt nie połączył się"
 
 #: core/ToxSession.vala:33
 msgid "Away"
-msgstr "Отошел"
+msgstr "Nieobecny"
 
 #: core/ToxSession.vala:35
 msgid "Busy"
-msgstr "Занят"
+msgstr "Zajęty"
 
 #: core/ToxSession.vala:37 core/Contact.vala:129 core/Contact.vala:139
 msgid "Offline"
-msgstr "Не в сети"
+msgstr "Offline"
 
 #: core/ToxSession.vala:873
 #, c-format
 msgid "File \"%d\" does not exist."
-msgstr "Файл \"%d\" не существует."
+msgstr "Plik \"%d\" nie istnieje."
 
 #: core/ToxSession.vala:880
 msgid "Error while reading from stream."
-msgstr "Ошибка при чтении из потока."
+msgstr ""
 
 #: core/ToxSession.vala:886
 msgid "Error while loading messenger data."
-msgstr "Ошибка при загрузке данных мессенджера."
+msgstr ""
 
 #: core/Tools.vala:138
 msgid "Message too long"
-msgstr "Размер сообщения превышает максимально допустимый размер."
+msgstr "Wiadomość zbyt długa"
 
 #: core/Tools.vala:140
 msgid "No message included"
-msgstr "Сообщение не было предоставлено."
+msgstr "Nie załączono wiadomości"
 
 #: core/Tools.vala:142
 msgid "Can't send to own key"
-msgstr "Нельзя отправить сообщение себе самому."
+msgstr "Nie można wysłać do własnego klucza"
 
 #: core/Tools.vala:144
 msgid "Friend request already sent"
-msgstr "Запрос на добавление в друзья уже был отправлен."
+msgstr "Zapytanie już zostało wysłane"
 
 #: core/Tools.vala:146
 msgid "Unknown error"
-msgstr "Неизвестная ошибка"
+msgstr "Nieznany błąd"
 
 #: core/Tools.vala:148
 msgid "Bad checksum"
-msgstr "Неверная контрольная сумма"
+msgstr "Zła suma kontrolna"
 
 #: core/Tools.vala:150
 msgid "Set new nospam"
-msgstr "Установить новый NoSpam"
+msgstr "Ustaw nowy nospam"
 
 #: core/Tools.vala:152
 msgid "Out of memory"
-msgstr "Нехватка памяти"
+msgstr ""
 
 #: core/Tools.vala:154
 msgid "Friend request successfully sent"
-msgstr "Запрос на добавление в контакта отправлен."
+msgstr "Zapytanie zostało pomyślnie wysłane"
 
 #: core/ContactStorage.vala:103
 #, c-format
 msgid "Error creating contacts table: %s\n"
-msgstr "Ошибка при попытке создания таблицы контактов: %s\n"
+msgstr ""
 
 #: core/ContactStorage.vala:108
 #, c-format
@@ -671,26 +676,26 @@ msgstr ""
 #: core/Message.vala:92
 #, c-format
 msgid "%s says:"
-msgstr "%s сказал:"
+msgstr "%s pisze:"
 
 #: core/Message.vala:164 core/Message.vala:209
 msgid "<unknown>"
-msgstr "<неизвестно>"
+msgstr "<nieznany>"
 
 #: core/Message.vala:171
 #, c-format
 msgid "%s in %s says:"
-msgstr "%s в %s сказал:"
+msgstr "%s w %s napisał:"
 
 #: core/Message.vala:216
 #, c-format
 msgid "%s in %s:"
-msgstr "%s в %s:"
+msgstr "%s w %s:"
 
 #: core/DhtNodeStorage.vala:172
 #, c-format
 msgid "Error creating dht nodes table: %s\n"
-msgstr "Ошибка при создании таблицы DHT нод: %s\n"
+msgstr ""
 
 #: core/DhtNodeStorage.vala:177
 #, c-format
@@ -704,39 +709,39 @@ msgstr ""
 
 #: core/ResourceFactory.vala:76
 msgid "Tox User"
-msgstr "Tox пользователь"
+msgstr "Użytkownik Tox"
 
 #: core/ResourceFactory.vala:77
 #, c-format
 msgid "Toxing on Venom v.%s"
-msgstr "Использую Venom v.%s"
+msgstr "Toxing na Venom v.%s"
 
 #: core/SqliteTools.vala:37 core/SqliteTools.vala:47 core/SqliteTools.vala:57
 #, c-format
 msgid "Index for %s not found."
-msgstr "Индекс для %s не найден."
+msgstr ""
 
 #: core/SqliteTools.vala:40
 #, c-format
 msgid "Could not bind int to %s."
-msgstr "Не удалось привязать int к %s."
+msgstr ""
 
 #: core/SqliteTools.vala:50
 #, c-format
 msgid "Could not bind int64 to %s."
-msgstr "Не удалось привязать int64 к %s."
+msgstr ""
 
 #: core/SqliteTools.vala:60
 #, c-format
 msgid "Could not bind text to %s"
-msgstr "Не удалось привязать текст к %s."
+msgstr ""
 
 #: core/SqliteTools.vala:75
 #, c-format
 msgid "Can't open database: %d: %s\n"
-msgstr "Не могу открыть базу данных : %d: %s\n"
+msgstr "Nie można otworzyć bazy danych: %d: %s\n"
 
 #: core/Contact.vala:148
 #, c-format
 msgid "Last seen: %s"
-msgstr "Был в сети: %s"
+msgstr "Ostatnio widziany: %s"

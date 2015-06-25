@@ -1,5 +1,5 @@
 #
-#    Copyright (C) 2013-2014 Venom authors and contributors
+#    Copyright (C) 2013 Venom authors and contributors
 #
 #    This file is part of Venom.
 #
@@ -17,19 +17,19 @@
 #    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-SET(TRANSLATIONS
-  de
-  es
-  fr
-  it
-  pl
-  ru
-  zh_CN
+SET(VENOM_SOUNDS
+  contact-logs-in.wav
+  contact-logs-out.wav
+  contact-request-accepted.wav 
+  error.wav
+  incoming-call.wav
+  incoming-video-call.wav
+  log-in.wav
+  log-out.wav
+  new-message.wav
+  outgoing-call.wav
+  outgoing-video-call.wav
+  transfer-complete.wav
+  transfer-pending.wav
 )
-
-IF (XGETTEXT_FOUND)
-  GETTEXT_CREATE_TRANSLATIONS(${GETTEXT_PACKAGE}.pot ALL ${TRANSLATIONS} COMMENT "Creating translations.")
-ELSE ()
-  message(STATUS "xgettext not found")
-ENDIF()
-
+INSTALL(FILES ${VENOM_SOUNDS} DESTINATION "${COMMON_DATA_DIR}/venom/sounds")

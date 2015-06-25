@@ -19,34 +19,28 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Venom {
-   public class Notification : GLib.Object {
-     private Notification() {}
-
+ namespace Venom.Notification {
 #if ENABLE_LIBNOTIFY
-     private static bool is_initialized = false;
-     public static void show_notification_for_message(IMessage m) {
-
-      if(!is_initialized) {
-        Notify.init("Venom");
-        is_initialized = true;
-      }
-      try {
-        Notify.Notification notification = new Notify.Notification(
-          m.get_notification_header(),
-          m.get_message_plain(),
-          null
-        );
-        notification.set_image_from_pixbuf(m.get_sender_image());
-        notification.set_category("im.received");
-        notification.set_hint("sound-name", new Variant.string("message-new-instant"));
-        notification.show();
-      } catch (Error e) {
-        Logger.log(LogLevel.ERROR, _("Error showing notification: ") + e.message);
-      }
+  public static void init(string app_name) {
+    Notify.init(app_name);
+  }
+  public static void show_notification_for_message(IMessage m) {
+    try {
+      Notify.Notification notification = new Notify.Notification(
+        m.get_notification_header(),
+        m.get_message_plain(),
+        null
+      );
+      notification.set_image_from_pixbuf(m.get_sender_image());
+      notification.set_category("im.received");
+      notification.set_hint("sound-name", new Variant.string("message-new-instant"));
+      notification.show();
+    } catch (Error e) {
+      Logger.log(LogLevel.ERROR, "Error showing notification: " + e.message);
     }
+  }
 #else
-    public static void show_notification_for_message(IMessage m) {}
+  public static void init(string app_name) {}
+  public static void show_notification_for_message(IMessage m) {}
 #endif
-   }
  }

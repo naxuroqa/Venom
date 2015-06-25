@@ -5,7 +5,7 @@ compiler:
 before_install:
   - sudo apt-add-repository -y ppa:vala-team/ppa
   - sudo apt-get update -qq > /dev/null
-  - sudo apt-get install -qq valac cmake libgtk-3-dev check libjson-glib-dev libsqlite3-dev yasm libqrencode-dev libnotify-dev > /dev/null
+  - sudo apt-get install -qq valac cmake libgtk-3-dev check libjson-glib-dev libsqlite3-dev yasm libqrencode-dev libnotify-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev > /dev/null
 
 before_script:
   #installing libsodium, needed for Core

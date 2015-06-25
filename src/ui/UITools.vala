@@ -43,12 +43,12 @@ namespace Venom {
         uint64 tebibyte = gibibyte * 1024;
         uint64 pebibyte = tebibyte * 1024;
 
-        if(size < kibibyte) return "%llu bytes".printf(size);
-        if(size < mebibyte) return "%.2lf KiB".printf( (double) size / kibibyte );
-        if(size < gibibyte) return "%.2lf MiB".printf( (double) size / mebibyte );
-        if(size < tebibyte) return "%.2lf GiB".printf( (double) size / gibibyte );
-        if(size < pebibyte) return "%.2lf TiB".printf( (double) size / tebibyte );
-        return "really big file";
+        if(size < kibibyte) return _("%llu bytes").printf(size);
+        if(size < mebibyte) return _("%.2lf KiB").printf( (double) size / kibibyte );
+        if(size < gibibyte) return _("%.2lf MiB").printf( (double) size / mebibyte );
+        if(size < tebibyte) return _("%.2lf GiB").printf( (double) size / gibibyte );
+        if(size < pebibyte) return _("%.2lf TiB").printf( (double) size / tebibyte );
+
       } else {
         uint64 kilobyte = 1000;
         uint64 megabyte = kilobyte * 1000;
@@ -56,17 +56,22 @@ namespace Venom {
         uint64 terabyte = gigabyte * 1000;
         uint64 petabyte = terabyte * 1000;
 
-        if(size < kilobyte) return "%llu bytes".printf(size);
-        if(size < megabyte) return "%.2lf kB".printf( (double) size / kilobyte );
-        if(size < gigabyte) return "%.2lf MB".printf( (double) size / megabyte );
-        if(size < terabyte) return "%.2lf GB".printf( (double) size / gigabyte );
-        if(size < petabyte) return "%.2lf TB".printf( (double) size / terabyte );
-        return "really big file";
+        if(size < kilobyte) return _("%llu bytes").printf(size);
+        if(size < megabyte) return _("%.2lf KB").printf( (double) size / kilobyte );
+        if(size < gigabyte) return _("%.2lf MB").printf( (double) size / megabyte );
+        if(size < terabyte) return _("%.2lf GB").printf( (double) size / gigabyte );
+        if(size < petabyte) return _("%.2lf TB").printf( (double) size / terabyte );
       }
+
+      return _("really big file");
     }
 
+    private static Gtk.Menu context_menu = null;
     public static Gtk.Menu show_contact_context_menu( ContactListWindow w,  Contact c ) {
-      Gtk.Menu menu = new Gtk.Menu();
+      if(context_menu != null) {
+        context_menu.destroy();
+      }
+      context_menu = new Gtk.Menu();
 /*
       Gtk.MenuItem item = new Gtk.MenuItem.with_mnemonic("_Show");
       item.activate.connect(() => { print("name: %s\n", c.get_name_string()); });
@@ -74,15 +79,36 @@ namespace Venom {
 
       Gtk.MenuItem item = new Gtk.MenuItem.with_mnemonic(_("_Unfriend"));
       item.activate.connect(() => { w.remove_contact(c); });
-      menu.append(item);
 /*
       item = new Gtk.MenuItem.with_mnemonic("_Block");
       item.activate.connect(() => { w.block_contact(c); });
       menu.append(item);*/
+      context_menu.append(item);
+
+      Gtk.Menu autoaccept_submenu = new Gtk.Menu();
+
+      item = new Gtk.CheckMenuItem.with_mnemonic(_("_File transfers"));
+      c.bind_property("auto-files", item, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      // FIXME make selectable when done with reworking file transfers
+      item.sensitive = false;
+      autoaccept_submenu.append(item);
+
+      item = new Gtk.CheckMenuItem.with_mnemonic(_("_Audio chat"));
+      c.bind_property("auto-audio", item, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      autoaccept_submenu.append(item);
+
+      item = new Gtk.CheckMenuItem.with_mnemonic(_("_Video chat"));
+      c.bind_property("auto-video", item, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      autoaccept_submenu.append(item);
+
+      item = new Gtk.MenuItem.with_mnemonic(_("_Automatically accept ..."));
+      item.submenu = autoaccept_submenu;
+      context_menu.append(item);
 
       GLib.HashTable<int, GroupChat> groupchats = w.get_groupchats();
       if(groupchats.size() > 0) {
         Gtk.MenuItem groupchat_item = new Gtk.MenuItem.with_mnemonic(_("_Invite to ..."));
+        c.bind_property("online", groupchat_item, "sensitive", BindingFlags.SYNC_CREATE);
         Gtk.Menu groupchat_submenu = new Gtk.Menu();
 
         item = new Gtk.MenuItem.with_mnemonic(_("_New groupchat"));
@@ -95,23 +121,27 @@ namespace Venom {
           groupchat_submenu.append(item);
         });
         groupchat_item.submenu = groupchat_submenu;
-        menu.append(groupchat_item);
+        context_menu.append(groupchat_item);
       } else {
         item = new Gtk.MenuItem.with_mnemonic(_("_Invite to new groupchat"));
+        c.bind_property("online", item, "sensitive", BindingFlags.SYNC_CREATE);
         item.activate.connect(() => { w.invite_to_groupchat(c); });
-        menu.append(item);
+        context_menu.append(item);
       }
-      return menu;
+      return context_menu;
     }
 
     public static Gtk.Menu show_groupchat_context_menu( ContactListWindow w,  GroupChat g ) {
-      Gtk.Menu menu = new Gtk.Menu();
+      if(context_menu != null) {
+        context_menu.destroy();
+      }
+      context_menu = new Gtk.Menu();
 
       Gtk.MenuItem item = new Gtk.MenuItem.with_mnemonic(_("_Leave groupchat"));
       item.activate.connect(() => { w.remove_groupchat(g ); });
-      menu.append(item);
+      context_menu.append(item);
 
-      return menu;
+      return context_menu;
     }
 
     public static void export_datafile(Gtk.Window parent, ToxSession s) {
@@ -119,10 +149,10 @@ namespace Venom {
         _("Export tox data file"),
         parent,
         Gtk.FileChooserAction.SAVE,
-        "_Cancel",
-				Gtk.ResponseType.CANCEL,
-				"_Save",
-				Gtk.ResponseType.ACCEPT
+        _("_Cancel"),
+        Gtk.ResponseType.CANCEL,
+        _("_Save"),
+        Gtk.ResponseType.ACCEPT
       );
       dialog.set_filename(ResourceFactory.instance.data_filename);
       dialog.transient_for = parent;

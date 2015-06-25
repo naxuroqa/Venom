@@ -21,6 +21,28 @@
 
 
 namespace Venom {
+
+  public enum CallState {
+    RINGING, // outgoing call
+    CALLING, // incoming call
+    STARTED, // call commencing
+    ENDED;   // call ended
+    public string to_string() {
+      switch(this) {
+        case RINGING:
+          return "ringing";
+        case CALLING:
+          return "calling";
+        case STARTED:
+          return "started";
+        case ENDED:
+          return "ended";
+        default:
+          return "unknown state";
+      }
+    }
+  }
+
   public interface IContact : GLib.Object {
     public abstract string get_name_string();
     public abstract string get_name_string_with_hyperlinks();
@@ -33,22 +55,31 @@ namespace Venom {
 
   public class Contact : IContact, GLib.Object {
     // Saved in toxs savefile
-    public uint8[]     public_key      { get; set; }
-    public int         friend_id       { get; set; default = -1;}
-    public string      name            { get; set; default = ""; }
-    public string      status_message  { get; set; default = ""; }
-    public DateTime    last_seen       { get; set; default = null; }
-    public uint8       user_status     { get; set; default = (uint8)Tox.UserStatus.INVALID; }
+    public uint8[]        public_key       { get; set; }
+    public int            friend_id        { get; set; default = -1;}
+    public string         name             { get; set; default = ""; }
+    public string         status_message   { get; set; default = ""; }
+    public DateTime       last_seen        { get; set; default = null; }
+    public uint8          user_status      { get; set; default = (uint8)Tox.UserStatus.INVALID; }
     // Saved in venoms savefile
-    public string      note            { get; set; default = ""; }
-    public string      alias           { get; set; default = ""; }
-    public bool        is_blocked      { get; set; default = false; }
-    public string      group           { get; set; default = ""; }
+    public string         note             { get; set; default = ""; }
+    public string         alias            { get; set; default = ""; }
+    public bool           is_blocked       { get; set; default = false; }
+    public string         group            { get; set; default = ""; }
+    // FIXME update sql save file and save those
+    public bool           auto_files       { get; set; default = false; }
+    public bool           auto_audio       { get; set; default = false; }
+    public bool           auto_video       { get; set; default = false; }
     // Not saved
-    public bool        online          { get; set; default = false; }
-    public Gdk.Pixbuf? image           { get; set; default = null; }
-    public int         unread_messages { get; set; default = 0; }
-    public bool        is_typing       { get; set; default = false; }
+    public bool           online           { get; set; default = false; }
+    public Gdk.Pixbuf?    image            { get; set; default = null; }
+    public int            unread_messages  { get; set; default = 0; }
+    public bool           is_typing        { get; set; default = false; }
+    // ToxAV stuff
+    public int            call_index       { get; set; default = -1; }
+    public CallState      call_state       { get; set; default = CallState.ENDED; }
+    public bool           video            { get; set; default = false; }
+    public double         volume           { get; set; default = 1.0; }
 
     private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
 
@@ -66,10 +97,10 @@ namespace Venom {
         if(alias == "") {
           return name;
         } else {
-          return _("%s <i>(%s)</i>").printf(Markup.escape_text(name), Markup.escape_text(alias));
+          return "%s <i>(%s)</i>".printf(Markup.escape_text(name), Markup.escape_text(alias));
         }
       } else if (alias != "") {
-        return _("<i>%s</i>").printf(Markup.escape_text(alias));
+        return "<i>%s</i>".printf(Markup.escape_text(alias));
       } else {
         return Tools.bin_to_hexstring(public_key);
       }
@@ -80,10 +111,10 @@ namespace Venom {
         if(alias == "") {
           return name;
         } else {
-          return _("%s <i>(%s)</i>").printf(Tools.markup_uris(name), Tools.markup_uris(alias));
+          return "%s <i>(%s)</i>".printf(Tools.markup_uris(name), Tools.markup_uris(alias));
         }
       } else if (alias != "") {
-        return _("<i>%s</i>").printf(Tools.markup_uris(alias));
+        return "<i>%s</i>".printf(Tools.markup_uris(alias));
       } else {
         return Tools.bin_to_hexstring(public_key);
       }

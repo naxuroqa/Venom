@@ -20,12 +20,16 @@
  */
 
 namespace Venom {
+
   public class ConversationWidget : Gtk.EventBox {
     private EditableLabel label_contact_name;
     private Gtk.Label label_contact_statusmessage;
     private Gtk.Image image_contact_image;
     private Gtk.Button button_send;
     private Gtk.Button button_send_file;
+    private Gtk.Button button_call;
+    private Gtk.Button button_call_video;
+    //private Gtk.Box box_volume;    
 
     private MessageTextView message_textview;
     private IConversationView conversation_view;
@@ -38,6 +42,10 @@ namespace Venom {
     public signal void filetransfer_accepted(FileTransfer ft);
     public signal void filetransfer_rejected(FileTransfer ft);
     public signal void contact_changed(Contact c);
+    public signal void start_audio_call(Contact c);
+    public signal void stop_audio_call(Contact c);
+    public signal void start_video_call(Contact c);
+    public signal void stop_video_call(Contact c);
 
     public ConversationWidget( Contact contact ) {
       this.contact = contact;
@@ -48,7 +56,7 @@ namespace Venom {
 
     public void update_contact() {
       // update contact name
-      label_contact_name.label.label = _("<b>%s</b>").printf(contact.get_name_string_with_hyperlinks());
+      label_contact_name.label.label = "<b>%s</b>".printf(contact.get_name_string_with_hyperlinks());
 
       // update contact status message
       label_contact_statusmessage.label = contact.get_status_string_with_hyperlinks();
@@ -61,6 +69,8 @@ namespace Venom {
 
       button_send_file.sensitive = contact.online;
       button_send.sensitive = contact.online;
+      button_call.sensitive = contact.online;
+      button_call_video.sensitive = contact.online;
 
       // remove is_typing notification for offline contacts
       if(!contact.online){
@@ -85,6 +95,8 @@ namespace Venom {
       Gtk.Image image_call = builder.get_object("image_call") as Gtk.Image;
       Gtk.Image image_call_video = builder.get_object("image_call_video") as Gtk.Image;
 
+      //box_volume = builder.get_object("box_volume") as Gtk.Box;
+
       Gtk.Image image_send_file = builder.get_object("image_send_file") as Gtk.Image;
       Gtk.Image image_insert_smiley = builder.get_object("image_insert_smiley") as Gtk.Image;
 
@@ -93,8 +105,8 @@ namespace Venom {
       box_user_info.remove(label_contact_name_);
       label_contact_name = new EditableLabel.with_label(label_contact_name_);
       box_user_info.pack_start(label_contact_name, false);
-      label_contact_name.button_cancel.get_style_context().add_class("callbutton");
-      label_contact_name.button_ok.get_style_context().add_class("callbutton");
+      label_contact_name.button_cancel.get_style_context().add_class("sendbutton");
+      label_contact_name.button_ok.get_style_context().add_class("sendbutton");
       label_contact_name.show_all();
       label_contact_name.show_entry.connect_after(() => {
         label_contact_name.entry.text = contact.alias;
@@ -105,8 +117,76 @@ namespace Venom {
       });
 
       //TODO
-      //Gtk.Button button_call = builder.get_object("button_call") as Gtk.Button;
-      //Gtk.Button button_call_video = builder.get_object("button_call_video") as Gtk.Button;
+      button_call = builder.get_object("button_call") as Gtk.Button;
+      button_call_video = builder.get_object("button_call_video") as Gtk.Button;
+      button_call.clicked.connect(button_call_clicked);
+      button_call_video.clicked.connect(button_call_video_clicked);
+      button_call_video.sensitive = false;
+      contact.notify["call-state"].connect(() => {
+        Logger.log(LogLevel.DEBUG, "Changing call state to " + contact.call_state.to_string());
+        //box_volume.visible = contact.call_state == CallState.STARTED;
+        unowned Gtk.StyleContext ctx_ca = button_call.get_style_context();
+        unowned Gtk.StyleContext ctx_cv = button_call_video.get_style_context();
+        switch(contact.call_state) {
+          case CallState.RINGING:
+          case CallState.CALLING:
+            ctx_ca.remove_class("callbutton");
+            ctx_ca.remove_class("callbutton-started");
+            ctx_ca.add_class("callbutton-ringing");
+            if(contact.video) {
+              ctx_cv.remove_class("callbutton");
+              ctx_cv.remove_class("callbutton-started");
+              ctx_cv.add_class("callbutton-ringing");
+            }
+            break;
+          case CallState.STARTED:
+            ctx_ca.remove_class("callbutton");
+            ctx_ca.remove_class("callbutton-ringing");
+            ctx_ca.add_class("callbutton-started");
+            if(contact.video) {
+              ctx_cv.remove_class("callbutton");
+              ctx_cv.remove_class("callbutton-ringing");
+              ctx_cv.add_class("callbutton-started");
+            }
+            break;
+          default:
+            ctx_ca.add_class("callbutton");
+            ctx_ca.remove_class("callbutton-ringing");
+            ctx_ca.remove_class("callbutton-started");
+            if(contact.video) {
+              ctx_cv.add_class("callbutton");
+              ctx_cv.remove_class("callbutton-ringing");
+              ctx_cv.remove_class("callbutton-started");
+            }
+            break;
+        }
+        ctx_ca.invalidate();
+        ctx_cv.invalidate();
+      });
+      //FIXME currently commented out as it introduces sigsev on gtk 3.4
+/*
+      Gtk.ScaleButton volume_speakers = new Gtk.ScaleButton(Gtk.IconSize.SMALL_TOOLBAR);
+      Gtk.ScaleButton volume_mic = new Gtk.ScaleButton(Gtk.IconSize.SMALL_TOOLBAR);
+      volume_mic.set_icons({
+        "microphone-sensitivity-muted",
+        "microphone-sensitivity-high",
+        "microphone-sensitivity-low",
+        "microphone-sensitivity-medium",
+        null
+      });
+      volume_speakers.show_all();
+      volume_mic.show_all();
+      box_volume.pack_start(volume_speakers, false);
+      box_volume.pack_start(volume_mic, false);
+
+      Settings.instance.bind_property(Settings.MIC_VOLUME_KEY, volume_mic, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      contact.bind_property("volume", volume_speakers, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      volume_speakers.value_changed.connect((d_volume) => {
+        int volume = (int)(d_volume * 100.0);
+        Logger.log(LogLevel.DEBUG, "Setting volume for %s to %i".printf(contact.name, volume));
+        AudioManager.instance.set_volume(contact, volume);
+      });*/
+
       button_send = builder.get_object("button_send") as Gtk.Button;
       button_send_file = builder.get_object("button_send_file") as Gtk.Button;
 
@@ -293,6 +373,23 @@ namespace Venom {
       File file = file_selection_dialog.get_file();
       file_selection_dialog.destroy();
       prepare_send_file(file);
+    }
+
+    public void button_call_clicked(Gtk.Button source) {
+      if(contact.call_state != CallState.ENDED) {
+        stop_audio_call(contact);
+      } else {
+        start_audio_call(contact);
+      }
+    }
+
+    public void button_call_video_clicked(Gtk.Button source) {
+      if(contact.call_state == CallState.ENDED) {
+        start_video_call(contact);
+      } else {
+        //FIXME enable video when call already running
+        stop_audio_call(contact);
+      }
     }
 
     private void on_drag_data_received(Gtk.Widget sender, Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData data, uint info, uint time) {

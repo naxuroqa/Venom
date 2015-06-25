@@ -217,8 +217,8 @@ namespace Tox {
     * m_sendmessage_withid will send a message with the id of your choosing,
     * however we can generate an id for you by calling plain m_sendmessage.
     */
-    public uint32 send_message(int32 friendnumber, [CCode(array_length_type="guint32")] uint8[] message);
-    public uint32 send_message_withid(int32 friendnumber, uint32 theid, [CCode(array_length_type="guint32")] uint8[] message);
+    public uint32 send_message(int32 friendnumber, [CCode(array_length=false)] uint8[] message, uint32 length);
+    public uint32 send_message_withid(int32 friendnumber, uint32 theid, [CCode(array_length=false)] uint8[] message, uint32 length);
 
     /* Send an action to an online friend.
     *
@@ -824,5 +824,3 @@ namespace Tox {
     public int load([CCode(array_length_type = "guint32")] uint8[] data);
   }
 }
-
-

@@ -70,7 +70,7 @@ namespace Venom {
 
     private void update_progress(uint64 bytes_processed, uint64 file_size) {
       double progress = (double) bytes_processed / file_size;
-      Idle.add( () => {progress_bar.set_fraction(progress);return false;} );
+      Idle.add( () => { progress_bar.set_fraction(progress); return false; } );
     }
 
     private void disable_buttons(){
@@ -152,10 +152,10 @@ namespace Venom {
         return;
       }
       
-      Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog(_("Save file"),null,
+      Gtk.FileChooserDialog file_selection_dialog = new Gtk.FileChooserDialog(_("Save file"), null,
                                                                               Gtk.FileChooserAction.SAVE,
-                                                                              "_Cancel", Gtk.ResponseType.CANCEL,
-                                                                              _("Save"), Gtk.ResponseType.ACCEPT);
+                                                                              _("_Cancel"), Gtk.ResponseType.CANCEL,
+                                                                              _("_Save"), Gtk.ResponseType.ACCEPT);
       file_selection_dialog.do_overwrite_confirmation = true;
       file_selection_dialog.set_current_name(ft.name);
       int res = file_selection_dialog.run();

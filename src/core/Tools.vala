@@ -27,23 +27,29 @@ namespace Venom {
       foreach (string s in GLib.Environment.get_system_data_dirs()) {
         string dir = Path.build_filename(s, "venom");
         File f = File.new_for_path(dir);
-        if(f.query_exists())
+        if(f.query_exists()) {
+          Logger.log(LogLevel.INFO, "Found system data directory at " + dir);
           return dir;
+        }
       }
+      string current_dir = GLib.Environment.get_current_dir();
       // Check for common directories on portable versions
       string[] portable_directories = {
         Path.build_filename(GLib.Environment.get_user_data_dir(), "venom"),
-        Path.build_filename("share", "venom"),
-        Path.build_filename("..", "share", "venom")
+        Path.build_filename(current_dir, "share", "venom"),
+        Path.build_filename(current_dir, "..", "share", "venom")
       };
-      for (int i = 0; i < portable_directories.length; ++i) {
-        File f = File.new_for_path(portable_directories[i]);
-        if(f.query_exists())
-          return portable_directories[i];
+      foreach (string s in portable_directories) {
+        File f = File.new_for_path(s);
+        if(f.query_exists()) {
+          Logger.log(LogLevel.INFO, "Found portable data directory at " + s);
+          return s;
+        }
       }
-      
+
       // Assume that our current pwd is our data dir
-      return "";
+      Logger.log(LogLevel.INFO, "Assuming current working directory is data directoy");
+      return current_dir;
     }
 
     public static void create_path_for_file(string filename, int mode) {

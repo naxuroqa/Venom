@@ -28,25 +28,29 @@ namespace Venom {
     public const string URGENCY_NOTIFICATION_KEY = "enable-urgency-notification";
     public const string TRAY_KEY = "enable-tray";
     public const string NOTIFY_KEY = "enable-notify";
+    public const string NOTIFY_SOUNDS_KEY = "enable-notify-sounds";
     public const string DEC_BINARY_PREFIX_KEY = "dec-binary-prefix";
     public const string SEND_TYPING_STATUS_KEY = "send-typing-status";
     public const string SHOW_TYPING_STATUS_KEY = "show-typing-status";
     public const string DEFAULT_HOST_KEY = "default-host";
+    public const string MIC_VOLUME_KEY = "mic-volume";
 
-    public bool   enable_logging              { get; set; default = false;     }
-    public bool   enable_urgency_notification { get; set; default = true;      }
-    public bool   log_indefinitely            { get; set; default = true;      }
+    public int    contactlist_height          { get; set; default = 600;       }
+    public int    contactlist_width           { get; set; default = 200;       }
     public int    days_to_log                 { get; set; default = 180;       }
     public bool   dec_binary_prefix           { get; set; default = true;      }
+    public string default_host                { get; set; default = "toxme.se";}
+    public bool   enable_logging              { get; set; default = false;     }
+    public bool   enable_notify               { get; set; default = true;      }
+    public bool   enable_notify_sounds        { get; set; default = true;      }
+    public bool   enable_urgency_notification { get; set; default = true;      }
+    public bool   enable_tray                 { get; set; default = true;      }
+    public bool   log_indefinitely            { get; set; default = true;      }
+    public double mic_volume                  { get; set; default = 1.0;       }
     public bool   send_typing_status          { get; set; default = false;     }
     public bool   show_typing_status          { get; set; default = true;      }
-    public int    contactlist_width           { get; set; default = 200;       }
-    public int    contactlist_height          { get; set; default = 600;       }
-    public int    window_width                { get; set; default = 600;       }
     public int    window_height               { get; set; default = 600;       }
-    public string default_host                { get; set; default = "toxme.se";}
-    public bool   enable_tray                 { get; set; default = false;     }
-    public bool   enable_notify               { get; set; default = false;     }
+    public int    window_width                { get; set; default = 600;       }
 
     private static Settings? _instance;
     public static Settings instance {
@@ -70,26 +74,32 @@ namespace Venom {
     }
 
     private string filepath;
-    private bool timeout_started;
+    private bool timeout_fn_running = false;
+    private Timer timeout_fn_timer = new Timer();
     private bool timeout_function() {
       // save only if not saved previously
-      if( timeout_started ) {
-        save_settings(filepath);
+      if(!timeout_fn_running) {
+        return false;
       }
-      return false;
+      if(timeout_fn_timer.elapsed() > 1) {
+        save_settings(filepath);
+        return false;
+      }
+      return true;
     }
 
     public void save_settings_with_timeout(string path_to_file) {
-      // only add timeout function once
-      if( !timeout_started ) {
-        timeout_started = true;
+      timeout_fn_timer.start();
+      if( !timeout_fn_running ) {
+        timeout_fn_running = true;
         filepath = path_to_file;
         Timeout.add_seconds(1, timeout_function);
       }
     }
 
     public void save_settings(string path_to_file) {
-      timeout_started = false;
+      //stop timeout save
+      timeout_fn_running = false;
       Json.Node root = Json.gobject_serialize (this);
 
       Json.Generator generator = new Json.Generator ();

@@ -81,7 +81,7 @@ namespace Venom {
       init_save_session_hooks();
       init_user();
 
-      on_ownconnectionstatus(false);
+      //on_ownconnectionstatus(false);
 
       Logger.log(LogLevel.INFO, "ID: " + Tools.bin_to_hexstring(session.get_address()));
       if(ResourceFactory.instance.offline_mode) {
@@ -99,6 +99,7 @@ namespace Venom {
     public void cleanup() {
       if(cleaned_up)
         return;
+
       Logger.log(LogLevel.DEBUG, "Ending session...");
       // Stop background thread
       session.stop();
@@ -140,6 +141,7 @@ namespace Venom {
     // Create a new session, load/create session data
     private void init_session() {
       session = new ToxSession();
+      AVManager.instance.tox_session = session;
       try {
         session.load_from_file(ResourceFactory.instance.data_filename);
       } catch (Error e) {
@@ -345,6 +347,22 @@ namespace Venom {
       session.on_group_action.connect(this.on_group_action);
       session.on_group_peer_changed.connect(this.on_group_peer_changed);
 
+      /*=== AV signals ===*/
+      session.on_av_invite.connect(this.on_av_invite);
+      session.on_av_start.connect(AVManager.instance.on_start_call);
+      session.on_av_end.connect(AVManager.instance.on_end_call);
+      //av responses
+      session.on_av_starting.connect(AVManager.instance.on_start_call);
+      session.on_av_ending.connect(AVManager.instance.on_end_call);
+      //av protocol
+      session.on_av_peer_timeout.connect(AVManager.instance.on_end_call);
+      //disconnecting peers
+      session.on_connection_status.connect((c) => {
+        if(!c.online && c.call_state != CallState.ENDED) {
+          AVManager.instance.on_end_call(c);
+        }
+      });
+
       //file signals
       session.on_file_sendrequest.connect(this.on_file_sendrequest);
       session.on_file_control.connect(this.on_file_control_request);
@@ -505,7 +523,7 @@ namespace Venom {
     }
 
     private void set_title_from_status(UserStatus status) {
-      this.our_title = _("Venom (%s)").printf(status.to_string());
+      this.our_title = "Venom (%s)".printf(status.to_string());
       string notify = "";
       if (this.get_urgency_hint()) {
         notify = "* ";
@@ -622,11 +640,17 @@ namespace Venom {
       }
     }
 
-    public void set_urgency () {
-      if(!is_active && Settings.instance.enable_urgency_notification) {
-        this.set_urgency_hint(true);
-        this.set_title(_("* %s").printf(this.our_title));
+    public void set_urgency (string? sound = null) {
+      if(is_active) {
+        return;
       }
+      if(Settings.instance.enable_urgency_notification) {
+        this.set_urgency_hint(true);
+      }
+      if(sound != null && Settings.instance.enable_notify_sounds) {
+        AVManager.instance.play_sound(sound);
+      }
+      this.set_title("* %s".printf(this.our_title));
     }
 
     private bool on_treeview_key_pressed (Gtk.Widget source, Gdk.EventKey key) {
@@ -653,7 +677,7 @@ namespace Venom {
                                   Gtk.MessageType.QUESTION,
                                   Gtk.ButtonsType.NONE,
                                   _("New friend request from '%s'.\nDo you want to accept?"), public_key_string);
-      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
+      message_dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Accept"), Gtk.ResponseType.ACCEPT, null);
       message_dialog.secondary_text = message;
           int response = message_dialog.run();
           message_dialog.destroy();
@@ -683,7 +707,7 @@ namespace Venom {
         c.unread_messages++;
         contact_list_tree_view.update_entry(c);
       }
-      this.set_urgency();
+      this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "new-message.wav"));
     }
     private void on_action(Contact c, string action) {
       Logger.log(LogLevel.DEBUG, "[ac] %i:%s".printf(c.friend_id, action));
@@ -693,14 +717,14 @@ namespace Venom {
         c.unread_messages++;
         contact_list_tree_view.update_entry(c);
       }
-      this.set_urgency();
+      this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "new-message.wav"));
     }
     private void on_namechange(Contact c, string? old_name) {
-      Logger.log(LogLevel.INFO, old_name + " changed his name to " + c.name);
+      Logger.log(LogLevel.INFO, old_name + " changed name to " + c.name);
       contact_changed(c);
     }
     private void on_statusmessage(Contact c, string? old_status) {
-      Logger.log(LogLevel.INFO, c.name + " changed his status to " + c.status_message);
+      Logger.log(LogLevel.INFO, c.name + " changed status to " + c.status_message);
       contact_changed(c);
     }
     private void on_userstatus(Contact c, uint8 old_status) {
@@ -720,9 +744,15 @@ namespace Venom {
       if(status) {
         image_status.set_tooltip_text(_("Connected to the network"));
         session.set_user_status(user_status);
+        if(Settings.instance.enable_notify_sounds) {
+          AVManager.instance.play_sound(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "log-in.wav"));
+        }
       } else {
         image_status.set_tooltip_text(_("Disconnected from the network"));
         on_ownuserstatus(UserStatus.OFFLINE);
+        if(Settings.instance.enable_notify_sounds) {
+          AVManager.instance.play_sound(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "log-out.wav"));
+        }
       }
       image_status.show();
       spinner_status.hide();
@@ -757,14 +787,14 @@ namespace Venom {
 
     private void on_group_invite(Contact c, GroupChat g) {
       Logger.log(LogLevel.INFO, "Group invite from %s with public key %s".printf(c.name, Tools.bin_to_hexstring(g.public_key)));
-      this.set_urgency();
+      this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "new-message.wav"));
       Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.QUESTION,
                                   Gtk.ButtonsType.NONE,
                                   _("'%s' has invited you to a groupchat, do you want to accept?"),
                                     (c.name != null && c.name != "") ? c.name : Tools.bin_to_hexstring(c.public_key));
-      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Accept", Gtk.ResponseType.ACCEPT, null);
+      message_dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Accept"), Gtk.ResponseType.ACCEPT, null);
 
       int response = message_dialog.run();
       message_dialog.destroy();
@@ -803,7 +833,7 @@ namespace Venom {
       GroupMessage group_message = new GroupMessage.incoming(g, gcc, message);
       // only set urgency in groupchat if the message contains our name
       if(User.instance.name in message) {
-        this.set_urgency();
+        this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "new-message.wav"));
         group_message.important = true;
       }
       incoming_group_message(group_message);
@@ -833,7 +863,7 @@ namespace Venom {
       GroupActionMessage group_message = new GroupActionMessage.incoming(g, gcc, message);
       // only set urgency in groupchat if the message contains our name
       if(User.instance.name in message) {
-        this.set_urgency();
+        this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "new-message.wav"));
         group_message.important = true;
       }
       incoming_group_action(group_message);
@@ -843,6 +873,76 @@ namespace Venom {
       GroupConversationWidget w = open_group_conversation_with(g);
       w.update_contact(peernumber, change);
       groupchat_changed(g);
+    }
+
+    private void on_av_invite(Contact c) {
+      this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, (c.video ? "incoming-video-call.wav" : "incoming-call")));
+      if(c.auto_video && c.video || c.auto_audio && !c.video) {
+        //Auto accept
+        session.answer_call(c);
+        return;
+      }
+      Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
+                                  Gtk.DialogFlags.MODAL,
+                                  Gtk.MessageType.QUESTION,
+                                  Gtk.ButtonsType.NONE,
+                                  "");
+      message_dialog.set_markup(_("'%s' is calling (%s) ...").printf(c.get_name_string(), c.video ? _("Video call") : _("Audio only")));
+      message_dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Accept"), Gtk.ResponseType.ACCEPT, null);
+      //close message dialog when callstate changes (timeout, cancel, ...)
+      c.notify["call-state"].connect(() => {
+        message_dialog.destroy();
+      });
+
+      int response = message_dialog.run();
+      message_dialog.destroy();
+
+      if(c.call_state != CallState.CALLING) {
+        //when remote cancels the request
+        Logger.log(LogLevel.DEBUG, "call with %s already canceled".printf(c.name));
+        return;
+      }
+
+      if(response == Gtk.ResponseType.ACCEPT) {
+        session.answer_call(c);
+      } else {
+        session.reject_call(c);
+      }
+    }
+
+    private void on_start_audio_call(Contact c) {
+      session.start_audio_call(c);
+    }
+
+    private void on_start_video_call(Contact c) {
+      session.start_video_call(c);
+    }
+
+    private void on_stop_audio_call(Contact c) {
+      Logger.log(LogLevel.DEBUG, "on_stop_audio_call");
+      switch(c.call_state) {
+        case CallState.RINGING:
+          Logger.log(LogLevel.DEBUG, "cancelling call with %s".printf(c.name));
+          session.cancel_call(c);
+          break;
+        case CallState.CALLING:
+          Logger.log(LogLevel.DEBUG, "rejecting call from %s".printf(c.name));
+          session.reject_call(c);
+          break;
+        case CallState.STARTED:
+          Logger.log(LogLevel.DEBUG, "hanging up on %s".printf(c.name));
+          session.hangup_call(c);
+          break;
+        case CallState.ENDED:
+          Logger.log(LogLevel.DEBUG, "call with %s already ended".printf(c.name));
+          break;
+        default:
+          assert_not_reached();
+      }
+    }
+
+    private void on_stop_video_call(Contact c) {
+      //TODO
     }
 
     private void on_file_sendrequest(int friendnumber, uint8 filenumber, uint64 filesize,string filename) {
@@ -866,7 +966,7 @@ namespace Venom {
         ft.status = FileTransferStatus.IN_PROGRESS;
       }
 
-      this.set_urgency();
+      this.set_urgency(Path.build_filename("file://" + ResourceFactory.instance.sounds_directory, "transfer-pending.wav"));
     }
 
     private void send_file(int friendnumber, uint8 filenumber) {
@@ -1031,6 +1131,10 @@ namespace Venom {
         w.new_outgoing_message.connect(on_outgoing_message);
         w.new_outgoing_action.connect(on_outgoing_action);
         w.new_outgoing_file.connect(on_outgoing_file);
+        w.start_audio_call.connect(on_start_audio_call);
+        w.stop_audio_call.connect(on_stop_audio_call);
+        w.start_video_call.connect(on_start_video_call);
+        w.stop_video_call.connect(on_stop_video_call);
         w.typing_status.connect( (is_typing) => {
           if(Settings.instance.send_typing_status) {
             session.set_user_is_typing(c.friend_id, is_typing);
@@ -1108,8 +1212,8 @@ namespace Venom {
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.WARNING,
                                   Gtk.ButtonsType.NONE,
-                                  _("Are you sure you want to delete '%s' from your contact list?"), name);
-      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Delete", Gtk.ResponseType.OK, null);
+                                  _("Are you sure you want to remove '%s' from your contact list?"), name);
+      message_dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Delete"), Gtk.ResponseType.OK, null);
       int response = message_dialog.run();
       message_dialog.destroy();
       if(response != Gtk.ResponseType.OK)
@@ -1140,13 +1244,13 @@ namespace Venom {
     public void remove_groupchat(GroupChat g) {
       if(g == null)
         return;
-      string name = _("groupchat #%i").printf(g.group_id);
+      string name = "groupchat #%i".printf(g.group_id);
       Gtk.MessageDialog message_dialog = new Gtk.MessageDialog (this,
                                   Gtk.DialogFlags.MODAL,
                                   Gtk.MessageType.WARNING,
                                   Gtk.ButtonsType.NONE,
-                                  _("Are you sure you want to delete '%s' from your contact list?"), name);
-      message_dialog.add_buttons("_Cancel", Gtk.ResponseType.CANCEL, "_Delete", Gtk.ResponseType.OK, null);
+                                  _("Are you sure you want to remove '%s' from your contact list?"), name);
+      message_dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Delete"), Gtk.ResponseType.OK, null);
       int response = message_dialog.run();
       message_dialog.destroy();
       if(response != Gtk.ResponseType.OK)

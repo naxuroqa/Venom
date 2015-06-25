@@ -52,7 +52,7 @@ namespace Venom {
       is_typing_label.visible = false;
       is_typing_label.set_use_markup(true);
       this.notify["is-typing-string"].connect(() => {
-        is_typing_label.set_markup(_("<i>%s</i>").printf(is_typing_string));
+        is_typing_label.set_markup("<i>%s</i>".printf(is_typing_string));
       });
       conversation_list.pack_end(is_typing_label, false, false);
     }

@@ -31,9 +31,22 @@ FIND_PACKAGE(PkgConfig REQUIRED)
 PKG_CHECK_MODULES_FULLPATH(GTK    REQUIRED gtk+-3.0>=3.4)
 PKG_CHECK_MODULES_FULLPATH(GIO    REQUIRED gio-2.0>=2.32)
 PKG_CHECK_MODULES_FULLPATH(GLIB   REQUIRED glib-2.0>=2.32)
+PKG_CHECK_MODULES_FULLPATH(GSTREAMER REQUIRED gstreamer-0.10>=0.10.16 gstreamer-interfaces-0.10>=0.10.16 gstreamer-app-0.10>=0.10.16 gstreamer-video-0.10>=0.10.16)
+PKG_CHECK_MODULES_FULLPATH(GDKX11    REQUIRED gdk-x11-3.0)
 PKG_CHECK_MODULES_FULLPATH(SQLITE REQUIRED sqlite3>=3.7)
 PKG_CHECK_MODULES_FULLPATH(JSON   REQUIRED json-glib-1.0>=0.14)
-PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0)
+PKG_CHECK_MODULES_FULLPATH(TOX    REQUIRED libtoxcore>=0.0 libtoxav>=0.0)
+
+IF(APPLE)
+  PKG_CHECK_MODULES_FULLPATH(OVERLAY REQUIRED gdk-x11-3.0)
+  SET(OS_DEFINES OSX)
+ELSEIF(UNIX)
+  PKG_CHECK_MODULES_FULLPATH(OVERLAY REQUIRED gdk-x11-3.0)
+  SET(OS_DEFINES UNIX)
+ELSEIF(WIN32)
+  PKG_CHECK_MODULES_FULLPATH(OVERLAY REQUIRED gdk-x11-3.0)
+  SET(OS_DEFINES WIN32)
+ENDIF(APPLE)
 
 # use djbdns as substitute for missing dns_txt in glib 2.32
 IF(${GLIB_VERSION_MINOR} LESS 34)
@@ -97,6 +110,8 @@ SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GETTEXT_CFLAGS}
                   ${GTK_CFLAGS}    ${GTK_CFLAGS_OTHER}
                   ${GIO_CFLAGS}    ${GIO_CFLAGS_OTHER}
                   ${GLIB_CFLAGS}   ${GLIB_CFLAGS_OTHER}
+                  ${GSTREAMER_CFLAGS} ${GSTREAMER_CFLAGS_OTHER}
+                  ${OVERLAY_CFLAGS} ${OVERLAY_CFLAGS_OTHER}
                   ${SQLITE_CFLAGS} ${SQLITE_CFLAGS_OTHER}
                   ${JSON_CFLAGS}   ${JSON_CFLAGS_OTHER}
                   ${TOX_CFLAGS}    ${TOX_CFLAGS_OTHER}
@@ -113,6 +128,7 @@ CONFIGURE_FILE( config.h.in config.h )
 # define our source files
 SET( VENOM_SRC
   Main.vala
+  core/AVManager.vala
   core/Contact.vala
   core/ContactStorage.vala
   core/DhtNode.vala
@@ -174,19 +190,49 @@ VALA_PRECOMPILE( VALA_C_VENOM
   PACKAGES
     config
     djbdns
+    gdk-x11-3.0
     gio-2.0
     glib-2.0
+    gstreamer-0.10
+    gstreamer-app-0.10
+    gstreamer-interfaces-0.10
+    gstreamer-video-0.10
     gtk+-3.0
     json-glib-1.0
     libnotify
     libqrencode
     sqlite3
     tox-1.0
+    toxav-1.0
+    vpx
   OPTIONS
+    --debug
     --target-glib=${TARGET_GLIB}
     --thread
     --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
     ${VENOM_VALA_FLAGS_OPT}
+     -D ${OS_DEFINES}
+  CUSTOM_VAPIS
+  GENERATE_VAPI
+  GENERATE_HEADER
+)
+
+VALA_PRECOMPILE( VALA_C_TOXAV_TEST
+    testing/ToxAVTest.vala
+    core/Tools.vala
+  PACKAGES
+    gdk-x11-3.0
+    gstreamer-0.10
+    gstreamer-interfaces-0.10
+    gtk+-3.0
+    tox-1.0
+    toxav-1.0
+    vpx
+  OPTIONS
+    --debug
+    --target-glib=${TARGET_GLIB}
+    --vapidir=${CMAKE_SOURCE_DIR}/src/vapi
+    -D ${OS_DEFINES}
   CUSTOM_VAPIS
   GENERATE_VAPI
   GENERATE_HEADER
@@ -206,15 +252,28 @@ ADD_EXECUTABLE( venom
   ${VENOM_RESOURCE_FILE}
 )
 
+ADD_EXECUTABLE( toxav_test EXCLUDE_FROM_ALL
+  ${VALA_C_TOXAV_TEST}
+)
+
 # link the main executable to our dependencies
 TARGET_LINK_LIBRARIES( venom
                        ${VENOM_LIBRARIES_OPT}
                        ${TOX_LIBRARIES}
                        ${SQLITE_LIBRARIES}
                        ${GIO_LIBRARIES}
+                       ${GSTREAMER_LIBRARIES}
+                       ${OVERLAY_LIBRARIES}
                        ${GLIB_LIBRARIES}
                        ${GTK_LIBRARIES}
                        ${JSON_LIBRARIES}
+)
+
+TARGET_LINK_LIBRARIES( toxav_test
+                       ${TOX_LIBRARIES}
+                       ${GSTREAMER_LIBRARIES}
+                       ${OVERLAY_LIBRARIES}
+                       ${GTK_LIBRARIES}
 )
 
 INSTALL(TARGETS venom RUNTIME DESTINATION ${CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION})

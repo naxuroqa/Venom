@@ -20,6 +20,7 @@
  */
 namespace Venom {
   class Client : Gtk.Application {
+    private const string APPLICATION_NAME = "Venom";
     private const GLib.ActionEntry app_entries[] =
     {
       { "preferences", on_preferences },
@@ -39,32 +40,24 @@ namespace Venom {
       );
     }
 
-    ~Client() {
-      // FIXME Workaround for some DEs keeping
-      // one instance of the contactlistwindow alive
-      if(contact_list_window != null) {
-        contact_list_window.cleanup();
-      }
-    }
-
     private ContactListWindow get_contact_list_window() {
       if( get_windows () == null ) {
         contact_list_window = new ContactListWindow(this);
 
         // Create menu
         GLib.Menu menu_prefs = new GLib.Menu();
-        GLib.MenuItem item = new GLib.MenuItem ("P_references", "app.preferences");
+        GLib.MenuItem item = new GLib.MenuItem (_("P_references"), "app.preferences");
         menu_prefs.append_item(item);
 
         GLib.Menu menu_common = new GLib.Menu();
-        item = new GLib.MenuItem ("_Help", "app.help");
+        item = new GLib.MenuItem (_("_Help"), "app.help");
         item.set_attribute("accel", "s", "F1");
         menu_common.append_item(item);
 
-        item = new GLib.MenuItem ("_About", "app.about");
+        item = new GLib.MenuItem (_("_About"), "app.about");
         menu_common.append_item(item);
 
-        item = new GLib.MenuItem ("_Quit", "app.quit");
+        item = new GLib.MenuItem (_("_Quit"), "app.quit");
         item.set_attribute("accel", "s", "<Primary>q");
         menu_common.append_item(item);
 
@@ -76,7 +69,7 @@ namespace Venom {
 
         create_tray_menu();
         tray_icon = new Gtk.StatusIcon.from_icon_name("venom");
-        tray_icon.set_tooltip_text ("Venom");
+        tray_icon.set_tooltip_text(APPLICATION_NAME);
         Settings.instance.bind_property(Settings.TRAY_KEY, tray_icon, "visible", BindingFlags.SYNC_CREATE);
         tray_icon.activate.connect(on_trayicon_activate);
         tray_icon.popup_menu.connect(on_trayicon_popup_menu);
@@ -112,7 +105,26 @@ namespace Venom {
 
     protected override void startup() {
       add_action_entries(app_entries, this);
+      try {
+        AVManager.init();
+      } catch (AVManagerError e) {
+        Logger.log(LogLevel.FATAL, "Error creating Audio Pipeline: " + e.message);
+      }
+      Notification.init(APPLICATION_NAME);
+      Logger.init();
+
       base.startup();
+    }
+
+    protected override void shutdown() {
+      Logger.log(LogLevel.DEBUG, "Application shutting down...");
+      // FIXME Workaround for some DEs keeping
+      // one instance of the contactlistwindow alive
+      if(contact_list_window != null) {
+        contact_list_window.cleanup();
+      }
+      AVManager.free();
+      base.shutdown();
     }
 
     private void show_notification_for_message(IMessage m) {
@@ -139,7 +151,15 @@ namespace Venom {
       hold();
       get_contact_list_window().present();
       //FIXME allow names without tox:// prefix on command line
-      contact_list_window.add_contact(files[0].get_uri());
+      string id = files[0].get_uri();
+      try {
+      var regex = new GLib.Regex("^tox:/*");
+        id = regex.replace(id, -1, 0, "");
+      } catch (GLib.RegexError e) {
+        GLib.assert_not_reached();
+      }
+      Logger.log(LogLevel.DEBUG, "Adding contact from commandline: " + id);
+      contact_list_window.add_contact(id);
       release();
     }
 
@@ -167,14 +187,12 @@ namespace Venom {
       dialog.destroy();
     }
 
-    private AboutDialog about_dialog;
     private void on_about(GLib.SimpleAction action, GLib.Variant? parameter) {
-      if(about_dialog == null)
-        about_dialog = new AboutDialog();
+      AboutDialog about_dialog = new AboutDialog();
       about_dialog.transient_for = contact_list_window;
       about_dialog.modal = true;
       about_dialog.run();
-      about_dialog.hide();
+      about_dialog.destroy();
     }
 
     private void on_quit(GLib.SimpleAction action, GLib.Variant? parameter) {
