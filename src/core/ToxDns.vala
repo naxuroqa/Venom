@@ -45,10 +45,12 @@ namespace Venom {
       get {
         if(_tox_uri_regex == null) {
           try {
-          //TODO support message pin and xname (ignored for now)
-            _tox_uri_regex = new GLib.Regex("^((?P<scheme>tox)://)?((?P<tox_id>[[:xdigit:]]{%i})|(?P<authority_user>[[:digit:][:alpha:]]+)(@(?P<authority_host>[[:digit:][:alpha:]]+(\\.[[:digit:][:alpha:]]+)+))?)".printf(Tox.FRIEND_ADDRESS_SIZE * 2));
+            _tox_uri_regex = new GLib.Regex("^((?P<scheme>tox):)?((?P<tox_id>[[:xdigit:]]{%i})|(?P<authority_user>[[:digit:][:alpha:]]+)(@(?P<authority_host>[[:digit:][:alpha:]]+(\\.[[:digit:][:alpha:]]+)+))?)".printf(Tox.FRIEND_ADDRESS_SIZE * 2));
           } catch (GLib.Error e) {
-            Logger.log(LogLevel.FATAL, "Error creating tox uri regex: " + e.message);
+            try {
+              _tox_uri_regex = new GLib.Regex("^((?P<scheme>tox)://)?((?P<tox_id>[[:xdigit:]]{%i})|(?P<authority_user>[[:digit:][:alpha:]]+)(@(?P<authority_host>[[:digit:][:alpha:]]+(\\.[[:digit:][:alpha:]]+)+))?)".printf(Tox.FRIEND_ADDRESS_SIZE * 2));
+            catch (GLib.Error e) {
+              Logger.log(LogLevel.FATAL, "Error creating tox uri regex: " + e.message);
           }
         }
         return _tox_uri_regex;
