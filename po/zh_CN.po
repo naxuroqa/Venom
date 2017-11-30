@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Venom \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-10 04:00+0400\n"
+"POT-Creation-Date: 2017-10-19 08:18+0200\n"
 "PO-Revision-Date: 2014-08-27 13:00+0800\n"
 "Last-Translator: kaiman <kaigfm@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -17,723 +17,576 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: Main.vala:50
+#: src/Main.vala:50
 #, c-format
 msgid "'%s' not a positive number"
 msgstr ""
 
-#: Main.vala:68
+#: src/Main.vala:68
 #, c-format
 msgid "error: %s\n"
 msgstr ""
 
-#: Main.vala:69
+#: src/Main.vala:69
 #, c-format
 msgid "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 
-#: ui/user_info_window.ui:40
-msgid "ID:"
-msgstr ""
+#: src/core/GroupChatContact.vala:32 src/core/ToxSession.vala:31
+#: src/ui/ContactListWindow.vala:208
+msgid "Online"
+msgstr "在线"
 
-#: ui/user_info_window.ui:178
-msgid "Status message:"
-msgstr "状态消息:"
-
-#: ui/user_info_window.ui:192
-msgid "Name:"
-msgstr "名字"
-
-#: ui/user_info_window.ui:222
-msgid "Icon:"
-msgstr "头像"
-
-#: ui/user_info_window.ui:254
-msgid "_Browse..."
-msgstr "浏览(_B)..."
-
-#: ui/user_info_window.ui:282
-msgid "<b>User</b>"
-msgstr "<b>用户</b>"
-
-#: ui/UITools.vala:45 ui/UITools.vala:58
+#: src/core/SqliteTools.vala:37 src/core/SqliteTools.vala:47
+#: src/core/SqliteTools.vala:57
 #, c-format
-msgid "%llu bytes"
+msgid "Index for %s not found."
 msgstr ""
 
-#: ui/UITools.vala:46
+#: src/core/SqliteTools.vala:40
 #, c-format
-msgid "%.2lf KiB"
-msgstr ""
+msgid "Could not bind int to %s."
+msgstr "无法绑定 int 到 %s 。"
 
-#: ui/UITools.vala:47
+#: src/core/SqliteTools.vala:50
 #, c-format
-msgid "%.2lf MiB"
-msgstr ""
+msgid "Could not bind int64 to %s."
+msgstr "无法绑定 int64 到 %s 。"
 
-#: ui/UITools.vala:48
+#: src/core/SqliteTools.vala:60
 #, c-format
-msgid "%.2lf GiB"
-msgstr ""
+msgid "Could not bind text to %s"
+msgstr "无法绑定 text 到 %s 。"
 
-#: ui/UITools.vala:49
+#: src/core/SqliteTools.vala:75
 #, c-format
-msgid "%.2lf TiB"
+msgid "Can't open database: %d: %s\n"
+msgstr "无法打开数据库: %d: %s\n"
+
+#: src/core/Message.vala:47
+msgid "%R:%S"
 msgstr ""
 
-#: ui/UITools.vala:59
+#: src/core/Message.vala:92 src/core/Message.vala:171
+msgid " says:"
+msgstr ""
+
+#: src/core/Message.vala:164 src/core/Message.vala:209
+msgid "<unknown>"
+msgstr "<未知>"
+
+#: src/core/Message.vala:171 src/core/Message.vala:216
+msgid " in "
+msgstr ""
+
+#: src/core/GroupChat.vala:45
 #, c-format
-msgid "%.2lf KB"
+msgid "Groupchat #%i"
 msgstr ""
 
-#: ui/UITools.vala:60
+#: src/core/GroupChat.vala:52
 #, c-format
-msgid "%.2lf MB"
-msgstr ""
+msgid "%i people connected"
+msgstr "%i 人在线"
 
-#: ui/UITools.vala:61
+#: src/core/GroupChat.vala:54
 #, c-format
-msgid "%.2lf GB"
+msgid "%i person connected"
+msgstr "%i 人在线"
+
+#: src/core/GroupChat.vala:56
+msgid "no one connected"
 msgstr ""
 
-#: ui/UITools.vala:62
+#: src/core/Contact.vala:69 src/core/Contact.vala:83
 #, c-format
-msgid "%.2lf TB"
+msgid "%s <i>(%s)</i>"
 msgstr ""
 
-#: ui/UITools.vala:65
-msgid "really big file"
+#: src/core/Contact.vala:72 src/core/Contact.vala:86
+#: src/ui/ConversationView.vala:55
+#, c-format
+msgid "<i>%s</i>"
 msgstr ""
 
-#: ui/UITools.vala:79
+#: src/core/Contact.vala:98 src/core/Contact.vala:108
+#: src/core/ToxSession.vala:37
+msgid "Offline"
+msgstr "离线"
+
+#: src/core/Contact.vala:117
+#, c-format
+msgid "Last seen: %s"
+msgstr ""
+
+#. create table and index if needed
+#: src/core/ContactStorage.vala:103
+#, c-format
+msgid "Error creating contacts table: %s\n"
+msgstr ""
+
+#. prepare insert statement for adding new history messages
+#: src/core/ContactStorage.vala:108
+#, c-format
+msgid "Error creating contacts insert statement: %d: %s\n"
+msgstr ""
+
+#. prepare select statement to get history. Will execute on indexed data
+#: src/core/ContactStorage.vala:113
+#, c-format
+msgid "Error creating contacts select statement: %d: %s\n"
+msgstr ""
+
+#: src/core/Notification.vala:45
+msgid "Error showing notification: "
+msgstr ""
+
+#. create table and index if needed
+#: src/core/DhtNodeStorage.vala:172
+#, c-format
+msgid "Error creating dht nodes table: %s\n"
+msgstr ""
+
+#. prepare insert statement for adding new history messages
+#: src/core/DhtNodeStorage.vala:177
+#, c-format
+msgid "Error creating dht nodes insert statement: %d: %s\n"
+msgstr ""
+
+#. prepare select statement to get history. Will execute on indexed data
+#: src/core/DhtNodeStorage.vala:182
+#, c-format
+msgid "Error creating dht nodes select statement: %d: %s\n"
+msgstr ""
+
+#: src/core/ToxSession.vala:33
+msgid "Away"
+msgstr "离开"
+
+#: src/core/ToxSession.vala:35
+msgid "Busy"
+msgstr "忙"
+
+#: src/core/ToxSession.vala:829
+#, c-format
+msgid "File \"%d\" does not exist."
+msgstr ""
+
+#: src/core/ToxSession.vala:836
+msgid "Error while reading from stream."
+msgstr ""
+
+#: src/core/ToxSession.vala:842
+msgid "Error while loading messenger data."
+msgstr ""
+
+#: src/core/ToxSession.vala:869
+msgid "Error while writing to stream."
+msgstr ""
+
+#. create table and index if needed
+#: src/core/MessageLog.vala:179
+#, c-format
+msgid "Error creating message log table: %s\n"
+msgstr ""
+
+#: src/core/ResourceFactory.vala:74
+msgid "Tox User"
+msgstr ""
+
+#: src/core/ResourceFactory.vala:75
+#, c-format
+msgid "Toxing on Venom v.%s"
+msgstr ""
+
+#: src/ui/ConversationTextView.vala:139
+#, c-format
+msgid "[%s] "
+msgstr ""
+
+#: src/ui/UserInfoWindow.vala:86
+msgid "Edit user information"
+msgstr ""
+
+#: src/ui/Client.vala:90
+msgid "_Show/Hide Venom"
+msgstr ""
+
+#: src/ui/Client.vala:93
+msgid "_Quit"
+msgstr ""
+
+#: src/ui/Client.vala:162
+msgid "There is currently no help available"
+msgstr ""
+
+#.
+#. Gtk.MenuItem item = new Gtk.MenuItem.with_mnemonic("_Show");
+#. item.activate.connect(() => { print("name: %s\n", c.get_name_string()); });
+#. menu.append(item);
+#: src/ui/UITools.vala:75
 msgid "_Unfriend"
 msgstr ""
 
-#: ui/UITools.vala:89
-msgid "_File transfers"
-msgstr ""
-
-#: ui/UITools.vala:95
-msgid "_Audio chat"
-msgstr ""
-
-#: ui/UITools.vala:99
-msgid "_Video chat"
-msgstr ""
-
-#: ui/UITools.vala:103
-msgid "_Automatically accept ..."
-msgstr ""
-
-#: ui/UITools.vala:109
+#: src/ui/UITools.vala:85
 msgid "_Invite to ..."
 msgstr ""
 
-#: ui/UITools.vala:113
+#: src/ui/UITools.vala:88
 #, fuzzy
 msgid "_New groupchat"
 msgstr "创建群聊"
 
-#: ui/UITools.vala:125
+#: src/ui/UITools.vala:100
 #, fuzzy
 msgid "_Invite to new groupchat"
 msgstr "创建群聊"
 
-#: ui/UITools.vala:139
+#: src/ui/UITools.vala:110
 #, fuzzy
 msgid "_Leave groupchat"
 msgstr "创建群聊"
 
-#: ui/UITools.vala:148
+#: src/ui/UITools.vala:119
 msgid "Export tox data file"
 msgstr ""
 
-#: ui/UITools.vala:150 ui/PinDialog.vala:48 ui/ContactListWindow.vala:680
-#: ui/ContactListWindow.vala:797 ui/ContactListWindow.vala:891
-#: ui/ContactListWindow.vala:1216 ui/ContactListWindow.vala:1253
-#: ui/AddContactDialog.vala:74 ui/FileTransferChatEntry.vala:157
-#: ui/UserInfoWindow.vala:82
-#, fuzzy
-msgid "_Cancel"
-msgstr "取消"
-
-#: ui/UITools.vala:150 ui/FileTransferChatEntry.vala:158
-msgid "_Save"
-msgstr ""
-
-#: ui/UITools.vala:166
+#: src/ui/UITools.vala:141
 msgid "Exporting data file failed"
 msgstr ""
 
-#: ui/UITools.vala:166
+#: src/ui/UITools.vala:141
 #, fuzzy
 msgid "Could not export data file: "
 msgstr "不能添加好友: %s。\n"
 
-#: ui/UITools.vala:172
+#. TODO
+#: src/ui/UITools.vala:147
 msgid "Importing data files is currently not supported"
 msgstr ""
 
-#: ui/settings_window.ui:14
-msgid "KiB/MiB"
+#: src/ui/AboutDialog.vala:47
+msgid "Packagers"
 msgstr ""
 
-#: ui/settings_window.ui:18
-msgid "KB/MB"
-msgstr ""
-
-#: ui/settings_window.ui:30
-msgid "Settings"
-msgstr "设置"
-
-#: ui/settings_window.ui:79
-msgid "Keep history"
-msgstr "保持历史"
-
-#: ui/settings_window.ui:105
-msgid "indefinitely"
-msgstr "无限制"
-
-#: ui/settings_window.ui:127
-msgid "delete after"
-msgstr "删除早于"
-
-#: ui/settings_window.ui:160
-msgid "days"
-msgstr "天记录"
-
-#: ui/settings_window.ui:186
-msgid "Show _others when I am typing"
-msgstr "当我正在输入时其他人可以看到这一状态"
-
-#: ui/settings_window.ui:202
-msgid "Show me when others are typing"
-msgstr "当其他人正在输入时我可以看到这一状态"
-
-#: ui/settings_window.ui:221
-msgid "Privacy"
-msgstr "隐私"
-
-#: ui/settings_window.ui:236
-msgid "Flash window when a new message arrives"
-msgstr "一条新消息到达时闪频振动"
-
-#: ui/settings_window.ui:251
-msgid "Play notification sounds"
-msgstr ""
-
-#: ui/settings_window.ui:266
-#, fuzzy
-msgid "Show notification when a new message arrives"
-msgstr "一条新消息到达时闪频振动"
-
-#: ui/settings_window.ui:288
-msgid "Notifications"
-msgstr ""
-
-#: ui/settings_window.ui:323 ui/settings_window.ui:398
-msgid "Recording device"
-msgstr ""
-
-#: ui/settings_window.ui:337 ui/settings_window.ui:412
-msgid "System default"
-msgstr ""
-
-#: ui/settings_window.ui:348 ui/settings_window.ui:423
-msgid "Preview"
-msgstr ""
-
-#: ui/settings_window.ui:367
-msgid "Audio"
-msgstr ""
-
-#: ui/settings_window.ui:442
-msgid "Video"
-msgstr ""
-
-#: ui/settings_window.ui:461
-msgid "Audio / Video"
-msgstr ""
-
-#: ui/settings_window.ui:477
-msgid "Minimize to system tray"
-msgstr ""
-
-#: ui/settings_window.ui:499
-msgid "Default Tox DNS ID suffix:"
-msgstr "缺省 Tox DNS ID 后缀:"
-
-#: ui/settings_window.ui:535
-msgid "Show filesize in"
-msgstr "显示文件尺寸用"
-
-#: ui/settings_window.ui:578
-msgid "Miscellaneous"
-msgstr "杂项"
-
-#: ui/AboutDialog.vala:46
+#: src/ui/AboutDialog.vala:52
 msgid "translator-credits"
 msgstr ""
 
-#: ui/PinDialog.vala:37
-#, c-format
-msgid ""
-"Please insert PIN for \n"
-"<b>%s</b>"
-msgstr ""
-
-#: ui/PinDialog.vala:48
-msgid "_Ok"
-msgstr ""
-
-#: ui/PinDialog.vala:49
-msgid "Please insert PIN..."
-msgstr ""
-
-#: ui/MessageTextView.vala:27
-msgid "Type your message here..."
-msgstr ""
-
-#: ui/ContactListWindow.vala:131
+#: src/ui/ContactListWindow.vala:130
 #, c-format
 msgid "Could not read theme from \"%s\""
 msgstr "无法从\"%s\"读取主题"
 
-#: ui/ContactListWindow.vala:210 core/ToxSession.vala:31
-#: core/GroupChatContact.vala:32
-msgid "Online"
-msgstr "在线"
-
-#: ui/ContactListWindow.vala:212
+#: src/ui/ContactListWindow.vala:210
 msgid "All"
 msgstr "全部"
 
-#: ui/ContactListWindow.vala:679
+#: src/ui/ContactListWindow.vala:508
+#, c-format
+msgid "Venom (%s)"
+msgstr ""
+
+#: src/ui/ContactListWindow.vala:628
+#, c-format
+msgid "* %s"
+msgstr ""
+
+#: src/ui/ContactListWindow.vala:655
 #, c-format
 msgid ""
 "New friend request from '%s'.\n"
 "Do you want to accept?"
 msgstr ""
 
-#: ui/ContactListWindow.vala:680 ui/ContactListWindow.vala:797
-#: ui/ContactListWindow.vala:891
-msgid "_Accept"
-msgstr ""
-
-#: ui/ContactListWindow.vala:745
+#: src/ui/ContactListWindow.vala:721
 msgid "Connected to the network"
 msgstr "连接到网络"
 
-#: ui/ContactListWindow.vala:751
+#: src/ui/ContactListWindow.vala:724
 msgid "Disconnected from the network"
 msgstr ""
 
-#: ui/ContactListWindow.vala:795
+#: src/ui/ContactListWindow.vala:765
 #, c-format
 msgid "'%s' has invited you to a groupchat, do you want to accept?"
 msgstr "'%s' 邀请你加入一个群聊，你愿意接受吗？"
 
-#: ui/ContactListWindow.vala:890
-#, fuzzy, c-format
-msgid "'%s' is calling (%s) ..."
-msgstr "%s 正在输入......"
-
-#: ui/ContactListWindow.vala:890
-msgid "Video call"
-msgstr ""
-
-#: ui/ContactListWindow.vala:890
-msgid "Audio only"
-msgstr ""
-
-#: ui/ContactListWindow.vala:1215 ui/ContactListWindow.vala:1252
-#, fuzzy, c-format
-msgid "Are you sure you want to remove '%s' from your contact list?"
+#: src/ui/ContactListWindow.vala:1111 src/ui/ContactListWindow.vala:1148
+#, c-format
+msgid "Are you sure you want to delete '%s' from your contact list?"
 msgstr "确实要从您的联系人名单中删除 '%s'？"
 
-#: ui/ContactListWindow.vala:1216 ui/ContactListWindow.vala:1253
-msgid "_Delete"
+#: src/ui/ContactListWindow.vala:1143
+#, c-format
+msgid "groupchat #%i"
 msgstr ""
 
-#: ui/ContactListWindow.vala:1283
+#: src/ui/ContactListWindow.vala:1179
 msgid "Resolving ID failed"
 msgstr ""
 
-#: ui/ContactListWindow.vala:1283
+#: src/ui/ContactListWindow.vala:1179
 msgid "Could not resolve ID from DNS record\n"
 msgstr "无法从DNS记录中解析 ID\n"
 
-#: ui/ContactListWindow.vala:1293 ui/ContactListWindow.vala:1304
+#: src/ui/ContactListWindow.vala:1189 src/ui/ContactListWindow.vala:1200
 msgid "Adding Friend failed"
 msgstr "添加好友失败"
 
-#: ui/ContactListWindow.vala:1293
+#: src/ui/ContactListWindow.vala:1189
 msgid "Could not add friend: Invalid ID\n"
 msgstr "不能添加好友: 无效的ID\n"
 
-#: ui/ContactListWindow.vala:1304
+#: src/ui/ContactListWindow.vala:1200
 #, c-format
 msgid "Could not add friend: %s.\n"
 msgstr "不能添加好友: %s。\n"
 
-#: ui/add_contact_dialog.ui:6
-msgid "Please let me add you to my contact list."
+#. update groupchat name
+#. update contact name
+#: src/ui/GroupConversationWidget.vala:47 src/ui/ConversationWidget.vala:51
+#, c-format
+msgid "<b>%s</b>"
 msgstr ""
 
-#: ui/add_contact_dialog.ui:40
-msgid "Enter a Tox ID here or a Tox URI"
+#: src/ui/PinDialog.vala:37
+#, c-format
+msgid ""
+"Please insert PIN for \n"
+"<b>%s</b>"
 msgstr ""
 
-#: ui/add_contact_dialog.ui:54
-msgid "_Nickname (optional):"
+#: src/ui/PinDialog.vala:49
+msgid "Please insert PIN..."
 msgstr ""
 
-#: ui/add_contact_dialog.ui:67
-msgid "Set a custom nickname for the friend you are about to add"
+#: src/ui/FileTransferChatEntry.vala:85
+msgid "File received"
 msgstr ""
 
-#: ui/add_contact_dialog.ui:94
-msgid "_Message (optional):"
+#: src/ui/FileTransferChatEntry.vala:87
+msgid "File sent"
 msgstr ""
 
-#: ui/add_contact_dialog.ui:113
-msgid "Send a custom message to be displayed to the friend you are adding"
+#: src/ui/FileTransferChatEntry.vala:94
+msgid "File was rejected"
 msgstr ""
 
-#: ui/AddContactDialog.vala:74
-msgid "_Add"
+#: src/ui/FileTransferChatEntry.vala:104
+msgid "Paused"
+msgstr "暂停"
+
+#: src/ui/FileTransferChatEntry.vala:107
+msgid "Sending failed"
 msgstr ""
 
-#: ui/AddContactDialog.vala:76 ui/contact_list.ui:427
+#: src/ui/FileTransferChatEntry.vala:113
+msgid "Receiving failed"
+msgstr ""
+
+#: src/ui/FileTransferChatEntry.vala:119
+msgid "Canceled"
+msgstr "取消"
+
+#: src/ui/FileTransferChatEntry.vala:125 src/ui/FileTransferChatEntry.vala:129
+msgid "Disconnected"
+msgstr ""
+
+#: src/ui/FileTransferChatEntry.vala:155
+msgid "Save file"
+msgstr ""
+
+#: src/ui/FileTransferChatEntry.vala:158
+msgid "Save"
+msgstr ""
+
+#: src/ui/AddContactDialog.vala:76
 msgid "Add contact"
 msgstr "添加联系人"
 
-#: ui/AddContactDialog.vala:90
+#: src/ui/AddContactDialog.vala:90
 msgid "No ID given"
 msgstr ""
 
-#: ui/AddContactDialog.vala:96
+#: src/ui/AddContactDialog.vala:96
 msgid "ID contains invalid characters"
 msgstr ""
 
-#: ui/AddContactDialog.vala:100
+#: src/ui/AddContactDialog.vala:100
 msgid "Valid ID size"
 msgstr ""
 
-#: ui/contact_list.ui:50
-msgid "_Edit user"
-msgstr "编辑用户(_E)"
-
-#: ui/contact_list.ui:61
-msgid "_Copy ID to clipboard"
-msgstr "复制ID到剪贴板(_C)"
-
-#: ui/contact_list.ui:72
-msgid "Change _Status"
-msgstr "改变状态(_S)"
-
-#: ui/contact_list.ui:85
-msgid "_Online"
-msgstr "在线(_O)"
-
-#: ui/contact_list.ui:96
-msgid "_Away"
-msgstr "离开(_A)"
-
-#: ui/contact_list.ui:107
-msgid "_Busy"
-msgstr "忙(_B)"
-
-#: ui/contact_list.ui:118
-msgid "O_ffline"
-msgstr "离线(_F)"
-
-#: ui/contact_list.ui:141
-msgid "E_xport data file"
+#: src/ui/MessageTextView.vala:27
+msgid "Type your message here..."
 msgstr ""
 
-#: ui/contact_list.ui:149
-msgid "_Import data file"
-msgstr ""
-
-#: ui/contact_list.ui:306
-msgid "connecting..."
-msgstr "连接中......"
-
-#: ui/contact_list.ui:444
-msgid "Create groupchat"
-msgstr "创建群聊"
-
-#: ui/contact_list.ui:477
-msgid "Open preferences"
-msgstr "打开首选项"
-
-#: ui/ConversationWidget.vala:68
+#: src/ui/ConversationWidget.vala:60
 #, c-format
 msgid "%s is typing..."
 msgstr "%s 正在输入......"
 
-#: ui/ConversationWidget.vala:364
+#. GUI events
+#: src/ui/ConversationWidget.vala:284
 msgid "Select a file to send"
 msgstr ""
 
-#: ui/ConversationWidget.vala:367
+#: src/ui/ConversationWidget.vala:287
 msgid "Select"
 msgstr ""
 
-#: ui/FileTransferChatEntry.vala:85
-msgid "File received"
-msgstr ""
+#~ msgid "%s changed his status to %s\n"
+#~ msgstr "%s 切换他的状态到 %s\n"
 
-#: ui/FileTransferChatEntry.vala:87
-msgid "File sent"
-msgstr ""
+#~ msgid "%s is now %s.\n"
+#~ msgstr "%s 现在 %s。\n"
 
-#: ui/FileTransferChatEntry.vala:94
-msgid "File was rejected"
-msgstr ""
+#~ msgid "<b>User</b>"
+#~ msgstr "<b>用户</b>"
 
-#: ui/FileTransferChatEntry.vala:104
-msgid "Paused"
-msgstr "暂停"
+#~ msgid "Added new friend #%i\n"
+#~ msgstr "添加新好友 #%i\n"
 
-#: ui/FileTransferChatEntry.vala:107
-msgid "Sending failed"
-msgstr ""
+#~ msgid "Background thread started.\n"
+#~ msgstr "后台线程启动。\n"
 
-#: ui/FileTransferChatEntry.vala:113
-msgid "Receiving failed"
-msgstr ""
+#~ msgid "Background thread stopped.\n"
+#~ msgstr "后台线程停止。\n"
 
-#: ui/FileTransferChatEntry.vala:119
-msgid "Canceled"
-msgstr "取消"
+#~ msgid "Bad checksum"
+#~ msgstr "校验和错误"
 
-#: ui/FileTransferChatEntry.vala:125 ui/FileTransferChatEntry.vala:129
-msgid "Disconnected"
-msgstr ""
+#~ msgid "Call contact"
+#~ msgstr "呼叫联系人"
 
-#: ui/FileTransferChatEntry.vala:155
-msgid "Save file"
-msgstr ""
+#~ msgid "Call contact with video"
+#~ msgstr "呼叫一个视频通话"
 
-#: ui/conversation_window.ui:156
-msgid "Call contact"
-msgstr "呼叫联系人"
+#~ msgid "Can't create action regex: %s.\n"
+#~ msgstr "无法创建动作的正则表达式: %s。\n"
 
-#: ui/conversation_window.ui:175
-msgid "Call contact with video"
-msgstr "呼叫一个视频通话"
+#~ msgid "Can't send to own key"
+#~ msgstr "不能发送自己的密匙"
 
-#: ui/conversation_window.ui:291
-msgid "Insert Smiley"
-msgstr "插入表情符"
+#~ msgid "Change _Status"
+#~ msgstr "改变状态(_S)"
 
-#: ui/conversation_window.ui:309
-msgid "Send file"
-msgstr "发送文件"
+#~ msgid "Connecting to DHT Nodes:\n"
+#~ msgstr "连接到DHT节点:\n"
 
-#: ui/conversation_window.ui:342
-msgid "Send message"
-msgstr "发送消息"
+#~ msgid "Connection to DHT %s.\n"
+#~ msgstr "连接到DHT %s。\n"
 
-#: ui/Client.vala:49
-#, fuzzy
-msgid "P_references"
-msgstr "打开首选项"
+#~ msgid "Contact accepted file sending request\n"
+#~ msgstr "联系人接受文件发送请求\n"
 
-#: ui/Client.vala:53
-msgid "_Help"
-msgstr ""
+#~ msgid "Copied Tox ID to clipboard\n"
+#~ msgstr "复制 TOX ID 到剪贴板\n"
 
-#: ui/Client.vala:57
-msgid "_About"
-msgstr ""
+#~ msgid "Could not change user name!\n"
+#~ msgstr "无法更改用户名称！\n"
 
-#: ui/Client.vala:60 ui/Client.vala:86
-msgid "_Quit"
-msgstr ""
+#~ msgid "Could not change user statusmessage!\n"
+#~ msgstr "无法更改用户状态消息！\n"
 
-#: ui/Client.vala:83
-msgid "_Show/Hide Venom"
-msgstr ""
+#~ msgid "Could not create a new groupchat.\n"
+#~ msgstr "不能创建一个新群聊。\n"
 
-#: ui/Client.vala:182
-msgid "There is currently no help available"
-msgstr ""
+#~ msgid "Could not join groupchat.\n"
+#~ msgstr "不能加入群聊。\n"
 
-#: ui/UserInfoWindow.vala:83
-msgid "_Apply"
-msgstr ""
+#~ msgid "Could not load session data (%s), creating new one.\n"
+#~ msgstr "无法加载会话数据（%s），创建一个新的。\n"
 
-#: ui/UserInfoWindow.vala:86
-msgid "Edit user information"
-msgstr ""
+#~ msgid "Could not remove %s.\n"
+#~ msgstr "无法删除 %s.\n"
 
-#: core/GroupChat.vala:45
-#, c-format
-msgid "Groupchat #%i"
-msgstr ""
+#~ msgid "Could not remove contact %i.\n"
+#~ msgstr "无法删除联系人 %i。\n"
 
-#: core/GroupChat.vala:52
-#, c-format
-msgid "%i people connected"
-msgstr "%i 人在线"
+#~ msgid "Could not remove peer [%i] from groupchat #%i (no such peer)\n"
+#~ msgstr "无法删除对端 [%i] 从群聊 #%i （无此对端）\n"
 
-#: core/GroupChat.vala:54
-#, c-format
-msgid "%i person connected"
-msgstr "%i 人在线"
+#~ msgid "Default Tox DNS ID suffix:"
+#~ msgstr "缺省 Tox DNS ID 后缀:"
 
-#: core/GroupChat.vala:56
-msgid "no one connected"
-msgstr ""
+#~ msgid "Flash window when a new message arrives"
+#~ msgstr "一条新消息到达时闪频振动"
 
-#: core/ToxSession.vala:33
-msgid "Away"
-msgstr "离开"
+#~ msgid "Icon:"
+#~ msgstr "头像"
 
-#: core/ToxSession.vala:35
-msgid "Busy"
-msgstr "忙"
+#~ msgid "Insert Smiley"
+#~ msgstr "插入表情符"
 
-#: core/ToxSession.vala:37 core/Contact.vala:129 core/Contact.vala:139
-msgid "Offline"
-msgstr "离线"
+#~ msgid "Keep history"
+#~ msgstr "保持历史"
 
-#: core/ToxSession.vala:873
-#, c-format
-msgid "File \"%d\" does not exist."
-msgstr ""
+#~ msgid "Miscellaneous"
+#~ msgstr "杂项"
 
-#: core/ToxSession.vala:880
-msgid "Error while reading from stream."
-msgstr ""
+#~ msgid "Name:"
+#~ msgstr "名字"
 
-#: core/ToxSession.vala:886
-msgid "Error while loading messenger data."
-msgstr ""
+#~ msgid "O_ffline"
+#~ msgstr "离线(_F)"
 
-#: core/Tools.vala:138
-msgid "Message too long"
-msgstr ""
+#~ msgid "Open preferences"
+#~ msgstr "打开首选项"
 
-#: core/Tools.vala:140
-msgid "No message included"
-msgstr ""
+#~ msgid "Out of memory"
+#~ msgstr "内存溢出"
 
-#: core/Tools.vala:142
-msgid "Can't send to own key"
-msgstr "不能发送自己的密匙"
+#~ msgid "Privacy"
+#~ msgstr "隐私"
 
-#: core/Tools.vala:144
-msgid "Friend request already sent"
-msgstr ""
+#~ msgid "Send file"
+#~ msgstr "发送文件"
 
-#: core/Tools.vala:146
-msgid "Unknown error"
-msgstr ""
+#~ msgid "Send message"
+#~ msgstr "发送消息"
 
-#: core/Tools.vala:148
-msgid "Bad checksum"
-msgstr "校验和错误"
+#~ msgid "Settings"
+#~ msgstr "设置"
 
-#: core/Tools.vala:150
-msgid "Set new nospam"
-msgstr ""
+#~ msgid "Show _others when I am typing"
+#~ msgstr "当我正在输入时其他人可以看到这一状态"
 
-#: core/Tools.vala:152
-msgid "Out of memory"
-msgstr "内存溢出"
+#~ msgid "Show filesize in"
+#~ msgstr "显示文件尺寸用"
 
-#: core/Tools.vala:154
-msgid "Friend request successfully sent"
-msgstr ""
+#~ msgid "Show me when others are typing"
+#~ msgstr "当其他人正在输入时我可以看到这一状态"
 
-#: core/ContactStorage.vala:103
-#, c-format
-msgid "Error creating contacts table: %s\n"
-msgstr ""
+#~ msgid "Status message:"
+#~ msgstr "状态消息:"
 
-#: core/ContactStorage.vala:108
-#, c-format
-msgid "Error creating contacts insert statement: %d: %s\n"
-msgstr ""
+#~ msgid "_Away"
+#~ msgstr "离开(_A)"
 
-#: core/ContactStorage.vala:113
-#, c-format
-msgid "Error creating contacts select statement: %d: %s\n"
-msgstr ""
+#~ msgid "_Browse..."
+#~ msgstr "浏览(_B)..."
 
-#: core/Message.vala:92
-#, c-format
-msgid "%s says:"
-msgstr ""
+#~ msgid "_Busy"
+#~ msgstr "忙(_B)"
 
-#: core/Message.vala:164 core/Message.vala:209
-msgid "<unknown>"
-msgstr "<未知>"
+#~ msgid "_Copy ID to clipboard"
+#~ msgstr "复制ID到剪贴板(_C)"
 
-#: core/Message.vala:171
-#, c-format
-msgid "%s in %s says:"
-msgstr ""
+#~ msgid "_Edit user"
+#~ msgstr "编辑用户(_E)"
 
-#: core/Message.vala:216
-#, fuzzy, c-format
-msgid "%s in %s:"
-msgstr "%s 现在 %s。\n"
+#~ msgid "_Online"
+#~ msgstr "在线(_O)"
 
-#: core/DhtNodeStorage.vala:172
-#, c-format
-msgid "Error creating dht nodes table: %s\n"
-msgstr ""
+#~ msgid "connecting..."
+#~ msgstr "连接中......"
 
-#: core/DhtNodeStorage.vala:177
-#, c-format
-msgid "Error creating dht nodes insert statement: %d: %s\n"
-msgstr ""
+#~ msgid "days"
+#~ msgstr "天记录"
 
-#: core/DhtNodeStorage.vala:182
-#, c-format
-msgid "Error creating dht nodes select statement: %d: %s\n"
-msgstr ""
+#~ msgid "delete after"
+#~ msgstr "删除早于"
 
-#: core/ResourceFactory.vala:76
-msgid "Tox User"
-msgstr ""
-
-#: core/ResourceFactory.vala:77
-#, c-format
-msgid "Toxing on Venom v.%s"
-msgstr ""
-
-#: core/SqliteTools.vala:37 core/SqliteTools.vala:47 core/SqliteTools.vala:57
-#, c-format
-msgid "Index for %s not found."
-msgstr ""
-
-#: core/SqliteTools.vala:40
-#, c-format
-msgid "Could not bind int to %s."
-msgstr "无法绑定 int 到 %s 。"
-
-#: core/SqliteTools.vala:50
-#, c-format
-msgid "Could not bind int64 to %s."
-msgstr "无法绑定 int64 到 %s 。"
-
-#: core/SqliteTools.vala:60
-#, c-format
-msgid "Could not bind text to %s"
-msgstr "无法绑定 text 到 %s 。"
-
-#: core/SqliteTools.vala:75
-#, c-format
-msgid "Can't open database: %d: %s\n"
-msgstr "无法打开数据库: %d: %s\n"
-
-#: core/Contact.vala:148
-#, c-format
-msgid "Last seen: %s"
-msgstr ""
+#~ msgid "indefinitely"
+#~ msgstr "无限制"

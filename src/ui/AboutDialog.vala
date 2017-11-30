@@ -1,7 +1,7 @@
 /*
  *    AboutDialog.vala
  *
- *    Copyright (C) 2013-2014  Venom authors and contributors
+ *    Copyright (C) 2013-2018  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -21,7 +21,12 @@
 
 namespace Venom {
   public class AboutDialog : Gtk.AboutDialog {
-    public AboutDialog() {
+    private ILogger logger;
+
+    public AboutDialog(ILogger logger) {
+      this.logger = logger;
+      logger.d("AboutDialog created.");
+
       authors = {
         "naxuroqa <naxuroqa@gmail.com>",
         "John Poulakos <jhn1291@gmail.com>",
@@ -45,7 +50,7 @@ namespace Venom {
         "Sean <sean@tox.im>",
         null
       };
-      this.add_credit_section(_("Packagers"), packagers);
+      add_credit_section(_("Packagers"), packagers);
       comments = Config.SHORT_DESCRIPTION;
       copyright = Config.COPYRIGHT_NOTICE;
       license_type = Gtk.License.GPL_3_0;
@@ -53,6 +58,11 @@ namespace Venom {
       translator_credits = _("translator-credits");
       version = Config.VERSION;
       website = Config.WEBSITE;
+      website_label = _("Visit us on Github");
+    }
+
+    ~AboutDialog() {
+      logger.d("AboutDialog destroyed.");
     }
   }
 }

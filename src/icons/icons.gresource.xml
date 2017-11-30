@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/im/tox/venom/icons">
+    <file compressed="true">scalable/apps/venom-symbolic.svg</file>
+    <file compressed="true">scalable/status/busy-symbolic.svg</file>
+    <file compressed="true">scalable/status/idle-symbolic.svg</file>
+    <file compressed="true">scalable/status/offline-symbolic.svg</file>
+    <file compressed="true">scalable/status/online-symbolic.svg</file>
+    <file compressed="true">scalable/status/group.svg</file>
+    <file compressed="true">scalable/status/person.svg</file>
+  </gresource>
+</gresources>

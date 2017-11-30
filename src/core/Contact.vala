@@ -1,7 +1,7 @@
 /*
  *    Contact.vala
  *
- *    Copyright (C) 2013-2014  Venom authors and contributors
+ *    Copyright (C) 2013-2018  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -19,147 +19,11 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 namespace Venom {
-
-  public enum CallState {
-    RINGING, // outgoing call
-    CALLING, // incoming call
-    STARTED, // call commencing
-    ENDED;   // call ended
-    public string to_string() {
-      switch(this) {
-        case RINGING:
-          return "ringing";
-        case CALLING:
-          return "calling";
-        case STARTED:
-          return "started";
-        case ENDED:
-          return "ended";
-        default:
-          return "unknown state";
-      }
-    }
-  }
-
-  public interface IContact : GLib.Object {
+  public interface IContact : Object {
+    public abstract string get_id();
     public abstract string get_name_string();
-    public abstract string get_name_string_with_hyperlinks();
     public abstract string get_status_string();
-    public abstract string get_status_string_with_hyperlinks();
-    public abstract string get_status_string_alt();
-    public abstract string get_last_seen_string();
-    public abstract string get_tooltip_string();
-  }
-
-  public class Contact : IContact, GLib.Object {
-    // Saved in toxs savefile
-    public uint8[]        public_key       { get; set; }
-    public int            friend_id        { get; set; default = -1;}
-    public string         name             { get; set; default = ""; }
-    public string         status_message   { get; set; default = ""; }
-    public DateTime       last_seen        { get; set; default = null; }
-    public uint8          user_status      { get; set; default = (uint8)Tox.UserStatus.INVALID; }
-    // Saved in venoms savefile
-    public string         note             { get; set; default = ""; }
-    public string         alias            { get; set; default = ""; }
-    public bool           is_blocked       { get; set; default = false; }
-    public string         group            { get; set; default = ""; }
-    // FIXME update sql save file and save those
-    public bool           auto_files       { get; set; default = false; }
-    public bool           auto_audio       { get; set; default = false; }
-    public bool           auto_video       { get; set; default = false; }
-    // Not saved
-    public bool           online           { get; set; default = false; }
-    public Gdk.Pixbuf?    image            { get; set; default = null; }
-    public int            unread_messages  { get; set; default = 0; }
-    public bool           is_typing        { get; set; default = false; }
-    // ToxAV stuff
-    public int            call_index       { get; set; default = -1; }
-    public CallState      call_state       { get; set; default = CallState.ENDED; }
-    public bool           video            { get; set; default = false; }
-    public double         volume           { get; set; default = 1.0; }
-
-    private GLib.HashTable<uint8, FileTransfer> _file_transfers = new GLib.HashTable<uint8, FileTransfer>(null, null);
-
-    public unowned GLib.HashTable<uint8, FileTransfer> get_filetransfers() {
-      return _file_transfers;
-    }
-
-    public Contact(uint8[] public_key, int friend_id = -1) {
-      this.public_key = public_key;
-      this.friend_id = friend_id;
-    }
-
-    public string get_name_string() {
-      if(name != "") {
-        if(alias == "") {
-          return name;
-        } else {
-          return "%s <i>(%s)</i>".printf(Markup.escape_text(name), Markup.escape_text(alias));
-        }
-      } else if (alias != "") {
-        return "<i>%s</i>".printf(Markup.escape_text(alias));
-      } else {
-        return Tools.bin_to_hexstring(public_key);
-      }
-    }
-
-    public string get_name_string_with_hyperlinks() {
-      if(name != "") {
-        if(alias == "") {
-          return name;
-        } else {
-          return "%s <i>(%s)</i>".printf(Tools.markup_uris(name), Tools.markup_uris(alias));
-        }
-      } else if (alias != "") {
-        return "<i>%s</i>".printf(Tools.markup_uris(alias));
-      } else {
-        return Tools.bin_to_hexstring(public_key);
-      }
-    }
-
-    public string get_status_string() {
-      if(online || status_message != "") {
-        return Markup.escape_text(status_message);
-      } else if (last_seen != null) {
-        return get_last_seen_string();
-      } else {
-        return _("Offline");
-      }
-    }
-
-    public string get_status_string_with_hyperlinks() {
-      if(online || status_message != "") {
-        return Tools.markup_uris(status_message);
-      } else if (last_seen != null) {
-        return get_last_seen_string();
-      } else {
-        return _("Offline");
-      }
-    }
-
-    public string get_status_string_alt() {
-      return Tools.markup_uris(status_message);
-    }
-
-    public string get_last_seen_string() {
-      return last_seen != null ? _("Last seen: %s").printf(last_seen.format("%c")) : "";
-    }
-
-    public string get_tooltip_string() {
-      StringBuilder b = new StringBuilder();
-      b.append(get_name_string_with_hyperlinks());
-      if(status_message != "") {
-        b.append_c('\n');
-        b.append(get_status_string_alt());
-      }
-      if(!online && last_seen != null) {
-        b.append_c('\n');
-        b.append(get_last_seen_string());
-      }
-      return b.str;
-    }
+    public abstract Gdk.Pixbuf get_image();
   }
 }

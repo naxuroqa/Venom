@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.20.2 -->
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <template class="VenomApplicationWindow" parent="GtkApplicationWindow">
+    <property name="can-focus">False</property>
+    <child>
+      <object class="GtkPaned" id="content_paned">
+        <property name="visible">1</property>
+        <property name="can-focus">1</property>
+        <child>
+          <object class="GtkBox" id="contact_list_box">
+            <property name="visible">1</property>
+            <property name="orientation">vertical</property>
+          </object>
+          <packing>
+            <property name="resize">0</property>
+            <property name="shrink">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">1</property>
+            <property name="can-focus">1</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">1</property>
+                <child>
+                  <object class="GtkRevealer" id="content_revealer">
+                    <property name="visible">1</property>
+                    <property name="transition-type">crossfade</property>
+                    <property name="reveal-child">1</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="shrink">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

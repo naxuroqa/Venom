@@ -20,12 +20,13 @@
  */
 
 namespace Venom {
-  public class User : GLib.Object{
+  public class User : GLib.Object {
     private static User? _instance;
     public static User instance {
       get {
-        if( _instance == null )
+        if (_instance == null) {
           _instance = new User();
+        }
         return _instance;
       }
       private set {

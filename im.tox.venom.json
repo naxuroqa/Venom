@@ -1,0 +1,51 @@
+{
+	"app-id": "im.tox.venom",
+	"runtime": "org.gnome.Platform",
+	"runtime-version": "3.26",
+	"sdk": "org.gnome.Sdk",
+	"command": "venom",
+	"finish-args": [
+		"--share=network",
+		"--socket=x11",
+		"--socket=wayland",
+		"--socket=pulseaudio",
+		"--talk-name=ca.desrt.dconf",
+		"--talk-name=org.freedesktop.Notifications",
+		"--filesystem=host",
+		"--device=dri"],
+	"separate-locales": "false",
+	"modules" : [
+		{
+			"name" : "libsodium",
+			"sources": [
+			{
+				"type": "archive",
+				"url": "https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz",
+				"sha256": "fb6a9e879a2f674592e4328c5d9f79f082405ee4bb05cb6e679b90afe9e178f4"
+			}
+			]
+		},
+		{
+			"name" : "toxcore",
+			"buildsystem": "cmake",
+			"config-opts": ["-DBUILD_NTOX=off"],
+			"sources" : [
+			{
+				"type": "archive",
+				"url": "https://github.com/TokTok/c-toxcore/releases/download/v0.1.10/c-toxcore-0.1.10.tar.gz",
+				"sha256": "4e9a2881dd0ea8e65a35fc9621644ccf500c1797a2d37983b0057ed3be971299"
+			}
+			]
+		},
+		{
+			"name": "venom",
+			"buildsystem": "meson",
+			"sources": [
+			{
+				"type": "git",
+				"path": "."
+			}
+			]
+		}
+	]
+}

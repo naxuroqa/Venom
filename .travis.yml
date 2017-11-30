@@ -53,8 +53,8 @@ before_script:
   - sudo ldconfig > /dev/null
 
 script:
-  - mkdir build
+  - meson build
   - cd build
-  - cmake -DDJBDNS_DIRECTORY="../djbdns-1.05" -DENABLE_QR_ENCODE=ON -DENABLE_LIBNOTIFY=ON ..
-  - make -j3
-  - sudo make install
+  - ninja
+  - ninja test
+  - ninja install

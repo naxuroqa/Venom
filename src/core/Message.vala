@@ -1,7 +1,7 @@
 /*
  *    Message.vala
  *
- *    Copyright (C) 2013-2014  Venom authors and contributors
+ *    Copyright (C) 2013-2018  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -24,196 +24,87 @@ namespace Venom {
     INCOMING,
     OUTGOING
   }
-  public interface IMessage : GLib.Object {
-    public abstract DateTime timestamp {get; protected set;}
-    public abstract MessageDirection message_direction {get; protected set;}
-    public abstract bool important {get; set;}
-    public abstract bool is_action {get; set;}
 
-    /*
-     *  Get plain sender string
-     */
+  public interface IMessage : Object {
+    public signal void message_changed();
+
+    public abstract DateTime timestamp                 { get; protected set; }
+    public abstract MessageDirection message_direction { get; protected set; }
+    public abstract bool important                     { get; set; }
+    public abstract bool is_action                     { get; set; }
+    public abstract bool received                      { get; set; }
+
     public abstract string get_sender_plain();
-
-    /*
-     *  Get plain message string
-     */
     public abstract string get_message_plain();
-
-    /*
-     *  Get plain time string
-     */
-    public virtual string get_time_plain() {
-      return timestamp.format("%R:%S");
-    }
+    public abstract string get_time_plain();
 
     public abstract string get_notification_header();
     public abstract Gdk.Pixbuf get_sender_image();
 
-    /*
-     *  Compare this senders of two messages
-     */
-    public abstract bool compare_sender(IMessage to);
+    public abstract bool equals_message(IMessage m);
   }
-  public class Message : IMessage, GLib.Object {
-    public unowned Contact from {get; protected set;}
-    public unowned Contact to {get; protected set;}
-    public string message {get; protected set;}
-    public DateTime timestamp {get; protected set;}
-    public MessageDirection message_direction {get; protected set;}
-    public bool important {get; set; default = false;}
-    public bool is_action {get; set; default = false;}
 
-    public Message.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
+  public class Message : IMessage, ILoggedMessage, Object {
+    public unowned IContact from              { get; protected set; }
+    public unowned IContact to                { get; protected set; }
+    public string message                     { get; protected set; }
+    public GLib.DateTime timestamp            { get; protected set; }
+    public MessageDirection message_direction { get; protected set; }
+    public bool important                     { get; set; default = false; }
+    public bool is_action                     { get; set; default = false; }
+    public uint32 message_id                  { get; set; }
+    public bool received                      { get; set; }
+
+    public Message.outgoing(IContact receiver, string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
       this.message_direction = MessageDirection.OUTGOING;
       this.from = null;
       this.to = receiver;
       this.message = message;
       this.timestamp = timestamp;
     }
-    public Message.incoming(Contact sender, string message, DateTime timestamp = new DateTime.now_local()) {
+
+    public Message.incoming(IContact sender, string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
       this.message_direction = MessageDirection.INCOMING;
       this.from = sender;
       this.to = null;
       this.message = message;
       this.timestamp = timestamp;
     }
+
     public virtual string get_sender_plain() {
-      if(from == null) {
+      if (from == null) {
         return User.instance.name;
       } else {
-        return from.name;
+        return from.get_name_string();
       }
     }
+
     public virtual string get_message_plain() {
       return message;
     }
-    public virtual string get_notification_header() {
-      return _("%s says:").printf(get_sender_plain());
-    }
-    public Gdk.Pixbuf get_sender_image() {
-      return from.image ?? ResourceFactory.instance.default_contact;
-    }
-    public bool compare_sender(IMessage to) {
-      if(to is Message) {
-        return (from == (to as Message).from);
-      }
-      return false;
-    }
-  }
-  public class ActionMessage : Message {
-    public ActionMessage.outgoing(Contact receiver, string message, DateTime timestamp = new DateTime.now_local()) {
-      this.message_direction = MessageDirection.OUTGOING;
-      this.from = null;
-      this.to = receiver;
-      this.message = message;
-      this.timestamp = timestamp;
-      this.is_action = true;
-    }
-    public ActionMessage.incoming(Contact sender, string message, DateTime timestamp = new DateTime.now_local()) {
-      this.message_direction = MessageDirection.INCOMING;
-      this.from = sender;
-      this.to = null;
-      this.message = message;
-      this.timestamp = timestamp;
-      this.is_action = true;
-    }
-    public override string get_sender_plain() {
-      return "*";
-    }
-    public override string get_message_plain() {
-      return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from.name : User.instance.name, message);
-    }
-    public override string get_notification_header() {
-      return from.get_name_string() + ":";
-    }
-  }
-  public class GroupMessage : IMessage, GLib.Object {
-    public unowned GroupChat from {get; protected set;}
-    public unowned GroupChat to {get; protected set;}
-    public GroupChatContact from_contact {get; protected set;}
-    public string message {get; protected set;}
-    public DateTime timestamp {get; protected set;}
-    public MessageDirection message_direction {get; protected set;}
-    public bool important {get; set; default = false;}
-    public bool is_action {get; set; default = false;}
 
-    public GroupMessage.outgoing(GroupChat receiver, string message, DateTime timestamp = new DateTime.now_local()) {
-      this.message_direction = MessageDirection.OUTGOING;
-      this.from = null;
-      this.to = receiver;
-      this.from_contact = null;
-      this.message = message;
-      this.timestamp = timestamp;
-    }
-    public GroupMessage.incoming(GroupChat sender, GroupChatContact from_contact, string message, DateTime timestamp = new DateTime.now_local()) {
-      this.message_direction = MessageDirection.INCOMING;
-      this.from = sender;
-      this.to = null;
-      this.from_contact = from_contact;
-      this.message = message;
-      this.timestamp = timestamp;
-    }
-    public virtual string get_sender_plain() {
-      if(from == null) {
-        return User.instance.name;
+    public virtual string get_time_plain() {
+      var now = new DateTime.now_local();
+      if (now.difference(timestamp) > GLib.TimeSpan.DAY) {
+        return timestamp.format("%c");
       } else {
-        if(this.message_direction == MessageDirection.OUTGOING) {
-          return User.instance.name;
-        }
-        return from_contact.name != null ? from_contact.name : _("<unknown>");
+        return timestamp.format("%X");
       }
     }
-    public virtual string get_message_plain() {
-      return message;
-    }
+
     public virtual string get_notification_header() {
-      return _("%s in %s says:").printf(from_contact.get_name_string(), from.get_name_string());
+      return get_sender_plain() + _(" says:");
     }
+
     public Gdk.Pixbuf get_sender_image() {
-      return from.image ?? ResourceFactory.instance.default_groupchat;
+      return UITools.pixbuf_from_resource(R.icons.default_contact);
     }
-    public bool compare_sender(IMessage to) {
-      if(to is GroupMessage) {
-        GroupMessage gm = to as GroupMessage;
-        return ((from == gm.from) && (from_contact == gm.from_contact));
+
+    public bool equals_message(IMessage m) {
+      if (m is Message) {
+        return (from == (m as Message).from);
       }
       return false;
-    }
-  }
-  public class GroupActionMessage : GroupMessage {
-    public GroupActionMessage.outgoing(GroupChat receiver, string message, DateTime timestamp = new DateTime.now_local()) {
-      this.message_direction = MessageDirection.OUTGOING;
-      this.from = null;
-      this.to = receiver;
-      this.from_contact = from_contact;
-      this.message = message;
-      this.timestamp = timestamp;
-      this.is_action = true;
-    }
-    public GroupActionMessage.incoming(GroupChat sender, GroupChatContact from_contact, string message, DateTime timestamp = new DateTime.now_local()) {
-      this.message_direction = MessageDirection.INCOMING;
-      this.from = sender;
-      this.to = null;
-      this.from_contact = from_contact;
-      this.message = message;
-      this.timestamp = timestamp;
-      this.is_action = true;
-    }
-    public override string get_sender_plain() {
-      return "*";
-    }
-    public override string get_message_plain() {
-      string name_string;
-      if(message_direction == MessageDirection.INCOMING) {
-        name_string = from_contact.name != null ? from_contact.name : _("<unknown>");
-      } else {
-        name_string = User.instance.name;
-      }
-      return "%s %s".printf(message_direction == MessageDirection.INCOMING ? from_contact.name : User.instance.name, message);
-    }
-    public override string get_notification_header() {
-      return _("%s in %s:").printf(from_contact.get_name_string(), from.get_name_string());
     }
   }
 }

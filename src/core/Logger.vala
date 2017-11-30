@@ -28,61 +28,93 @@ namespace Venom {
     FATAL;
 
     public string to_string() {
-      switch(this) {
+      switch (this) {
         case DEBUG:
-          return "DEBUG  ";
+          return "DEBUG";
         case INFO:
-          return "INFO   ";
+          return "\x1B[32m" + "INFO " + "\x1B[0m";
         case WARNING:
-          return "WARNING";
+          return "\x1B[33m" + "WARN " + "\x1B[0m";
         case ERROR:
-          return "ERROR  ";
+          return "\x1B[31m" + "ERROR" + "\x1B[0m";
         case FATAL:
-          return "FATAL  ";
+          return "\x1B[35m" + "FATAL" + "\x1B[0m";
         default:
-          return "UNKNOWN";
+          assert_not_reached();
       }
     }
   }
-  public class Logger : GLib.Object {
-    public static LogLevel displayed_level {get; set; default = LogLevel.WARNING;}
-    public static bool use_coloring {get; set; default = true;}
-    public static void init() {
-      Log.set_default_handler (glib_log);
+
+  public class Logger : ILogger, Object {
+    public static LogLevel displayed_level { get; set; default = LogLevel.WARNING; }
+
+    public Logger() {
+      d("Logger created.");
     }
+
+    ~Logger() {
+      d("Logger destroyed.");
+    }
+
+    public void d(string message) {
+      log(LogLevel.DEBUG, message);
+    }
+
+    public void i(string message) {
+      log(LogLevel.INFO, message);
+    }
+
+    public void w(string message) {
+      log(LogLevel.WARNING, message);
+    }
+
+    public void e(string message) {
+      log(LogLevel.ERROR, message);
+    }
+
+    public void f(string message) {
+      log(LogLevel.FATAL, message);
+    }
+
+    private void glib_log_function(string? log_domain, LogLevelFlags log_levels, string message) {
+      string concatMessage = log_domain != null
+                             ? log_domain + " : " + message
+                             : message;
+      switch (log_levels) {
+        case LogLevelFlags.FLAG_FATAL:
+        case LogLevelFlags.LEVEL_CRITICAL:
+          f(concatMessage);
+          break;
+        case LogLevelFlags.LEVEL_ERROR:
+          e(concatMessage);
+          break;
+        case LogLevelFlags.LEVEL_WARNING:
+          w(concatMessage);
+          break;
+        case LogLevelFlags.LEVEL_INFO:
+          i(concatMessage);
+          break;
+        case LogLevelFlags.LEVEL_DEBUG:
+          d(concatMessage);
+          break;
+        default:
+          w(concatMessage);
+          break;
+      }
+    }
+
+    public void attach_to_glib() {
+      //GLib.Log.set_default_handler(glib_log_function);
+      GLib.Log.set_handler(null, LogLevelFlags.LEVEL_MASK, glib_log_function);
+      GLib.Log.set_handler("GLib", LogLevelFlags.LEVEL_MASK, glib_log_function);
+    }
+
     public static void log(LogLevel level, string message) {
-      if(level < displayed_level) {
+      if (level < displayed_level) {
         return;
       }
       unowned FileStream s = level < LogLevel.ERROR ? stdout : stderr;
-      if(use_coloring) {
-        s.printf("\x001b[%dm[%s]\x001b[0m %s\n", level + 90, level.to_string(), message);
-      } else {
-        s.printf("[%s] %s\n", level.to_string(), message);
-      }
-    }
-    private static void glib_log(string? domain, LogLevelFlags flags, string message) {
-      string logmessage = "%s %s".printf(domain ?? "", message);
-
-      switch (flags) {
-        case LogLevelFlags.LEVEL_CRITICAL:
-          log(LogLevel.FATAL, logmessage);
-          break;
-        case LogLevelFlags.LEVEL_ERROR:
-          log(LogLevel.ERROR, logmessage);
-          break;
-        case LogLevelFlags.LEVEL_INFO:
-        case LogLevelFlags.LEVEL_MESSAGE:
-          log(LogLevel.INFO, logmessage);
-          break;
-        case LogLevelFlags.LEVEL_DEBUG:
-          log(LogLevel.DEBUG, logmessage);
-          break;
-        case LogLevelFlags.LEVEL_WARNING:
-        default:
-          log(LogLevel.WARNING, logmessage);
-          break;
-      }
+      s.printf("[%s] %s\n", level.to_string(), message);
     }
   }
 }
