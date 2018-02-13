@@ -213,8 +213,9 @@
                           <object class="GtkImage" id="userimage">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="halign">start</property>
                             <property name="pixel_size">50</property>
-                            <property name="icon_name">face-monkey</property>
+                            <property name="icon_name">person</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>

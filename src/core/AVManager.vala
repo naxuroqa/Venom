@@ -19,7 +19,7 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Venom { 
+namespace Venom {
   public errordomain AVManagerError {
     INIT,
     PIPELINE
@@ -59,29 +59,29 @@ namespace Venom {
     int var1;
   }
 
-  public class AVManager { 
+  public class AVManager {
 
-    private const string PIPELINE_IN        = "audioPipelineIn";
-    private const string AUDIO_SOURCE_IN    = "audioSourceIn";
-    private const string AUDIO_SINK_IN      = "audioSinkIn";
-    private const string AUDIO_VOLUME_IN    = "audioVolumeIn";
+    private const string PIPELINE_IN = "audioPipelineIn";
+    private const string AUDIO_SOURCE_IN = "audioSourceIn";
+    private const string AUDIO_SINK_IN = "audioSinkIn";
+    private const string AUDIO_VOLUME_IN = "audioVolumeIn";
 
-    private const string PIPELINE_OUT       = "audioPipelineOut";
-    private const string AUDIO_SOURCE_OUT   = "audioSourceOut";
-    private const string AUDIO_SINK_OUT     = "audioSinkOut";
-    private const string AUDIO_VOLUME_OUT   = "audioVolumeOut";
+    private const string PIPELINE_OUT = "audioPipelineOut";
+    private const string AUDIO_SOURCE_OUT = "audioSourceOut";
+    private const string AUDIO_SINK_OUT = "audioSinkOut";
+    private const string AUDIO_VOLUME_OUT = "audioVolumeOut";
 
-    private const string VIDEO_PIPELINE_IN  = "videoPipelineIn";
-    private const string VIDEO_SOURCE_IN    = "videoSourceIn";
-    private const string VIDEO_CONVERTER    = "videoConverter";
-    private const string VIDEO_SINK_IN      = "videoSinkIn";
+    private const string VIDEO_PIPELINE_IN = "videoPipelineIn";
+    private const string VIDEO_SOURCE_IN = "videoSourceIn";
+    private const string VIDEO_CONVERTER = "videoConverter";
+    private const string VIDEO_SINK_IN = "videoSinkIn";
 
     private const string VIDEO_PIPELINE_OUT = "videoPipelineOut";
-    private const string VIDEO_SOURCE_OUT   = "videoSourceOut";
+    private const string VIDEO_SOURCE_OUT = "videoSourceOut";
     private const string VIDEO_CONVERTER_OUT = "videoConverterOut";
-    private const string VIDEO_SINK_OUT     = "videoSinkOut";  
+    private const string VIDEO_SINK_OUT = "videoSinkOut";
 
-    private const string VIDEO_CAPS_OUT  = "video/x-raw-yuv,format=(fourcc)I420,width=640,height=480";
+    private const string VIDEO_CAPS_OUT = "video/x-raw-yuv,format=(fourcc)I420,width=640,height=480";
 
     private const int MAX_CALLS = 16;
 
@@ -92,7 +92,7 @@ namespace Venom {
     private Gst.AppSrc   audio_source_in;
     private Gst.Element  audio_sink_in;
     private Gst.Element  audio_volume_in;
-    
+
     private Gst.Pipeline pipeline_out;
     private Gst.Element  audio_source_out;
     private Gst.AppSink  audio_sink_out;
@@ -106,7 +106,7 @@ namespace Venom {
     private Gst.Element  video_source_out;
     private Gst.Element  video_converter_out;
     private Gst.AppSink  video_sink_out;
-    
+
     private Gst.Bus audio_in_bus;
     private Gst.Bus audio_out_bus;
     private Gst.Bus video_in_bus;
@@ -131,13 +131,13 @@ namespace Venom {
       }
     }
 
-    public static AVManager instance {get; private set;}
+    public static AVManager instance { get; private set; }
 
     public static void init() throws AVManagerError {
 //#if DEBUG
 //      instance = new AVManager({"", "--gst-debug-level=3"});
 //#else
-      instance = new AVManager({""});
+      instance = new AVManager({ "" });
 //#endif
     }
 
@@ -149,7 +149,7 @@ namespace Venom {
     private AVManager(string[] args) throws AVManagerError {
       // Initialize Gstreamer
       try {
-        if(!Gst.init_check(ref args)) {
+        if (!Gst.init_check(ref args)) {
           throw new AVManagerError.INIT("Gstreamer initialization failed.");
         }
       } catch (Error e) {
@@ -160,70 +160,69 @@ namespace Venom {
       // input audio pipeline
       try {
         pipeline_in = Gst.parse_launch("appsrc name=" + AUDIO_SOURCE_IN +
-                                    " ! audioconvert" +
-                                    " ! audioresample" +
-                                    " ! volume name=" + AUDIO_VOLUME_IN +
-                                    " ! openalsink name=" + AUDIO_SINK_IN) as Gst.Pipeline;
+                                       " ! audioconvert" +
+                                       " ! audioresample" +
+                                       " ! volume name=" + AUDIO_VOLUME_IN +
+                                       " ! openalsink name=" + AUDIO_SINK_IN) as Gst.Pipeline;
       } catch (Error e) {
         throw new AVManagerError.PIPELINE("Error creating the audio input pipeline: " + e.message);
       }
       audio_source_in = pipeline_in.get_by_name(AUDIO_SOURCE_IN) as Gst.AppSrc;
       audio_volume_in = pipeline_in.get_by_name(AUDIO_VOLUME_IN);
-      audio_sink_in   = pipeline_in.get_by_name(AUDIO_SINK_IN);
+      audio_sink_in = pipeline_in.get_by_name(AUDIO_SINK_IN);
 
       audio_in_bus = pipeline_in.get_bus();
 
       // output audio pipeline
       try {
         pipeline_out = Gst.parse_launch("pulsesrc name=" + AUDIO_SOURCE_OUT +
-                                     " ! volume name=" + AUDIO_VOLUME_OUT +
-                                     " ! appsink name=" + AUDIO_SINK_OUT) as Gst.Pipeline;
+                                        " ! volume name=" + AUDIO_VOLUME_OUT +
+                                        " ! appsink name=" + AUDIO_SINK_OUT) as Gst.Pipeline;
       } catch (Error e) {
         throw new AVManagerError.PIPELINE("Error creating the audio output pipeline: " + e.message);
       }
       audio_source_out = pipeline_out.get_by_name(AUDIO_SOURCE_OUT);
       audio_volume_out = pipeline_out.get_by_name(AUDIO_VOLUME_OUT);
-      audio_sink_out   = pipeline_out.get_by_name(AUDIO_SINK_OUT) as Gst.AppSink;
+      audio_sink_out = pipeline_out.get_by_name(AUDIO_SINK_OUT) as Gst.AppSink;
 
       audio_out_bus = pipeline_out.get_bus();
 
       // input video pipeline
       try {
         video_pipeline_in = Gst.parse_launch("appsrc name=" + VIDEO_SOURCE_IN +
-                                          " ! ffmpegcolorspace name=" + VIDEO_CONVERTER +
-                                          " ! autovideosink name=" + VIDEO_SINK_IN) as Gst.Pipeline;
+                                             " ! ffmpegcolorspace name=" + VIDEO_CONVERTER +
+                                             " ! autovideosink name=" + VIDEO_SINK_IN) as Gst.Pipeline;
       } catch (Error e) {
         throw new AVManagerError.PIPELINE("Error creating the video input pipeline: " + e.message);
       }
       video_source_in = video_pipeline_in.get_by_name(VIDEO_SOURCE_IN) as Gst.AppSrc;
-      video_sink_in   = video_pipeline_in.get_by_name(VIDEO_SINK_IN);
+      video_sink_in = video_pipeline_in.get_by_name(VIDEO_SINK_IN);
 
       video_in_bus = video_pipeline_in.get_bus();
 
       // output video pipeline
       try {
         video_pipeline_out = Gst.parse_launch("autovideosrc name=" + VIDEO_SOURCE_OUT +
-                                           " ! ffmpegcolorspace name=" + VIDEO_CONVERTER_OUT +
-                                           " ! videoscale" +
-                                           " ! appsink name=" + VIDEO_SINK_OUT) as Gst.Pipeline;
+                                              " ! ffmpegcolorspace name=" + VIDEO_CONVERTER_OUT +
+                                              " ! videoscale" +
+                                              " ! appsink name=" + VIDEO_SINK_OUT) as Gst.Pipeline;
       } catch (Error e) {
         throw new AVManagerError.PIPELINE("Error creating the video output pipeline: " + e.message);
       }
       video_source_out = video_pipeline_out.get_by_name(VIDEO_SOURCE_OUT);
       video_converter_out = video_pipeline_out.get_by_name(VIDEO_CONVERTER_OUT);
-      video_sink_out   = video_pipeline_out.get_by_name(VIDEO_SINK_OUT) as Gst.AppSink;
+      video_sink_out = video_pipeline_out.get_by_name(VIDEO_SINK_OUT) as Gst.AppSink;
 
       video_out_bus = video_pipeline_out.get_bus();
- 
+
       //set the bus callbacks
       audio_in_bus.add_watch( bus_callback);
       audio_out_bus.add_watch(bus_callback);
       video_in_bus.add_watch( bus_callback);
       video_out_bus.add_watch(bus_callback);
-      
 
       // caps
-      Gst.Caps caps  = Gst.Caps.from_string(get_audio_caps_from_codec_settings(ref default_settings));
+      Gst.Caps caps = Gst.Caps.from_string(get_audio_caps_from_codec_settings(ref default_settings));
       Gst.Caps vcaps_in = Gst.Caps.from_string(get_video_in_caps_from_dimensions(640, 480));
       Gst.Caps vcaps_out = Gst.Caps.from_string(VIDEO_CAPS_OUT);
       Logger.log(LogLevel.INFO, "Audio caps are [" + caps.to_string() + "]");
@@ -231,10 +230,10 @@ namespace Venom {
       Logger.log(LogLevel.INFO, "Video(OUT) caps are [" + vcaps_out.to_string() + "]");
 
       audio_source_in.caps = caps;
-      audio_sink_out.caps  = caps;
+      audio_sink_out.caps = caps;
 
       video_source_in.caps = vcaps_in;
-      video_sink_out.caps  = vcaps_out;
+      video_sink_out.caps = vcaps_out;
 
       //audio_sink_out.blocksize = (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000 * 2;
       //audio_sink_out.drop = true;
@@ -244,7 +243,6 @@ namespace Venom {
       audio_source_in.is_live = true;
       audio_source_in.min_latency = 0;
       audio_source_in.do_timestamp = false;
-      
 
       ((Gst.BaseSrc)audio_source_out).blocksize = (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000 * 2;
       //((Gst.BaseSrc)video_source_out).blocksize = (ToxAV.DefaultCodecSettings.video_bitrate) ;
@@ -265,23 +263,23 @@ namespace Venom {
       destroy_video_pipeline();
 
       join();
-      
+
       Gst.deinit();
       Logger.log(LogLevel.INFO, "Gstreamer deinitialized");
     }
 
     private bool bus_callback(Gst.Bus bus, Gst.Message message) {
       Error e;
-      if(bus == audio_in_bus) {
-        Logger.log(LogLevel.DEBUG, "Audio_in_bus with message: "  + message.type.get_name());
-      } else if(bus == audio_out_bus) {
+      if (bus == audio_in_bus) {
+        Logger.log(LogLevel.DEBUG, "Audio_in_bus with message: " + message.type.get_name());
+      } else if (bus == audio_out_bus) {
         Logger.log(LogLevel.DEBUG, "Audio_out_bus with message: " + message.type.get_name());
-      } else if(bus == video_in_bus) {
-        Logger.log(LogLevel.DEBUG, "Video_in_bus with message: "  + message.type.get_name());
-      } else if(bus == video_out_bus) {
+      } else if (bus == video_in_bus) {
+        Logger.log(LogLevel.DEBUG, "Video_in_bus with message: " + message.type.get_name());
+      } else if (bus == video_out_bus) {
         Logger.log(LogLevel.DEBUG, "Video_out_bus with message: " + message.type.get_name());
 
-        switch(message.type) {
+        switch (message.type) {
           case Gst.MessageType.ERROR:
             message.parse_error(out e, null);
             Logger.log(LogLevel.ERROR, e.message);
@@ -296,16 +294,16 @@ namespace Venom {
             break;
 
           case Gst.MessageType.STATE_CHANGED:
-	  // We are only interested in state-changed messages from the pipeline:
-	      Gst.State old_state;
-	      Gst.State new_state;
-	      Gst.State pending_state;
+            // We are only interested in state-changed messages from the pipeline:
+            Gst.State old_state;
+            Gst.State new_state;
+            Gst.State pending_state;
 
-	      message.parse_state_changed (out old_state, out new_state, out pending_state);
-	      Logger.log(LogLevel.DEBUG, "Pipeline state changed from %d to %d:\n".printf(
-	        old_state, new_state)
-	      );
-	    break;
+            message.parse_state_changed(out old_state, out new_state, out pending_state);
+            Logger.log(LogLevel.DEBUG, "Pipeline state changed from %d to %d:\n".printf(
+                         old_state, new_state)
+                       );
+            break;
 
           default:
             break;
@@ -342,7 +340,7 @@ namespace Venom {
       pipeline_out.set_state(Gst.State.PLAYING);
       Logger.log(LogLevel.INFO, "Audio pipeline set to playing");
     }
- 
+
     private void set_video_pipeline_playing() {
       video_pipeline_in.set_state(Gst.State.PLAYING);
       video_pipeline_out.set_state(Gst.State.PLAYING);
@@ -366,7 +364,7 @@ namespace Venom {
     uint w_ = 640;
     uint h_ = 480;
     private void set_video_in_caps(uint w, uint h) {
-      if(h == h_ && w == w_) {
+      if (h == h_ && w == w_) {
         return;
       }
       w_ = w;
@@ -382,13 +380,13 @@ namespace Venom {
       ToxAV.CodecSettings settings = ToxAV.CodecSettings();
       ToxAV.AV_Error ret = toxav.get_peer_csettings(call_index, 0, ref settings);
 
-      if(ret != ToxAV.AV_Error.NONE) {
+      if (ret != ToxAV.AV_Error.NONE) {
         Logger.log(LogLevel.DEBUG, "Could not acquire codec settings for contact %i, assuming default settings".printf(call_index));
         settings = ToxAV.DefaultCodecSettings;
       }
 
-      if(settings.audio_channels != current_audio_settings.audio_channels ||
-         settings.audio_sample_rate != current_audio_settings.audio_sample_rate) {
+      if (settings.audio_channels != current_audio_settings.audio_channels ||
+          settings.audio_sample_rate != current_audio_settings.audio_sample_rate) {
         current_audio_settings = settings;
         string caps_string = get_audio_caps_from_codec_settings(ref settings);
         Logger.log(LogLevel.INFO, "Changing caps to " + caps_string);
@@ -415,7 +413,7 @@ namespace Venom {
     }
 
     private void video_buffer_in(Vpx.Image frame) {
-      int w = (int)frame.d_w, h = (int)frame.d_h;
+      int w = (int) frame.d_w, h = (int) frame.d_h;
       //Logger.log(LogLevel.DEBUG, "received new vpx frame of size %ix%i".printf(w, h));
       int comp_offset_y = Gst.video_format_get_component_offset(Gst.VideoFormat.I420, 0, w, h);
       int comp_offset_u = Gst.video_format_get_component_offset(Gst.VideoFormat.I420, 1, w, h);
@@ -432,9 +430,9 @@ namespace Venom {
 
       Gst.Buffer gst_buf = new Gst.Buffer.and_alloc(Gst.video_format_get_size(Gst.VideoFormat.I420, w, h));
       //Logger.log(LogLevel.DEBUG, "Created buffer of size %i".printf(gst_buf.data.length));
-      unowned uint8[] y = gst_buf.data[comp_offset_y:comp_offset_u];
-      unowned uint8[] u = gst_buf.data[comp_offset_u:comp_offset_v];
-      unowned uint8[] v = gst_buf.data[comp_offset_v:gst_buf.data.length];
+      unowned uint8[] y = gst_buf.data[comp_offset_y : comp_offset_u];
+      unowned uint8[] u = gst_buf.data[comp_offset_u : comp_offset_v];
+      unowned uint8[] v = gst_buf.data[comp_offset_v : gst_buf.data.length];
 
       int i, j;
       int offset_y = 0;
@@ -447,10 +445,10 @@ namespace Venom {
       }
 
       int offset_u = 0, offset_v = 0;
-      for(i = 0; i < frame.d_h / 2; ++i) {
+      for (i = 0; i < frame.d_h / 2; ++i) {
         offset_u = i * row_stride_u;
         offset_v = i * row_stride_v;
-        for(j = 0; j < frame.d_w / 2; ++j) {
+        for (j = 0; j < frame.d_w / 2; ++j) {
           v[offset_v] = *(*(frame.planes + 1) + ((i * frame.stride[1]) + j));
           u[offset_u] = *(*(frame.planes + 2) + ((i * frame.stride[2]) + j));
           offset_v += pixel_stride_v;
@@ -460,18 +458,18 @@ namespace Venom {
 
       video_source_in.push_buffer(gst_buf);
       Logger.log(LogLevel.DEBUG, "pushed %u bytes to VIDEO_IN pipeline".printf(gst_buf.data.length));
-   }
+    }
 
-    private Vpx.Image? make_vpx_image() {
+    private Vpx.Image ? make_vpx_image() {
       Gst.Buffer gst_buf = video_sink_out.pull_buffer();
-      if(gst_buf == null) {
+      if (gst_buf == null) {
         return null;
       }
       //Logger.log(LogLevel.DEBUG, "pulled %i bytes form VIDEO_OUT pipeline".printf(gst_buf.data.length));
 
       unowned Gst.Structure structure = gst_buf.caps.get_structure(0);
-      int height=0, width=0;
-      if(!structure.get_int("height", out height) || !structure.get_int("width", out width)) {
+      int height = 0, width = 0;
+      if (!structure.get_int("height", out height) || !structure.get_int("width", out width)) {
         Logger.log(LogLevel.ERROR, "Error retrieving height and width from caps: " + gst_buf.caps.to_string());
         return null;
       }
@@ -497,13 +495,13 @@ namespace Venom {
       bool preview = false;
 
       bool running = true;
-      while(running) {
-        AVStatusChange? c = video_status_changes.try_pop();
-        if(c != null) {
-          switch(c.type) {
+      while (running) {
+        AVStatusChange ? c = video_status_changes.try_pop();
+        if (c != null) {
+          switch (c.type) {
             case VideoStatusChangeType.START:
               Logger.log(LogLevel.DEBUG, "Starting video session #%i".printf(c.call_index));
-              if(calls[c.call_index].active == false) {
+              if (calls[c.call_index].active == false) {
                 number_of_calls++;
               }
               calls[c.call_index].active = true;
@@ -514,7 +512,7 @@ namespace Venom {
               break;
             case VideoStatusChangeType.END:
               Logger.log(LogLevel.DEBUG, "Ending video session %i".printf(c.call_index));
-              if(calls[c.call_index].active == true) {
+              if (calls[c.call_index].active == true) {
                 number_of_calls--;
               }
               calls[c.call_index].active = false;
@@ -534,7 +532,7 @@ namespace Venom {
         }
 
         // block until something gets pushed to video_status_changes
-        if(number_of_calls == 0 && !preview) {
+        if (number_of_calls == 0 && !preview) {
           destroy_video_pipeline();
           c = video_status_changes.pop();
           video_status_changes.push(c);
@@ -543,25 +541,25 @@ namespace Venom {
         }
 
         Vpx.Image out_image = make_vpx_image();
-        if(out_image == null) {
+        if (out_image == null) {
           // either eos or pipeline stopped
           Logger.log(LogLevel.DEBUG, "Pulled null buffer from video device");
           Thread.usleep(10000);
           continue;
         }
 
-        if(preview) {
+        if (preview) {
           video_buffer_in(out_image);
         }
 
-        for(int i = 0; i < MAX_CALLS; i++) {
-          if(calls[i].active) {
+        for (int i = 0; i < MAX_CALLS; i++) {
+          if (calls[i].active) {
             prep_frame_ret = toxav.prepare_video_frame(i, video_enc_buffer, out_image);
-            if(prep_frame_ret <= 0) { 
-               Logger.log(LogLevel.WARNING, "prepare_video_frame returned an error: " + prep_frame_ret.to_string());
+            if (prep_frame_ret <= 0) {
+              Logger.log(LogLevel.WARNING, "prepare_video_frame returned an error: " + prep_frame_ret.to_string());
             } else {
               send_video_ret = toxav.send_video(i, video_enc_buffer, prep_frame_ret);
-              if(send_video_ret != ToxAV.AV_Error.NONE) {
+              if (send_video_ret != ToxAV.AV_Error.NONE) {
                 Logger.log(LogLevel.WARNING, "send_video returned " + send_video_ret.to_string());
               }
             }
@@ -577,10 +575,10 @@ namespace Venom {
       Logger.log(LogLevel.INFO, "starting audio thread...");
       set_audio_pipeline_playing();
 
-      int perframe = (int)(ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000;
+      int perframe = (int) (ToxAV.DefaultCodecSettings.audio_frame_duration * ToxAV.DefaultCodecSettings.audio_sample_rate) / 1000;
       int buffer_size;
       int16[] buffer = new int16[perframe];
-      uint8[] enc_buffer = new uint8[perframe*2];
+      uint8[] enc_buffer = new uint8[perframe * 2];
       ToxAV.AV_Error prep_frame_ret = 0, send_audio_ret = 0;
 
       AudioCallInfo[] calls = new AudioCallInfo[MAX_CALLS];
@@ -588,11 +586,11 @@ namespace Venom {
       bool preview = false;
 
       bool running = true;
-      while(running) {
+      while (running) {
         // calling try_pop once per cycle should be enough
-        AVStatusChange? c = audio_status_changes.try_pop();
-        if(c != null) {
-          switch(c.type) {
+        AVStatusChange ? c = audio_status_changes.try_pop();
+        if (c != null) {
+          switch (c.type) {
             case AudioStatusChangeType.START:
               Logger.log(LogLevel.DEBUG, "Starting audio session %i".printf(c.call_index));
               ToxAV.AV_Error e = toxav.prepare_transmission(
@@ -600,8 +598,8 @@ namespace Venom {
                 ToxAV.JITTER_BUFFER_DEFAULT_CAPACITY,
                 ToxAV.VAD_DEFAULT_THRESHOLD,
                 c.var1 // video support
-              );
-              if(e != ToxAV.AV_Error.NONE) {
+                );
+              if (e != ToxAV.AV_Error.NONE) {
                 Logger.log(LogLevel.FATAL, "Could not prepare AV transmission: %s".printf(e.to_string()));
               } else {
                 number_of_calls++;
@@ -615,7 +613,7 @@ namespace Venom {
             case AudioStatusChangeType.END:
               Logger.log(LogLevel.DEBUG, "Ending audio session %i".printf(c.call_index));
               ToxAV.AV_Error e = toxav.kill_transmission(c.call_index);
-              if(e != ToxAV.AV_Error.NONE) {
+              if (e != ToxAV.AV_Error.NONE) {
                 Logger.log(LogLevel.FATAL, "Could not shutdown Audio transmission: %s".printf(e.to_string()));
               } else {
                 number_of_calls--;
@@ -635,7 +633,7 @@ namespace Venom {
               calls[c.call_index].volume = c.var1;
               Logger.log(LogLevel.DEBUG, "Set receive volume for %i to %i".printf(c.call_index, c.var1));
               //FIXME this only works for one contact right now
-              audio_volume_in.set("volume", ((double)c.var1) / 100.0);
+              audio_volume_in.set("volume", ((double) c.var1) / 100.0);
               break;
             case AudioStatusChangeType.KILL:
               Logger.log(LogLevel.DEBUG, "Audio thread received kill message");
@@ -648,7 +646,7 @@ namespace Venom {
         }
 
         // block until something gets pushed to audio_status_changes
-        if(number_of_calls == 0 && !preview) {
+        if (number_of_calls == 0 && !preview) {
           destroy_audio_pipeline();
           c = audio_status_changes.pop();
           audio_status_changes.push(c);
@@ -659,19 +657,19 @@ namespace Venom {
         // read samples from pipeline
         buffer_size = record_audio_buffer(ref buffer);
 
-        if(preview) {
+        if (preview) {
           play_audio_buffer(buffer, buffer_size);
         }
 
         // distribute samples across peers
-        for(int i = 0; i < MAX_CALLS; i++) {
-          if(calls[i].active) {
+        for (int i = 0; i < MAX_CALLS; i++) {
+          if (calls[i].active) {
             prep_frame_ret = toxav.prepare_audio_frame(i, enc_buffer, buffer, buffer_size);
-            if(prep_frame_ret <= 0) {
+            if (prep_frame_ret <= 0) {
               Logger.log(LogLevel.WARNING, "prepare_audio_frame returned an error: %s".printf(prep_frame_ret.to_string()));
             } else {
               send_audio_ret = toxav.send_audio(i, enc_buffer, prep_frame_ret);
-              if(send_audio_ret != ToxAV.AV_Error.NONE) {
+              if (send_audio_ret != ToxAV.AV_Error.NONE) {
                 Logger.log(LogLevel.WARNING, "send_audio returned %s".printf(send_audio_ret.to_string()));
               }
             }
@@ -686,10 +684,10 @@ namespace Venom {
 
     public int join() {
       int ret = 0;
-      if(audio_thread != null) {
+      if (audio_thread != null) {
         ret |= audio_thread.join();
       }
-      if(video_thread != null) {
+      if (video_thread != null) {
         ret |= video_thread.join();
       }
       return ret;
@@ -721,19 +719,19 @@ namespace Venom {
         var1 = video
       });
 
-      if(c.video) {
+      if (c.video) {
         video_status_changes.push( AVStatusChange() {
           type = VideoStatusChangeType.START,
           call_index = c.call_index
         });
       }
 
-      if(audio_thread == null) {
+      if (audio_thread == null) {
         audio_thread = new GLib.Thread<int>("toxaudiothread", this.audio_thread_fun);
       }
 
       // start video thread on first video call
-      if(c.video && video_thread == null) {
+      if (c.video && video_thread == null) {
         video_thread = new Thread<int>("toxvideothread", this.video_thread_fun);
       }
     }
@@ -744,7 +742,7 @@ namespace Venom {
         call_index = c.call_index
       });
 
-      if(c.video) {
+      if (c.video) {
         video_status_changes.push( AVStatusChange() {
           type = VideoStatusChangeType.END,
           call_index = c.call_index
@@ -756,7 +754,7 @@ namespace Venom {
       audio_status_changes.push( AVStatusChange() {
         type = AudioStatusChangeType.START_PREVIEW
       });
-      if(audio_thread == null) {
+      if (audio_thread == null) {
         audio_thread = new GLib.Thread<int>("toxaudiothread", this.audio_thread_fun);
       }
     }
@@ -771,7 +769,7 @@ namespace Venom {
       video_status_changes.push( AVStatusChange() {
         type = VideoStatusChangeType.START_PREVIEW
       });
-      if(video_thread == null) {
+      if (video_thread == null) {
         video_thread = new Thread<int>("toxvideothread", this.video_thread_fun);
       }
     }
@@ -785,13 +783,13 @@ namespace Venom {
     public void play_sound(string location) {
       Logger.log(LogLevel.DEBUG, "playing sound " + location);
       Gst.Element playbin = Gst.ElementFactory.make("playbin2", "playbin");
-      Gst.Element sink    = Gst.ElementFactory.make("autoaudiosink", "sink");
+      Gst.Element sink = Gst.ElementFactory.make("autoaudiosink", "sink");
       playbin.set("uri", location,
                   "audio-sink", sink);
-      Gst.Bus bus = ((Gst.Pipeline) playbin).get_bus();
+      Gst.Bus bus = ((Gst.Pipeline)playbin).get_bus();
       bus.add_watch((bus, message) => {
         Error e;
-        switch(message.type) {
+        switch (message.type) {
           case Gst.MessageType.ERROR:
             message.parse_error(out e, null);
             Logger.log(LogLevel.ERROR, "Error playing sound: " + e.message);

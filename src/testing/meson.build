@@ -1,7 +1,11 @@
-executable('group_bot', ['GroupBot.vala',
-			join_paths(root_source_dir, 'core/Tools.vala')],
-			dependencies : [gio_dep, tox_dep]
-			)
+posix_dep = meson.get_compiler('vala').find_library('posix', required : false)
+
+if posix_dep.found()
+			executable('group_bot', ['GroupBot.vala',
+						join_paths(root_source_dir, 'core/Tools.vala')],
+						dependencies : [gio_dep, tox_dep, posix_dep]
+						)
+endif
 
 test_glib_testing = executable('test_glib_testing', ['TestGlibTesting.vala'],
 			dependencies : [gio_dep]
