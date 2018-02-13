@@ -52,7 +52,7 @@ namespace ToxAV {
   }
 
   [Flags]
-  [CCode(cname = "TOXAV_FRIEND_CALL_STATE", cprefix = "TOXAV_FRIEND_CALL_STATE_", has_type_id = false)]
+  [CCode(cname = "int", cprefix = "enum TOXAV_FRIEND_CALL_STATE_", has_type_id = false)]
   public enum FriendCallState {
     NONE,
     ERROR,
@@ -105,20 +105,20 @@ namespace ToxAV {
     RTP_FAILED
   }
 
-  [CCode(cname = "toxav_call_cb", has_target = false, has_type_id = false)]
-  public delegate void CallCallback(ToxAV self, uint32 friend_number, bool audio_enabled, bool video_enabled, void* user_data);
+  [CCode(cname = "toxav_call_cb")]
+  public delegate void CallCallback(ToxAV self, uint32 friend_number, bool audio_enabled, bool video_enabled);
 
-  [CCode(cname = "toxav_call_state_cb", has_target = false, has_type_id = false)]
-  public delegate void CallStateCallback(ToxAV self, uint32 friend_number, FriendCallState state, void* user_data);
+  [CCode(cname = "toxav_call_state_cb")]
+  public delegate void CallStateCallback(ToxAV self, uint32 friend_number, FriendCallState state);
 
-  [CCode(cname = "toxav_bit_rate_status_cb", has_target = false, has_type_id = false)]
-  public delegate void BitRateStatusCallback(ToxAV self, uint32 friend_number, uint32 audio_bit_rate, uint32 video_bit_rate, void* user_data);
+  [CCode(cname = "toxav_bit_rate_status_cb")]
+  public delegate void BitRateStatusCallback(ToxAV self, uint32 friend_number, uint32 audio_bit_rate, uint32 video_bit_rate);
 
-  [CCode(cname = "toxav_audio_receive_frame_cb", has_target = false, has_type_id = false)]
-  public delegate void AudioReceiveFrameCallback(ToxAV self, uint32 friend_number, int16[] pcm, uint8 channels, uint32 sampling_rate, void* user_data);
+  [CCode(cname = "toxav_audio_receive_frame_cb")]
+  public delegate void AudioReceiveFrameCallback(ToxAV self, uint32 friend_number, [CCode(array_length_type = "size_t")] int16[] pcm, uint8 channels, uint32 sampling_rate);
 
-  [CCode(cname = "toxav_video_receive_frame_cb", has_target = false, has_type_id = false)]
-  public delegate void VideoReceiveFrameCallback(ToxAV self, uint32 friend_number, uint16 width, uint16 height, [CCode(array_length = false)] uint8[] y, [CCode(array_length = false)] uint8[] u, [CCode(array_length = false)] uint8[] v, int32 ystride, int32 ustride, int32 vstride, void* user_data);
+  [CCode(cname = "toxav_video_receive_frame_cb")]
+  public delegate void VideoReceiveFrameCallback(ToxAV self, uint32 friend_number, uint16 width, uint16 height, [CCode(array_length = false)] uint8[] y, [CCode(array_length = false)] uint8[] u, [CCode(array_length = false)] uint8[] v, int32 ystride, int32 ustride, int32 vstride);
 
   [CCode(cname = "ToxAV", free_function = "toxav_kill", cprefix = "toxav_", has_type_id = false)]
   [Compact]

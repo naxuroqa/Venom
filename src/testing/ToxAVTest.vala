@@ -1,7 +1,7 @@
 /*
  *    ToxAVTest.vala
  *
- *    Copyright (C) 2013-2014  Venom authors and contributors
+ *    Copyright (C) 2013-2018  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -27,191 +27,179 @@ using Gst;
 
 public class VideoSample : Window {
 
-  private Tox.Tox tox;
+  private ToxCore.Tox tox;
   private ToxAV.ToxAV tox_av;
-  private DrawingArea drawing_area;
   private Pipeline pipeline;
-  private Element src;
-  private Element asrc;
-  private Element sink;
-  private Element asink;
-  private ulong xid;
+  private Widget video_area;
+  private uint timeout_id;
 
-  public VideoSample() {
-    create_widgets();
+  construct {
+    destroy.connect(kill);
+
     setup_gst_pipeline();
+    create_widgets();
     create_tox();
+
+    pipeline.set_state(State.PLAYING);
+  }
+
+  ~VideoSample() {
+    stdout.printf("[LOG] VideoSample destructed.\n");
+  }
+
+  private void kill() {
+    Source.remove(timeout_id);
+    main_quit();
   }
 
   private void create_widgets () {
+    set_default_size(800, 600);
     var vbox = new Box(Orientation.VERTICAL, 0);
-    this.drawing_area = new DrawingArea();
-    this.drawing_area.realize.connect(on_realize);
-    vbox.pack_start(this.drawing_area, true, true, 0);
+    vbox.pack_start(video_area);
 
-    var play_button = new Button.from_stock(Stock.MEDIA_PLAY);
+    var play_button = new Button.from_icon_name("media-playback-start-symbolic", IconSize.BUTTON);
+    var stop_button = new Button.from_icon_name("media-playback-stop-symbolic", IconSize.BUTTON);
+    var quit_button = new Button.from_icon_name("application-exit-symbolic", IconSize.BUTTON);
+
     play_button.clicked.connect(on_play);
-    var stop_button = new Button.from_stock(Stock.MEDIA_STOP);
     stop_button.clicked.connect(on_stop);
-    var quit_button = new Button.from_stock(Stock.QUIT);
-    quit_button.clicked.connect(Gtk.main_quit);
+    quit_button.clicked.connect(close);
 
     var bb = new ButtonBox(Orientation.HORIZONTAL);
     bb.add(play_button);
     bb.add(stop_button);
     bb.add(quit_button);
-    vbox.pack_start(bb, false, true, 0);
+    vbox.pack_end(bb, false);
 
     add(vbox);
-    destroy.connect(() => { Gtk.main_quit(); });
   }
 
   private void setup_gst_pipeline () {
-    this.pipeline = new Pipeline("mypipeline");
-#if OSX
-    this.src = ElementFactory.make("osxvideosrc", "video");
-    this.asrc = ElementFactory.make("pulsesrc", "audio");
-    //this.src = ElementFactory.make ("videotestsrc", "video");
-    //this.asrc = ElementFactory.make("audiotestsrc", "audio");
-    this.sink = ElementFactory.make("xvimagesink", "sink");
-    this.asink = ElementFactory.make("autoaudiosink", "asink");
+    pipeline = new Pipeline("avtestpipeline");
 
-#elif WIN32
-    this.src = ElementFactory.make("ksvideosrc", "video");
-    this.asrc = ElementFactory.make("pulsesrc", "audio");
-    //this.src = ElementFactory.make ("videotestsrc", "video");
-    //this.asrc = ElementFactory.make("audiotestsrc", "audio");
-    this.sink = ElementFactory.make("xvimagesink", "sink");
-    this.asink = ElementFactory.make("autoaudiosink", "asink");
+    var src = ElementFactory.make("videotestsrc", null);
+    var sink = ElementFactory.make("gtksink", null);
+    sink.get("widget", out video_area);
 
-#elif UNIX
-    this.src = ElementFactory.make("v4l2src", "video");
-    this.asrc = ElementFactory.make("pulsesrc", "audio");
-    //this.src = ElementFactory.make ("videotestsrc", "video");
-    //this.asrc = ElementFactory.make("audiotestsrc", "audio");
-    this.sink = ElementFactory.make("xvimagesink", "sink");
-    this.asink = ElementFactory.make("autoaudiosink", "asink");
-#else
-    GLib.assert_not_reached();
-#endif
-    this.pipeline.add_many(this.src, this.asrc, this.sink, this.asink);
-    this.src.link(this.sink);
-    this.asrc.link(this.asink);
-  }
-  private void on_realize() {
-#if OSX
-    GLib.assert_not_reached();
-#elif WIN32
-    GLib.assert_not_reached();
-#elif UNIX
-    this.xid = (ulong) Gdk.X11Window.get_xid(this.drawing_area.get_window());
-#else
-    GLib.assert_not_reached();
-#endif
+    var asrc = ElementFactory.make("audiotestsrc", null);
+    var asink = ElementFactory.make("autoaudiosink", null);
+
+    pipeline.add_many(src, sink, asrc, asink);
+    src.link(sink);
+    asrc.link(asink);
   }
 
   private void create_tox() {
-    tox = new Tox.Tox(0);
+    var err_options = ToxCore.ErrOptionsNew.OK;
+    var options = new ToxCore.Options(ref err_options);
+    if (err_options != ToxCore.ErrOptionsNew.OK) {
+      stderr.printf("[FTL] Could not create options: %s\n", err_options.to_string());
+      assert_not_reached();
+    }
+
+    var err = ToxCore.ErrNew.OK;
+    tox = new ToxCore.Tox(options, ref err);
+    if (err != ToxCore.ErrNew.OK) {
+      stderr.printf("[FTL] Could not create instance: %s\n", err.to_string());
+      assert_not_reached();
+    }
+
     tox.callback_friend_request(on_friend_request);
-    ToxAV.CodecSettings settings = ToxAV.DefaultCodecSettings;
-    tox_av = new ToxAV.ToxAV(tox, 1);
 
-    ToxAV.register_callstate_callback(on_toxav_invite, ToxAV.CallbackID.INVITE);
-    ToxAV.register_callstate_callback(on_toxav_start, ToxAV.CallbackID.START);
-    ToxAV.register_callstate_callback(on_toxav_cancel, ToxAV.CallbackID.CANCEL);
-    ToxAV.register_callstate_callback(on_toxav_reject, ToxAV.CallbackID.REJECT);
-    ToxAV.register_callstate_callback(on_toxav_end, ToxAV.CallbackID.END);
-    ToxAV.register_callstate_callback(on_toxav_ringing, ToxAV.CallbackID.RINGING);
-    ToxAV.register_callstate_callback(on_toxav_starting, ToxAV.CallbackID.STARTING);
-    ToxAV.register_callstate_callback(on_toxav_ending, ToxAV.CallbackID.ENDING);
-    ToxAV.register_callstate_callback(on_toxav_error, ToxAV.CallbackID.ERROR);
-    ToxAV.register_callstate_callback(on_toxav_request_timeout, ToxAV.CallbackID.REQUEST_TIMEOUT);
-    ToxAV.register_callstate_callback(on_toxav_peer_timeout, ToxAV.CallbackID.PEER_TIMEOUT);
+    var err_av = ToxAV.ErrNew.OK;
+    tox_av = new ToxAV.ToxAV(tox, ref err_av);
+    if (err_av != ToxAV.ErrNew.OK) {
+      stderr.printf("[FTL] Could not create av instance: %s\n", err_av.to_string());
+      assert_not_reached();
+    }
 
-    uint8[] buf = new uint8[Tox.FRIEND_ADDRESS_SIZE];
-    tox.get_address(buf);
-    stdout.printf("[LOG] Tox ID: %s\n", Venom.Tools.bin_to_hexstring(buf));
-    tox.set_name("AV Test".data);
+    tox_av.callback_call(on_call);
+    tox_av.callback_call_state(on_call_state);
+    tox_av.callback_bit_rate_status(on_bit_rate_status);
+    tox_av.callback_video_receive_frame(on_video_receive_frame);
+    tox_av.callback_audio_receive_frame(on_audio_receive_frame);
 
-    bool bootstrapped = false;
-    bool connected = false;
-    GLib.Timeout.add(25, () => {
-      if (!bootstrapped) {
-        tox.bootstrap_from_address("66.175.223.88",
-                                   0,
-                                   ((uint16) 33445).to_big_endian(),
-                                   Venom.Tools.hexstring_to_bin("B24E2FB924AE66D023FE1E42A2EE3B432010206F751A2FFD3E297383ACF1572E")
-                                   );
-        bootstrapped = true;
-        print("[LOG] Bootstrapped.\n");
-      }
-      if (tox.isconnected() != 0) {
+    var address = tox.self_get_address();
+    stdout.printf("[LOG] Tox ID: %s\n", Venom.Tools.bin_to_hexstring(address));
+    var err_info = ToxCore.ErrSetInfo.OK;
+    if (!tox.self_set_name("AV Test bot", ref err_info)) {
+      stderr.printf("[FTL] Could not set name: %s\n", err_info.to_string());
+      assert_not_reached();
+    }
+
+    var ip_string = "node.tox.biribiri.org";
+    var pub_key_string = "F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67";
+    var port = 33445;
+    var pub_key = Venom.Tools.hexstring_to_bin(pub_key_string);
+
+    var err_bootstrap = ToxCore.ErrBootstrap.OK;
+    if (!tox.bootstrap(ip_string, (uint16) port, pub_key, ref err_bootstrap)) {
+      stderr.printf("[ERR] Bootstrapping failed: %s\n", err_bootstrap.to_string());
+      assert_not_reached();
+    }
+    stdout.printf("[LOG] Bootstrapped.\n");
+
+    var connected = false;
+    timeout_id = Timeout.add(tox.iteration_interval(), () => {
+      if (tox.self_get_connection_status() != ToxCore.Connection.NONE) {
         if (!connected) {
           connected = true;
-          print("[LOG] Connected.\n");
+          stdout.printf("[LOG] Connected.\n");
         }
       } else {
         if (connected) {
           connected = false;
-          print("[LOG] Disconnected.\n");
+          stdout.printf("[LOG] Disconnected.\n");
         }
       }
 
-      tox.do ();
+      tox.iterate(this);
+      tox_av.iterate();
       return true;
     });
   }
 
-  private void on_friend_request(Tox.Tox tox, uint8[] key, uint8[] data) {
-    print("[LOG] Friend request from %s received.\n", Venom.Tools.bin_to_hexstring(key));
-    int friend_number = tox.add_friend_norequest(key);
-    if (friend_number < 0) {
-      print("[ERR] Friend could not be added.\n");
+  private string friend_get_name(uint32 friend_number) {
+    var err = ToxCore.ErrFriendQuery.OK;
+    var name = tox.friend_get_name(friend_number, ref err);
+    return err != ToxCore.ErrFriendQuery.OK ? "FRIEND #%u".printf(friend_number) : name;
+  }
+
+  private void on_call(ToxAV.ToxAV self, uint32 friend_number, bool audio_enabled, bool video_enabled) {
+    stdout.printf("[LOG] on_call from %s: audio_enabled: %s, video_enabled: %s\n", friend_get_name(friend_number), audio_enabled.to_string(), video_enabled.to_string());
+  }
+
+  private void on_call_state(ToxAV.ToxAV self, uint32 friend_number, ToxAV.FriendCallState state) {
+    stdout.printf("[LOG] on_call_state %s: %i\n", friend_get_name(friend_number), state);
+  }
+
+  private void on_bit_rate_status(ToxAV.ToxAV self, uint32 friend_number, uint32 audio_bit_rate, uint32 video_bit_rate) {
+    stdout.printf("[LOG] on_bit_rate_status %s: audio_bit_rate: %u, video_bit_rate: %u\n", friend_get_name(friend_number), audio_bit_rate, video_bit_rate);
+  }
+
+  private void on_audio_receive_frame(ToxAV.ToxAV self, uint32 friend_number, int16[] pcm, uint8 channels, uint32 sampling_rate) {
+    stdout.printf("[LOG] on_audio_receive_frame %s: channels: %u, sampling_rate: %u\n", friend_get_name(friend_number), channels, sampling_rate);
+  }
+
+  private void on_video_receive_frame(ToxAV.ToxAV self, uint32 friend_number, uint16 width, uint16 height, uint8[] y, uint8[] u, uint8[] v, int32 ystride, int32 ustride, int32 vstride) {
+    stdout.printf("[LOG] on_video_receive_frame %s: width: %u, height: %u\n", friend_get_name(friend_number), width, height);
+  }
+
+  private static void on_friend_request(ToxCore.Tox tox, uint8[] key, uint8[] message, void* user_data) {
+    stdout.printf("[LOG] Friend request from %s received: %s\n", Venom.Tools.bin_to_hexstring(key), (string) message);
+    var error = ToxCore.ErrFriendAdd.OK;
+    tox.friend_add_norequest(key, ref error);
+    if (error != ToxCore.ErrFriendAdd.OK) {
+      stderr.printf("[ERR] Friend could not be added: %s\n", error.to_string());
     }
   }
 
-  private void on_toxav_invite(int32 call_index) {
-    print("[LOG] on_toxav_invite\n");
-  }
-  private void on_toxav_start(int32 call_index) {
-    print("[LOG] on_toxav_start\n");
-  }
-  private void on_toxav_cancel(int32 call_index) {
-    print("[LOG] on_toxav_cancel\n");
-  }
-  private void on_toxav_reject(int32 call_index) {
-    print("[LOG] on_toxav_reject\n");
-  }
-  private void on_toxav_end(int32 call_index) {
-    print("[LOG] on_toxav_end\n");
-  }
-  private void on_toxav_ringing(int32 call_index) {
-    print("[LOG] on_toxav_ringing\n");
-  }
-  private void on_toxav_starting(int32 call_index) {
-    print("[LOG] on_toxav_starting\n");
-  }
-  private void on_toxav_ending(int32 call_index) {
-    print("[LOG] on_toxav_ending\n");
-  }
-  private void on_toxav_error(int32 call_index) {
-    print("[LOG] on_toxav_error\n");
-  }
-  private void on_toxav_request_timeout(int32 call_index) {
-    print("[LOG] on_toxav_request_timeout\n");
-  }
-  private void on_toxav_peer_timeout(int32 call_index) {
-    print("[LOG] on_toxav_peer_timeout\n");
-  }
-
   private void on_play () {
-    var xoverlay = this.sink as XOverlay;
-    xoverlay.set_xwindow_id(this.xid);
-    this.pipeline.set_state(State.PLAYING);
+    pipeline.set_state(State.PLAYING);
   }
 
   private void on_stop () {
-    this.pipeline.set_state(State.READY);
+    pipeline.set_state(State.READY);
   }
 
   public static int main (string[] args) {

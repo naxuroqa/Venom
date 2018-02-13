@@ -1,4 +1,4 @@
-posix_dep = meson.get_compiler('vala').find_library('posix', required : false)
+gtk_dep = dependency('gtk+-3.0')
 
 if posix_dep.found()
 			executable('group_bot', ['GroupBot.vala',
@@ -6,6 +6,11 @@ if posix_dep.found()
 						dependencies : [gio_dep, tox_dep, posix_dep]
 						)
 endif
+
+executable('toxav', ['ToxAVTest.vala',
+			join_paths(root_source_dir, 'core/Tools.vala')],
+			dependencies : [gtk_dep, tox_dep, toxav_dep, gst_dep]
+			)
 
 test_glib_testing = executable('test_glib_testing', ['TestGlibTesting.vala'],
 			dependencies : [gio_dep]
