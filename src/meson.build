@@ -10,6 +10,7 @@ sqlite_dep = dependency('sqlite3')
 json_dep = dependency('json-glib-1.0')
 soup_dep = dependency('libsoup-2.4')
 tox_dep = dependency('toxcore')
+toxav_dep = dependency('toxav')
 
 config_vapi = meson.get_compiler('vala').find_library('config', dirs: join_paths(meson.current_source_dir(), 'vapi'))
 config_dep = declare_dependency(dependencies: [config_vapi], include_directories : include_directories('.'))
@@ -75,6 +76,6 @@ venom_icons_resources = gnome.compile_resources( 'venom_icons_resources', 'icons
 root_source_dir = meson.current_source_dir()
 
 venom_binary = executable('venom', [venom_source, venom_ui_resources, venom_icons_resources],
-			dependencies : [gtk_dep, gio_dep, gmodule_dep, sqlite_dep, json_dep, tox_dep, config_dep, soup_dep],
+			dependencies : [gtk_dep, gio_dep, gmodule_dep, sqlite_dep, json_dep, tox_dep, toxav_dep, config_dep, soup_dep],
 			install : true
 			)

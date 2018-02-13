@@ -21,6 +21,8 @@
 
 namespace Venom {
   public interface IContact : Object {
+    public signal void changed();
+
     public abstract string get_id();
     public abstract string get_name_string();
     public abstract string get_status_string();

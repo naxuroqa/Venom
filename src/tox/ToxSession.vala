@@ -83,7 +83,8 @@ namespace Venom {
 
       var options_error = ToxCore.ErrOptionsNew.OK;
       var options = new ToxCore.Options(ref options_error);
-      options.default ();
+
+      options.log_callback = on_tox_message;
 
       var savedata = iohandler.load_sessiondata();
       if (savedata != null) {
@@ -122,6 +123,26 @@ namespace Venom {
       logger.d("ToxSession destroyed.");
     }
 
+    public void on_tox_message(Tox self, ToxCore.LogLevel level, string file, uint32 line, string func, string message) {
+      //var msg = "%s:%u (%s): %s".printf(file, line, func, message);
+      var msg = "%s: %s".printf(func, message);
+      switch (level) {
+        case ToxCore.LogLevel.TRACE:
+        case ToxCore.LogLevel.DEBUG:
+          logger.d(msg);
+          break;
+        case ToxCore.LogLevel.INFO:
+          logger.i(msg);
+          break;
+        case ToxCore.LogLevel.WARNING:
+          logger.w(msg);
+          break;
+        case ToxCore.LogLevel.ERROR:
+          logger.e(msg);
+          break;
+      }
+    }
+
     public virtual void set_session_listener(ToxSessionListener listener) {
       this.listener = listener;
     }
@@ -138,14 +159,14 @@ namespace Venom {
       return t;
     }
 
-    private static void on_self_connection_status_cb(Tox self, Tox.Connection connection_status, void* userdata) {
+    private static void on_self_connection_status_cb(Tox self, Connection connection_status, void* userdata) {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_self_connection_status_cb");
       var user_status = from_connection_status(connection_status);
       Idle.add(() => { session.listener.on_self_status_changed(user_status); return false; });
     }
 
-    private static void on_friend_connection_status_cb(Tox self, uint32 friend_number, Tox.Connection connection_status, void* userdata) {
+    private static void on_friend_connection_status_cb(Tox self, uint32 friend_number, Connection connection_status, void* userdata) {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_friend_connection_status_cb");
       var user_status = from_connection_status(connection_status);
@@ -213,8 +234,8 @@ namespace Venom {
       }
     }
 
-    private static UserStatus from_connection_status(Tox.Connection connection_status) {
-      if (connection_status == Tox.Connection.NONE) {
+    private static UserStatus from_connection_status(Connection connection_status) {
+      if (connection_status == Connection.NONE) {
         return UserStatus.OFFLINE;
       }
       return UserStatus.ONLINE;
@@ -247,9 +268,9 @@ namespace Venom {
     }
 
     public virtual uint8[] friend_get_public_key(uint32 friend_number) throws ToxError {
-      var e = Tox.ErrFriendGetPublicKey.OK;
+      var e = ErrFriendGetPublicKey.OK;
       var ret = handle.friend_get_public_key(friend_number, ref e);
-      if (e != Tox.ErrFriendGetPublicKey.OK) {
+      if (e != ErrFriendGetPublicKey.OK) {
         logger.e("friend_get_public_key failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
@@ -258,9 +279,9 @@ namespace Venom {
 
     public virtual string friend_get_name(uint8[] id) throws ToxError {
       var friend_number = get_friend_number(id);
-      var e = Tox.ErrFriendQuery.OK;
+      var e = ErrFriendQuery.OK;
       var ret = handle.friend_get_name(friend_number, ref e);
-      if (e != Tox.ErrFriendQuery.OK) {
+      if (e != ErrFriendQuery.OK) {
         logger.e("friend_get_name failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
@@ -269,9 +290,9 @@ namespace Venom {
 
     public virtual string friend_get_status_message(uint8[] id) throws ToxError {
       var friend_number = get_friend_number(id);
-      var e = Tox.ErrFriendQuery.OK;
+      var e = ErrFriendQuery.OK;
       var ret = handle.friend_get_status_message(friend_number, ref e);
-      if (e != Tox.ErrFriendQuery.OK) {
+      if (e != ErrFriendQuery.OK) {
         logger.e("friend_get_status_message failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
@@ -280,9 +301,9 @@ namespace Venom {
 
     public virtual uint64 friend_get_last_online(uint8[] id) throws ToxError {
       var friend_number = get_friend_number(id);
-      var e = Tox.ErrFriendGetLastOnline.OK;
+      var e = ErrFriendGetLastOnline.OK;
       var ret = handle.friend_get_last_online(friend_number, ref e);
-      if (e != Tox.ErrFriendGetLastOnline.OK) {
+      if (e != ErrFriendGetLastOnline.OK) {
         logger.e("friend_get_last_online failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
@@ -290,7 +311,7 @@ namespace Venom {
     }
 
     public virtual void friend_add(uint8[] address, string message) throws ToxError {
-      var e = Tox.ErrFriendAdd.OK;
+      var e = ErrFriendAdd.OK;
       var ret = handle.friend_add(address, message, ref e);
       if (ret == uint32.MAX) {
         logger.i("friend_add failed: " + e.to_string());
@@ -302,7 +323,7 @@ namespace Venom {
 
     public virtual void friend_send_message(uint8[] address, string message) throws ToxError {
       var friend_number = get_friend_number(address);
-      var e = Tox.ErrFriendSendMessage.OK;
+      var e = ErrFriendSendMessage.OK;
       var ret = handle.friend_send_message(friend_number, MessageType.NORMAL, message, ref e);
       if (ret == uint32.MAX) {
         logger.i("friend_send_message failed: " + e.to_string());
@@ -313,18 +334,18 @@ namespace Venom {
     }
 
     public virtual void conference_set_title(uint32 id, string title) throws ToxError {
-      var e = Tox.ErrConferenceTitle.OK;
+      var e = ErrConferenceTitle.OK;
       handle.conference_set_title(id, title, ref e);
-      if (e != Tox.ErrConferenceTitle.OK) {
+      if (e != ErrConferenceTitle.OK) {
         logger.i("setting conference title failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
     }
 
     public virtual void conference_new(string title) throws ToxError {
-      var e = Tox.ErrConferenceNew.OK;
+      var e = ErrConferenceNew.OK;
       var ret = handle.conference_new(ref e);
-      if (e != Tox.ErrConferenceNew.OK) {
+      if (e != ErrConferenceNew.OK) {
         logger.i("creating conference failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
@@ -333,7 +354,7 @@ namespace Venom {
     }
 
     private uint32 get_friend_number(uint8[] address) throws ToxError {
-      var e = Tox.ErrFriendByPublicKey.OK;
+      var e = ErrFriendByPublicKey.OK;
       var ret = handle.friend_by_public_key(address, ref e);
       if (ret == uint32.MAX) {
         logger.i("get_friend_number failed: " + e.to_string());

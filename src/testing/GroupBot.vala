@@ -19,19 +19,21 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using ToxCore;
+
 namespace Testing {
   public class GroupBot : Object {
     private const string DEFAULT_CHANNEL = "tox-ontopic";
 
-    private ToxCore.Tox tox;
+    private Tox tox;
     private HashTable<string, uint32> channels;
 
     public GroupBot() {
       channels = new HashTable<string, uint32>(str_hash, str_equal);
 
-      var err = ToxCore.ErrNew.OK;
-      tox = new ToxCore.Tox(null, ref err);
-      if (err != ToxCore.ErrNew.OK) {
+      var err = ErrNew.OK;
+      tox = new Tox(null, ref err);
+      if (err != ErrNew.OK) {
         stderr.printf("[FTL] Could not create new tox instance: %s\n", err.to_string());
         assert_not_reached();
       }
@@ -46,9 +48,9 @@ namespace Testing {
     }
 
     private uint32 add_channel(string name) {
-      var err = ToxCore.Tox.ErrConferenceNew.OK;
+      var err = ErrConferenceNew.OK;
       var channel_number = tox.conference_new(ref err);
-      if (err != ToxCore.Tox.ErrConferenceNew.OK) {
+      if (err != ErrConferenceNew.OK) {
         stderr.printf("[ERR] Creating new channel \"%s\" failed: %s\n", name, err.to_string());
       } else {
         stdout.printf("[LOG] Created new channel #%s [%u]\n", name, channel_number);
@@ -57,54 +59,54 @@ namespace Testing {
       return channel_number;
     }
 
-    private static string get_name(ToxCore.Tox tox, uint32 friend_number) {
-      var err = ToxCore.Tox.ErrFriendQuery.OK;
+    private static string get_name(Tox tox, uint32 friend_number) {
+      var err = ErrFriendQuery.OK;
       var name = tox.friend_get_name(friend_number, ref err);
-      if (err != ToxCore.Tox.ErrFriendQuery.OK) {
+      if (err != ErrFriendQuery.OK) {
         stderr.printf("[ERR]Could not query friend name: %s\n", err.to_string());
         name = "FRIEND #%u".printf(friend_number);
       }
       return name;
     }
 
-    private static void on_conference_message(ToxCore.Tox tox, uint32 conference_number, uint32 peer_number, ToxCore.MessageType type, uint8[] message, void* data) {
-      var err = ToxCore.Tox.ErrConferencePeerQuery.OK;
+    private static void on_conference_message(Tox tox, uint32 conference_number, uint32 peer_number, MessageType type, uint8[] message, void* data) {
+      var err = ErrConferencePeerQuery.OK;
       var name = tox.conference_peer_get_name(conference_number, peer_number, ref err);
-      if (err != ToxCore.Tox.ErrConferencePeerQuery.OK) {
+      if (err != ErrConferencePeerQuery.OK) {
         stderr.printf("[ERR] Could not get name for peer #%u: %s\n", peer_number, err.to_string());
         name = "PEER #%u".printf(peer_number);
       }
       stdout.printf("[CM ] %s: %s\n", name, (string) message);
     }
 
-    private static void on_conference_namelist_change(ToxCore.Tox tox, uint32 conference_number, uint32 peer_number, ToxCore.Tox.ConferenceStateChange change, void* data) {
-      if (change == ToxCore.Tox.ConferenceStateChange.PEER_JOIN || change == ToxCore.Tox.ConferenceStateChange.PEER_EXIT) {
+    private static void on_conference_namelist_change(Tox tox, uint32 conference_number, uint32 peer_number, ConferenceStateChange change, void* data) {
+      if (change == ConferenceStateChange.PEER_JOIN || change == ConferenceStateChange.PEER_EXIT) {
         stdout.printf("[LOG] Peer #%u connected/disconnect, updating status message\n", peer_number);
       }
     }
 
-    private static void on_friend_request(ToxCore.Tox tox, uint8[] key, uint8[] message, void* data) {
-      var pub_key = new uint8[ToxCore.address_size()];
+    private static void on_friend_request(Tox tox, uint8[] key, uint8[] message, void* data) {
+      var pub_key = new uint8[address_size()];
       Memory.copy(pub_key, key, pub_key.length);
       stdout.printf("[LOG] Friend request from %s received.\n", Venom.Tools.bin_to_hexstring(pub_key));
-      var err = ToxCore.Tox.ErrFriendAdd.OK;
+      var err = ErrFriendAdd.OK;
       tox.friend_add_norequest(pub_key, ref err);
-      if (err != ToxCore.Tox.ErrFriendAdd.OK) {
+      if (err != ErrFriendAdd.OK) {
         stderr.printf("[ERR] Could not add friend: %s\n", err.to_string());
       }
     }
 
-    private static void on_friend_connection_status(ToxCore.Tox tox, uint32 friend_number, ToxCore.Tox.Connection connection_status, void* data) {
+    private static void on_friend_connection_status(Tox tox, uint32 friend_number, Connection connection_status, void* data) {
       var name = get_name(tox, friend_number);
       stdout.printf("[LOG] Connection status changed for friend #%u (%s): %s\n", friend_number, name, connection_status.to_string());
-      var err = ToxCore.Tox.ErrFriendSendMessage.OK;
-      tox.friend_send_message(friend_number, ToxCore.MessageType.NORMAL, "invite", ref err);
-      if (err != ToxCore.Tox.ErrFriendSendMessage.OK) {
+      var err = ErrFriendSendMessage.OK;
+      tox.friend_send_message(friend_number, MessageType.NORMAL, "invite", ref err);
+      if (err != ErrFriendSendMessage.OK) {
         stderr.printf("[ERR] Could not send message to %u: %s", friend_number, err.to_string());
       }
     }
 
-    private static void on_friend_message(ToxCore.Tox tox, uint32 friend_number, ToxCore.MessageType type, uint8[] message, void* data) {
+    private static void on_friend_message(Tox tox, uint32 friend_number, MessageType type, uint8[] message, void* data) {
       var name = get_name(tox, friend_number);
       var message_str = (string) message;
       stdout.printf("[LOG] Message from %s: %s\n", name, message_str);
@@ -115,11 +117,11 @@ namespace Testing {
       stdout.printf("[LOG] Running Group Bot\n");
       var pub_key = Venom.Tools.hexstring_to_bin(pub_key_string);
 
-      assert(pub_key.length == ToxCore.public_key_size());
+      assert(pub_key.length == public_key_size());
       stdout.printf("[LOG] Bootstrap node: %s:%u.\n", ip_string, port);
 
       stdout.printf("[LOG] Bootstrapping...\n");
-      var error_bootstrap = ToxCore.ErrBootstrap.OK;
+      var error_bootstrap = ErrBootstrap.OK;
       if (!tox.bootstrap(ip_string, (uint16) port, pub_key, ref error_bootstrap)) {
         stderr.printf("[ERR] Bootstrapping failed: %s\n", error_bootstrap.to_string());
         return;
@@ -128,29 +130,29 @@ namespace Testing {
       stdout.printf("[LOG] Bootstrapping done.\n");
       stdout.printf("[LOG] Tox ID: %s\n", Venom.Tools.bin_to_hexstring(tox.self_get_address()));
 
-      var setNameError = ToxCore.ErrSetInfo.OK;
-      if (!tox.self_set_name("Group Bot", ref setNameError) || setNameError != ToxCore.ErrSetInfo.OK) {
+      var setNameError = ErrSetInfo.OK;
+      if (!tox.self_set_name("Group Bot", ref setNameError) || setNameError != ErrSetInfo.OK) {
         stderr.printf("[ERR] Setting user name failed: %s\n", setNameError.to_string());
         return;
       }
 
       stdout.printf("[LOG] Connecting...\n");
-      var connection_status = ToxCore.Tox.Connection.NONE;
+      var connection_status = Connection.NONE;
       var running = true;
       while (running) {
         var new_connection_status = tox.self_get_connection_status();
         if (new_connection_status != connection_status) {
           switch (new_connection_status) {
-            case ToxCore.Tox.Connection.NONE:
+            case Connection.NONE:
               stdout.printf("[LOG] Not Connected.\n");
               break;
-            case ToxCore.Tox.Connection.UDP:
-            case ToxCore.Tox.Connection.TCP:
+            case Connection.UDP:
+            case Connection.TCP:
               stdout.printf("[LOG] Connected.\n");
               var groupbot_pub_key = Venom.Tools.hexstring_to_bin("56A1ADE4B65B86BCD51CC73E2CD4E542179F47959FE3E0E21B4B0ACDADE51855D34D34D37CB5");
-              var addFriendErr = ToxCore.Tox.ErrFriendAdd.OK;
+              var addFriendErr = ErrFriendAdd.OK;
               tox.friend_add(groupbot_pub_key, "please add me", ref addFriendErr);
-              if (addFriendErr != ToxCore.Tox.ErrFriendAdd.OK) {
+              if (addFriendErr != ErrFriendAdd.OK) {
                 stderr.printf("[ERR] Could not add friend: %s\n", addFriendErr.to_string());
               }
               stdout.printf("[LOG] Friend request sent.\n");

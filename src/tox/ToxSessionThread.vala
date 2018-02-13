@@ -74,7 +74,7 @@ namespace Venom {
       var newStatus = false;
       while (running) {
         session.@lock();
-        newStatus = (session.handle.self_get_connection_status() != Tox.Connection.NONE);
+        newStatus = (session.handle.self_get_connection_status() != Connection.NONE);
         session.unlock();
         if (newStatus && !status) {
           logger.i("Connection to dht node established.");
