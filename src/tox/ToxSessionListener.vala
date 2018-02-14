@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class ToxSessionListenerImpl : ToxSessionListener, AddContactWidgetListener, ConversationWidgetListener, CreateGroupchatWidgetListener, GLib.Object {
+  public class ToxSessionListenerImpl : ToxSessionListener, AddContactWidgetListener, ConversationWidgetListener, FriendInfoWidgetListener, CreateGroupchatWidgetListener, GLib.Object {
     private unowned ToxSession session;
     private ILogger logger;
     private UserInfo user_info;
@@ -73,6 +73,11 @@ namespace Venom {
 
       logger.d("ToxSessionListenerImpl on_user_info_changed.");
       set_user_info();
+    }
+
+    public virtual void on_remove_friend(IContact c) throws Error {
+      var bin_id = Tools.hexstring_to_bin(c.get_id());
+      session.friend_delete(bin_id);
     }
 
     public virtual void on_send_friend_request(string id, string message) throws Error {
@@ -184,6 +189,18 @@ namespace Venom {
         conversations.@set(contact, new ConversationImpl(contact));
       }
       contacts.add_contact(this, contact);
+    }
+
+    public virtual void on_friend_deleted(uint8[] id) {
+      logger.d("on_friend_deleted");
+      try {
+        var pos = find_contact_position(id);
+        var contact = contacts.get_item(pos);
+        conversations.remove(contact);
+        contacts.remove_contact(this, contact);
+      } catch (Error e) {
+        logger.e("Could not find contact.");
+      }
     }
 
     public virtual void on_friend_message_sent(uint8[] id, uint32 message_id, string message) {

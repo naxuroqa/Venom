@@ -38,6 +38,7 @@ namespace Venom {
 
     public abstract void self_get_friend_list_foreach(GetFriendListCallback callback) throws ToxError;
     public abstract void friend_add(uint8[] id, string message) throws ToxError;
+    public abstract void friend_delete(uint8[] id) throws ToxError;
     public abstract void friend_send_message(uint8[] id, string message) throws ToxError;
 
     public abstract string friend_get_name(uint8[] id) throws ToxError;
@@ -58,6 +59,7 @@ namespace Venom {
     public abstract void on_friend_request(uint8[] id, string message);
 
     public abstract void on_friend_added(uint8[] id);
+    public abstract void on_friend_deleted(uint8[] id);
     public abstract void on_friend_message_sent(uint8[] id, uint32 message_id, string message);
     public abstract void on_conference_new(uint32 id, string title);
   }
@@ -319,6 +321,16 @@ namespace Venom {
       }
       var key = friend_get_public_key(ret);
       listener.on_friend_added(key);
+    }
+
+    public virtual void friend_delete(uint8[] address) throws ToxError {
+      var friend_number = get_friend_number(address);
+      var e = ErrFriendDelete.OK;
+      if (!handle.friend_delete(friend_number, ref e)) {
+        logger.i("friend_delete failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
+      listener.on_friend_deleted(address);
     }
 
     public virtual void friend_send_message(uint8[] address, string message) throws ToxError {

@@ -42,19 +42,27 @@ namespace Venom {
     private Gtk.Label tox_id;
 
     [GtkChild]
+    private Gtk.Button remove;
+
+    [GtkChild]
     private Gtk.Button apply;
 
     private ILogger logger;
     private Contact contact;
+    private FriendInfoWidgetListener listener;
+    private unowned ApplicationWindow app_window;
 
-    public FriendInfoWidget(ILogger logger, IContact contact) {
+    public FriendInfoWidget(ILogger logger, ApplicationWindow app_window, FriendInfoWidgetListener listener, IContact contact) {
       logger.d("FriendInfoWidget created.");
       this.logger = logger;
       this.contact = contact as Contact;
+      this.listener = listener;
+      this.app_window = app_window;
 
       set_info();
 
       apply.clicked.connect(on_apply_clicked);
+      remove.clicked.connect(on_remove_clicked);
     }
 
     private void set_info() {
@@ -70,8 +78,22 @@ namespace Venom {
       contact.alias = alias.text;
     }
 
+    private void on_remove_clicked() {
+      try {
+        listener.on_remove_friend(contact);
+      } catch (Error e) {
+        logger.e("Could not remove friend: " + e.message);
+        return;
+      }
+      app_window.show_welcome();
+    }
+
     ~FriendInfoWidget() {
       logger.d("FriendInfoWidget destroyed.");
     }
+  }
+
+  public interface FriendInfoWidgetListener : GLib.Object {
+    public abstract void on_remove_friend(IContact contact) throws Error;
   }
 }

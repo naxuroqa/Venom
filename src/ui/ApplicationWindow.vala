@@ -167,7 +167,7 @@ namespace Venom {
     }
 
     public void on_show_friend(IContact contact) {
-      switch_content_with(() => { return new FriendInfoWidget(logger, contact); });
+      switch_content_with(() => { return new FriendInfoWidget(logger, this, session_listener, contact); });
     }
 
     private void on_add_contact() {
@@ -185,7 +185,7 @@ namespace Venom {
       clipboard.set_text(id, id.length);
     }
 
-    public void switch_content_with(owned WidgetProvider widget_provider) {
+    private void switch_content_with(owned WidgetProvider widget_provider) {
       bool is_first_widget = current_content_widget == null;
 
       if (!is_first_widget) {
