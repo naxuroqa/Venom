@@ -66,8 +66,8 @@ namespace Venom {
     }
 
     private void set_info() {
-      username.label = contact.get_name_string();
-      statusmessage.label = contact.get_status_string();
+      username.label = contact.name;
+      statusmessage.label = contact.status_message;
       last_seen.label = contact.last_seen.format("%c");
       alias.text = contact.alias;
       tox_id.label = contact.get_id();
@@ -76,6 +76,7 @@ namespace Venom {
     private void on_apply_clicked() {
       logger.d("on_apply_clicked.");
       contact.alias = alias.text;
+      contact.changed();
     }
 
     private void on_remove_clicked() {

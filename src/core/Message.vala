@@ -38,7 +38,6 @@ namespace Venom {
     public abstract string get_message_plain();
     public abstract string get_time_plain();
 
-    public abstract string get_notification_header();
     public abstract Gdk.Pixbuf get_sender_image();
 
     public abstract bool equals_message(IMessage m);

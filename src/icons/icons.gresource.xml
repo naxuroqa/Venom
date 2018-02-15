@@ -6,7 +6,7 @@
     <file compressed="true">scalable/status/idle-symbolic.svg</file>
     <file compressed="true">scalable/status/offline-symbolic.svg</file>
     <file compressed="true">scalable/status/online-symbolic.svg</file>
-    <file compressed="true">scalable/status/group.svg</file>
-    <file compressed="true">scalable/status/person.svg</file>
+    <file compressed="true">scalable/status/conference-symbolic.svg</file>
+    <file compressed="true">scalable/status/friend-symbolic.svg</file>
   </gresource>
 </gresources>

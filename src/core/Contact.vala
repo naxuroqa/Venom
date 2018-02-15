@@ -26,6 +26,7 @@ namespace Venom {
     public abstract string get_id();
     public abstract string get_name_string();
     public abstract string get_status_string();
+    public abstract UserStatus get_status();
     public abstract Gdk.Pixbuf get_image();
   }
 }

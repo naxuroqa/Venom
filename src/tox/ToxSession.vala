@@ -26,7 +26,7 @@ namespace Venom {
     GENERIC
   }
 
-  public delegate void GetFriendListCallback(uint8[] friend_key);
+  public delegate void GetFriendListCallback(uint32 friend_number, uint8[] friend_key);
 
   public interface ToxSession : GLib.Object {
     public abstract void set_session_listener(ToxSessionListener listener);
@@ -37,31 +37,43 @@ namespace Venom {
     public abstract uint8[] self_get_address();
 
     public abstract void self_get_friend_list_foreach(GetFriendListCallback callback) throws ToxError;
-    public abstract void friend_add(uint8[] id, string message) throws ToxError;
-    public abstract void friend_delete(uint8[] id) throws ToxError;
-    public abstract void friend_send_message(uint8[] id, string message) throws ToxError;
+    public abstract void friend_add(uint8[] address, string message) throws ToxError;
+    public abstract void friend_delete(uint32 friend_number) throws ToxError;
 
-    public abstract string friend_get_name(uint8[] id) throws ToxError;
-    public abstract string friend_get_status_message(uint8[] id) throws ToxError;
-    public abstract uint64 friend_get_last_online(uint8[] id) throws ToxError;
+    public abstract void friend_send_message(uint32 friend_number, string message) throws ToxError;
+
+    public abstract string friend_get_name(uint32 friend_number) throws ToxError;
+    public abstract string friend_get_status_message(uint32 friend_number) throws ToxError;
+    public abstract uint64 friend_get_last_online(uint32 friend_number) throws ToxError;
 
     public abstract void conference_new(string title) throws ToxError;
-    public abstract void conference_set_title(uint32 id, string title) throws ToxError;
+    public abstract void conference_delete(uint32 conference_number) throws ToxError;
+
+    public abstract void conference_send_message(uint32 conference_number, string message) throws ToxError;
+    public abstract void conference_set_title(uint32 conference_number, string title) throws ToxError;
   }
 
   public interface ToxSessionListener : GLib.Object {
     public abstract void on_self_status_changed(UserStatus status);
-    public abstract void on_friend_status_changed(uint8[] id, UserStatus status);
-    public abstract void on_friend_message(uint8[] id, string message);
-    public abstract void on_friend_read_receipt(uint8[] id, uint32 message_id);
-    public abstract void on_friend_name_changed(uint8[] id, string name);
-    public abstract void on_friend_status_message_changed(uint8[] id, string message);
-    public abstract void on_friend_request(uint8[] id, string message);
+    public abstract void on_friend_status_changed(uint32 friend_number, UserStatus status);
+    public abstract void on_friend_name_changed(uint32 friend_number, string name);
+    public abstract void on_friend_status_message_changed(uint32 friend_number, string message);
 
-    public abstract void on_friend_added(uint8[] id);
-    public abstract void on_friend_deleted(uint8[] id);
-    public abstract void on_friend_message_sent(uint8[] id, uint32 message_id, string message);
-    public abstract void on_conference_new(uint32 id, string title);
+    public abstract void on_friend_request(uint8[] public_key, string message);
+    public abstract void on_friend_added(uint32 friend_number, uint8[] public_key);
+    public abstract void on_friend_deleted(uint32 friend_number);
+
+    public abstract void on_friend_message(uint32 friend_number, string message);
+    public abstract void on_friend_message_sent(uint32 friend_number, uint32 message_id, string message);
+    public abstract void on_friend_read_receipt(uint32 friend_number, uint32 message_id);
+
+    public abstract void on_conference_new(uint32 conference_number, string title);
+    public abstract void on_conference_deleted(uint32 conference_number);
+
+    public abstract void on_conference_title_changed(uint32 conference_number, uint32 peer_number, string title);
+
+    public abstract void on_conference_message(uint32 conference_number, uint32 peer_number, MessageType type, string message);
+    public abstract void on_conference_message_sent(uint32 conference_number, string message);
   }
 
   public class ToxSessionImpl : GLib.Object, ToxSession {
@@ -109,6 +121,10 @@ namespace Venom {
       handle.callback_friend_status_message(on_friend_status_message_cb);
       handle.callback_friend_read_receipt(on_friend_read_receipt_cb);
       handle.callback_friend_request(on_friend_request_cb);
+
+      handle.callback_conference_title(on_conference_title_cb);
+      handle.callback_conference_invite(on_conference_invite_cb);
+      handle.callback_conference_message(on_conference_message_cb);
 
       init_dht_nodes();
       sessionThread = new ToxSessionThreadImpl(this, logger, dht_nodes);
@@ -172,67 +188,75 @@ namespace Venom {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_friend_connection_status_cb");
       var user_status = from_connection_status(connection_status);
-      try {
-        var id = session.friend_get_public_key(friend_number);
-        Idle.add(() => { session.listener.on_friend_status_changed(id, user_status); return false; });
-      } catch (Error e) {
-        session.logger.f("friend lookup failed: " + e.message);
-      }
+      Idle.add(() => { session.listener.on_friend_status_changed(friend_number, user_status); return false; });
     }
 
     private static void on_friend_name_cb(Tox self, uint32 friend_number, uint8[] name, void* userdata) {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_friend_name_cb");
       var name_str = copy_data_string(name);
-      try {
-        var id = session.friend_get_public_key(friend_number);
-        Idle.add(() => { session.listener.on_friend_name_changed(id, name_str); return false; });
-      } catch (Error e) {
-        session.logger.f("friend lookup failed: " + e.message);
-      }
+      Idle.add(() => { session.listener.on_friend_name_changed(friend_number, name_str); return false; });
     }
 
     private static void on_friend_request_cb(Tox self, uint8[] key, uint8[] message, void* userdata) {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_friend_request_cb");
-      var message_str = copy_data_string(message);
-      var id = copy_data(key, public_key_size());
-      Idle.add(() => { session.listener.on_friend_message(id, message_str); return false; });
+      //TODO
     }
 
     private static void on_friend_message_cb(Tox self, uint32 friend_number, MessageType type, uint8[] message, void* userdata) {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_friend_message_cb");
       var message_str = copy_data_string(message);
-      try {
-        var id = session.friend_get_public_key(friend_number);
-        Idle.add(() => { session.listener.on_friend_message(id, message_str); return false; });
-      } catch (Error e) {
-        session.logger.f("friend lookup failed: " + e.message);
-      }
+      Idle.add(() => { session.listener.on_friend_message(friend_number, message_str); return false; });
     }
 
     private static void on_friend_status_message_cb(Tox self, uint32 friend_number, uint8[] message, void* userdata) {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_friend_status_message_cb");
       var message_str = copy_data_string(message);
-      try {
-        var id = session.friend_get_public_key(friend_number);
-        Idle.add(() => { session.listener.on_friend_status_message_changed(id, message_str); return false; });
-      } catch (Error e) {
-        session.logger.f("friend lookup failed: " + e.message);
-      }
+      Idle.add(() => { session.listener.on_friend_status_message_changed(friend_number, message_str); return false; });
     }
 
     private static void on_friend_read_receipt_cb(Tox self, uint32 friend_number, uint32 message_id, void* userdata) {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_friend_read_receipt_cb");
 
-      try {
-        var id = session.friend_get_public_key(friend_number);
-        Idle.add(() => { session.listener.on_friend_read_receipt(id, message_id); return false; });
-      } catch (Error e) {
-        session.logger.f("friend lookup failed: " + e.message);
+      Idle.add(() => { session.listener.on_friend_read_receipt(friend_number, message_id); return false; });
+    }
+
+    private static void on_conference_title_cb(Tox self, uint32 conference_number, uint32 peer_number, uint8[] title, void *user_data) {
+
+      var session = (ToxSessionImpl) user_data;
+    }
+
+    private static void on_conference_invite_cb(Tox self, uint32 friend_number, ConferenceType type, uint8[] cookie, void *user_data) {
+      var session = (ToxSessionImpl) user_data;
+      session.logger.d("on_conference_message_cb");
+      var err = ErrConferenceJoin.OK;
+      var conference_number = self.conference_join(friend_number, cookie, ref err);
+      if (err != ErrConferenceJoin.OK) {
+        session.logger.e("Conference join failed: " + err.to_string());
+        return;
+      }
+      var title = "Groupchat %u".printf(conference_number);
+      Idle.add(() => { session.listener.on_conference_new(conference_number, title); return false; });
+    }
+
+    private static void on_conference_message_cb(Tox self, uint32 conference_number, uint32 peer_number, MessageType type, uint8[] message, void *user_data) {
+      var session = (ToxSessionImpl) user_data;
+      session.logger.d("on_conference_message_cb");
+      var message_str = copy_data_string(message);
+      var err = ErrConferencePeerQuery.OK;
+      var is_ours = self.conference_peer_number_is_ours(conference_number, peer_number, ref err);
+      if (err != ErrConferencePeerQuery.OK) {
+        session.logger.d("conference_peer_number_is_ours failed: " + err.to_string());
+        return;
+      }
+      if (is_ours) {
+        Idle.add(() => { session.listener.on_conference_message_sent(conference_number, message_str); return false; });
+      } else {
+        Idle.add(() => { session.listener.on_conference_message(conference_number, peer_number, type, message_str); return false; });
       }
     }
 
@@ -246,8 +270,9 @@ namespace Venom {
     public virtual void self_get_friend_list_foreach(GetFriendListCallback callback) throws ToxError {
       var friend_numbers = handle.self_get_friend_list();
       for (var i = 0; i < friend_numbers.length; i++) {
-        var friend_key = friend_get_public_key(friend_numbers[i]);
-        callback(friend_key);
+        var friend_number = friend_numbers[i];
+        var friend_key = friend_get_public_key(friend_number);
+        callback(friend_number, friend_key);
       }
     }
 
@@ -279,8 +304,7 @@ namespace Venom {
       return ret;
     }
 
-    public virtual string friend_get_name(uint8[] id) throws ToxError {
-      var friend_number = get_friend_number(id);
+    public virtual string friend_get_name(uint32 friend_number) throws ToxError {
       var e = ErrFriendQuery.OK;
       var ret = handle.friend_get_name(friend_number, ref e);
       if (e != ErrFriendQuery.OK) {
@@ -290,8 +314,7 @@ namespace Venom {
       return ret;
     }
 
-    public virtual string friend_get_status_message(uint8[] id) throws ToxError {
-      var friend_number = get_friend_number(id);
+    public virtual string friend_get_status_message(uint32 friend_number) throws ToxError {
       var e = ErrFriendQuery.OK;
       var ret = handle.friend_get_status_message(friend_number, ref e);
       if (e != ErrFriendQuery.OK) {
@@ -301,8 +324,7 @@ namespace Venom {
       return ret;
     }
 
-    public virtual uint64 friend_get_last_online(uint8[] id) throws ToxError {
-      var friend_number = get_friend_number(id);
+    public virtual uint64 friend_get_last_online(uint32 friend_number) throws ToxError {
       var e = ErrFriendGetLastOnline.OK;
       var ret = handle.friend_get_last_online(friend_number, ref e);
       if (e != ErrFriendGetLastOnline.OK) {
@@ -314,40 +336,37 @@ namespace Venom {
 
     public virtual void friend_add(uint8[] address, string message) throws ToxError {
       var e = ErrFriendAdd.OK;
-      var ret = handle.friend_add(address, message, ref e);
-      if (ret == uint32.MAX) {
+      var friend_number = handle.friend_add(address, message, ref e);
+      if (e != ErrFriendAdd.OK) {
         logger.i("friend_add failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      var key = friend_get_public_key(ret);
-      listener.on_friend_added(key);
+      var key = friend_get_public_key(friend_number);
+      listener.on_friend_added(friend_number, key);
     }
 
-    public virtual void friend_delete(uint8[] address) throws ToxError {
-      var friend_number = get_friend_number(address);
+    public virtual void friend_delete(uint32 friend_number) throws ToxError {
       var e = ErrFriendDelete.OK;
       if (!handle.friend_delete(friend_number, ref e)) {
         logger.i("friend_delete failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      listener.on_friend_deleted(address);
+      listener.on_friend_deleted(friend_number);
     }
 
-    public virtual void friend_send_message(uint8[] address, string message) throws ToxError {
-      var friend_number = get_friend_number(address);
+    public virtual void friend_send_message(uint32 friend_number, string message) throws ToxError {
       var e = ErrFriendSendMessage.OK;
       var ret = handle.friend_send_message(friend_number, MessageType.NORMAL, message, ref e);
       if (ret == uint32.MAX) {
         logger.i("friend_send_message failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      //TODO: handle ret (message id)
-      listener.on_friend_message_sent(address, ret, message);
+      listener.on_friend_message_sent(friend_number, ret, message);
     }
 
-    public virtual void conference_set_title(uint32 id, string title) throws ToxError {
+    public virtual void conference_set_title(uint32 conference_number, string title) throws ToxError {
       var e = ErrConferenceTitle.OK;
-      handle.conference_set_title(id, title, ref e);
+      handle.conference_set_title(conference_number, title, ref e);
       if (e != ErrConferenceTitle.OK) {
         logger.i("setting conference title failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -365,9 +384,28 @@ namespace Venom {
       listener.on_conference_new(ret, title);
     }
 
-    private uint32 get_friend_number(uint8[] address) throws ToxError {
+    public virtual void conference_delete(uint32 conference_number) throws ToxError {
+      var e = ErrConferenceDelete.OK;
+      handle.conference_delete(conference_number, ref e);
+      if (e != ErrConferenceDelete.OK) {
+        logger.i("deleting conference failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
+      listener.on_conference_deleted(conference_number);
+    }
+
+    public virtual void conference_send_message(uint32 conference_number, string message) throws ToxError {
+      var e = ErrConferenceSendMessage.OK;
+      handle.conference_send_message(conference_number, MessageType.NORMAL, message, ref e);
+      if (e != ErrConferenceSendMessage.OK) {
+        logger.i("sending conference message failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
+    }
+
+    private uint32 get_friend_number(uint8[] public_key) throws ToxError {
       var e = ErrFriendByPublicKey.OK;
-      var ret = handle.friend_by_public_key(address, ref e);
+      var ret = handle.friend_by_public_key(public_key, ref e);
       if (ret == uint32.MAX) {
         logger.i("get_friend_number failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());

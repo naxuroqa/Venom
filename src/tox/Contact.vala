@@ -23,10 +23,11 @@ namespace Venom {
   public class Contact : IContact, GLib.Object {
     // Saved in toxs savefile
     public string      tox_id          { get; set; }
+    public uint32      tox_friend_number {get; set;}
     public string      name            { get; set; default = ""; }
     public string      status_message  { get; set; default = ""; }
     public DateTime    last_seen       { get; set; default = new DateTime.now_local(); }
-    public uint8       user_status     { get; set; default = (uint8) ToxCore.UserStatus.NONE; }
+    public UserStatus  user_status     { get; set; default = UserStatus.OFFLINE; }
     // Saved in venoms savefile
     public string      note            { get; set; default = ""; }
     public string      alias           { get; set; default = ""; }
@@ -38,7 +39,8 @@ namespace Venom {
     public int         unread_messages { get; set; default = 0; }
     public bool        is_typing       { get; set; default = false; }
 
-    public Contact(string id) {
+    public Contact(uint32 friend_number, string id) {
+      tox_friend_number = friend_number;
       tox_id = id;
     }
 
@@ -47,15 +49,19 @@ namespace Venom {
     }
 
     public virtual string get_name_string() {
-      return name != "" ? name : tox_id;
+      return alias != "" ? alias : (name != "" ? name : tox_id);
     }
 
     public virtual string get_status_string() {
       return status_message;
     }
 
+    public virtual UserStatus get_status() {
+      return user_status;
+    }
+
     public virtual Gdk.Pixbuf get_image() {
-      return tox_image ?? Gtk.IconTheme.get_default().load_icon("person", 48, 0);
+      return tox_image ?? Gtk.IconTheme.get_default().load_icon("friend-symbolic", 48, 0);
     }
   }
 }

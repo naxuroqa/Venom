@@ -22,29 +22,33 @@
 namespace Venom {
   public class GroupchatContact : IContact, GLib.Object {
     // Saved in toxs savefile
-    public uint32      groupchat_id    { get; set; }
+    public uint32      tox_conference_number { get; set; }
     public string      title           { get; set; }
     public string      status_message  { get; set; default = ""; }
 
-    public GroupchatContact(uint32 id, string title) {
-      groupchat_id = id;
+    public GroupchatContact(uint32 conference_number, string title) {
+      tox_conference_number = conference_number;
       this.title = title;
     }
 
     public virtual string get_id() {
-      return groupchat_id.to_string();
+      return tox_conference_number.to_string();
     }
 
     public virtual string get_name_string() {
-      return title != "" ? title : groupchat_id.to_string();
+      return title != "" ? title : tox_conference_number.to_string();
     }
 
     public virtual string get_status_string() {
       return status_message;
     }
 
+    public virtual UserStatus get_status() {
+      return UserStatus.ONLINE;
+    }
+
     public virtual Gdk.Pixbuf get_image() {
-      return Gtk.IconTheme.get_default().load_icon("group", 48, 0);
+      return Gtk.IconTheme.get_default().load_icon(R.icons.default_groupchat, 48, 0);
     }
   }
 }

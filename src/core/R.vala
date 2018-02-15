@@ -62,8 +62,8 @@ namespace Venom {
       public string offline { get { return "offline-symbolic"; } }
       public string online { get { return "online-symbolic"; } }
 
-      public string default_contact { get { return "person"; } }
-      public string default_groupchat { get { return "group"; } }
+      public string default_contact { get { return "friend-symbolic"; } }
+      public string default_groupchat { get { return "conference-symbolic"; } }
     }
 
     public sealed class StringResource {

@@ -12,10 +12,10 @@
         <property name="border_width">6</property>
         <property name="spacing">12</property>
         <child>
-          <object class="GtkImage">
+          <object class="GtkImage" id="contact_image">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="icon_name">user-info-symbolic</property>
+            <property name="icon_name">friend-symbolic</property>
             <property name="icon_size">5</property>
           </object>
           <packing>
@@ -68,7 +68,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage">
+          <object class="GtkImage" id="status_image">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="pixel_size">26</property>

@@ -13,7 +13,7 @@
         <property name="can_focus">False</property>
         <property name="halign">end</property>
         <property name="valign">start</property>
-        <property name="icon_name">avatar-default-symbolic</property>
+        <property name="icon_name">friend-symbolic</property>
         <property name="icon_size">6</property>
       </object>
       <packing>
@@ -215,7 +215,7 @@
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
                             <property name="pixel_size">50</property>
-                            <property name="icon_name">person</property>
+                            <property name="icon_name">friend-symbolic</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>

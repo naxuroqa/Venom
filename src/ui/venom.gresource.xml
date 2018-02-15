@@ -4,6 +4,8 @@
     <file compressed="true" preprocess="xml-stripblanks">add_contact_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">app_menu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">application_window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">conference_info_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">conference_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">contact_list_entry.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">contact_list_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">conversation_window.ui</file>

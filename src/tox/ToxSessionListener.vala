@@ -20,13 +20,16 @@
  */
 
 namespace Venom {
-  public class ToxSessionListenerImpl : ToxSessionListener, AddContactWidgetListener, ConversationWidgetListener, FriendInfoWidgetListener, CreateGroupchatWidgetListener, GLib.Object {
+  public class ToxSessionListenerImpl : ToxSessionListener, AddContactWidgetListener, ConversationWidgetListener, ConferenceWidgetListener, FriendInfoWidgetListener, ConferenceInfoWidgetListener, CreateGroupchatWidgetListener, GLib.Object {
     private unowned ToxSession session;
     private ILogger logger;
     private UserInfo user_info;
     private Contacts contacts;
     private GLib.HashTable<IContact, Conversation> conversations;
     private GLib.HashTable<uint32, Message> messages_waiting_for_rr;
+
+    private GLib.HashTable<uint32, IContact> friends;
+    private GLib.HashTable<uint32, IContact> conferences;
 
     public ToxSessionListenerImpl(ILogger logger, UserInfo user_info, Contacts contacts, GLib.HashTable<IContact, Conversation> conversations) {
       logger.d("ToxSessionListenerImpl created.");
@@ -35,7 +38,10 @@ namespace Venom {
       this.contacts = contacts;
       this.conversations = conversations;
 
-      this.messages_waiting_for_rr = new GLib.HashTable<uint32, Message>(null, null);
+      messages_waiting_for_rr = new GLib.HashTable<uint32, Message>(null, null);
+
+      friends = new GLib.HashTable<uint32, IContact>(null, null);
+      conferences = new GLib.HashTable<uint32, IContact>(null, null);
 
       user_info.info_changed.connect(on_user_info_changed);
     }
@@ -53,8 +59,8 @@ namespace Venom {
       user_info.info_changed(this);
 
       try {
-        session.self_get_friend_list_foreach((friend_key) => {
-          on_friend_added(friend_key);
+        session.self_get_friend_list_foreach((friend_number, friend_key) => {
+          on_friend_added(friend_number, friend_key);
         });
       } catch (Error e) {
         logger.f("Could not retrieve friend list: " + e.message);
@@ -76,18 +82,28 @@ namespace Venom {
     }
 
     public virtual void on_remove_friend(IContact c) throws Error {
-      var bin_id = Tools.hexstring_to_bin(c.get_id());
-      session.friend_delete(bin_id);
+      var contact = c as Contact;
+      session.friend_delete(contact.tox_friend_number);
     }
 
-    public virtual void on_send_friend_request(string id, string message) throws Error {
-      var bin_id = Tools.hexstring_to_bin(id);
-      session.friend_add(bin_id, message);
+    public virtual void on_remove_conference(IContact c) throws Error {
+      var contact = c as GroupchatContact;
+      session.conference_delete(contact.tox_conference_number);
+    }
+
+    public virtual void on_send_friend_request(string address, string message) throws Error {
+      var bin_address = Tools.hexstring_to_bin(address);
+      session.friend_add(bin_address, message);
     }
 
     public virtual void on_send_message(IContact c, string message) throws Error {
-      var bin_id = Tools.hexstring_to_bin(c.get_id());
-      session.friend_send_message(bin_id, message);
+      var contact = c as Contact;
+      session.friend_send_message(contact.tox_friend_number, message);
+    }
+
+    public virtual void on_send_conference_message(IContact c, string message) throws Error {
+      var conference = c as GroupchatContact;
+      session.conference_send_message(conference.tox_conference_number, message);
     }
 
     public virtual void on_create_groupchat(string title, GroupchatType type) throws Error {
@@ -99,19 +115,14 @@ namespace Venom {
       user_info.info_changed(this);
     }
 
-    public virtual void on_friend_message(uint8[] id, string message) {
+    public virtual void on_friend_message(uint32 friend_number, string message) {
       logger.d("on_friend_message");
-      try {
-        var pos = find_contact_position(id);
-        var contact = contacts.get_item(pos);
-        var conversation = conversations.@get(contact);
-        conversation.add_message(this, new Message.incoming(contact, message));
-      } catch (Error e) {
-        logger.e("Could not find contact.");
-      }
+      var contact = friends.@get(friend_number);
+      var conversation = conversations.@get(contact);
+      conversation.add_message(this, new Message.incoming(contact, message));
     }
 
-    public virtual void on_friend_read_receipt(uint8[] id, uint32 message_id) {
+    public virtual void on_friend_read_receipt(uint32 friend_number, uint32 message_id) {
       var message = messages_waiting_for_rr.@get(message_id);
       if (message != null) {
         message.received = true;
@@ -123,64 +134,49 @@ namespace Venom {
       }
     }
 
-    public virtual void on_friend_name_changed(uint8[] id, string name) {
+    public virtual void on_friend_name_changed(uint32 friend_number, string name) {
       logger.d("on_friend_name_changed");
       try {
-        var pos = find_contact_position(id);
-        var contact = contacts.get_item(pos) as Contact;
+        var contact = friends.@get(friend_number) as Contact;
         contact.name = name;
-        contacts.contact_changed(this, pos);
+        contact.changed();
+        contacts.contact_changed(this, contacts.index(contact));
       } catch (Error e) {
         logger.e("Could not find contact.");
       }
     }
 
-    public virtual void on_friend_status_message_changed(uint8[] id, string message) {
+    public virtual void on_friend_status_message_changed(uint32 friend_number, string message) {
       logger.d("on_friend_status_message_changed");
       try {
-        var pos = find_contact_position(id);
-        var contact = contacts.get_item(pos) as Contact;
+        var contact = friends.@get(friend_number) as Contact;
         contact.status_message = message;
-        contacts.contact_changed(this, pos);
+        contact.changed();
+        contacts.contact_changed(this, contacts.index(contact));
       } catch (Error e) {
         logger.e("Could not find contact.");
       }
     }
 
-    public virtual void on_friend_request(uint8[] id, string message) {
-
+    public virtual void on_friend_request(uint8[] public_key, string message) {
+      logger.d("on_friend_request");
     }
 
-    public virtual void on_friend_status_changed(uint8[] id, UserStatus status) {
+    public virtual void on_friend_status_changed(uint32 friend_number, UserStatus status) {
       logger.d("on_friend_status_changed");
-      try {
-        var pos = find_contact_position(id);
-        var contact = contacts.get_item(pos) as Contact;
-        contact.user_status = status;
-        contacts.contact_changed(this, pos);
-      } catch (Error e) {
-        logger.e("Could not find contact.");
-      }
+      var contact = friends.@get(friend_number) as Contact;
+      contact.user_status = status;
+      contact.changed();
+      contacts.contact_changed(this, contacts.index(contact));
     }
 
-    private uint find_contact_position(uint8[] id) throws Error {
-      var str_id = Tools.bin_to_hexstring(id);
-      for (int i = 0; i < contacts.length(); i++) {
-        var contact = contacts.get_item(i);
-        if (contact.get_id() == str_id) {
-          return i;
-        }
-      }
-      throw new LookupError.GENERIC("Contact not found");
-    }
-
-    public virtual void on_friend_added(uint8[] id) {
-      var str_id = Tools.bin_to_hexstring(id);
-      var contact = new Contact(str_id);
+    public virtual void on_friend_added(uint32 friend_number, uint8[] public_key) {
+      var str_id = Tools.bin_to_hexstring(public_key);
+      var contact = new Contact(friend_number, str_id);
       try {
-        contact.name = session.friend_get_name(id);
-        contact.status_message = session.friend_get_status_message(id);
-        contact.last_seen = new DateTime.from_unix_local((int64) session.friend_get_last_online(id));
+        contact.name = session.friend_get_name(friend_number);
+        contact.status_message = session.friend_get_status_message(friend_number);
+        contact.last_seen = new DateTime.from_unix_local((int64) session.friend_get_last_online(friend_number));
       } catch (ToxError e) {
         logger.i("Restoring contact information failed");
       }
@@ -188,40 +184,65 @@ namespace Venom {
       if (!conversations.contains(contact)) {
         conversations.@set(contact, new ConversationImpl(contact));
       }
+      friends.@set(friend_number, contact);
       contacts.add_contact(this, contact);
     }
 
-    public virtual void on_friend_deleted(uint8[] id) {
+    public virtual void on_friend_deleted(uint32 friend_number) {
       logger.d("on_friend_deleted");
-      try {
-        var pos = find_contact_position(id);
-        var contact = contacts.get_item(pos);
-        conversations.remove(contact);
-        contacts.remove_contact(this, contact);
-      } catch (Error e) {
-        logger.e("Could not find contact.");
-      }
+      var contact = friends.@get(friend_number);
+      conversations.remove(contact);
+      friends.remove(friend_number);
+      contacts.remove_contact(this, contact);
     }
 
-    public virtual void on_friend_message_sent(uint8[] id, uint32 message_id, string message) {
+    public virtual void on_friend_message_sent(uint32 friend_number, uint32 message_id, string message) {
       logger.d("on_friend_message_sent");
-      try {
-        var pos = find_contact_position(id);
-        var contact = contacts.get_item(pos);
-        var conversation = conversations.@get(contact);
-        var msg = new Message.outgoing(contact, message);
-        msg.message_id = message_id;
-        conversation.add_message(this, msg);
-        messages_waiting_for_rr.@set(message_id, msg);
-      } catch (Error e) {
-        logger.e("Could not find contact.");
-      }
+      var contact = friends.@get(friend_number);
+      var conversation = conversations.@get(contact);
+      var msg = new Message.outgoing(contact, message);
+      msg.message_id = message_id;
+      conversation.add_message(this, msg);
+      messages_waiting_for_rr.@set(message_id, msg);
     }
 
-    public virtual void on_conference_new(uint32 id, string title) {
+    public virtual void on_conference_new(uint32 conference_number, string title) {
       logger.d("on_conference_new");
-      var groupchat_contact = new GroupchatContact(id, title);
-      contacts.add_contact(this, groupchat_contact);
+      var contact = new GroupchatContact(conference_number, title);
+      contacts.add_contact(this, contact);
+      conferences.@set(conference_number, contact);
+      conversations.@set(contact, new ConversationImpl(contact));
+    }
+
+    public virtual void on_conference_deleted(uint32 conference_number) {
+      logger.d("on_conference_deleted");
+      var contact = conferences.@get(conference_number);
+      contacts.remove_contact(this, contact);
+      conversations.remove(contact);
+      conferences.remove(conference_number);
+    }
+
+    public virtual void on_conference_title_changed(uint32 conference_number, uint32 peer_number, string title) {
+      var contact = conferences.@get(conference_number) as GroupchatContact;
+      contact.title = title;
+      contact.changed();
+    }
+
+    public virtual void on_conference_message(uint32 conference_number, uint32 peer_number, ToxCore.MessageType type, string message) {
+      logger.d("on_conference_message");
+      var contact = conferences.@get(conference_number) as GroupchatContact;
+      var conversation = conversations.@get(contact);
+      var msg = new GroupMessage.incoming(contact, peer_number, message);
+      conversation.add_message(this, msg);
+    }
+
+    public virtual void on_conference_message_sent(uint32 conference_number, string message) {
+      logger.d("on_conference_message_sent");
+      var contact = conferences.@get(conference_number) as GroupchatContact;
+      var conversation = conversations.@get(contact);
+      var msg = new GroupMessage.outgoing(contact, message);
+      msg.received = true;
+      conversation.add_message(this, msg);
     }
 
     private void set_self_status(UserStatus status) {

@@ -13,7 +13,7 @@
         <property name="can_focus">False</property>
         <property name="halign">end</property>
         <property name="valign">start</property>
-        <property name="icon_name">system-users-symbolic</property>
+        <property name="icon_name">conference-symbolic</property>
         <property name="icon_size">6</property>
       </object>
       <packing>
@@ -85,6 +85,7 @@
                         <property name="can_focus">True</property>
                         <property name="hexpand">True</property>
                         <property name="activates_default">True</property>
+                        <property name="text" translatable="yes">Groupchat</property>
                         <property name="secondary_icon_tooltip_text" translatable="yes">paste from clipboard</property>
                       </object>
                       <packing>

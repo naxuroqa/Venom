@@ -40,9 +40,6 @@ namespace Venom {
     [GtkChild]
     private Gtk.Revealer content_revealer;
 
-    //[GtkChild]
-    //private Gtk.Label status_label;
-
     private Gtk.Widget current_content_widget;
     private WidgetProvider next_content_widget;
 
@@ -58,7 +55,6 @@ namespace Venom {
     private GLib.HashTable<IContact, Conversation> conversations;
     private UserInfo user_info;
 
-    // Default Constructor
     public ApplicationWindow(Gtk.Application application, Factory.IWidgetFactory widget_factory, IDhtNodeDatabase node_database,
                              ISettingsDatabase settings_database, IContactDatabase contact_database) {
       Object(application: application);
@@ -89,12 +85,10 @@ namespace Venom {
       logger.d("ApplicationWindow created.");
     }
 
-    // Destructor
     ~ApplicationWindow() {
       logger.d("ApplicationWindow destroyed.");
     }
 
-    // Initialize widgets
     private void init_widgets() {
       default_height = 600;
       default_width = 600;
@@ -119,7 +113,11 @@ namespace Venom {
       logger.d("ApplicationWindow on_contact_selected");
 
       var conv = conversations.@get(contact);
-      switch_content_with(() => { return new ConversationWindow(this, logger, conv, session_listener); });
+      if (contact is Contact) {
+        switch_content_with(() => { return new ConversationWindow(this, logger, conv, session_listener); });
+      } else {
+        switch_content_with(() => { return new ConferenceWindow(this, logger, conv, session_listener); });
+      }
     }
 
     private void init_callbacks() {
@@ -168,6 +166,10 @@ namespace Venom {
 
     public void on_show_friend(IContact contact) {
       switch_content_with(() => { return new FriendInfoWidget(logger, this, session_listener, contact); });
+    }
+
+    public void on_show_conference(IContact contact) {
+      switch_content_with(() => { return new ConferenceInfoWidget(logger, this, session_listener, contact); });
     }
 
     private void on_add_contact() {

@@ -659,7 +659,12 @@ namespace ToxCore {
 
     public uint32 conference_join(uint32 friend_number, uint8[] cookie, ref ErrConferenceJoin error);
 
-    public bool conference_send_message(uint32 conference_number, MessageType type, uint8[] message, ref ErrConferenceSendMessage error);
+    [CCode(cname = "tox_conference_send_message")]
+    private bool _conference_send_message(uint32 conference_number, MessageType type, uint8[] message, ref ErrConferenceSendMessage error);
+    [CCode(cname = "vala_tox_conference_send_message")]
+    public bool conference_send_message(uint32 conference_number, MessageType type, string message, ref ErrConferenceSendMessage error) {
+      return _conference_send_message(conference_number, type, message.data, ref error);
+    }
 
     [CCode(cname = "tox_conference_get_title_size")]
     private size_t _conference_get_title_size(uint32 conference_number, ref ErrConferenceTitle error);

@@ -4,16 +4,17 @@
   <requires lib="gtk+" version="3.20"/>
   <template class="VenomDownloadsWidget" parent="GtkBox">
     <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="border-width">6</property>
+    <property name="can_focus">False</property>
+    <property name="border_width">6</property>
     <property name="spacing">12</property>
     <child>
       <object class="GtkImage">
-        <property name="visible">1</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="halign">end</property>
         <property name="valign">start</property>
-        <property name="icon-name">network-transmit-receive-symbolic</property>
-        <property name="icon-size">6</property>
+        <property name="icon_name">network-transmit-receive-symbolic</property>
+        <property name="icon_size">6</property>
       </object>
       <packing>
         <property name="expand">True</property>
@@ -23,30 +24,40 @@
     </child>
     <child>
       <object class="GtkBox">
-        <property name="visible">1</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel">
-            <property name="visible">1</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="label" translatable="yes">File transfers</property>
             <property name="xalign">0</property>
             <attributes>
               <attribute name="weight" value="bold"/>
             </attributes>
           </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
         </child>
         <child>
           <object class="GtkListBox" id="downloads">
-            <property name="width-request">450</property>
-            <property name="height-request">300</property>
-            <property name="visible">1</property>
-            <property name="selection-mode">none</property>
+            <property name="width_request">450</property>
+            <property name="height_request">300</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="selection_mode">none</property>
             <style>
               <class name="frame"/>
             </style>
           </object>
           <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -59,7 +70,8 @@
     </child>
     <child>
       <object class="GtkBox">
-        <property name="visible">1</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
       </object>
       <packing>

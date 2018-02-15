@@ -27,7 +27,7 @@
                   <object class="GtkImage" id="user_image">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="icon_name">user-info-symbolic</property>
+                    <property name="icon_name">friend-symbolic</property>
                     <property name="icon_size">5</property>
                   </object>
                   <packing>
@@ -177,7 +177,6 @@
       <object class="GtkOverlay" id="overlay">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="vexpand">True</property>
         <child>
           <object class="GtkScrolledWindow" id="scrolled_window">
             <property name="visible">True</property>
@@ -204,7 +203,7 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">2</property>
       </packing>
@@ -269,9 +268,6 @@
                     <property name="icon_name">face-smile-symbolic</property>
                   </object>
                 </child>
-                <style>
-                  <class name="image-button"/>
-                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -294,9 +290,6 @@
                     <property name="icon_name">document-send-symbolic</property>
                   </object>
                 </child>
-                <style>
-                  <class name="image-button"/>
-                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -318,6 +311,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
+        <property name="pack_type">end</property>
         <property name="position">4</property>
       </packing>
     </child>

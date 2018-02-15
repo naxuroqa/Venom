@@ -37,7 +37,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="pixel_size">44</property>
-                <property name="icon_name">person</property>
+                <property name="icon_name">friend-symbolic</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -255,9 +255,6 @@
                 <property name="icon_name">contact-new-symbolic</property>
               </object>
             </child>
-            <style>
-              <class name="image-button"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -279,9 +276,6 @@
                 <property name="icon_name">system-users-symbolic</property>
               </object>
             </child>
-            <style>
-              <class name="image-button"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -303,9 +297,6 @@
                 <property name="icon_name">network-transmit-receive-symbolic</property>
               </object>
             </child>
-            <style>
-              <class name="image-button"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -327,9 +318,6 @@
                 <property name="icon_name">preferences-system-symbolic</property>
               </object>
             </child>
-            <style>
-              <class name="image-button"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
