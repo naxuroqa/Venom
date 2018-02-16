@@ -25,10 +25,12 @@ namespace Venom {
     public uint32      tox_conference_number { get; set; }
     public string      title           { get; set; }
     public string      status_message  { get; set; default = ""; }
+    private GLib.HashTable<uint32, GroupchatPeer> peers;
 
     public GroupchatContact(uint32 conference_number, string title) {
       tox_conference_number = conference_number;
       this.title = title;
+      peers = new GLib.HashTable<uint32, GroupchatPeer>(null, null);
     }
 
     public virtual string get_id() {
@@ -40,7 +42,7 @@ namespace Venom {
     }
 
     public virtual string get_status_string() {
-      return status_message;
+      return _("%u Peers online").printf(peers.size());
     }
 
     public virtual UserStatus get_status() {
@@ -50,5 +52,30 @@ namespace Venom {
     public virtual Gdk.Pixbuf get_image() {
       return Gtk.IconTheme.get_default().load_icon(R.icons.default_groupchat, 48, 0);
     }
+
+    public virtual unowned GLib.HashTable<uint32, GroupchatPeer> get_peers() {
+      return peers;
+    }
+  }
+
+  public interface GroupchatPeer : GLib.Object {
+    public abstract uint32 peer_number { get; set; }
+    public abstract string tox_public_key { get; set; }
+    public abstract string name { get; set; }
+    public abstract bool is_self { get; set; }
+  }
+
+  public class GroupchatPeerImpl : GroupchatPeer, GLib.Object {
+    public GroupchatPeerImpl(uint32 peer_number) {
+      this.peer_number = peer_number;
+      this.tox_public_key = "";
+      this.name = "Peer %u".printf(peer_number);
+      this.is_self = false;
+    }
+
+    public uint32 peer_number { get; set; }
+    public string tox_public_key { get; set; }
+    public string name { get; set; }
+    public bool is_self { get; set; }
   }
 }

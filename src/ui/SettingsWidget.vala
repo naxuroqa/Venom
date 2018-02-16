@@ -107,27 +107,4 @@ namespace Venom {
       nodeDatabase.insertDhtNode(node.pub_key, node.host, node.port, node.is_blocked, node.maintainer, node.location);
     }
   }
-
-  public class GenericListModel<T> : GLib.Object, GLib.ListModel {
-    public unowned GLib.List<T> list;
-    public GenericListModel(GLib.List<T> list) {
-      this.list = list;
-    }
-
-    public virtual GLib.Object ? get_item(uint position) {
-      return list.nth_data(position) as GLib.Object;
-    }
-
-    public virtual GLib.Type get_item_type() {
-      return typeof (T);
-    }
-
-    public virtual uint get_n_items() {
-      return list.length();
-    }
-
-    public virtual GLib.Object ? get_object(uint position) {
-      return get_item(position);
-    }
-  }
 }

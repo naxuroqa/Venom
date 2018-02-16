@@ -104,7 +104,7 @@ namespace Venom {
       try {
         listener.on_send_message(conversation.get_contact(), message);
       } catch (Error e) {
-        logger.f("Could not send message: " + e.message);
+        logger.e("Could not send message: " + e.message);
       }
     }
 

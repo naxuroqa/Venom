@@ -37,11 +37,36 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="conference_title">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label">conference_title</property>
-                    <property name="xalign">0</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="conference_title">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label">conference_title</property>
+                        <property name="xalign">0</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="conference_peers">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label">conference_peers</property>
+                        <property name="xalign">0</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>

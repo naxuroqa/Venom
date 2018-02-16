@@ -21,10 +21,11 @@
 
 namespace Venom {
   public class GroupMessage : IMessage, Object {
-    public unowned IContact contact           { get; protected set; }
+    public unowned GroupchatContact contact   { get; protected set; }
     public uint32 peer_number                 { get; protected set; }
     public string message                     { get; protected set; }
 
+    public string sender_name                 { get; set; }
     public GLib.DateTime timestamp            { get; protected set; }
     public MessageDirection message_direction { get; protected set; }
     public bool important                     { get; set; }
@@ -33,7 +34,7 @@ namespace Venom {
     public bool received                      { get; set; }
 
     private GroupMessage(IContact contact, MessageDirection direction, string message, GLib.DateTime timestamp) {
-      this.contact = contact;
+      this.contact = contact as GroupchatContact;
       this.message_direction = direction;
       this.message = message;
       this.timestamp = timestamp;
@@ -48,13 +49,15 @@ namespace Venom {
     public GroupMessage.incoming(IContact contact, uint32 peer_number, string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
       this(contact, MessageDirection.INCOMING, message, timestamp);
       this.peer_number = peer_number;
+      var c = contact as GroupchatContact;
+      this.sender_name = c.get_peers().@get(peer_number).name;
     }
 
     public virtual string get_sender_plain() {
       if (message_direction == MessageDirection.OUTGOING) {
         return User.instance.name;
       } else {
-        return "peer %u".printf(peer_number);
+        return sender_name;
       }
     }
 

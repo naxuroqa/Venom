@@ -24,11 +24,11 @@ namespace Venom {
   public class ConferenceInfoWidget : Gtk.Box {
 
     [GtkChild]
-    private Gtk.Label title;
-
+    private Gtk.Entry title;
     [GtkChild]
     private Gtk.ListBox peers;
-
+    [GtkChild]
+    private Gtk.Button apply;
     [GtkChild]
     private Gtk.Button leave;
 
@@ -46,11 +46,30 @@ namespace Venom {
 
       set_info();
 
+      apply.clicked.connect(on_apply_clicked);
       leave.clicked.connect(on_leave_clicked);
     }
 
     private void set_info() {
-      title.label = contact.title;
+      title.text = contact.title;
+
+      var peers_list = contact.get_peers().get_values().copy();
+      var listmodel = new GenericListModel<GroupchatPeer>(peers_list);
+      peers.bind_model(listmodel, on_create_peer_widget);
+      unmap.connect(() => { peers.bind_model(null, null); });
+    }
+
+    private Gtk.Widget on_create_peer_widget(Object o) {
+      return new PeerEntry(logger, o as GroupchatPeer);
+    }
+
+    private void on_apply_clicked() {
+      logger.d("on_apply_clicked");
+      try {
+        listener.on_change_conference_title(contact, title.text);
+      } catch (Error e) {
+        logger.e("Could not change title: " + e.message);
+      }
     }
 
     private void on_leave_clicked() {
@@ -70,5 +89,6 @@ namespace Venom {
 
   public interface ConferenceInfoWidgetListener : GLib.Object {
     public abstract void on_remove_conference(IContact contact) throws Error;
+    public abstract void on_change_conference_title(IContact contact, string title) throws Error;
   }
 }

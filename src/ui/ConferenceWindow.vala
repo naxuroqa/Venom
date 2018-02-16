@@ -25,6 +25,8 @@ namespace Venom {
     [GtkChild]
     private Gtk.Label conference_title;
     [GtkChild]
+    private Gtk.Label conference_peers;
+    [GtkChild]
     private Gtk.TextView text_view;
     [GtkChild]
     private Gtk.ListBox message_list;
@@ -79,6 +81,7 @@ namespace Venom {
     private void update_widgets() {
       var contact = conversation.get_contact();
       conference_title.label = contact.get_name_string();
+      conference_peers.label = contact.get_status_string();
     }
 
     private void on_items_changed(uint pos, uint rem, uint add) {
@@ -103,7 +106,7 @@ namespace Venom {
       try {
         listener.on_send_conference_message(conversation.get_contact(), message);
       } catch (Error e) {
-        logger.f("Could not send message: " + e.message);
+        logger.e("Could not send message: " + e.message);
       }
     }
 

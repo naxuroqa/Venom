@@ -189,7 +189,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="pixel_size">50</property>
-                                <property name="icon_name">face-monkey</property>
+                                <property name="icon_name">friend-symbolic</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>

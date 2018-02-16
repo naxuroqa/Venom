@@ -51,6 +51,7 @@ namespace Venom {
 
     public abstract void conference_send_message(uint32 conference_number, string message) throws ToxError;
     public abstract void conference_set_title(uint32 conference_number, string title) throws ToxError;
+    public abstract string conference_get_title(uint32 conference_number) throws ToxError;
   }
 
   public interface ToxSessionListener : GLib.Object {
@@ -71,6 +72,9 @@ namespace Venom {
     public abstract void on_conference_deleted(uint32 conference_number);
 
     public abstract void on_conference_title_changed(uint32 conference_number, uint32 peer_number, string title);
+    public abstract void on_conference_peer_joined(uint32 conference_number, uint32 peer_number);
+    public abstract void on_conference_peer_exited(uint32 conference_number, uint32 peer_number);
+    public abstract void on_conference_peer_renamed(uint32 conference_number, uint32 peer_number, bool is_self, uint8[] peer_public_key, string peer_name);
 
     public abstract void on_conference_message(uint32 conference_number, uint32 peer_number, MessageType type, string message);
     public abstract void on_conference_message_sent(uint32 conference_number, string message);
@@ -98,7 +102,7 @@ namespace Venom {
       var options_error = ToxCore.ErrOptionsNew.OK;
       var options = new ToxCore.Options(ref options_error);
 
-      options.log_callback = on_tox_message;
+      //options.log_callback = on_tox_message;
 
       var savedata = iohandler.load_sessiondata();
       if (savedata != null) {
@@ -125,6 +129,7 @@ namespace Venom {
       handle.callback_conference_title(on_conference_title_cb);
       handle.callback_conference_invite(on_conference_invite_cb);
       handle.callback_conference_message(on_conference_message_cb);
+      handle.callback_conference_namelist_change(on_conference_namelist_change_cb);
 
       init_dht_nodes();
       sessionThread = new ToxSessionThreadImpl(this, logger, dht_nodes);
@@ -134,9 +139,9 @@ namespace Venom {
 
     // destructor
     ~ToxSessionImpl() {
-      logger.d("ToxSession stopping background thread.");
+      logger.i("ToxSession stopping background thread.");
       sessionThread.stop();
-      logger.d("ToxSession saving session data.");
+      logger.i("ToxSession saving session data.");
       iohandler.save_sessiondata(handle.get_savedata());
       logger.d("ToxSession destroyed.");
     }
@@ -226,8 +231,11 @@ namespace Venom {
     }
 
     private static void on_conference_title_cb(Tox self, uint32 conference_number, uint32 peer_number, uint8[] title, void *user_data) {
-
       var session = (ToxSessionImpl) user_data;
+      session.logger.d("on_conference_title_cb");
+
+      var title_str = copy_data_string(title);
+      Idle.add(() => { session.listener.on_conference_title_changed(conference_number, peer_number, title_str); return false; });
     }
 
     private static void on_conference_invite_cb(Tox self, uint32 friend_number, ConferenceType type, uint8[] cookie, void *user_data) {
@@ -250,13 +258,46 @@ namespace Venom {
       var err = ErrConferencePeerQuery.OK;
       var is_ours = self.conference_peer_number_is_ours(conference_number, peer_number, ref err);
       if (err != ErrConferencePeerQuery.OK) {
-        session.logger.d("conference_peer_number_is_ours failed: " + err.to_string());
+        session.logger.e("conference_peer_number_is_ours failed: " + err.to_string());
         return;
       }
       if (is_ours) {
         Idle.add(() => { session.listener.on_conference_message_sent(conference_number, message_str); return false; });
       } else {
         Idle.add(() => { session.listener.on_conference_message(conference_number, peer_number, type, message_str); return false; });
+      }
+    }
+
+    private static void on_conference_namelist_change_cb(Tox self, uint32 conference_number, uint32 peer_number, ConferenceStateChange change, void *user_data) {
+      var session = (ToxSessionImpl) user_data;
+      session.logger.d("on_conference_namelist_change_cb");
+      switch (change) {
+        case ConferenceStateChange.PEER_JOIN:
+          Idle.add(() => { session.listener.on_conference_peer_joined(conference_number, peer_number); return false; });
+          break;
+        case ConferenceStateChange.PEER_EXIT:
+          Idle.add(() => { session.listener.on_conference_peer_exited(conference_number, peer_number); return false; });
+          break;
+        case ConferenceStateChange.PEER_NAME_CHANGE:
+          var err = ErrConferencePeerQuery.OK;
+          // This oddly requires a connection to the conference
+          // var is_self = self.conference_peer_number_is_ours(conference_number, peer_number, ref err);
+          // if (err != ErrConferencePeerQuery.OK) {
+          //   session.logger.e("conference_peer_number_is_ours failed: " + err.to_string());
+          //   return;
+          // }
+          var peer_public_key = self.conference_peer_get_public_key(conference_number, peer_number, ref err);
+          if (err != ErrConferencePeerQuery.OK) {
+            session.logger.e("conference_peer_get_public_key failed: " + err.to_string());
+            return;
+          }
+          var peer_name = self.conference_peer_get_name(conference_number, peer_number, ref err);
+          if (err != ErrConferencePeerQuery.OK) {
+            session.logger.e("conference_peer_get_name failed: " + err.to_string());
+            return;
+          }
+          Idle.add(() => { session.listener.on_conference_peer_renamed(conference_number, peer_number, false, peer_public_key, peer_name); return false; });
+          break;
       }
     }
 
@@ -371,6 +412,18 @@ namespace Venom {
         logger.i("setting conference title failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
+      //FIXME
+      listener.on_conference_title_changed(conference_number, 0, title);
+    }
+
+    public virtual string conference_get_title(uint32 conference_number) throws ToxError {
+      var e = ErrConferenceTitle.OK;
+      var title = handle.conference_get_title(conference_number, ref e);
+      if (e != ErrConferenceTitle.OK) {
+        logger.e("getting conference title failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
+      return title;
     }
 
     public virtual void conference_new(string title) throws ToxError {

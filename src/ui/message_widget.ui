@@ -38,7 +38,7 @@
                   <object class="GtkLabel" id="sender">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">sender</property>
+                    <property name="label">sender</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -58,7 +58,7 @@
                       <object class="GtkLabel" id="timestamp">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">timestamp</property>
+                        <property name="label">timestamp</property>
                         <style>
                           <class name="dim-label"/>
                         </style>
@@ -128,7 +128,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">message</property>
+                <property name="label">message</property>
                 <property name="selectable">True</property>
                 <property name="xalign">0</property>
               </object>
