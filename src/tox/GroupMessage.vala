@@ -55,7 +55,7 @@ namespace Venom {
 
     public virtual string get_sender_plain() {
       if (message_direction == MessageDirection.OUTGOING) {
-        return User.instance.name;
+        return _("me");
       } else {
         return sender_name;
       }

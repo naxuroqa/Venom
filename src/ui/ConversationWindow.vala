@@ -68,9 +68,7 @@ namespace Venom {
       text_view.buffer.changed.connect(on_buffer_changed);
       app_window.add_action_entries(win_entries, this);
 
-      // trigger autoscroll
-      on_items_changed(0, 0, 1);
-
+      delayed_scroll_to_end();
       model.items_changed.connect(on_items_changed);
 
       logger.d("ConversationWindow created.");
@@ -86,8 +84,12 @@ namespace Venom {
 
     private void on_items_changed(uint pos, uint rem, uint add) {
       if (add - rem > 0) {
-        GLib.Timeout.add(50, scroll_to_end);
+        delayed_scroll_to_end();
       }
+    }
+
+    private void delayed_scroll_to_end() {
+      GLib.Timeout.add(50, scroll_to_end);
     }
 
     private bool scroll_to_end() {

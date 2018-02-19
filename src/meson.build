@@ -34,7 +34,6 @@ venom_source = files(
 			'core/R.vala',
 			'core/Tools.vala',
 			'core/WidgetFactory.vala',
-			'core/User.vala',
 			'core/UserInfo.vala',
 			'db/DatabaseInterfaces.vala',
 			'db/SqliteSettingsDatabase.vala',

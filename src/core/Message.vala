@@ -72,7 +72,7 @@ namespace Venom {
 
     public virtual string get_sender_plain() {
       if (from == null) {
-        return User.instance.name;
+        return _("me");
       } else {
         return from.get_name_string();
       }
