@@ -30,6 +30,7 @@ venom_source = files(
 			'core/Interfaces.vala',
 			'core/Logger.vala',
 			'core/Message.vala',
+			'core/NotificationListener.vala',
 			'core/R.vala',
 			'core/Tools.vala',
 			'core/WidgetFactory.vala',

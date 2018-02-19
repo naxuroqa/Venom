@@ -51,6 +51,7 @@ namespace Venom {
     private ToxSession session;
     private ToxSessionListenerImpl session_listener;
     private Contacts contacts;
+    private NotificationListener notification_listener;
 
     private GLib.HashTable<IContact, Conversation> conversations;
     private UserInfo user_info;
@@ -72,12 +73,15 @@ namespace Venom {
 
       contacts = new ContactsImpl(logger);
 
+      notification_listener = new NotificationListenerImpl(logger);
+
       var session_io = new ToxSessionIOImpl(logger);
       session = new ToxSessionImpl(session_io, node_database, logger);
-      session_listener = new ToxSessionListenerImpl(logger, user_info, contacts, conversations);
+      session_listener = new ToxSessionListenerImpl(logger, user_info, contacts, conversations, notification_listener);
       session_listener.attach_to_session(session);
 
       settings_database.bind_property("enable-send-typing", session_listener, "show-typing", BindingFlags.SYNC_CREATE);
+      settings_database.bind_property("enable-urgency-notification", notification_listener, "show-notifications", BindingFlags.SYNC_CREATE);
 
       init_widgets();
       init_callbacks();

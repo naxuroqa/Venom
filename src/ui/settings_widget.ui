@@ -21,7 +21,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 Author: Venom authors
 
 -->
-<interface domain="Venom">
+<interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
   <!-- interface-license-type gplv3 -->
   <!-- interface-name Venom -->
@@ -337,7 +337,7 @@ Author: Venom authors
                                                   <object class="GtkLabel">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
-                                                    <property name="label" translatable="yes">Urgency notification</property>
+                                                    <property name="label" translatable="yes">Show notifications</property>
                                                     <property name="xalign">0</property>
                                                   </object>
                                                   <packing>
@@ -350,7 +350,7 @@ Author: Venom authors
                                                   <object class="GtkLabel">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
-                                                    <property name="label" translatable="yes">&lt;small&gt;Flash window on new message&lt;/small&gt;</property>
+                                                    <property name="label" translatable="yes">&lt;small&gt;Show a notification for new messages&lt;/small&gt;</property>
                                                     <property name="use_markup">True</property>
                                                     <property name="xalign">0</property>
                                                     <style>
@@ -741,7 +741,7 @@ Author: Venom authors
                                                   <object class="GtkSpinButton" id="history_delete_spinbutton">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <property name="text" translatable="yes">180</property>
+                                                    <property name="text">180</property>
                                                     <property name="input_purpose">digits</property>
                                                     <property name="adjustment">history_delete_adjustment</property>
                                                     <property name="numeric">True</property>
@@ -811,7 +811,7 @@ Author: Venom authors
               </object>
               <packing>
                 <property name="name">page0</property>
-                <property name="title" translatable="yes">page0</property>
+                <property name="title">page0</property>
               </packing>
             </child>
             <child>
@@ -919,7 +919,7 @@ Author: Venom authors
               </object>
               <packing>
                 <property name="name">page1</property>
-                <property name="title" translatable="yes">page1</property>
+                <property name="title">page1</property>
                 <property name="position">1</property>
               </packing>
             </child>

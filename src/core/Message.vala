@@ -91,10 +91,6 @@ namespace Venom {
       }
     }
 
-    public virtual string get_notification_header() {
-      return get_sender_plain() + _(" says:");
-    }
-
     public Gdk.Pixbuf get_sender_image() {
       return UITools.pixbuf_from_resource(R.icons.default_contact);
     }

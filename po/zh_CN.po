@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Venom \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-19 08:18+0200\n"
+"POT-Creation-Date: 2018-02-19 16:47+0100\n"
 "PO-Revision-Date: 2014-08-27 13:00+0800\n"
 "Last-Translator: kaiman <kaigfm@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -17,423 +17,455 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/Main.vala:50
-#, c-format
-msgid "'%s' not a positive number"
+#: src/Main.vala:29
+msgid "Set level of messages to log"
 msgstr ""
 
-#: src/Main.vala:68
+#: src/Main.vala:29
+msgid "<loglevel>"
+msgstr ""
+
+#: src/Main.vala:30
+msgid "Display version number"
+msgstr ""
+
+#: src/Main.vala:65
 #, c-format
 msgid "error: %s\n"
 msgstr ""
 
-#: src/Main.vala:69
+#: src/Main.vala:66
 #, c-format
 msgid "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 
-#: src/core/GroupChatContact.vala:32 src/core/ToxSession.vala:31
-#: src/ui/ContactListWindow.vala:208
-msgid "Online"
-msgstr "在线"
-
-#: src/core/SqliteTools.vala:37 src/core/SqliteTools.vala:47
-#: src/core/SqliteTools.vala:57
+#: src/core/NotificationListener.vala:51
 #, c-format
-msgid "Index for %s not found."
+msgid "New message from %s"
 msgstr ""
 
-#: src/core/SqliteTools.vala:40
-#, c-format
-msgid "Could not bind int to %s."
-msgstr "无法绑定 int 到 %s 。"
-
-#: src/core/SqliteTools.vala:50
-#, c-format
-msgid "Could not bind int64 to %s."
-msgstr "无法绑定 int64 到 %s 。"
-
-#: src/core/SqliteTools.vala:60
-#, c-format
-msgid "Could not bind text to %s"
-msgstr "无法绑定 text 到 %s 。"
-
-#: src/core/SqliteTools.vala:75
-#, c-format
-msgid "Can't open database: %d: %s\n"
-msgstr "无法打开数据库: %d: %s\n"
-
-#: src/core/Message.vala:47
-msgid "%R:%S"
-msgstr ""
-
-#: src/core/Message.vala:92 src/core/Message.vala:171
-msgid " says:"
-msgstr ""
-
-#: src/core/Message.vala:164 src/core/Message.vala:209
-msgid "<unknown>"
-msgstr "<未知>"
-
-#: src/core/Message.vala:171 src/core/Message.vala:216
-msgid " in "
-msgstr ""
-
-#: src/core/GroupChat.vala:45
-#, c-format
-msgid "Groupchat #%i"
-msgstr ""
-
-#: src/core/GroupChat.vala:52
-#, c-format
-msgid "%i people connected"
-msgstr "%i 人在线"
-
-#: src/core/GroupChat.vala:54
-#, c-format
-msgid "%i person connected"
-msgstr "%i 人在线"
-
-#: src/core/GroupChat.vala:56
-msgid "no one connected"
-msgstr ""
-
-#: src/core/Contact.vala:69 src/core/Contact.vala:83
-#, c-format
-msgid "%s <i>(%s)</i>"
-msgstr ""
-
-#: src/core/Contact.vala:72 src/core/Contact.vala:86
-#: src/ui/ConversationView.vala:55
-#, c-format
-msgid "<i>%s</i>"
-msgstr ""
-
-#: src/core/Contact.vala:98 src/core/Contact.vala:108
-#: src/core/ToxSession.vala:37
-msgid "Offline"
-msgstr "离线"
-
-#: src/core/Contact.vala:117
-#, c-format
-msgid "Last seen: %s"
-msgstr ""
-
-#. create table and index if needed
-#: src/core/ContactStorage.vala:103
-#, c-format
-msgid "Error creating contacts table: %s\n"
-msgstr ""
-
-#. prepare insert statement for adding new history messages
-#: src/core/ContactStorage.vala:108
-#, c-format
-msgid "Error creating contacts insert statement: %d: %s\n"
-msgstr ""
-
-#. prepare select statement to get history. Will execute on indexed data
-#: src/core/ContactStorage.vala:113
-#, c-format
-msgid "Error creating contacts select statement: %d: %s\n"
-msgstr ""
-
-#: src/core/Notification.vala:45
-msgid "Error showing notification: "
-msgstr ""
-
-#. create table and index if needed
-#: src/core/DhtNodeStorage.vala:172
-#, c-format
-msgid "Error creating dht nodes table: %s\n"
-msgstr ""
-
-#. prepare insert statement for adding new history messages
-#: src/core/DhtNodeStorage.vala:177
-#, c-format
-msgid "Error creating dht nodes insert statement: %d: %s\n"
-msgstr ""
-
-#. prepare select statement to get history. Will execute on indexed data
-#: src/core/DhtNodeStorage.vala:182
-#, c-format
-msgid "Error creating dht nodes select statement: %d: %s\n"
-msgstr ""
-
-#: src/core/ToxSession.vala:33
-msgid "Away"
-msgstr "离开"
-
-#: src/core/ToxSession.vala:35
-msgid "Busy"
-msgstr "忙"
-
-#: src/core/ToxSession.vala:829
-#, c-format
-msgid "File \"%d\" does not exist."
-msgstr ""
-
-#: src/core/ToxSession.vala:836
-msgid "Error while reading from stream."
-msgstr ""
-
-#: src/core/ToxSession.vala:842
-msgid "Error while loading messenger data."
-msgstr ""
-
-#: src/core/ToxSession.vala:869
-msgid "Error while writing to stream."
-msgstr ""
-
-#. create table and index if needed
-#: src/core/MessageLog.vala:179
-#, c-format
-msgid "Error creating message log table: %s\n"
-msgstr ""
-
-#: src/core/ResourceFactory.vala:74
+#: src/core/R.vala:70
 msgid "Tox User"
 msgstr ""
 
-#: src/core/ResourceFactory.vala:75
+#: src/tox/GroupchatContact.vala:45
 #, c-format
-msgid "Toxing on Venom v.%s"
+msgid "%u Peers online"
 msgstr ""
 
-#: src/ui/ConversationTextView.vala:139
-#, c-format
-msgid "[%s] "
-msgstr ""
-
-#: src/ui/UserInfoWindow.vala:86
-msgid "Edit user information"
-msgstr ""
-
-#: src/ui/Client.vala:90
-msgid "_Show/Hide Venom"
-msgstr ""
-
-#: src/ui/Client.vala:93
-msgid "_Quit"
-msgstr ""
-
-#: src/ui/Client.vala:162
-msgid "There is currently no help available"
-msgstr ""
-
-#.
-#. Gtk.MenuItem item = new Gtk.MenuItem.with_mnemonic("_Show");
-#. item.activate.connect(() => { print("name: %s\n", c.get_name_string()); });
-#. menu.append(item);
-#: src/ui/UITools.vala:75
-msgid "_Unfriend"
-msgstr ""
-
-#: src/ui/UITools.vala:85
-msgid "_Invite to ..."
-msgstr ""
-
-#: src/ui/UITools.vala:88
-#, fuzzy
-msgid "_New groupchat"
-msgstr "创建群聊"
-
-#: src/ui/UITools.vala:100
-#, fuzzy
-msgid "_Invite to new groupchat"
-msgstr "创建群聊"
-
-#: src/ui/UITools.vala:110
-#, fuzzy
-msgid "_Leave groupchat"
-msgstr "创建群聊"
-
-#: src/ui/UITools.vala:119
-msgid "Export tox data file"
-msgstr ""
-
-#: src/ui/UITools.vala:141
-msgid "Exporting data file failed"
-msgstr ""
-
-#: src/ui/UITools.vala:141
-#, fuzzy
-msgid "Could not export data file: "
-msgstr "不能添加好友: %s。\n"
-
-#. TODO
-#: src/ui/UITools.vala:147
-msgid "Importing data files is currently not supported"
-msgstr ""
-
-#: src/ui/AboutDialog.vala:47
+#: src/ui/AboutDialog.vala:53
 msgid "Packagers"
 msgstr ""
 
-#: src/ui/AboutDialog.vala:52
+#: src/ui/AboutDialog.vala:58
 msgid "translator-credits"
 msgstr ""
 
-#: src/ui/ContactListWindow.vala:130
-#, c-format
-msgid "Could not read theme from \"%s\""
-msgstr "无法从\"%s\"读取主题"
+#: src/ui/AboutDialog.vala:61
+msgid "Visit us on Github"
+msgstr ""
 
-#: src/ui/ContactListWindow.vala:210
+#: src/ui/add_contact_widget.ui:6
+msgid "Please let me add you to my contact list. 😁"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:38
+msgid "Send a friend request"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:72
+msgid "_ID:"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:89
+msgid "Enter a Tox ID or URI here"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:93 src/ui/create_groupchat_widget.ui:89
+#, fuzzy
+msgid "paste from clipboard"
+msgstr "复制ID到剪贴板(_C)"
+
+#: src/ui/add_contact_widget.ui:105
+msgid "<small>Enter your friends Tox ID</small>"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:137
+#, fuzzy
+msgid "_Message:"
+msgstr "状态消息:"
+
+#: src/ui/add_contact_widget.ui:163
+msgid "Send a custom message to be displayed to the friend you are adding"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:185
+#, fuzzy
+msgid "<small>Send your friend a short message</small>"
+msgstr "当我正在输入时其他人可以看到这一状态"
+
+#: src/ui/add_contact_widget.ui:215
+msgid "Send"
+msgstr ""
+
+#: src/ui/app_menu.ui:7
+#, fuzzy
+msgid "_Preferences"
+msgstr "打开首选项"
+
+#: src/ui/app_menu.ui:13
+msgid "About"
+msgstr ""
+
+#: src/ui/app_menu.ui:17
+msgid "_Quit"
+msgstr ""
+
+#: src/ui/conference_info_widget.ui:39
+#, fuzzy
+msgid "Conference"
+msgstr "打开首选项"
+
+#: src/ui/conference_info_widget.ui:56
+#, fuzzy
+msgid "Leave Groupchat"
+msgstr "创建群聊"
+
+#: src/ui/conference_info_widget.ui:105
+msgid "Title:"
+msgstr ""
+
+#: src/ui/conference_info_widget.ui:145 src/ui/friend_info_widget.ui:449
+#: src/ui/user_info_widget.ui:401
+msgid "Apply"
+msgstr ""
+
+#: src/ui/conference_info_widget.ui:163
+msgid "Peers"
+msgstr ""
+
+#: src/ui/conference_window.ui:206 src/ui/conversation_window.ui:262
+#: src/ui/user_info_widget.ui:139 src/ui/user_info_widget.ui:140
+#, fuzzy
+msgid "Insert Emoji"
+msgstr "插入表情符"
+
+#: src/ui/contact_list_widget.ui:136
+msgid "Filter contacts by status"
+msgstr ""
+
+#: src/ui/contact_list_widget.ui:142
 msgid "All"
 msgstr "全部"
 
-#: src/ui/ContactListWindow.vala:508
-#, c-format
-msgid "Venom (%s)"
-msgstr ""
-
-#: src/ui/ContactListWindow.vala:628
-#, c-format
-msgid "* %s"
-msgstr ""
-
-#: src/ui/ContactListWindow.vala:655
-#, c-format
-msgid ""
-"New friend request from '%s'.\n"
-"Do you want to accept?"
-msgstr ""
-
-#: src/ui/ContactListWindow.vala:721
-msgid "Connected to the network"
-msgstr "连接到网络"
-
-#: src/ui/ContactListWindow.vala:724
-msgid "Disconnected from the network"
-msgstr ""
-
-#: src/ui/ContactListWindow.vala:765
-#, c-format
-msgid "'%s' has invited you to a groupchat, do you want to accept?"
-msgstr "'%s' 邀请你加入一个群聊，你愿意接受吗？"
-
-#: src/ui/ContactListWindow.vala:1111 src/ui/ContactListWindow.vala:1148
-#, c-format
-msgid "Are you sure you want to delete '%s' from your contact list?"
-msgstr "确实要从您的联系人名单中删除 '%s'？"
-
-#: src/ui/ContactListWindow.vala:1143
-#, c-format
-msgid "groupchat #%i"
-msgstr ""
-
-#: src/ui/ContactListWindow.vala:1179
-msgid "Resolving ID failed"
-msgstr ""
-
-#: src/ui/ContactListWindow.vala:1179
-msgid "Could not resolve ID from DNS record\n"
-msgstr "无法从DNS记录中解析 ID\n"
-
-#: src/ui/ContactListWindow.vala:1189 src/ui/ContactListWindow.vala:1200
-msgid "Adding Friend failed"
-msgstr "添加好友失败"
-
-#: src/ui/ContactListWindow.vala:1189
-msgid "Could not add friend: Invalid ID\n"
-msgstr "不能添加好友: 无效的ID\n"
-
-#: src/ui/ContactListWindow.vala:1200
-#, c-format
-msgid "Could not add friend: %s.\n"
-msgstr "不能添加好友: %s。\n"
-
-#. update groupchat name
-#. update contact name
-#: src/ui/GroupConversationWidget.vala:47 src/ui/ConversationWidget.vala:51
-#, c-format
-msgid "<b>%s</b>"
-msgstr ""
-
-#: src/ui/PinDialog.vala:37
-#, c-format
-msgid ""
-"Please insert PIN for \n"
-"<b>%s</b>"
-msgstr ""
-
-#: src/ui/PinDialog.vala:49
-msgid "Please insert PIN..."
-msgstr ""
-
-#: src/ui/FileTransferChatEntry.vala:85
-msgid "File received"
-msgstr ""
-
-#: src/ui/FileTransferChatEntry.vala:87
-msgid "File sent"
-msgstr ""
-
-#: src/ui/FileTransferChatEntry.vala:94
-msgid "File was rejected"
-msgstr ""
-
-#: src/ui/FileTransferChatEntry.vala:104
-msgid "Paused"
-msgstr "暂停"
-
-#: src/ui/FileTransferChatEntry.vala:107
-msgid "Sending failed"
-msgstr ""
-
-#: src/ui/FileTransferChatEntry.vala:113
-msgid "Receiving failed"
-msgstr ""
-
-#: src/ui/FileTransferChatEntry.vala:119
-msgid "Canceled"
-msgstr "取消"
-
-#: src/ui/FileTransferChatEntry.vala:125 src/ui/FileTransferChatEntry.vala:129
-msgid "Disconnected"
-msgstr ""
-
-#: src/ui/FileTransferChatEntry.vala:155
-msgid "Save file"
-msgstr ""
-
-#: src/ui/FileTransferChatEntry.vala:158
-msgid "Save"
-msgstr ""
-
-#: src/ui/AddContactDialog.vala:76
-msgid "Add contact"
+#: src/ui/contact_list_widget.ui:249
+#, fuzzy
+msgid "Add a contact"
 msgstr "添加联系人"
 
-#: src/ui/AddContactDialog.vala:90
-msgid "No ID given"
+#: src/ui/contact_list_widget.ui:270 src/ui/create_groupchat_widget.ui:35
+#, fuzzy
+msgid "Create a groupchat"
+msgstr "创建群聊"
+
+#: src/ui/contact_list_widget.ui:291
+msgid "View file transfers"
 msgstr ""
 
-#: src/ui/AddContactDialog.vala:96
-msgid "ID contains invalid characters"
+#: src/ui/contact_list_widget.ui:312
+msgid "Open preferences"
+msgstr "打开首选项"
+
+#: src/ui/conversation_window.ui:103
+msgid "Start a call"
 msgstr ""
 
-#: src/ui/AddContactDialog.vala:100
-msgid "Valid ID size"
+#: src/ui/conversation_window.ui:128
+msgid "Start a videocall"
 msgstr ""
 
-#: src/ui/MessageTextView.vala:27
-msgid "Type your message here..."
+#: src/ui/conversation_window.ui:284
+#, fuzzy
+msgid "Insert attachment"
+msgstr "插入表情符"
+
+#: src/ui/create_groupchat_widget.ui:69
+msgid "_Title:"
 msgstr ""
 
-#: src/ui/ConversationWidget.vala:60
-#, c-format
-msgid "%s is typing..."
-msgstr "%s 正在输入......"
+#: src/ui/create_groupchat_widget.ui:88
+#, fuzzy
+msgid "Groupchat"
+msgstr "创建群聊"
 
-#. GUI events
-#: src/ui/ConversationWidget.vala:284
-msgid "Select a file to send"
+#: src/ui/create_groupchat_widget.ui:101
+msgid "<small>Name the groupchat (optional)</small>"
 msgstr ""
 
-#: src/ui/ConversationWidget.vala:287
-msgid "Select"
+#: src/ui/create_groupchat_widget.ui:133
+msgid "T_ype:"
 msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:153
+msgid "text"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:168
+msgid "video"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:195
+msgid "<small>Select a groupchat type</small>"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:224
+msgid "Create"
+msgstr ""
+
+#: src/ui/downloads_widget.ui:35
+msgid "File transfers"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:45
+#, fuzzy
+msgid "Friend profile"
+msgstr "发送文件"
+
+#: src/ui/friend_info_widget.ui:62
+msgid "Remove from your friends list"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:111 src/ui/user_info_widget.ui:75
+msgid "Username:"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:155 src/ui/user_info_widget.ui:120
+#, fuzzy
+msgid "Statusmessage:"
+msgstr "状态消息:"
+
+#: src/ui/friend_info_widget.ui:200 src/ui/user_info_widget.ui:168
+msgid "Image:"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:245
+msgid "Last seen:"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:290
+msgid "Alias:"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:318
+msgid "<small>Set a custom alias to quickly find your friends</small>"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:362 src/ui/user_info_widget.ui:251
+msgid "Tox"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:395 src/ui/user_info_widget.ui:290
+msgid "ID:"
+msgstr ""
+
+#: src/ui/message_widget.ui:88
+msgid "Message sent ✓"
+msgstr ""
+
+#: src/ui/message_widget.ui:104
+msgid "Message received ✓"
+msgstr ""
+
+#: src/ui/peer_entry.ui:55
+msgid "This peer is also in your friends list"
+msgstr ""
+
+#: src/ui/settings_widget.ui:41
+msgid "KiB/MiB"
+msgstr ""
+
+#: src/ui/settings_widget.ui:45
+msgid "KB/MB"
+msgstr ""
+
+#: src/ui/settings_widget.ui:95
+msgid "General"
+msgstr ""
+
+#: src/ui/settings_widget.ui:138
+#, fuzzy
+msgid "Connection"
+msgstr "连接中......"
+
+#: src/ui/settings_widget.ui:225
+msgid "Appearance"
+msgstr ""
+
+#: src/ui/settings_widget.ui:270
+msgid "Dark Theme"
+msgstr ""
+
+#: src/ui/settings_widget.ui:283
+msgid "<small>Whether Venom should use a dark theme</small>"
+msgstr ""
+
+#: src/ui/settings_widget.ui:340
+msgid "Show notifications"
+msgstr ""
+
+#: src/ui/settings_widget.ui:353
+msgid "<small>Show a notification for new messages</small>"
+msgstr ""
+
+#: src/ui/settings_widget.ui:410
+msgid "Minimize to tray"
+msgstr ""
+
+#: src/ui/settings_widget.ui:423
+msgid "<small>Minimize app to system tray</small>"
+msgstr ""
+
+#: src/ui/settings_widget.ui:506
+msgid "Privacy"
+msgstr "隐私"
+
+#: src/ui/settings_widget.ui:550
+msgid "Send typing notifications"
+msgstr ""
+
+#: src/ui/settings_widget.ui:563
+#, fuzzy
+msgid "<small>Show others when I am typing</small>"
+msgstr "当我正在输入时其他人可以看到这一状态"
+
+#: src/ui/settings_widget.ui:646
+#, fuzzy
+msgid "History"
+msgstr "保持历史"
+
+#: src/ui/settings_widget.ui:694
+#, fuzzy
+msgid "Keep indefinitely"
+msgstr "无限制"
+
+#: src/ui/settings_widget.ui:714
+msgid "delete after"
+msgstr "删除早于"
+
+#: src/ui/settings_widget.ui:731
+msgid "days"
+msgstr "天记录"
+
+#: src/ui/settings_widget.ui:785
+msgid "Delete all previous conversations"
+msgstr ""
+
+#: src/ui/settings_widget.ui:844
+msgid "Update bootstrap nodes"
+msgstr ""
+
+#: src/ui/settings_widget.ui:880
+msgid "<b>Tox bootstrap nodes</b>"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:41
+msgid "User profile"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:332
+#, fuzzy
+msgid "Copy to clipboard"
+msgstr "复制ID到剪贴板(_C)"
+
+#: src/ui/welcome_widget.ui:39
+msgid "<big>A new kind of instant messaging</big>"
+msgstr ""
+
+#: src/ui/welcome_widget.ui:52
+msgid "Chat with your friends and family without anyone else listening in."
+msgstr ""
+
+#: src/ui/welcome_widget.ui:100
+msgid "Learn more"
+msgstr ""
+
+#, fuzzy
+#~ msgid "contact_name"
+#~ msgstr "添加联系人"
+
+#~ msgid "Online"
+#~ msgstr "在线"
+
+#~ msgid "Could not bind int to %s."
+#~ msgstr "无法绑定 int 到 %s 。"
+
+#~ msgid "Could not bind int64 to %s."
+#~ msgstr "无法绑定 int64 到 %s 。"
+
+#~ msgid "Could not bind text to %s"
+#~ msgstr "无法绑定 text 到 %s 。"
+
+#~ msgid "Can't open database: %d: %s\n"
+#~ msgstr "无法打开数据库: %d: %s\n"
+
+#~ msgid "<unknown>"
+#~ msgstr "<未知>"
+
+#~ msgid "%i people connected"
+#~ msgstr "%i 人在线"
+
+#~ msgid "%i person connected"
+#~ msgstr "%i 人在线"
+
+#~ msgid "Offline"
+#~ msgstr "离线"
+
+#~ msgid "Away"
+#~ msgstr "离开"
+
+#~ msgid "Busy"
+#~ msgstr "忙"
+
+#, fuzzy
+#~ msgid "_Invite to new groupchat"
+#~ msgstr "创建群聊"
+
+#, fuzzy
+#~ msgid "Could not export data file: "
+#~ msgstr "不能添加好友: %s。\n"
+
+#~ msgid "Could not read theme from \"%s\""
+#~ msgstr "无法从\"%s\"读取主题"
+
+#~ msgid "Connected to the network"
+#~ msgstr "连接到网络"
+
+#~ msgid "'%s' has invited you to a groupchat, do you want to accept?"
+#~ msgstr "'%s' 邀请你加入一个群聊，你愿意接受吗？"
+
+#~ msgid "Are you sure you want to delete '%s' from your contact list?"
+#~ msgstr "确实要从您的联系人名单中删除 '%s'？"
+
+#~ msgid "Could not resolve ID from DNS record\n"
+#~ msgstr "无法从DNS记录中解析 ID\n"
+
+#~ msgid "Adding Friend failed"
+#~ msgstr "添加好友失败"
+
+#~ msgid "Could not add friend: Invalid ID\n"
+#~ msgstr "不能添加好友: 无效的ID\n"
+
+#~ msgid "Could not add friend: %s.\n"
+#~ msgstr "不能添加好友: %s。\n"
+
+#~ msgid "Paused"
+#~ msgstr "暂停"
+
+#~ msgid "Canceled"
+#~ msgstr "取消"
+
+#~ msgid "%s is typing..."
+#~ msgstr "%s 正在输入......"
 
 #~ msgid "%s changed his status to %s\n"
 #~ msgstr "%s 切换他的状态到 %s\n"
@@ -516,12 +548,6 @@ msgstr ""
 #~ msgid "Icon:"
 #~ msgstr "头像"
 
-#~ msgid "Insert Smiley"
-#~ msgstr "插入表情符"
-
-#~ msgid "Keep history"
-#~ msgstr "保持历史"
-
 #~ msgid "Miscellaneous"
 #~ msgstr "杂项"
 
@@ -531,17 +557,8 @@ msgstr ""
 #~ msgid "O_ffline"
 #~ msgstr "离线(_F)"
 
-#~ msgid "Open preferences"
-#~ msgstr "打开首选项"
-
 #~ msgid "Out of memory"
 #~ msgstr "内存溢出"
-
-#~ msgid "Privacy"
-#~ msgstr "隐私"
-
-#~ msgid "Send file"
-#~ msgstr "发送文件"
 
 #~ msgid "Send message"
 #~ msgstr "发送消息"
@@ -549,17 +566,11 @@ msgstr ""
 #~ msgid "Settings"
 #~ msgstr "设置"
 
-#~ msgid "Show _others when I am typing"
-#~ msgstr "当我正在输入时其他人可以看到这一状态"
-
 #~ msgid "Show filesize in"
 #~ msgstr "显示文件尺寸用"
 
 #~ msgid "Show me when others are typing"
 #~ msgstr "当其他人正在输入时我可以看到这一状态"
-
-#~ msgid "Status message:"
-#~ msgstr "状态消息:"
 
 #~ msgid "_Away"
 #~ msgstr "离开(_A)"
@@ -570,23 +581,8 @@ msgstr ""
 #~ msgid "_Busy"
 #~ msgstr "忙(_B)"
 
-#~ msgid "_Copy ID to clipboard"
-#~ msgstr "复制ID到剪贴板(_C)"
-
 #~ msgid "_Edit user"
 #~ msgstr "编辑用户(_E)"
 
 #~ msgid "_Online"
 #~ msgstr "在线(_O)"
-
-#~ msgid "connecting..."
-#~ msgstr "连接中......"
-
-#~ msgid "days"
-#~ msgstr "天记录"
-
-#~ msgid "delete after"
-#~ msgstr "删除早于"
-
-#~ msgid "indefinitely"
-#~ msgstr "无限制"

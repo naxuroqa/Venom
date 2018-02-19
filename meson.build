@@ -6,7 +6,8 @@ project('venom', ['vala', 'c'],
 i18n = import('i18n')
 gnome = import('gnome')
 
-gettext_package = 'Venom'
+gettext_package = 'venom'
+gettext_path = join_paths(get_option('prefix'), get_option('localedir'))
 add_project_arguments('-DGETTEXT_PACKAGE="' + gettext_package + '"', language: 'c')
 
 version_split = meson.project_version().split('.')
@@ -23,7 +24,7 @@ conf_data.set('VENOM_COPYRIGHT_NOTICE', 'Copyright © 2013-2017 Venom authors an
 conf_data.set('VENOM_SHORT_DESCRIPTION', 'GTK+-3.0 user interface for Tox')
 conf_data.set('VENOM_WEBSITE', 'https://github.com/naxuroqa/Venom')
 conf_data.set('GETTEXT_PACKAGE', gettext_package)
-conf_data.set('GETTEXT_PATH', '')
+conf_data.set('GETTEXT_PATH', gettext_path)
 
 subdir('scripts')
 subdir('data')

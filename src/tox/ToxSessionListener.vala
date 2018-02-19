@@ -25,6 +25,7 @@ namespace Venom {
     private ILogger logger;
     private UserInfo user_info;
     private Contacts contacts;
+    private NotificationListener notification_listener;
     private GLib.HashTable<IContact, Conversation> conversations;
     private GLib.HashTable<uint32, Message> messages_waiting_for_rr;
 
@@ -33,12 +34,13 @@ namespace Venom {
 
     public bool show_typing { get; set; }
 
-    public ToxSessionListenerImpl(ILogger logger, UserInfo user_info, Contacts contacts, GLib.HashTable<IContact, Conversation> conversations) {
+    public ToxSessionListenerImpl(ILogger logger, UserInfo user_info, Contacts contacts, GLib.HashTable<IContact, Conversation> conversations, NotificationListener notification_listener) {
       logger.d("ToxSessionListenerImpl created.");
       this.logger = logger;
       this.user_info = user_info;
       this.contacts = contacts;
       this.conversations = conversations;
+      this.notification_listener = notification_listener;
 
       messages_waiting_for_rr = new GLib.HashTable<uint32, Message>(null, null);
 
@@ -130,11 +132,13 @@ namespace Venom {
       user_info.info_changed(this);
     }
 
-    public virtual void on_friend_message(uint32 friend_number, string message) {
+    public virtual void on_friend_message(uint32 friend_number, string message_str) {
       logger.d("on_friend_message");
       var contact = friends.@get(friend_number);
       var conversation = conversations.@get(contact);
-      conversation.add_message(this, new Message.incoming(contact, message));
+      var message = new Message.incoming(contact, message_str);
+      notification_listener.on_unread_message(message);
+      conversation.add_message(this, message);
     }
 
     public virtual void on_friend_read_receipt(uint32 friend_number, uint32 message_id) {

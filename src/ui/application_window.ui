@@ -1,45 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.20.2 -->
-<interface>
+<interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
   <template class="VenomApplicationWindow" parent="GtkApplicationWindow">
-    <property name="can-focus">False</property>
+    <property name="can_focus">False</property>
     <child>
       <object class="GtkPaned" id="content_paned">
-        <property name="visible">1</property>
-        <property name="can-focus">1</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
         <child>
           <object class="GtkBox" id="contact_list_box">
-            <property name="visible">1</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
           </object>
           <packing>
-            <property name="resize">0</property>
-            <property name="shrink">0</property>
+            <property name="resize">False</property>
+            <property name="shrink">False</property>
           </packing>
         </child>
         <child>
           <object class="GtkScrolledWindow">
-            <property name="visible">1</property>
-            <property name="can-focus">1</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
             <child>
               <object class="GtkViewport">
-                <property name="visible">1</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkRevealer" id="content_revealer">
-                    <property name="visible">1</property>
-                    <property name="transition-type">crossfade</property>
-                    <property name="reveal-child">1</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="transition_type">crossfade</property>
+                    <property name="reveal_child">True</property>
                   </object>
                 </child>
               </object>
             </child>
           </object>
           <packing>
-            <property name="shrink">0</property>
+            <property name="resize">True</property>
+            <property name="shrink">False</property>
           </packing>
         </child>
       </object>
+    </child>
+    <child type="titlebar">
+      <placeholder/>
     </child>
   </template>
 </interface>
