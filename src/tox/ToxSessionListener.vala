@@ -145,7 +145,6 @@ namespace Venom {
         var contact = friends.@get(friend_number) as Contact;
         contact.name = name;
         contact.changed();
-        contacts.contact_changed(this, contacts.index(contact));
       } catch (Error e) {
         logger.e("Could not find contact.");
       }
@@ -157,7 +156,6 @@ namespace Venom {
         var contact = friends.@get(friend_number) as Contact;
         contact.status_message = message;
         contact.changed();
-        contacts.contact_changed(this, contacts.index(contact));
       } catch (Error e) {
         logger.e("Could not find contact.");
       }
@@ -172,7 +170,6 @@ namespace Venom {
       var contact = friends.@get(friend_number) as Contact;
       contact.user_status = status;
       contact.changed();
-      contacts.contact_changed(this, contacts.index(contact));
     }
 
     public virtual void on_friend_added(uint32 friend_number, uint8[] public_key) {
@@ -213,8 +210,7 @@ namespace Venom {
 
     public virtual void on_conference_new(uint32 conference_number, string title) {
       logger.d("on_conference_new");
-      //FIXME title
-      var contact = new GroupchatContact(conference_number, "");
+      var contact = new GroupchatContact(conference_number, title);
       contacts.add_contact(this, contact);
       conferences.@set(conference_number, contact);
       conversations.@set(contact, new ConversationImpl(contact));
@@ -232,7 +228,6 @@ namespace Venom {
       var contact = conferences.@get(conference_number) as GroupchatContact;
       contact.title = title;
       contact.changed();
-      contacts.contact_changed(this, contacts.index(contact));
     }
 
     public virtual void on_conference_peer_joined(uint32 conference_number, uint32 peer_number) {
@@ -240,7 +235,6 @@ namespace Venom {
       var peers = contact.get_peers();
       peers.@set(peer_number, new GroupchatPeerImpl(peer_number));
       contact.changed();
-      contacts.contact_changed(this, contacts.index(contact));
     }
 
     public virtual void on_conference_peer_exited(uint32 conference_number, uint32 peer_number) {
@@ -248,18 +242,16 @@ namespace Venom {
       var peers = contact.get_peers();
       peers.remove(peer_number);
       contact.changed();
-      contacts.contact_changed(this, contacts.index(contact));
     }
 
-    public virtual void on_conference_peer_renamed(uint32 conference_number, uint32 peer_number, bool is_self, uint8[] peer_public_key, string peer_name) {
+    public virtual void on_conference_peer_renamed(uint32 conference_number, uint32 peer_number, bool is_self, uint8[] peer_public_key, string peer_name, bool peer_known) {
       var contact = conferences.@get(conference_number) as GroupchatContact;
       var peers = contact.get_peers();
       var peer = peers.@get(peer_number);
       peer.tox_public_key = Tools.bin_to_hexstring(peer_public_key);
       peer.name = peer_name;
-
+      peer.known = peer_known;
       contact.changed();
-      contacts.contact_changed(this, contacts.index(contact));
     }
 
     public virtual void on_conference_message(uint32 conference_number, uint32 peer_number, ToxCore.MessageType type, string message) {

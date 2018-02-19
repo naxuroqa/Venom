@@ -38,7 +38,7 @@ namespace Venom {
     }
 
     public virtual string get_name_string() {
-      return title != "" ? title : tox_conference_number.to_string();
+      return title != "" ? title : "Unnamed conference %u".printf(tox_conference_number);
     }
 
     public virtual string get_status_string() {
@@ -62,20 +62,22 @@ namespace Venom {
     public abstract uint32 peer_number { get; set; }
     public abstract string tox_public_key { get; set; }
     public abstract string name { get; set; }
+    public abstract bool known { get; set; }
     public abstract bool is_self { get; set; }
   }
 
   public class GroupchatPeerImpl : GroupchatPeer, GLib.Object {
+    public uint32 peer_number { get; set; }
+    public string tox_public_key { get; set; }
+    public string name { get; set; }
+    public bool known { get; set; }
+    public bool is_self { get; set; }
+
     public GroupchatPeerImpl(uint32 peer_number) {
       this.peer_number = peer_number;
       this.tox_public_key = "";
       this.name = "Peer %u".printf(peer_number);
       this.is_self = false;
     }
-
-    public uint32 peer_number { get; set; }
-    public string tox_public_key { get; set; }
-    public string name { get; set; }
-    public bool is_self { get; set; }
   }
 }

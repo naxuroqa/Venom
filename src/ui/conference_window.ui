@@ -60,6 +60,9 @@
                         <property name="can_focus">False</property>
                         <property name="label">conference_peers</property>
                         <property name="xalign">0</property>
+                        <style>
+                          <class name="dim-label"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>

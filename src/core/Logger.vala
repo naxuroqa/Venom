@@ -1,7 +1,7 @@
 /*
  *    Logger.vala
  *
- *    Copyright (C) 2013-2014  Venom authors and contributors
+ *    Copyright (C) 2013-2018  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -107,6 +107,7 @@ namespace Venom {
       //GLib.Log.set_default_handler(glib_log_function);
       GLib.Log.set_handler(null, LogLevelFlags.LEVEL_MASK, glib_log_function);
       GLib.Log.set_handler("GLib", LogLevelFlags.LEVEL_MASK, glib_log_function);
+      GLib.Log.set_handler("GLib-GObject", LogLevelFlags.LEVEL_MASK, glib_log_function);
     }
 
     public static void log(LogLevel level, string message) {

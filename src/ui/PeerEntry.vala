@@ -28,6 +28,8 @@ namespace Venom {
     private Gtk.Label peer_name;
     [GtkChild]
     private Gtk.Label peer_key;
+    [GtkChild]
+    private Gtk.Image peer_known;
 
     private ILogger logger;
 
@@ -35,6 +37,7 @@ namespace Venom {
       this.logger = logger;
       peer_name.label = peer.name;
       peer_key.label = peer.tox_public_key;
+      peer_known.visible = peer.known;
       logger.d("PeerEntry created.");
     }
 

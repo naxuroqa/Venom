@@ -74,7 +74,7 @@ namespace Venom {
     public abstract void on_conference_title_changed(uint32 conference_number, uint32 peer_number, string title);
     public abstract void on_conference_peer_joined(uint32 conference_number, uint32 peer_number);
     public abstract void on_conference_peer_exited(uint32 conference_number, uint32 peer_number);
-    public abstract void on_conference_peer_renamed(uint32 conference_number, uint32 peer_number, bool is_self, uint8[] peer_public_key, string peer_name);
+    public abstract void on_conference_peer_renamed(uint32 conference_number, uint32 peer_number, bool is_self, uint8[] peer_public_key, string peer_name, bool peer_known);
 
     public abstract void on_conference_message(uint32 conference_number, uint32 peer_number, MessageType type, string message);
     public abstract void on_conference_message_sent(uint32 conference_number, string message);
@@ -247,8 +247,7 @@ namespace Venom {
         session.logger.e("Conference join failed: " + err.to_string());
         return;
       }
-      var title = "Groupchat %u".printf(conference_number);
-      Idle.add(() => { session.listener.on_conference_new(conference_number, title); return false; });
+      Idle.add(() => { session.listener.on_conference_new(conference_number, ""); return false; });
     }
 
     private static void on_conference_message_cb(Tox self, uint32 conference_number, uint32 peer_number, MessageType type, uint8[] message, void *user_data) {
@@ -291,12 +290,15 @@ namespace Venom {
             session.logger.e("conference_peer_get_public_key failed: " + err.to_string());
             return;
           }
+          var err_pubkey = ErrFriendByPublicKey.OK;
+          var peer_known = uint32.MAX != self.friend_by_public_key(peer_public_key, ref err_pubkey);
+
           var peer_name = self.conference_peer_get_name(conference_number, peer_number, ref err);
           if (err != ErrConferencePeerQuery.OK) {
             session.logger.e("conference_peer_get_name failed: " + err.to_string());
             return;
           }
-          Idle.add(() => { session.listener.on_conference_peer_renamed(conference_number, peer_number, false, peer_public_key, peer_name); return false; });
+          Idle.add(() => { session.listener.on_conference_peer_renamed(conference_number, peer_number, false, peer_public_key, peer_name, peer_known); return false; });
           break;
       }
     }
@@ -405,14 +407,17 @@ namespace Venom {
       listener.on_friend_message_sent(friend_number, ret, message);
     }
 
-    public virtual void conference_set_title(uint32 conference_number, string title) throws ToxError {
+    private void conference_set_title_private(uint32 conference_number, string title) throws ToxError {
       var e = ErrConferenceTitle.OK;
       handle.conference_set_title(conference_number, title, ref e);
       if (e != ErrConferenceTitle.OK) {
         logger.i("setting conference title failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      //FIXME
+    }
+
+    public virtual void conference_set_title(uint32 conference_number, string title) throws ToxError {
+      conference_set_title_private(conference_number, title);
       listener.on_conference_title_changed(conference_number, 0, title);
     }
 
@@ -428,13 +433,13 @@ namespace Venom {
 
     public virtual void conference_new(string title) throws ToxError {
       var e = ErrConferenceNew.OK;
-      var ret = handle.conference_new(ref e);
+      var conference_number = handle.conference_new(ref e);
       if (e != ErrConferenceNew.OK) {
         logger.i("creating conference failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      conference_set_title(ret, title);
-      listener.on_conference_new(ret, title);
+      conference_set_title_private(conference_number, title);
+      listener.on_conference_new(conference_number, title);
     }
 
     public virtual void conference_delete(uint32 conference_number) throws ToxError {
