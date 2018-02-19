@@ -77,6 +77,8 @@ namespace Venom {
       session_listener = new ToxSessionListenerImpl(logger, user_info, contacts, conversations);
       session_listener.attach_to_session(session);
 
+      settings_database.bind_property("enable-send-typing", session_listener, "show-typing", BindingFlags.SYNC_CREATE);
+
       init_widgets();
       init_callbacks();
 

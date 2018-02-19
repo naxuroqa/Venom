@@ -31,6 +31,8 @@ namespace Venom {
     private GLib.HashTable<uint32, IContact> friends;
     private GLib.HashTable<uint32, IContact> conferences;
 
+    public bool show_typing { get; set; }
+
     public ToxSessionListenerImpl(ILogger logger, UserInfo user_info, Contacts contacts, GLib.HashTable<IContact, Conversation> conversations) {
       logger.d("ToxSessionListenerImpl created.");
       this.logger = logger;
@@ -104,6 +106,14 @@ namespace Venom {
     public virtual void on_send_message(IContact c, string message) throws Error {
       var contact = c as Contact;
       session.friend_send_message(contact.tox_friend_number, message);
+    }
+
+    public virtual void on_set_typing(IContact c, bool typing) throws Error {
+      if (!show_typing) {
+        return;
+      }
+      var contact = c as Contact;
+      session.self_set_typing(contact.tox_friend_number, typing);
     }
 
     public virtual void on_send_conference_message(IContact c, string message) throws Error {

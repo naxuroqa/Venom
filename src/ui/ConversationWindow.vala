@@ -48,6 +48,7 @@ namespace Venom {
     private ILogger logger;
     private Conversation conversation;
     private ConversationWidgetListener listener;
+    private bool is_typing;
 
     public ConversationWindow(ApplicationWindow app_window, ILogger logger, Conversation conversation, ConversationWidgetListener listener) {
       this.app_window = app_window;
@@ -64,6 +65,7 @@ namespace Venom {
       unmap.connect(() => { message_list.bind_model(null, null); });
 
       text_view.key_press_event.connect(on_keypress);
+      text_view.buffer.changed.connect(on_buffer_changed);
       app_window.add_action_entries(win_entries, this);
 
       // trigger autoscroll
@@ -106,6 +108,23 @@ namespace Venom {
       } catch (Error e) {
         logger.e("Could not send message: " + e.message);
       }
+      try_set_typing(false);
+    }
+
+    private void on_buffer_changed() {
+      var typing = text_view.buffer.text != "";
+      if (typing != is_typing) {
+        is_typing = typing;
+        try_set_typing(typing);
+      }
+    }
+
+    private void try_set_typing(bool typing) {
+      try {
+        listener.on_set_typing(conversation.get_contact(), typing);
+      } catch (Error e) {
+        logger.e("Could not set typing status: " + e.message);
+      }
     }
 
     private bool on_keypress(Gdk.EventKey event) {
@@ -146,6 +165,7 @@ namespace Venom {
 
   public interface ConversationWidgetListener : GLib.Object {
     public abstract void on_send_message(IContact contact, string message) throws Error;
+    public abstract void on_set_typing(IContact contact, bool typing) throws Error;
   }
 
   public class ConversationModel : GLib.Object, GLib.ListModel {

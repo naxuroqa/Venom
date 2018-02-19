@@ -33,6 +33,7 @@ namespace Venom {
 
     public abstract void self_set_user_name(string name);
     public abstract void self_set_status_message(string status);
+    public abstract void self_set_typing(uint32 friend_number, bool typing) throws ToxError;
 
     public abstract uint8[] self_get_address();
 
@@ -405,6 +406,15 @@ namespace Venom {
         throw new ToxError.GENERIC(e.to_string());
       }
       listener.on_friend_message_sent(friend_number, ret, message);
+    }
+
+    public virtual void self_set_typing(uint32 friend_number, bool typing) throws ToxError {
+      var e = ErrSetTyping.OK;
+      handle.self_set_typing(friend_number, typing, ref e);
+      if (e != ErrSetTyping.OK) {
+        logger.i("self_set_typing failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
     }
 
     private void conference_set_title_private(uint32 conference_number, string title) throws ToxError {
