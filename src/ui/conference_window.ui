@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.2 -->
+<!-- Generated with glade 3.21.0 -->
 <interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
   <template class="VenomConferenceWindow" parent="GtkBox">
@@ -93,7 +93,6 @@
             <property name="receives_default">True</property>
             <property name="valign">center</property>
             <property name="action_name">win.show-peers</property>
-            <property name="relief">none</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>

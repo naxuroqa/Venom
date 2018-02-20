@@ -59,7 +59,7 @@ namespace Venom {
       session.set_session_listener(this);
 
       user_info.set_tox_id(Tools.bin_to_hexstring(session.self_get_address()));
-      set_user_info();
+      get_user_info();
       user_info.info_changed(this);
 
       try {
@@ -71,9 +71,9 @@ namespace Venom {
       }
     }
 
-    private void set_user_info() {
-      session.self_set_user_name(user_info.get_name());
-      session.self_set_status_message(user_info.get_status_message());
+    private void get_user_info() {
+      user_info.set_name(session.self_get_name());
+      user_info.set_status_message(session.self_get_status_message());
     }
 
     private void on_user_info_changed(GLib.Object sender) {
@@ -82,7 +82,8 @@ namespace Venom {
       }
 
       logger.d("ToxSessionListenerImpl on_user_info_changed.");
-      set_user_info();
+      session.self_set_user_name(user_info.get_name());
+      session.self_set_status_message(user_info.get_status_message());
     }
 
     public virtual void on_remove_friend(IContact c) throws Error {
@@ -273,6 +274,7 @@ namespace Venom {
       var contact = conferences.@get(conference_number) as GroupchatContact;
       var conversation = conversations.@get(contact);
       var msg = new GroupMessage.incoming(contact, peer_number, message);
+      notification_listener.on_unread_message(msg);
       conversation.add_message(this, msg);
     }
 

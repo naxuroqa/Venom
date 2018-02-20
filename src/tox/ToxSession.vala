@@ -35,6 +35,9 @@ namespace Venom {
     public abstract void self_set_status_message(string status);
     public abstract void self_set_typing(uint32 friend_number, bool typing) throws ToxError;
 
+    public abstract string self_get_name();
+    public abstract string self_get_status_message();
+
     public abstract uint8[] self_get_address();
 
     public abstract void self_get_friend_list_foreach(GetFriendListCallback callback) throws ToxError;
@@ -309,6 +312,14 @@ namespace Venom {
         return UserStatus.OFFLINE;
       }
       return UserStatus.ONLINE;
+    }
+
+    public virtual string self_get_name() {
+      return handle.self_get_name();
+    }
+
+    public virtual string self_get_status_message() {
+      return handle.self_get_status_message();
     }
 
     public virtual void self_get_friend_list_foreach(GetFriendListCallback callback) throws ToxError {

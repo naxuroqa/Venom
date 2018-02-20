@@ -1,7 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.2 -->
+<!-- Generated with glade 3.21.0 -->
 <interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkSizeGroup"/>
+  <object class="GtkFileFilter" id="imagefilter">
+    <mime-types>
+      <mime-type>image/*</mime-type>
+    </mime-types>
+  </object>
+  <object class="GtkFileChooserDialog" id="imagechooser">
+    <property name="can_focus">False</property>
+    <property name="type_hint">dialog</property>
+    <property name="filter">imagefilter</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+    <child>
+      <placeholder/>
+    </child>
+  </object>
   <template class="VenomUserInfoWidget" parent="GtkBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -200,8 +241,10 @@
                             <child>
                               <object class="GtkFileChooserButton" id="filechooser">
                                 <property name="visible">True</property>
+                                <property name="sensitive">False</property>
                                 <property name="can_focus">False</property>
-                                <property name="title" translatable="yes"/>
+                                <property name="dialog">imagechooser</property>
+                                <property name="title" translatable="yes">Choose an avatar</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -441,5 +484,4 @@
       </packing>
     </child>
   </template>
-  <object class="GtkSizeGroup"/>
 </interface>
