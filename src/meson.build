@@ -13,7 +13,7 @@ json_dep = dependency('json-glib-1.0')
 soup_dep = dependency('libsoup-2.4')
 tox_dep = dependency('toxcore')
 toxav_dep = dependency('toxav')
-gst_dep = dependency('gstreamer-1.0')
+gst_dep = dependency('gstreamer-1.0', required : false)
 posix_dep = meson.get_compiler('vala').find_library('posix', required : false)
 
 config_vapi = meson.get_compiler('vala').find_library('config', dirs: join_paths(meson.current_source_dir(), 'vapi'))

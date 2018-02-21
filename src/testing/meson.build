@@ -1,5 +1,3 @@
-gtk_dep = dependency('gtk+-3.0')
-
 if posix_dep.found()
 			executable('group_bot', ['GroupBot.vala',
 						join_paths(root_source_dir, 'core/Tools.vala')],
@@ -7,10 +5,12 @@ if posix_dep.found()
 						)
 endif
 
-executable('toxav', ['ToxAVTest.vala',
-			join_paths(root_source_dir, 'core/Tools.vala')],
-			dependencies : [gtk_dep, tox_dep, toxav_dep, gst_dep]
-			)
+if gst_dep.found()
+			executable('toxav', ['ToxAVTest.vala',
+						join_paths(root_source_dir, 'core/Tools.vala')],
+						dependencies : [gtk_dep, tox_dep, toxav_dep, gst_dep]
+						)
+endif
 
 test_glib_testing = executable('test_glib_testing', ['TestGlibTesting.vala'],
 			dependencies : [gio_dep]
