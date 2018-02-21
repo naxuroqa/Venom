@@ -11,7 +11,6 @@ src/core/NotificationListener.vala
 src/core/R.vala
 src/core/Tools.vala
 src/core/WidgetFactory.vala
-src/core/User.vala
 src/core/UserInfo.vala
 src/db/DatabaseInterfaces.vala
 src/db/SqliteSettingsDatabase.vala
@@ -22,6 +21,7 @@ src/tox/Contact.vala
 src/tox/ContactDatabase.vala
 src/tox/DhtNode.vala
 src/tox/DhtNodeDatabase.vala
+src/tox/FriendRequest.vala
 src/tox/GroupchatContact.vala
 src/tox/GroupMessage.vala
 src/tox/JsonWebDhtNodeDatabase.vala
@@ -37,12 +37,14 @@ src/ui/ApplicationWindow.vala
 src/ui/ConferenceInfoWidget.vala
 src/ui/ConferenceWindow.vala
 src/ui/ContactListEntry.vala
+src/ui/ContactListRequestEntry.vala
 src/ui/ContactListWidget.vala
 src/ui/ConversationWindow.vala
 src/ui/CreateGroupchatWidget.vala
 src/ui/DownloadsEntry.vala
 src/ui/DownloadsWidget.vala
 src/ui/FriendInfoWidget.vala
+src/ui/FriendRequestWidget.vala
 src/ui/MessageWidget.vala
 src/ui/NodeWidget.vala
 src/ui/PeerEntry.vala
@@ -56,12 +58,14 @@ src/ui/application_window.ui
 src/ui/conference_info_widget.ui
 src/ui/conference_window.ui
 src/ui/contact_list_entry.ui
+src/ui/contact_list_request_entry.ui
 src/ui/contact_list_widget.ui
 src/ui/conversation_window.ui
 src/ui/create_groupchat_widget.ui
 src/ui/downloads_entry.ui
 src/ui/downloads_widget.ui
 src/ui/friend_info_widget.ui
+src/ui/friend_request_widget.ui
 src/ui/message_widget.ui
 src/ui/node_widget.ui
 src/ui/peer_entry.ui

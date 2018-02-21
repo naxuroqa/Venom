@@ -1,7 +1,7 @@
 /*
  *    ToxSessionListener.vala
  *
- *    Copyright (C) 2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class ToxSessionListenerImpl : ToxSessionListener, AddContactWidgetListener, ConversationWidgetListener, ConferenceWidgetListener, FriendInfoWidgetListener, ConferenceInfoWidgetListener, CreateGroupchatWidgetListener, GLib.Object {
+  public class ToxSessionListenerImpl : ToxSessionListener, AddContactWidgetListener, ConversationWidgetListener, ConferenceWidgetListener, FriendInfoWidgetListener, ConferenceInfoWidgetListener, CreateGroupchatWidgetListener, FriendRequestWidgetListener, GLib.Object {
     private unowned ToxSession session;
     private ILogger logger;
     private UserInfo user_info;
@@ -31,6 +31,7 @@ namespace Venom {
 
     private GLib.HashTable<uint32, IContact> friends;
     private GLib.HashTable<uint32, IContact> conferences;
+    private GLib.HashTable<string, IContact> friend_requests;
 
     public bool show_typing { get; set; }
 
@@ -46,6 +47,7 @@ namespace Venom {
 
       friends = new GLib.HashTable<uint32, IContact>(null, null);
       conferences = new GLib.HashTable<uint32, IContact>(null, null);
+      friend_requests = new GLib.HashTable<string, IContact>(str_hash, str_equal);
 
       user_info.info_changed.connect(on_user_info_changed);
     }
@@ -104,6 +106,20 @@ namespace Venom {
     public virtual void on_send_friend_request(string address, string message) throws Error {
       var bin_address = Tools.hexstring_to_bin(address);
       session.friend_add(bin_address, message);
+    }
+
+    public virtual void on_accept_friend_request(string id) throws Error {
+      var friend_request = friend_requests.@get(id);
+      var public_key = Tools.hexstring_to_bin(id);
+      session.friend_add_norequest(public_key);
+      friend_requests.remove(id);
+      contacts.remove_contact(this, friend_request);
+    }
+
+    public virtual void on_reject_friend_request(string id) throws Error {
+      var friend_request = friend_requests.@get(id);
+      friend_requests.remove(id);
+      contacts.remove_contact(this, friend_request);
     }
 
     public virtual void on_send_message(IContact c, string message) throws Error {
@@ -178,6 +194,10 @@ namespace Venom {
 
     public virtual void on_friend_request(uint8[] public_key, string message) {
       logger.d("on_friend_request");
+      var str_id = Tools.bin_to_hexstring(public_key);
+      var contact = new FriendRequest(str_id, message);
+      contacts.add_contact(this, contact);
+      friend_requests.@set(str_id, contact);
     }
 
     public virtual void on_friend_status_changed(uint32 friend_number, UserStatus status) {
@@ -188,6 +208,7 @@ namespace Venom {
     }
 
     public virtual void on_friend_added(uint32 friend_number, uint8[] public_key) {
+      logger.d("on_friend_added");
       var str_id = Tools.bin_to_hexstring(public_key);
       var contact = new Contact(friend_number, str_id);
       try {

@@ -117,12 +117,14 @@ namespace Venom {
 
     public virtual void on_contact_selected(IContact contact) {
       logger.d("ApplicationWindow on_contact_selected");
-
-      var conv = conversations.@get(contact);
       if (contact is Contact) {
+        var conv = conversations.@get(contact);
         switch_content_with(() => { return new ConversationWindow(this, logger, conv, session_listener); });
-      } else {
+      } else if (contact is GroupchatContact) {
+        var conv = conversations.@get(contact);
         switch_content_with(() => { return new ConferenceWindow(this, logger, conv, session_listener); });
+      } else if (contact is FriendRequest) {
+        switch_content_with(() => { return new FriendRequestWidget(this, logger, contact, session_listener); });
       }
     }
 

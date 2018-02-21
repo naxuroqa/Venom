@@ -80,19 +80,22 @@ namespace Venom {
     }
 
     private Gtk.Widget create_entry(GLib.Object object) {
-      return new ContactListEntry(logger, object as IContact);
+      var c = object as IContact;
+      if (c is Contact || c is GroupchatContact) {
+        return new ContactListEntry(logger, c);
+      }
+      return new ContactListRequestEntry(logger, c);
     }
 
     private void on_row_activated(Gtk.ListBoxRow row) {
-      if (row is ContactListEntry) {
-        var entry = row as ContactListEntry;
+      if (row is IContactListEntry) {
+        var entry = row as IContactListEntry;
         callback.on_contact_selected(entry.get_contact());
       } else {
         logger.e("ContactListWidget wrong type selected.");
       }
     }
 
-    // Destructor
     ~ContactListWidget() {
       logger.d("ContactListWidget destroyed.");
     }
