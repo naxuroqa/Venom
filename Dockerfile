@@ -22,7 +22,7 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN wget "https://github.com/TokTok/c-toxcore/releases/download/v0.1.11/c-toxcore-0.1.11.tar.gz" && \
   tar -xzf c-toxcore-0.1.11.tar.gz && \
   cd c-toxcore-0.1.11 && \
-  cmake -DBUILD_NTOX=off && \
+  cmake -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_NTOX=off&& \
   make && \
   make install && \
   cd .. && \

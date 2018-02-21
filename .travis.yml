@@ -7,8 +7,9 @@ install:
   - docker run --detach --interactive --name test-image-container --volume "$(pwd)":/tmp/venom --workdir /tmp/venom test-image
 
 script:
-  - docker exec test-image-container meson build
+  - docker exec test-image-container meson -D b_coverage=true build
   - docker exec test-image-container ninja -C build
+  - docker exec test-image-container ninja -C build test
 
-after_script:
-  - docker images
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
