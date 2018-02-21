@@ -1,5 +1,5 @@
 # Venom
-[![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=master)](https://travis-ci.org/naxuroqa/Venom) [![tip for next commit](http://tip4commit.com/projects/634.svg)](http://tip4commit.com/projects/634)
+[![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=develop)](https://travis-ci.org/naxuroqa/Venom) [![tip for next commit](http://tip4commit.com/projects/634.svg)](http://tip4commit.com/projects/634) [![codecov](https://codecov.io/gh/naxuroqa/Venom/branch/develop/graph/badge.svg)](https://codecov.io/gh/naxuroqa/Venom)
 
 a graphical user interface for [Tox](https://github.com/TokTok/c-toxcore) written in [Vala](https://wiki.gnome.org/Vala) using [GTK+](http://gtk.org).
 

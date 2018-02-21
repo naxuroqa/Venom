@@ -37,7 +37,8 @@ namespace TestPlugin {
     }
     check_expectations_noerror();
   }
-  private static void main(string[] args) {
+  private static int main(string[] args) {
+    return 77;
     Test.init(ref args);
 
     Test.add_func("/test_plugin", test_plugin);
