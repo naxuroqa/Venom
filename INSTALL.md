@@ -1,138 +1,45 @@
-Installation
-============
-- [Linux](#linux)
-- [OS X](#os-x)
-- [Windows](#windows)
-- [FAQ](#faq)
+# Installation
 
-Linux
-=====
+## Linux
 
-Follow ProjectTox-Core [installation instructions](https://github.com/irungentoo/ProjectTox-Core/blob/master/INSTALL.md#linux).
-Don't forget to install it after building it.
+### Install from flathub (recommended)
 
-Dependencies
-------------
+Released versions will be available on flathub
 
-Additionally to the tox build dependencies, you will need:
+### Building from source
 
-| Package name     | Version   | Comment        |
-|------------------|-----------|----------------|
-| valac            | >=0.18.1  |                |
-| cmake            | >=2.8.7   |                |
-| libgtk-3-dev     | >=3.4     |                |
-| libjson-glib-dev | >=0.14    |                |
-| libsqlite3-dev   | >=3.7     |                |
-| libnotify-dev    | >=0.7.3   | optional, *nix |
-| libqrencode-dev  | >=3.1.1   | optional, *nix |
-| djbdns           | ?         | optional, *nix |
+#### Step 1: Install tox
 
+Either download a [binary package](https://tox.chat/download.html) or [compile from source](https://github.com/TokTok/c-toxcore/blob/master/INSTALL.md).
 
-Ubuntu >= 12.10 (Quantal Quetzal) / Linux Mint / Debian:
+If you are lucky there may be a package in the repository of your distribution.
 
-    apt-get install valac cmake libgtk-3-dev libjson-glib-dev libsqlite3-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libqrencode-dev libnotify-dev
+#### Step 2: Install build dependencies
 
-Ubuntu 12.04 (Precise Pangolin): (needs a ppa to get a newer version of valac as well as djbdns for dns resolution)
+You will need quite recent versions of these libraries.
 
-    apt-add-repository ppa:vala-team/ppa
-    apt-get update
-    apt-get install valac cmake libgtk-3-dev libjson-glib-dev libsqlite3-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libqrencode-dev libnotify-dev
+```
+gcc OR clang
+libgtk3-dev
+libjson-glib-dev
+libsoup2.4-dev
+libsqlite3-dev
+meson
+valac
+```
 
-Fedora:
+#### Step 3: Install venom
 
-    yum install vala cmake gtk3-devel json-glib-devel sqlite-devel gstreamer-devel gstreamer-plugins-base-devel qrencode-devel libnotify-devel
+```
+# Create and initialize build directory
+meson build
 
-Arch Linux: (There is an [aur-package](https://aur.archlinux.org/packages/venom-git))
+# cd to build directory
+cd build
 
-    pacman -S vala cmake gtk3 json-glib sqlite gstreamer0.10 gstreamer0.10-base-plugins qrencode libnotify
+# Build
+ninja
 
-Building and installing Venom
------------------------------
-
-If your version of glib is smaller than 2.34, you will need djbdns to resolve dns entries:
-
-    wget http://cr.yp.to/djbdns/djbdns-1.05.tar.gz
-    tar -xzf djbdns-1.05.tar.gz
-    cd djbdns-1.05
-    echo gcc -O2 -include /usr/include/errno.h > conf-cc
-    make
-
-After you installed the dependencies, clone, build and install venom:
-
-    git clone git://github.com/naxuroqa/Venom.git
-    cd Venom
-    mkdir build
-    cd build
-    # For glib >= 2.34
-    cmake ..
-    # or for glib 2.32
-    cmake -DDJBDNS_DIRECTORY="<path-to-djbdns>" ..
-    make
-    sudo make install
-
-OS X
-====
-
-Follow ProjectTox-Core [installation instructions](https://github.com/irungentoo/ProjectTox-Core/blob/master/INSTALL.md#os-x).
-
-With Homebrew
--------------
-
-    brew tap Tox/tox
-    brew install --HEAD libtoxcore
-    brew install --HEAD venom
-
-Windows
-=======
-
-The preferred way is to cross compile windows binaries from linux using the mingw-w64 toolchain.
-
-Cross compile (mingw-w64)
--------------------------
-
-###Dependencies
-* Set up a mingw-w64 toolchain
-* build ffmpeg (optionally for now)
-* build libsodium
-* build libtoxcore
-* build gtk+-3.x
-* build libjson-glib
-* build libsqlite3
-
-There is an [aur-package](https://aur.archlinux.org/packages/mingw-w64-venom-git) for arch linux, which automates the build process.
-
-###Compiling Venom
-
-    git clone git://github.com/naxuroqa/Venom.git
-    cd Venom
-    mkdir build
-    cd build
-    PKG_CONFIG_PATH=/usr/<yourcrosscompilerprefix>/lib/pkgconfig
-    # you may have to adapt the mingw-toolchain.cmake file for your cross compiler prefix
-    cmake -DCMAKE_C_FLAGS="-mwindows" \
-          -DCOMPILER_PREFIX=<yourcrosscompilerprefix> \
-          -DCMAKE_TOOLCHAIN_FILE=../cmake/mingw-toolchain.cmake \
-          -DCMAKE_BUILD_TYPE="Release" ..
-    make
-    sudo make install
-
-FAQ
-===
-#### Cmake complaining about missing modules
-If you are getting errors like these when running cmake
-
-    -- checking for module '<some_module>'
-    --   package '<some_module>' not found
-    CMake Error at /usr/share/cmake-2.8/Modules/FindPkgConfig.cmake:279 (message):
-      A required package was not found
-    Call Stack (most recent call first):
-      /usr/share/cmake-2.8/Modules/FindPkgConfig.cmake:333 (_pkg_check_modules_internal)
-      CMakeLists.txt:30 (PKG_CHECK_MODULES)
-
-then cmake can't find one or more dependencies needed to build Venom.
-
-Make sure, that you have all dependencies mentioned above installed.
-If you used a different prefix than ``/usr`` to install libtoxcore, you will need to tell it cmake here.
-You do this by setting ``PKG_CONFIG_PATH=/<your_prefix>/lib/pkgconfig`` and running cmake again.
-
-See also the solutions to [issue #4](https://github.com/naxuroqa/Venom/issues/4) and [issue #12](https://github.com/naxuroqa/Venom/issues/12)
+# Install
+sudo ninja install
+```
