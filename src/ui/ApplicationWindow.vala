@@ -40,6 +40,9 @@ namespace Venom {
     [GtkChild]
     private Gtk.Revealer content_revealer;
 
+    [GtkChild]
+    private Gtk.StatusIcon status_icon;
+
     private Gtk.Widget current_content_widget;
     private WidgetProvider next_content_widget;
 
@@ -82,6 +85,10 @@ namespace Venom {
 
       settings_database.bind_property("enable-send-typing", session_listener, "show-typing", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-urgency-notification", notification_listener, "show-notifications", BindingFlags.SYNC_CREATE);
+      settings_database.bind_property("enable-tray", status_icon, "visible", BindingFlags.SYNC_CREATE);
+
+      status_icon.activate.connect(present);
+      delete_event.connect(on_delete_event);
 
       init_widgets();
       init_callbacks();
@@ -93,6 +100,13 @@ namespace Venom {
 
     ~ApplicationWindow() {
       logger.d("ApplicationWindow destroyed.");
+    }
+
+    private bool on_delete_event() {
+      if (!settings_database.enable_tray) {
+        return false;
+      }
+      return hide_on_delete();
     }
 
     private void init_widgets() {
