@@ -52,7 +52,9 @@ namespace Venom {
     private IContactDatabase contact_database;
     private IDhtNodeDatabase node_database;
     private ToxSession session;
-    private ToxSessionListenerImpl session_listener;
+    private ToxAdapterFriendListenerImpl friend_listener;
+    private ToxAdapterConferenceListenerImpl conference_listener;
+    private ToxAdapterListenerImpl session_listener;
     private Contacts contacts;
     private NotificationListener notification_listener;
 
@@ -80,10 +82,14 @@ namespace Venom {
 
       var session_io = new ToxSessionIOImpl(logger);
       session = new ToxSessionImpl(session_io, node_database, settings_database, logger);
-      session_listener = new ToxSessionListenerImpl(logger, user_info, contacts, conversations, notification_listener);
+      session_listener = new ToxAdapterListenerImpl(logger, user_info);
       session_listener.attach_to_session(session);
+      friend_listener = new ToxAdapterFriendListenerImpl(logger, contacts, conversations, notification_listener);
+      friend_listener.attach_to_session(session);
+      conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conversations, notification_listener);
+      conference_listener.attach_to_session(session);
 
-      settings_database.bind_property("enable-send-typing", session_listener, "show-typing", BindingFlags.SYNC_CREATE);
+      settings_database.bind_property("enable-send-typing", friend_listener, "show-typing", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-urgency-notification", notification_listener, "show-notifications", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-tray", status_icon, "visible", BindingFlags.SYNC_CREATE);
 
@@ -133,12 +139,12 @@ namespace Venom {
       logger.d("ApplicationWindow on_contact_selected");
       if (contact is Contact) {
         var conv = conversations.@get(contact);
-        switch_content_with(() => { return new ConversationWindow(this, logger, conv, session_listener); });
+        switch_content_with(() => { return new ConversationWindow(this, logger, conv, friend_listener); });
       } else if (contact is GroupchatContact) {
         var conv = conversations.@get(contact);
-        switch_content_with(() => { return new ConferenceWindow(this, logger, conv, session_listener); });
+        switch_content_with(() => { return new ConferenceWindow(this, logger, conv, conference_listener); });
       } else if (contact is FriendRequest) {
-        switch_content_with(() => { return new FriendRequestWidget(this, logger, contact, session_listener); });
+        switch_content_with(() => { return new FriendRequestWidget(this, logger, contact, friend_listener); });
       }
     }
 
@@ -179,7 +185,7 @@ namespace Venom {
     }
 
     private void on_create_groupchat() {
-      switch_content_with(() => { return new CreateGroupchatWidget(logger, session_listener); });
+      switch_content_with(() => { return new CreateGroupchatWidget(logger, conference_listener); });
     }
 
     private void on_filetransfer() {
@@ -187,17 +193,17 @@ namespace Venom {
     }
 
     public void on_show_friend(IContact contact) {
-      switch_content_with(() => { return new FriendInfoWidget(logger, this, session_listener, contact); });
+      switch_content_with(() => { return new FriendInfoWidget(logger, this, friend_listener, contact); });
     }
 
     public void on_show_conference(IContact contact) {
-      switch_content_with(() => { return new ConferenceInfoWidget(logger, this, session_listener, contact); });
+      switch_content_with(() => { return new ConferenceInfoWidget(logger, this, conference_listener, contact); });
     }
 
     private void on_add_contact() {
       logger.d("on_add_contact()");
       switch_content_with(() => {
-        var widget = new AddContactWidget(logger, session_listener);
+        var widget = new AddContactWidget(logger, friend_listener);
         return widget;
       });
     }

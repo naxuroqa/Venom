@@ -186,7 +186,7 @@ namespace ToxCore {
     EMPTY
   }
 
-  [CCode(cname = "TOX_FILE_KIND", cprefix = "TOX_FILE_KIND_", has_type_id = false)]
+  [CCode(cname = "int", cprefix = "TOX_FILE_KIND_", has_type_id = false)]
   public enum FileKind {
     DATA,
     AVATAR
