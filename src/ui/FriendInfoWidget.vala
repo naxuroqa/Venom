@@ -71,6 +71,7 @@ namespace Venom {
       last_seen.label = contact.last_seen.format("%c");
       alias.text = contact.alias;
       tox_id.label = contact.get_id();
+      userimage.set_from_pixbuf(contact.get_image());
     }
 
     private void on_apply_clicked() {

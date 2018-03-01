@@ -54,8 +54,10 @@ namespace Venom {
     private ToxSession session;
     private ToxAdapterFriendListenerImpl friend_listener;
     private ToxAdapterConferenceListenerImpl conference_listener;
+    private ToxAdapterFiletransferListenerImpl filetransfer_listener;
     private ToxAdapterListenerImpl session_listener;
     private Contacts contacts;
+    private FileTransfers transfers;
     private NotificationListener notification_listener;
 
     private GLib.HashTable<IContact, Conversation> conversations;
@@ -77,6 +79,7 @@ namespace Venom {
       this.contact_database = contact_database;
 
       contacts = new ContactsImpl(logger);
+      transfers = new FileTransfersImpl();
 
       notification_listener = new NotificationListenerImpl(logger);
 
@@ -88,6 +91,8 @@ namespace Venom {
       friend_listener.attach_to_session(session);
       conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conversations, notification_listener);
       conference_listener.attach_to_session(session);
+      filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, notification_listener);
+      filetransfer_listener.attach_to_session(session);
 
       settings_database.bind_property("enable-send-typing", friend_listener, "show-typing", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-urgency-notification", notification_listener, "show-notifications", BindingFlags.SYNC_CREATE);
@@ -189,7 +194,7 @@ namespace Venom {
     }
 
     private void on_filetransfer() {
-      switch_content_with(() => { return new DownloadsWidget(logger); });
+      switch_content_with(() => { return new FileTransferWidget(logger, transfers); });
     }
 
     public void on_show_friend(IContact contact) {

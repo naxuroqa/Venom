@@ -602,11 +602,11 @@ namespace ToxCore {
     public void callback_file_chunk_request(FileChunkRequestCallback callback);
 
     [CCode(cname = "tox_file_recv_cb", has_target = false, has_type_id = false)]
-    public delegate void FileRecvCallback(Tox self, uint32 friend_number, uint32 file_number, uint32 kind, uint64 file_size, uint8[] filename, void *user_data);
+    public delegate void FileRecvCallback(Tox self, uint32 friend_number, uint32 file_number, uint32 kind, uint64 file_size, [CCode(array_length_type = "size_t")] uint8[] filename, void *user_data);
     public void callback_file_recv(FileRecvCallback callback);
 
     [CCode(cname = "tox_file_recv_chunk_cb", has_target = false, has_type_id = false)]
-    public delegate void FileRecvChunkCallback(Tox self, uint32 friend_number, uint32 file_number, uint64 position, uint8[] data, void* user_data);
+    public delegate void FileRecvChunkCallback(Tox self, uint32 friend_number, uint32 file_number, uint64 position, [CCode(array_length_type = "size_t")] uint8[] data, void* user_data);
     public void callback_file_recv_chunk(FileRecvChunkCallback callback);
 
     [CCode(cname = "tox_conference_invite_cb", has_target = false, has_type_id = false)]

@@ -61,6 +61,8 @@ namespace Venom {
     public abstract void conference_set_title(uint32 conference_number, string title) throws ToxError;
     public abstract string conference_get_title(uint32 conference_number) throws ToxError;
 
+    public abstract void file_control(uint32 friend_number, uint32 file_number, FileControl control) throws ToxError;
+
     public abstract unowned GLib.HashTable<uint32, IContact> get_friends();
   }
 
@@ -96,7 +98,10 @@ namespace Venom {
   }
 
   public interface ToxAdapterFiletransferListener : GLib.Object {
+    public abstract void on_file_recv_data(uint32 friend_number, uint32 file_number, uint64 file_size, string filename);
+    public abstract void on_file_recv_avatar(uint32 friend_number, uint32 file_number, uint64 file_size);
 
+    public abstract void on_file_recv_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data);
   }
 
   public class ToxSessionImpl : GLib.Object, ToxSession {
@@ -127,7 +132,7 @@ namespace Venom {
       var options_error = ToxCore.ErrOptionsNew.OK;
       var options = new ToxCore.Options(ref options_error);
 
-      //options.log_callback = on_tox_message;
+      options.log_callback = on_tox_message;
       friends = new GLib.HashTable<uint32, IContact>(null, null);
 
       var savedata = iohandler.load_sessiondata();
@@ -173,6 +178,7 @@ namespace Venom {
       handle.callback_conference_namelist_change(on_conference_namelist_change_cb);
 
       handle.callback_file_recv(on_file_recv_cb);
+      handle.callback_file_recv_chunk(on_file_recv_chunk_cb);
 
       init_dht_nodes();
       sessionThread = new ToxSessionThreadImpl(this, logger, dht_nodes);
@@ -194,7 +200,8 @@ namespace Venom {
     }
 
     public void on_tox_message(Tox self, ToxCore.LogLevel level, string file, uint32 line, string func, string message) {
-      var msg = "%s: %s".printf(func, message);
+      var tag = TermColor.YELLOW + "TOX" + TermColor.RESET;
+      var msg = @"[$tag] $message ($func $file:$line)";
       switch (level) {
         case ToxCore.LogLevel.TRACE:
         case ToxCore.LogLevel.DEBUG:
@@ -366,14 +373,25 @@ namespace Venom {
     private static void on_file_recv_cb(Tox self, uint32 friend_number, uint32 file_number, uint32 kind, uint64 file_size, uint8[] filename, void *user_data) {
       var session = (ToxSessionImpl) user_data;
       var kind_type = (FileKind) kind;
-      session.logger.d(@"on_file_recv_cb: $friend_number/$file_number (%s) $file_size kB (%s)".printf(kind_type.to_string(), (string) filename));
-      // switch (kind_type) {
-      //   case FileKind.DATA:
-      //     Idle.add(() => { session.download_listener.on_file_recv_data(friend_number, file_number, file_size, filename); return false; });
-      //   case FileKind.AVATAR:
-      //     Idle.add(() => { session.download_listener.on_file_recv_avatar(friend_number, file_number, file_size); return false; });
-      // }
+      var kiB = file_size / 1024f;
+      var filename_str = copy_data_string(filename);
+      var kind_type_str = kind_type.to_string();
+      session.logger.d(@"on_file_recv_cb: $friend_number/$file_number ($kind_type_str) $kiB kiB ($filename_str)");
+      switch (kind_type) {
+        case FileKind.DATA:
+          Idle.add(() => { session.filetransfer_listener.on_file_recv_data(friend_number, file_number, file_size, filename_str); return false; });
+          break;
+        case FileKind.AVATAR:
+          Idle.add(() => { session.filetransfer_listener.on_file_recv_avatar(friend_number, file_number, file_size); return false; });
+          break;
+      }
+    }
 
+    private static void on_file_recv_chunk_cb(Tox self, uint32 friend_number, uint32 file_number, uint64 position, uint8[] data, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
+      session.logger.d(@"on_file_recv_chunk_cb: $friend_number/$file_number $position");
+      var data_copy = copy_data(data, data.length);
+      Idle.add(() => { session.filetransfer_listener.on_file_recv_chunk(friend_number, file_number, position, data_copy); return false; });
     }
 
     private static UserStatus from_connection_status(Connection connection_status) {
@@ -503,6 +521,14 @@ namespace Venom {
       handle.self_set_typing(friend_number, typing, ref e);
       if (e != ErrSetTyping.OK) {
         logger.i("self_set_typing failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
+    }
+
+    public virtual void file_control(uint32 friend_number, uint32 file_number, FileControl control) throws ToxError {
+      var e = ErrFileControl.OK;
+      handle.file_control(friend_number, file_number, control, ref e);
+      if (e != ErrFileControl.OK) {
         throw new ToxError.GENERIC(e.to_string());
       }
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.2 -->
+<!-- Generated with glade 3.20.3 -->
 <interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
   <template class="VenomContactListEntry" parent="GtkListBoxRow">
@@ -13,8 +13,11 @@
         <property name="spacing">12</property>
         <child>
           <object class="GtkImage" id="contact_image">
+            <property name="width_request">44</property>
+            <property name="height_request">44</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="pixel_size">44</property>
             <property name="icon_name">friend-symbolic</property>
             <property name="icon_size">5</property>
           </object>
