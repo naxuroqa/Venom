@@ -1,5 +1,5 @@
 /*
- *    Contact.vala
+ *    ToxContact.vala
  *
  *    Copyright (C) 2013-2018  Venom authors and contributors
  *
