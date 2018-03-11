@@ -1,7 +1,7 @@
 /*
  *    TestContact.vala
  *
- *    Copyright (C) 2017 Venom authors and contributors
+ *    Copyright (C) 2017-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -23,31 +23,29 @@ using Venom;
 
 namespace TestContact {
 
-  // private static void testContact() {
-  //   uint8[] public_key = new uint8[ToxCore.public_key_size()];
-  //   var contact = new Contact(public_key);
-  //   assert(equals(contact.public_key, public_key));
-  //   assert(contact.friend_id == -1);
-  //   assert(contact.get_name_string() == Tools.bin_to_hexstring(public_key));
-  // }
+  private static void testContact() {
+    var public_key = new uint8[ToxCore.public_key_size()];
+    var contact = new Contact(1, "id");
+    assert(contact.tox_friend_number == 1);
 
-  // private static void testContactName() {
-  //   var contact = new Contact({});
-  //   var name = "name";
-  //   contact.name = name;
-  //   assert(contact.name == name);
-  //   assert(contact.get_name_string() == name);
-  // }
+    assert(contact.get_id() == "id");
+    assert(contact.get_name_string() == "id");
+    assert(contact.get_status_string() == "");
+    assert(contact.get_status() == UserStatus.OFFLINE);
+  }
 
-  // private static bool equals(uint8[] a, uint8[] b) {
-  //   return (a != null && b != null && a.length == b.length && Memory.cmp(a, b, a.length) == 0);
-  // }
+  private static void testContactName() {
+    var contact = new Contact(0, "");
+    contact.name = "name";
+    assert(contact.name == "name");
+    assert(contact.get_name_string() == "name");
+  }
 
   private static int main(string[] args) {
-    return 77;
-    //Test.init(ref args);
-    //Test.add_func("/test_contact", testContact);
-    //Test.add_func("/test_contact_name", testContactName);
-    //Test.run();
+    Test.init(ref args);
+    Test.add_func("/test_contact", testContact);
+    Test.add_func("/test_contact_name", testContactName);
+    Test.run();
+    return 0;
   }
 }
