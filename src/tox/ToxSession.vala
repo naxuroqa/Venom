@@ -89,7 +89,8 @@ namespace Venom {
     public Tox handle;
     private Mutex mutex;
 
-    private IDhtNodeDatabase dht_node_storage;
+    private IDhtNodeDatabase dht_node_database;
+    private ISettingsDatabase settings_database;
 
     private List<IDhtNode> dht_nodes = new List<IDhtNode>();
     private ILogger logger;
@@ -98,8 +99,9 @@ namespace Venom {
     private ToxSessionListener listener;
     private ToxSessionIO iohandler;
 
-    public ToxSessionImpl(ToxSessionIO iohandler, IDhtNodeDatabase nodeDatabase, ILogger logger) {
-      this.dht_node_storage = nodeDatabase;
+    public ToxSessionImpl(ToxSessionIO iohandler, IDhtNodeDatabase node_database, ISettingsDatabase settings_database, ILogger logger) {
+      this.dht_node_database = node_database;
+      this.settings_database = settings_database;
       this.logger = logger;
       this.mutex = Mutex();
       this.iohandler = iohandler;
@@ -115,11 +117,26 @@ namespace Venom {
         options.savedata_data = savedata;
       }
 
+      if (settings_database.enable_proxy) {
+        if (settings_database.enable_custom_proxy) {
+          options.proxy_type = ProxyType.SOCKS5;
+          options.proxy_host = settings_database.custom_proxy_host;
+          options.proxy_port = (uint16) settings_database.custom_proxy_port;
+        } else {
+          //FIXME system proxy currently not supported
+        }
+      }
+
       // create handle
       var error = ToxCore.ErrNew.OK;
       handle = new ToxCore.Tox(options, ref error);
+      if (error == ErrNew.PROXY_BAD_HOST || error == ErrNew.PROXY_BAD_PORT || error == ErrNew.PROXY_NOT_FOUND) {
+        logger.e("Proxy could not be used: " + error.to_string());
+        options.proxy_type = ProxyType.NONE;
+        handle = new ToxCore.Tox(options, ref error);
+      }
       if (error != ToxCore.ErrNew.OK) {
-        logger.e("Could not create tox instance: " + error.to_string());
+        logger.f("Could not create tox instance: " + error.to_string());
         assert_not_reached();
       }
 
@@ -508,16 +525,16 @@ namespace Venom {
 
     private void init_dht_nodes() {
       var nodeFactory = new DhtNodeFactory();
-      dht_nodes = dht_node_storage.getDhtNodes(nodeFactory);
+      dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
       logger.d("Items in dht node list: %u".printf(dht_nodes.length()));
       if (dht_nodes.length() == 0) {
         logger.d("Node database empty, populating from static database.");
         var nodeDatabase = new JsonWebDhtNodeDatabase(logger);
         var nodes = nodeDatabase.getDhtNodes(nodeFactory);
         foreach (var node in nodes) {
-          dht_node_storage.insertDhtNode(node.pub_key, node.host, node.port, node.is_blocked, node.maintainer, node.location);
+          dht_node_database.insertDhtNode(node.pub_key, node.host, node.port, node.is_blocked, node.maintainer, node.location);
         }
-        dht_nodes = dht_node_storage.getDhtNodes(nodeFactory);
+        dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
         if (dht_nodes.length() == 0) {
           logger.e("Node initialisation from static database failed.");
         }

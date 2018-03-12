@@ -1,7 +1,7 @@
 /*
  *    SettingsWidget.vala
  *
- *    Copyright (C) 2013-2017  Venom authors and contributors
+ *    Copyright (C) 2013-2018  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -29,15 +29,19 @@ namespace Venom {
     [GtkChild]
     private Gtk.Stack stack;
     [GtkChild]
-    private Gtk.ListBox listbox;
+    private Gtk.ListBox sidebar;
     [GtkChild]
     private Gtk.ListBoxRow row_general;
     [GtkChild]
     private Gtk.ListBoxRow row_connection;
     [GtkChild]
+    private Gtk.ListBoxRow row_proxy;
+    [GtkChild]
     private Gtk.Widget content_general;
     [GtkChild]
     private Gtk.Widget content_connection;
+    [GtkChild]
+    private Gtk.Widget content_proxy;
 
     [GtkChild]
     private Gtk.Switch enable_dark_theme;
@@ -51,7 +55,7 @@ namespace Venom {
     [GtkChild]
     private Gtk.Switch keep_history;
     [GtkChild]
-    private Gtk.Widget history_box;
+    private Gtk.Revealer history_revealer;
     [GtkChild]
     private Gtk.RadioButton history_keep_radio;
     [GtkChild]
@@ -59,23 +63,44 @@ namespace Venom {
     [GtkChild]
     private Gtk.ListBox node_list_box;
 
+    [GtkChild]
+    private Gtk.Revealer proxy_revealer;
+    [GtkChild]
+    private Gtk.Switch proxy_enabled;
+    [GtkChild]
+    private Gtk.RadioButton proxy_system;
+    [GtkChild]
+    private Gtk.RadioButton proxy_manual;
+    [GtkChild]
+    private Gtk.Revealer proxy_manual_revealer;
+    [GtkChild]
+    private Gtk.Entry custom_proxy_host;
+    [GtkChild]
+    private Gtk.SpinButton custom_proxy_port;
+
     public SettingsWidget(ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase, ILogger logger) {
       logger.d("SettingsWidget created.");
       this.logger = logger;
       this.settingsDatabase = settingsDatabase;
       this.nodeDatabase = nodeDatabase;
 
-      listbox.select_row(row_general);
-      listbox.row_activated.connect(on_row_activated);
+      sidebar.select_row(row_general);
+      sidebar.row_activated.connect(on_row_activated);
 
       settingsDatabase.bind_property("enable-dark-theme",   enable_dark_theme,         "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-logging",      keep_history,              "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-      settingsDatabase.bind_property("enable-logging",      history_box,               "sensitive", BindingFlags.SYNC_CREATE);
+      settingsDatabase.bind_property("enable-logging",      history_revealer,          "reveal-child", BindingFlags.SYNC_CREATE);
       settingsDatabase.bind_property("enable-infinite-log", history_keep_radio,        "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("days-to-log",         history_delete_spinbutton, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-send-typing",  enable_show_typing,        "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-urgency-notification", enable_notify_switch, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-tray",         enable_tray_switch,        "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("enable-proxy",        proxy_enabled,             "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("enable-proxy",        proxy_revealer,            "reveal-child", BindingFlags.SYNC_CREATE);
+      settingsDatabase.bind_property("enable-custom-proxy", proxy_manual,              "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("enable-custom-proxy", proxy_manual_revealer,     "reveal-child", BindingFlags.SYNC_CREATE);
+      settingsDatabase.bind_property("custom-proxy-host",   custom_proxy_host,         "text",   BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("custom-proxy-port",   custom_proxy_port,         "value",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
       var dhtNodeFactory = new DhtNodeFactory();
       var nodes = nodeDatabase.getDhtNodes(dhtNodeFactory);
@@ -92,6 +117,8 @@ namespace Venom {
         stack.set_visible_child(content_general);
       } else if (row == row_connection) {
         stack.set_visible_child(content_connection);
+      } else if (row == row_proxy) {
+        stack.set_visible_child(content_proxy);
       }
     }
 
