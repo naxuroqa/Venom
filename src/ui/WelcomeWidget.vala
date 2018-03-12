@@ -1,7 +1,7 @@
 /*
  *    WelcomeWidget.vala
  *
- *    Copyright (C) 2013-2017  Venom authors and contributors
+ *    Copyright (C) 2013-2018  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -25,18 +25,28 @@ namespace Venom {
     private ILogger logger;
 
     [GtkChild]
-    private Gtk.Button link;
+    private Gtk.Button link_learn_more;
+
+    [GtkChild]
+    private Gtk.Button link_get_involved;
 
     public WelcomeWidget(ILogger logger) {
       logger.d("WelcomeWidget created.");
       this.logger = logger;
 
-      link.tooltip_text = R.constants.tox_about();
-      link.clicked.connect(on_link_clicked);
+      link_learn_more.tooltip_text = R.constants.tox_about();
+      link_learn_more.clicked.connect(on_learn_more_clicked);
+
+      link_get_involved.tooltip_text = R.constants.tox_get_involved();
+      link_get_involved.clicked.connect(on_get_involved_clicked);
     }
 
-    private void on_link_clicked() {
+    private void on_learn_more_clicked() {
       Gtk.show_uri(null, R.constants.tox_about(), Gdk.CURRENT_TIME);
+    }
+
+    private void on_get_involved_clicked() {
+      Gtk.show_uri(null, R.constants.tox_get_involved(), Gdk.CURRENT_TIME);
     }
 
     ~WelcomeWidget() {

@@ -79,7 +79,7 @@ namespace Venom {
       notification_listener = new NotificationListenerImpl(logger);
 
       var session_io = new ToxSessionIOImpl(logger);
-      session = new ToxSessionImpl(session_io, node_database, logger);
+      session = new ToxSessionImpl(session_io, node_database, settings_database, logger);
       session_listener = new ToxSessionListenerImpl(logger, user_info, contacts, conversations, notification_listener);
       session_listener.attach_to_session(session);
 

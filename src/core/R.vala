@@ -77,6 +77,7 @@ namespace Venom {
       public string icons_suffix() { return ".svg"; }
       public string app_id() { return "im.tox.venom"; }
       public string tox_about() { return "https://tox.chat/about.html"; }
+      public string tox_get_involved() { return "https://wiki.tox.chat/users/contributing"; }
     }
   }
 }
