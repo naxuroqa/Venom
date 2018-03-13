@@ -57,7 +57,7 @@ namespace Venom {
     private ToxAdapterFiletransferListenerImpl filetransfer_listener;
     private ToxAdapterListenerImpl session_listener;
     private Contacts contacts;
-    private FileTransfers transfers;
+    private ObservableList<FileTransfer> transfers;
     private NotificationListener notification_listener;
 
     private GLib.HashTable<IContact, Conversation> conversations;
@@ -79,7 +79,8 @@ namespace Venom {
       this.contact_database = contact_database;
 
       contacts = new ContactsImpl(logger);
-      transfers = new FileTransfersImpl();
+      transfers = new ObservableList<FileTransfer>();
+      transfers.set_list(new GLib.List<FileTransfer>());
 
       notification_listener = new NotificationListenerImpl(logger);
 

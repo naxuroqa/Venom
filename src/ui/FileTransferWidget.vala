@@ -23,17 +23,17 @@ namespace Venom {
   [GtkTemplate(ui = "/im/tox/venom/ui/file_transfer_widget.ui")]
   public class FileTransferWidget : Gtk.Box {
     private ILogger logger;
-    private FileTransfers transfers;
+    private ObservableList<FileTransfer> transfers;
 
     [GtkChild]
     private Gtk.ListBox file_transfers;
 
-    public FileTransferWidget(ILogger logger, FileTransfers transfers) {
+    public FileTransferWidget(ILogger logger, ObservableList<FileTransfer> transfers) {
       logger.d("FileTransferWidget created.");
       this.logger = logger;
       this.transfers = transfers;
 
-      file_transfers.bind_model(new FileTransferModel(transfers), create_entry);
+      file_transfers.bind_model(new ObservableListModel<FileTransfer>(transfers), create_entry);
       unmap.connect(() => { file_transfers.bind_model(null, null); } );
     }
 
@@ -44,39 +44,5 @@ namespace Venom {
     ~FileTransferWidget() {
       logger.d("FileTransferWidget destroyed.");
     }
-  }
-
-  public class FileTransferModel : GLib.Object, GLib.ListModel {
-    private unowned FileTransfers transfers;
-    public FileTransferModel(FileTransfers transfers) {
-      this.transfers = transfers;
-      transfers.added.connect(on_added);
-      transfers.removed.connect(on_removed);
-    }
-
-    private void on_added(FileTransfer f, uint position) {
-      items_changed(position, 0, 1);
-    }
-
-    private void on_removed(FileTransfer f, uint position) {
-      items_changed(position, 1, 0);
-    }
-
-    public virtual GLib.Object ? get_item(uint position) {
-      return transfers.get_item(position);
-    }
-
-    public virtual GLib.Type get_item_type() {
-      return typeof (FileTransfer);
-    }
-
-    public virtual uint get_n_items() {
-      return transfers.get_size();
-    }
-
-    public virtual GLib.Object ? get_object(uint position) {
-      return get_item(position);
-    }
-
   }
 }

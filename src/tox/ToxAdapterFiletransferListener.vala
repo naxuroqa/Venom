@@ -30,9 +30,9 @@ namespace Venom {
     private unowned GLib.HashTable<uint32, IContact> friends;
     private GLib.HashTable<IContact, GLib.HashTable<uint32, FileTransfer> > filetransfers;
 
-    private FileTransfers transfers;
+    private ObservableList<FileTransfer> transfers;
 
-    public ToxAdapterFiletransferListenerImpl(ILogger logger, FileTransfers transfers, NotificationListener notification_listener) {
+    public ToxAdapterFiletransferListenerImpl(ILogger logger, ObservableList<FileTransfer> transfers, NotificationListener notification_listener) {
       logger.d("ToxAdapterFiletransferListenerImpl created.");
       this.logger = logger;
       this.notification_listener = notification_listener;
@@ -59,7 +59,7 @@ namespace Venom {
         var contact = friends.@get(friend_number);
         var transfer = new FileTransferImpl.File(logger, file_size, "New file from \"%s\"".printf(contact.get_name_string()));
         set_filetransfer(friend_number, file_number, transfer);
-        transfers.add(transfer);
+        transfers.append(transfer);
 
         logger.d("file_control resume sent");
       } catch (Error e) {
@@ -81,7 +81,7 @@ namespace Venom {
         var contact = friends.@get(friend_number);
         var transfer = new FileTransferImpl.Avatar(logger, file_size, "New avatar from \"%s\"".printf(contact.get_name_string()));
         set_filetransfer(friend_number, file_number, transfer);
-        transfers.add(transfer);
+        transfers.append(transfer);
 
         logger.d("file_control resume sent");
       } catch (Error e) {
@@ -140,119 +140,6 @@ namespace Venom {
           logger.e("set image failed: " + e.message);
         }
       }
-    }
-  }
-
-  public interface FileTransfers : GLib.Object {
-    public signal void added(FileTransfer transfer, uint position);
-    public signal void removed(FileTransfer transfer, uint position);
-
-    public abstract void add(FileTransfer transfer);
-    public abstract void remove(FileTransfer transfer);
-
-    public abstract uint get_size();
-    public abstract FileTransfer get_item(uint position);
-
-    public abstract unowned GLib.List<FileTransfer> get_transfers();
-  }
-
-  public class FileTransfersImpl : FileTransfers, GLib.Object {
-    private GLib.List<FileTransfer> transfers;
-    public FileTransfersImpl() {
-      transfers = new GLib.List<FileTransfer>();
-    }
-    public virtual void add(FileTransfer transfer) {
-      var position = get_size();
-      transfers.append(transfer);
-      added(transfer, position);
-    }
-    public virtual void remove(FileTransfer transfer) {
-      var position = index(transfer);
-      transfers.remove(transfer);
-      removed(transfer, position);
-    }
-    public virtual uint get_size() {
-      return transfers.length();
-    }
-    public virtual FileTransfer get_item(uint position) {
-      return transfers.nth_data(position);
-    }
-    public virtual uint index(FileTransfer transfer) {
-      return transfers.index(transfer);
-    }
-    public virtual unowned GLib.List<FileTransfer> get_transfers() {
-      return transfers;
-    }
-  }
-
-  public interface FileTransfer : GLib.Object {
-    public signal void status_changed();
-    public signal void progress_changed();
-
-    public abstract bool is_avatar();
-    public abstract string get_description();
-    public abstract uint64 get_transmitted_size();
-    public abstract uint64 get_file_size();
-    public abstract unowned uint8[] get_file_data();
-    public abstract void set_file_data(uint64 offset, uint8[] data);
-  }
-
-  public class FileTransferImpl : FileTransfer, GLib.Object {
-    private uint8[] file_data;
-    private uint64 transmitted_size;
-    private ILogger logger;
-    private string description;
-    //private bool _is_avatar;
-
-    public FileTransferImpl.File(ILogger logger, uint64 file_size, string filename) {
-      this.logger = logger;
-      this.description = filename;
-      file_data = new uint8[file_size];
-      transmitted_size = 0;
-      //_is_avatar = false;
-    }
-
-    public FileTransferImpl.Avatar(ILogger logger, uint64 file_size, string description) {
-      this.logger = logger;
-      this.description = description;
-      file_data = new uint8[file_size];
-      transmitted_size = 0;
-      //_is_avatar = true;
-    }
-
-    private static void copy_with_offset(uint8[] dest, uint8[] src, uint64 offset) {
-      unowned uint8[] dest_ptr = dest[offset : dest.length];
-      GLib.Memory.copy(dest_ptr, src, src.length);
-    }
-
-    public virtual bool is_avatar() {
-      return false; //_is_avatar;
-    }
-
-    public virtual string get_description() {
-      return description;
-    }
-
-    public virtual uint64 get_transmitted_size() {
-      return transmitted_size;
-    }
-
-    public virtual uint64 get_file_size() {
-      return file_data.length;
-    }
-
-    public virtual void set_file_data(uint64 offset, uint8[] data) {
-      if (data.length + offset > file_data.length) {
-        logger.e("set_data overflow");
-        return;
-      }
-      copy_with_offset(file_data, data, offset);
-      transmitted_size += data.length;
-      progress_changed();
-    }
-
-    public virtual unowned uint8[] get_file_data() {
-      return file_data;
     }
   }
 }
