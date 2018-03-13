@@ -37,48 +37,25 @@ namespace Venom {
     [GtkChild]
     private Gtk.Box additional_info;
 
-    private IMessage message_content;
     private ILogger logger;
+    private MessageViewModel view_model;
 
     public MessageWidget(ILogger logger, IMessage message_content) {
       this.logger = logger;
-      this.message_content = message_content;
+      this.view_model = new MessageViewModel(logger, message_content);
 
-      if (message_content.message_direction == MessageDirection.OUTGOING) {
-        //TODO move this
-        sender.label = "me";
-        sender.sensitive = false;
-        message_content.message_changed.connect(on_message_changed);
-      } else {
-        sender.label = message_content.get_sender_plain();
-      }
-      on_message_changed();
+      view_model.bind_property("additional-info-visible", additional_info, "visible", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("timestamp", timestamp, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("message", message, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sender-image", sender_image, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sender", sender, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sender-sensitive", sender, "sensitive", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sent-visible", sent, "visible", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("received-visible", received, "visible", GLib.BindingFlags.SYNC_CREATE);
 
-      sender_image.set_from_pixbuf(message_content.get_sender_image());
-      timestamp.label = message_content.get_time_plain();
-      message.label = message_content.get_message_plain();
-      sender.activate_link.connect(on_activate_sender_link);
-
-      state_flags_changed.connect(on_state_flags_changed);
+      state_flags_changed.connect(() => { view_model.on_state_flags_changed(get_state_flags()); });
 
       logger.d("MessageWidget created.");
-    }
-
-    private void on_state_flags_changed() {
-      var flag = get_state_flags();
-      additional_info.visible = Gtk.StateFlags.PRELIGHT in flag || Gtk.StateFlags.SELECTED in flag;
-    }
-
-    private void on_message_changed() {
-      if (message_content.message_direction == MessageDirection.OUTGOING) {
-        received.visible = message_content.received;
-        sent.visible = !message_content.received;
-      }
-    }
-
-    private bool on_activate_sender_link() {
-      logger.d("on_activate_sender_link");
-      return true;
     }
 
     ~MessageWidget() {

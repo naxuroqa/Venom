@@ -1,7 +1,7 @@
 /*
  *    AddContactWidget.vala
  *
- *    Copyright (C) 2013-2017  Venom authors and contributors
+ *    Copyright (C) 2013-2018  Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -28,49 +28,31 @@ namespace Venom {
     private Gtk.TextView contact_message;
     [GtkChild]
     private Gtk.Button send;
+    [GtkChild]
+    private Gtk.Label contact_id_error;
+    [GtkChild]
+    private Gtk.Revealer contact_id_error_content;
 
     private ILogger logger;
     private AddContactWidgetListener listener;
+    private AddContactViewModel view_model;
 
     public AddContactWidget(ILogger logger, AddContactWidgetListener listener) {
       logger.d("AddContactWidget created.");
       this.logger = logger;
-      this.listener = listener;
+      view_model = new AddContactViewModel(logger, listener);
 
-      contact_id.icon_release.connect(on_paste_clipboard);
-      send.clicked.connect(on_send);
-    }
+      contact_id.bind_property("text", view_model, "contact-id", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      contact_message.buffer.bind_property("text", view_model, "contact-message", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      contact_id_error.bind_property("label", view_model, "contact-id-error-message", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      contact_id_error_content.bind_property("reveal-child", view_model, "contact-id-error-visible", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
-    private void on_send() {
-      logger.d("on_send");
-      if (listener == null) {
-        return;
-      }
-      try {
-        listener.on_send_friend_request(contact_id.text, contact_message.buffer.text);
-      } catch (Error e) {
-        logger.e("Could not add contact: " + e.message);
-        return;
-      }
-      logger.d("on_send_successful");
+      contact_id.icon_release.connect(view_model.on_paste_clipboard);
+      send.clicked.connect(view_model.on_send);
     }
 
     ~AddContactWidget() {
       logger.d("AddContactWidget destroyed.");
     }
-
-    private void on_paste_clipboard() {
-      var clipboard = Gtk.Clipboard.@get(Gdk.SELECTION_CLIPBOARD);
-      var text = clipboard.wait_for_text();
-      if (text == null) {
-        logger.d("clipboard.wait_for_text returned null, probably empty.");
-        return;
-      }
-      contact_id.set_text(text);
-    }
-  }
-
-  public interface AddContactWidgetListener : GLib.Object {
-    public abstract void on_send_friend_request(string id, string message) throws Error;
   }
 }

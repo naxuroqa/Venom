@@ -60,11 +60,9 @@ venom_source = files(
 			'tox/ToxAdapterListener.vala',
 			'tox/ToxSessionThread.vala',
 			'ui/AboutDialog.vala',
-			'ui/AddContactWidget.vala',
 			'ui/ApplicationWindow.vala',
 			'ui/ConferenceInfoWidget.vala',
 			'ui/ConferenceWindow.vala',
-			'ui/ContactListEntry.vala',
 			'ui/ContactListRequestEntry.vala',
 			'ui/ContactListWidget.vala',
 			'ui/ConversationWindow.vala',
@@ -73,13 +71,18 @@ venom_source = files(
 			'ui/FileTransferWidget.vala',
 			'ui/FriendInfoWidget.vala',
 			'ui/FriendRequestWidget.vala',
-			'ui/MessageWidget.vala',
 			'ui/NodeWidget.vala',
 			'ui/PeerEntry.vala',
 			'ui/SettingsWidget.vala',
 			'ui/UserInfoWidget.vala',
 			'ui/UITools.vala',
-			'ui/WelcomeWidget.vala'
+			'ui/WelcomeWidget.vala',
+			'view/AddContactWidget.vala',
+			'view/ContactListEntry.vala',
+			'view/MessageWidget.vala',
+			'viewmodel/AddContactViewModel.vala',
+			'viewmodel/ContactListEntryViewModel.vala',
+			'viewmodel/MessageViewModel.vala'
 			)
 
 venom_ui_resources = gnome.compile_resources( 'venom_ui_resources', 'ui/venom.gresource.xml',
