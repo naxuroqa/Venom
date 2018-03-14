@@ -1,7 +1,7 @@
 /*
- *    FileTransferEntry.vala
+ *    FileTransferEntryViewModel.vala
  *
- *    Copyright (C) 2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -20,23 +20,22 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/im/tox/venom/ui/file_transfer_entry.ui")]
-  public class FileTransferEntry : Gtk.ListBoxRow {
+  public class FileTransferEntryViewModel : GLib.Object {
     private ILogger logger;
     private FileTransfer file_transfer;
 
-    [GtkChild] private Gtk.Label description;
-    [GtkChild] private Gtk.ProgressBar progress;
-    [GtkChild] private Gtk.Button open_file;
-    [GtkChild] private Gtk.Button resume_transfer;
-    [GtkChild] private Gtk.Button pause_transfer;
-    [GtkChild] private Gtk.Button delete_transfer;
+    public string description { get; set; }
+    public double progress { get; set; }
+    public bool open_visible { get; set; }
+    public bool resume_visible { get; set; }
+    public bool pause_visible { get; set; }
 
-    public FileTransferEntry(ILogger logger, FileTransfer file_transfer) {
-      logger.d("FileTransferEntry created.");
+    public FileTransferEntryViewModel(ILogger logger, FileTransfer file_transfer) {
+      logger.d("FileTransferEntryViewModel created.");
       this.logger = logger;
       this.file_transfer = file_transfer;
-      description.label = file_transfer.get_description();
+
+      description = file_transfer.get_description();
 
       update_progress();
       file_transfer.progress_changed.connect(update_progress);
@@ -44,15 +43,11 @@ namespace Venom {
 
     private void update_progress() {
       logger.d("update_progress");
-      progress.fraction = file_transfer.get_transmitted_size() / ((double) file_transfer.get_file_size());
+      progress = file_transfer.get_transmitted_size() / ((double) file_transfer.get_file_size());
     }
 
-    public FileTransfer get_file_transfer() {
-      return file_transfer;
-    }
-
-    ~FileTransferEntry() {
-      logger.d("FileTransferEntry destroyed.");
+    ~FileTransferEntryViewModel() {
+      logger.d("FileTransferEntryViewModel destroyed.");
     }
   }
 }

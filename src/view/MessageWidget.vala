@@ -22,20 +22,14 @@
 namespace Venom {
   [GtkTemplate(ui = "/im/tox/venom/ui/message_widget.ui")]
   public class MessageWidget : Gtk.ListBoxRow {
-    [GtkChild]
-    private Gtk.Label sender;
-    [GtkChild]
-    private Gtk.Image sender_image;
-    [GtkChild]
-    private Gtk.Label timestamp;
-    [GtkChild]
-    private Gtk.Label message;
-    [GtkChild]
-    private Gtk.Image sent;
-    [GtkChild]
-    private Gtk.Image received;
-    [GtkChild]
-    private Gtk.Box additional_info;
+
+    [GtkChild] private Gtk.Label sender;
+    [GtkChild] private Gtk.Image sender_image;
+    [GtkChild] private Gtk.Label timestamp;
+    [GtkChild] private Gtk.Label message;
+    [GtkChild] private Gtk.Image sent;
+    [GtkChild] private Gtk.Image received;
+    [GtkChild] private Gtk.Box additional_info;
 
     private ILogger logger;
     private MessageViewModel view_model;

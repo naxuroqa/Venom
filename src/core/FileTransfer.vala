@@ -20,6 +20,14 @@
  */
 
 namespace Venom {
+  public enum FileTransferState {
+    INIT,
+    PAUSED,
+    RUNNING,
+    ABORTED,
+    FINISHED
+  }
+
   public interface FileTransfer : GLib.Object {
     public signal void status_changed();
     public signal void progress_changed();
@@ -30,6 +38,8 @@ namespace Venom {
     public abstract uint64 get_file_size();
     public abstract unowned uint8[] get_file_data();
     public abstract void set_file_data(uint64 offset, uint8[] data);
+    public abstract FileTransferState get_state();
+    public abstract void set_state(FileTransferState state);
   }
 
   public class FileTransferImpl : FileTransfer, GLib.Object {
@@ -38,12 +48,14 @@ namespace Venom {
     private ILogger logger;
     private string description;
     //private bool _is_avatar;
+    private FileTransferState state;
 
     public FileTransferImpl.File(ILogger logger, uint64 file_size, string filename) {
       this.logger = logger;
       this.description = filename;
       file_data = new uint8[file_size];
       transmitted_size = 0;
+      state = FileTransferState.INIT;
       //_is_avatar = false;
     }
 
@@ -52,6 +64,7 @@ namespace Venom {
       this.description = description;
       file_data = new uint8[file_size];
       transmitted_size = 0;
+      state = FileTransferState.INIT;
       //_is_avatar = true;
     }
 
@@ -88,6 +101,14 @@ namespace Venom {
 
     public virtual unowned uint8[] get_file_data() {
       return file_data;
+    }
+
+    public virtual FileTransferState get_state() {
+      return state;
+    }
+
+    public virtual void set_state(FileTransferState state) {
+      this.state = state;
     }
   }
 }

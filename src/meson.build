@@ -61,13 +61,11 @@ venom_source = files(
 			'tox/ToxSessionThread.vala',
 			'ui/AboutDialog.vala',
 			'ui/ApplicationWindow.vala',
-			'ui/ConferenceInfoWidget.vala',
 			'ui/ConferenceWindow.vala',
 			'ui/ContactListRequestEntry.vala',
 			'ui/ContactListWidget.vala',
 			'ui/ConversationWindow.vala',
 			'ui/CreateGroupchatWidget.vala',
-			'ui/FileTransferEntry.vala',
 			'ui/FileTransferWidget.vala',
 			'ui/FriendInfoWidget.vala',
 			'ui/FriendRequestWidget.vala',
@@ -78,10 +76,14 @@ venom_source = files(
 			'ui/UITools.vala',
 			'ui/WelcomeWidget.vala',
 			'view/AddContactWidget.vala',
+			'view/ConferenceInfoWidget.vala',
 			'view/ContactListEntry.vala',
+			'view/FileTransferEntry.vala',
 			'view/MessageWidget.vala',
 			'viewmodel/AddContactViewModel.vala',
+			'viewmodel/ConferenceInfoViewModel.vala',
 			'viewmodel/ContactListEntryViewModel.vala',
+			'viewmodel/FileTransferEntryViewModel.vala',
 			'viewmodel/MessageViewModel.vala'
 			)
 

@@ -22,16 +22,11 @@
 namespace Venom {
   [GtkTemplate(ui = "/im/tox/venom/ui/add_contact_widget.ui")]
   public class AddContactWidget : Gtk.Box {
-    [GtkChild]
-    private Gtk.Entry contact_id;
-    [GtkChild]
-    private Gtk.TextView contact_message;
-    [GtkChild]
-    private Gtk.Button send;
-    [GtkChild]
-    private Gtk.Label contact_id_error;
-    [GtkChild]
-    private Gtk.Revealer contact_id_error_content;
+    [GtkChild] private Gtk.Entry contact_id;
+    [GtkChild] private Gtk.TextView contact_message;
+    [GtkChild] private Gtk.Button send;
+    [GtkChild] private Gtk.Label contact_id_error;
+    [GtkChild] private Gtk.Revealer contact_id_error_content;
 
     private ILogger logger;
     private AddContactWidgetListener listener;
@@ -44,8 +39,8 @@ namespace Venom {
 
       contact_id.bind_property("text", view_model, "contact-id", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       contact_message.buffer.bind_property("text", view_model, "contact-message", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-      contact_id_error.bind_property("label", view_model, "contact-id-error-message", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-      contact_id_error_content.bind_property("reveal-child", view_model, "contact-id-error-visible", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      view_model.bind_property("contact-id-error-message", contact_id_error, "label" , BindingFlags.SYNC_CREATE);
+      view_model.bind_property("contact-id-error-visible", contact_id_error_content, "reveal-child", BindingFlags.SYNC_CREATE);
 
       contact_id.icon_release.connect(view_model.on_paste_clipboard);
       send.clicked.connect(view_model.on_send);

@@ -29,14 +29,10 @@ namespace Venom {
     private ILogger logger;
     private ContactListEntryViewModel view_model;
 
-    [GtkChild]
-    private Gtk.Label contact_name;
-    [GtkChild]
-    private Gtk.Label contact_status;
-    [GtkChild]
-    private Gtk.Image contact_image;
-    [GtkChild]
-    private Gtk.Image status_image;
+    [GtkChild] private Gtk.Label contact_name;
+    [GtkChild] private Gtk.Label contact_status;
+    [GtkChild] private Gtk.Image contact_image;
+    [GtkChild] private Gtk.Image status_image;
 
     public ContactListEntry(ILogger logger, IContact contact) {
       logger.d("ContactListEntry created.");
