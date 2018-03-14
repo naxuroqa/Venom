@@ -70,7 +70,6 @@ venom_source = files(
 			'ui/NodeWidget.vala',
 			'ui/PeerEntry.vala',
 			'ui/SettingsWidget.vala',
-			'ui/UserInfoWidget.vala',
 			'ui/UITools.vala',
 			'ui/WelcomeWidget.vala',
 			'view/AddContactWidget.vala',
@@ -80,13 +79,15 @@ venom_source = files(
 			'view/FileTransferEntry.vala',
 			'view/FriendInfoWidget.vala',
 			'view/MessageWidget.vala',
+			'view/UserInfoWidget.vala',
 			'viewmodel/AddContactViewModel.vala',
 			'viewmodel/ConferenceInfoViewModel.vala',
 			'viewmodel/ContactListEntryViewModel.vala',
 			'viewmodel/CreateGroupchatViewModel.vala',
 			'viewmodel/FileTransferEntryViewModel.vala',
 			'viewmodel/FriendInfoViewModel.vala',
-			'viewmodel/MessageViewModel.vala'
+			'viewmodel/MessageViewModel.vala',
+			'viewmodel/UserInfoViewModel.vala'
 			)
 
 venom_ui_resources = gnome.compile_resources( 'venom_ui_resources', 'ui/venom.gresource.xml',
