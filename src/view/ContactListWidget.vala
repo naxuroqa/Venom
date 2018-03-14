@@ -1,7 +1,7 @@
 /*
  *    ContactListWidget.vala
  *
- *    Copyright (C) 2017-2018  Venom authors and contributors
+ *    Copyright (C) 2017-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -25,58 +25,28 @@ namespace Venom {
     private ILogger logger;
     private ContactListWidgetCallback callback;
     private UserInfo user_info;
+    private ContactListViewModel view_model;
 
-    [GtkChild]
-    private Gtk.Label username;
-    [GtkChild]
-    private Gtk.Label statusmessage;
-    [GtkChild]
-    private Gtk.Image userimage;
-    [GtkChild]
-    private Gtk.ListBox contact_list;
-    [GtkChild]
-    private Gtk.Image image_status;
+    [GtkChild] private Gtk.Label username;
+    [GtkChild] private Gtk.Label statusmessage;
+    [GtkChild] private Gtk.Image userimage;
+    [GtkChild] private Gtk.ListBox contact_list;
+    [GtkChild] private Gtk.Image image_status;
 
     public ContactListWidget(ILogger logger, ObservableList<IContact> contacts, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListWidget created.");
       this.logger = logger;
       this.callback = callback;
       this.user_info = user_info;
+      this.view_model = new ContactListViewModel(logger, contacts, callback, user_info);
 
-      refresh_user_info(this);
-      user_info.info_changed.connect(refresh_user_info);
+      view_model.bind_property("username", username, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("statusmessage", statusmessage, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("userimage", userimage, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("image-status", image_status, "icon-name", GLib.BindingFlags.SYNC_CREATE);
 
-      contact_list.bind_model(new ObservableListModel<IContact>(contacts), create_entry);
-      contact_list.row_activated.connect(on_row_activated);
-    }
-
-    private void refresh_user_info(GLib.Object sender) {
-      username.label = user_info.get_name();
-      statusmessage.label = user_info.get_status_message();
-      var userimage_pixbuf = scalePixbuf(user_info.get_image());
-      if (userimage_pixbuf != null) {
-        userimage.set_from_pixbuf(userimage_pixbuf);
-      }
-      image_status.set_from_icon_name(get_resource_from_status(user_info.get_user_status()), Gtk.IconSize.INVALID);
-    }
-
-    private string get_resource_from_status(UserStatus status) {
-      switch (status) {
-        case UserStatus.ONLINE:
-          return R.icons.online;
-        case UserStatus.AWAY:
-          return R.icons.idle;
-        case UserStatus.BUSY:
-          return R.icons.busy;
-      }
-      return R.icons.offline;
-    }
-
-    private Gdk.Pixbuf ? scalePixbuf(Gdk.Pixbuf ? pixbuf) {
-      if (pixbuf == null) {
-        return null;
-      }
-      return pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR);
+      contact_list.bind_model(view_model.get_list_model(), create_entry);
+      contact_list.row_activated.connect(view_model.on_row_activated);
     }
 
     private Gtk.Widget create_entry(GLib.Object object) {
@@ -87,21 +57,8 @@ namespace Venom {
       return new ContactListRequestEntry(logger, c);
     }
 
-    private void on_row_activated(Gtk.ListBoxRow row) {
-      if (row is IContactListEntry) {
-        var entry = row as IContactListEntry;
-        callback.on_contact_selected(entry.get_contact());
-      } else {
-        logger.e("ContactListWidget wrong type selected.");
-      }
-    }
-
     ~ContactListWidget() {
       logger.d("ContactListWidget destroyed.");
     }
-  }
-
-  public interface ContactListWidgetCallback : GLib.Object {
-    public abstract void on_contact_selected(IContact contact);
   }
 }

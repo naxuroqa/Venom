@@ -80,6 +80,7 @@ venom_source = files(
 			'viewmodel/AddContactViewModel.vala',
 			'viewmodel/ConferenceInfoViewModel.vala',
 			'viewmodel/ContactListEntryViewModel.vala',
+			'viewmodel/ContactListViewModel.vala',
 			'viewmodel/CreateGroupchatViewModel.vala',
 			'viewmodel/FileTransferEntryViewModel.vala',
 			'viewmodel/FriendInfoViewModel.vala',
