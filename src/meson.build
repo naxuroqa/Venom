@@ -65,9 +65,7 @@ venom_source = files(
 			'ui/ContactListRequestEntry.vala',
 			'ui/ContactListWidget.vala',
 			'ui/ConversationWindow.vala',
-			'ui/CreateGroupchatWidget.vala',
 			'ui/FileTransferWidget.vala',
-			'ui/FriendInfoWidget.vala',
 			'ui/FriendRequestWidget.vala',
 			'ui/NodeWidget.vala',
 			'ui/PeerEntry.vala',
@@ -78,12 +76,16 @@ venom_source = files(
 			'view/AddContactWidget.vala',
 			'view/ConferenceInfoWidget.vala',
 			'view/ContactListEntry.vala',
+			'view/CreateGroupchatWidget.vala',
 			'view/FileTransferEntry.vala',
+			'view/FriendInfoWidget.vala',
 			'view/MessageWidget.vala',
 			'viewmodel/AddContactViewModel.vala',
 			'viewmodel/ConferenceInfoViewModel.vala',
 			'viewmodel/ContactListEntryViewModel.vala',
+			'viewmodel/CreateGroupchatViewModel.vala',
 			'viewmodel/FileTransferEntryViewModel.vala',
+			'viewmodel/FriendInfoViewModel.vala',
 			'viewmodel/MessageViewModel.vala'
 			)
 

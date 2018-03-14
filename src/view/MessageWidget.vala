@@ -1,7 +1,7 @@
 /*
  *    MessageWidget.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -22,7 +22,6 @@
 namespace Venom {
   [GtkTemplate(ui = "/im/tox/venom/ui/message_widget.ui")]
   public class MessageWidget : Gtk.ListBoxRow {
-
     [GtkChild] private Gtk.Label sender;
     [GtkChild] private Gtk.Image sender_image;
     [GtkChild] private Gtk.Label timestamp;

@@ -1,7 +1,7 @@
 /*
  *    CreateGroupchatWidget.vala
  *
- *    Copyright (C) 2013-2017  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -22,50 +22,29 @@
 namespace Venom {
   [GtkTemplate(ui = "/im/tox/venom/ui/create_groupchat_widget.ui")]
   public class CreateGroupchatWidget : Gtk.Box {
-    [GtkChild]
-    private Gtk.Entry title;
-    [GtkChild]
-    private Gtk.RadioButton type;
-    [GtkChild]
-    private Gtk.Button create;
+    [GtkChild] private Gtk.Entry title;
+    [GtkChild] private Gtk.RadioButton type_text;
+    [GtkChild] private Gtk.Button create;
+    [GtkChild] private Gtk.Revealer title_error_content;
+    [GtkChild] private Gtk.Label title_error;
 
     private ILogger logger;
-    private CreateGroupchatWidgetListener listener;
+    private CreateGroupchatViewModel view_model;
 
     public CreateGroupchatWidget(ILogger logger, CreateGroupchatWidgetListener listener) {
       logger.d("CreateGroupChatWidget created.");
       this.logger = logger;
-      this.listener = listener;
+      this.view_model = new CreateGroupchatViewModel(logger, listener);
 
-      create.clicked.connect(on_create);
-    }
-
-    private void on_create() {
-      logger.d("on_create");
-      if (listener == null) {
-        return;
-      }
-      try {
-        var type = this.type.active ? GroupchatType.TEXT : GroupchatType.AV;
-        listener.on_create_groupchat(title.text, type);
-      } catch (Error e) {
-        logger.e("Could not create groupchat: " + e.message);
-        return;
-      }
-      logger.d("on_create successful");
+      title.bind_property("text", view_model, "title", GLib.BindingFlags.SYNC_CREATE | GLib.BindingFlags.BIDIRECTIONAL);
+      view_model.bind_property("title-error", title_error, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("title-error-visible", title_error_content, "reveal-child", GLib.BindingFlags.SYNC_CREATE);
+      //FIXME type binding
+      create.clicked.connect(view_model.on_create);
     }
 
     ~CreateGroupchatWidget() {
       logger.d("CreateGroupChatWidget destroyed.");
     }
-  }
-
-  public enum GroupchatType {
-    TEXT,
-    AV
-  }
-
-  public interface CreateGroupchatWidgetListener : GLib.Object {
-    public abstract void on_create_groupchat(string title, GroupchatType type) throws Error;
   }
 }

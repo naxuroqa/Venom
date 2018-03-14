@@ -564,7 +564,13 @@ namespace Venom {
         logger.i("creating conference failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      conference_set_title_private(conference_number, title);
+      try {
+        conference_set_title_private(conference_number, title);
+      } catch (ToxError e) {
+        var err_conference_delete = ErrConferenceDelete.OK;
+        handle.conference_delete(conference_number, ref err_conference_delete);
+        throw e;
+      }
       conference_listener.on_conference_new(conference_number, title);
     }
 

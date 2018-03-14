@@ -1,7 +1,7 @@
 /*
  *    ContactListEntry.vala
  *
- *    Copyright (C) 2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -26,13 +26,13 @@ namespace Venom {
 
   [GtkTemplate(ui = "/im/tox/venom/ui/contact_list_entry.ui")]
   public class ContactListEntry : Gtk.ListBoxRow, IContactListEntry {
-    private ILogger logger;
-    private ContactListEntryViewModel view_model;
-
     [GtkChild] private Gtk.Label contact_name;
     [GtkChild] private Gtk.Label contact_status;
     [GtkChild] private Gtk.Image contact_image;
     [GtkChild] private Gtk.Image status_image;
+
+    private ILogger logger;
+    private ContactListEntryViewModel view_model;
 
     public ContactListEntry(ILogger logger, IContact contact) {
       logger.d("ContactListEntry created.");

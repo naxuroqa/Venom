@@ -22,15 +22,15 @@
 namespace Venom {
   [GtkTemplate(ui = "/im/tox/venom/ui/file_transfer_entry.ui")]
   public class FileTransferEntry : Gtk.ListBoxRow {
-    private ILogger logger;
-    private FileTransferEntryViewModel view_model;
-
     [GtkChild] private Gtk.Label description;
     [GtkChild] private Gtk.ProgressBar progress;
     [GtkChild] private Gtk.Button open_file;
     [GtkChild] private Gtk.Button resume_transfer;
     [GtkChild] private Gtk.Button pause_transfer;
     [GtkChild] private Gtk.Button delete_transfer;
+
+    private ILogger logger;
+    private FileTransferEntryViewModel view_model;
 
     public FileTransferEntry(ILogger logger, FileTransfer file_transfer) {
       logger.d("FileTransferEntry created.");
