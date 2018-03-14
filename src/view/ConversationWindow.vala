@@ -58,8 +58,8 @@ namespace Venom {
       this.listener = listener;
       this.contact = contact;
 
-      user_name.label = contact.get_name_string();
-      user_status.label = contact.get_status_string();
+      contact.changed.connect(update_widgets);
+      update_widgets();
 
       var model = new ObservableListModel<IMessage>(conversation);
       message_list.bind_model(model, create_entry);
@@ -73,6 +73,11 @@ namespace Venom {
       model.items_changed.connect(on_items_changed);
 
       logger.d("ConversationWindow created.");
+    }
+
+    private void update_widgets() {
+      user_name.label = contact.get_name_string();
+      user_status.label = contact.get_status_string();
     }
 
     ~ConversationWindow() {
