@@ -38,7 +38,7 @@ test_contact = executable('test_contact', ['TestContact.vala',
 
 test_about = executable('test_about', ['TestAbout.vala',
 			'Mock.vala', 'MockFramework.vala',
-			join_paths(root_source_dir, 'ui/AboutDialog.vala')],
+			join_paths(root_source_dir, 'view/AboutDialog.vala')],
 			join_paths(root_source_dir, 'core/Interfaces.vala'),
 			dependencies : [gtk_dep, config_dep]
 			)
