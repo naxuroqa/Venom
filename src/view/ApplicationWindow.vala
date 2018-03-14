@@ -196,7 +196,7 @@ namespace Venom {
     }
 
     private void on_filetransfer() {
-      switch_content_with(() => { return new FileTransferWidget(logger, transfers); });
+      switch_content_with(() => { return new FileTransferWidget(logger, transfers, filetransfer_listener); });
     }
 
     public void on_show_friend(IContact contact) {

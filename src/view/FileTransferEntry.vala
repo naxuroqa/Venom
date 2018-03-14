@@ -27,22 +27,39 @@ namespace Venom {
     [GtkChild] private Gtk.Button open_file;
     [GtkChild] private Gtk.Button resume_transfer;
     [GtkChild] private Gtk.Button pause_transfer;
-    [GtkChild] private Gtk.Button delete_transfer;
+    [GtkChild] private Gtk.Button stop_transfer;
+    [GtkChild] private Gtk.Button remove_transfer;
 
     private ILogger logger;
     private FileTransferEntryViewModel view_model;
 
-    public FileTransferEntry(ILogger logger, FileTransfer file_transfer) {
+    public FileTransferEntry(ILogger logger, FileTransfer file_transfer, FileTransferEntryListener listener) {
       logger.d("FileTransferEntry created.");
 
       this.logger = logger;
-      this.view_model = new FileTransferEntryViewModel(logger, file_transfer);
+      this.view_model = new FileTransferEntryViewModel(logger, file_transfer, listener);
 
       view_model.bind_property("description", description, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("progress", progress, "fraction", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("open-visible", open_file, "sensitive", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("resume-visible", resume_transfer, "sensitive", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("pause-visible", pause_transfer, "sensitive", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("stop-visible", stop_transfer, "sensitive", GLib.BindingFlags.SYNC_CREATE);
+
+      open_file.clicked.connect(view_model.on_open_clicked);
+      resume_transfer.clicked.connect(view_model.on_resume_transfer);
+      pause_transfer.clicked.connect(view_model.on_pause_transfer);
+      stop_transfer.clicked.connect(view_model.on_stop_transfer);
+      remove_transfer.clicked.connect(view_model.on_remove_transfer);
+
+      view_model.open_file.connect(on_open_file);
+    }
+
+    private void on_open_file(string filename) {
+      string[] spawn_args = { "xdg-open", filename };
+      string[] spawn_env = GLib.Environ.get();
+
+      GLib.Process.spawn_async(null, spawn_args, spawn_env, GLib.SpawnFlags.SEARCH_PATH, null, null);
     }
 
     ~FileTransferEntry() {

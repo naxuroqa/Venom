@@ -24,22 +24,26 @@ namespace Venom {
     INIT,
     PAUSED,
     RUNNING,
-    ABORTED,
+    CANCEL,
     FINISHED
   }
 
   public interface FileTransfer : GLib.Object {
-    public signal void status_changed();
+    public signal void state_changed();
     public signal void progress_changed();
 
     public abstract bool is_avatar();
     public abstract string get_description();
     public abstract uint64 get_transmitted_size();
     public abstract uint64 get_file_size();
-    public abstract unowned uint8[] get_file_data();
+    public abstract unowned uint8[]? get_file_data();
     public abstract void set_file_data(uint64 offset, uint8[] data);
     public abstract FileTransferState get_state();
     public abstract void set_state(FileTransferState state);
+    public abstract string? get_file_path();
+
+    public abstract uint32 get_friend_number();
+    public abstract uint32 get_file_number();
   }
 
   public class FileTransferImpl : FileTransfer, GLib.Object {
@@ -47,25 +51,32 @@ namespace Venom {
     private uint64 transmitted_size;
     private ILogger logger;
     private string description;
-    //private bool _is_avatar;
+    private bool _is_avatar;
     private FileTransferState state;
+    private uint32 friend_number;
+    private uint32 file_number;
 
-    public FileTransferImpl.File(ILogger logger, uint64 file_size, string filename) {
+    private FileTransferImpl(ILogger logger, uint32 friend_number, uint32 file_number) {
       this.logger = logger;
-      this.description = filename;
-      file_data = new uint8[file_size];
-      transmitted_size = 0;
-      state = FileTransferState.INIT;
-      //_is_avatar = false;
+      this.friend_number = friend_number;
+      this.file_number = file_number;
     }
 
-    public FileTransferImpl.Avatar(ILogger logger, uint64 file_size, string description) {
-      this.logger = logger;
+    public FileTransferImpl.File(ILogger logger, uint32 friend_number, uint32 file_number, uint64 file_size, string filename) {
+      this(logger, friend_number, file_number);
+      this.description = filename;
+      transmitted_size = 0;
+      state = FileTransferState.INIT;
+      _is_avatar = false;
+    }
+
+    public FileTransferImpl.Avatar(ILogger logger, uint32 friend_number, uint32 file_number, uint64 file_size, string description) {
+      this(logger, friend_number, file_number);
       this.description = description;
       file_data = new uint8[file_size];
       transmitted_size = 0;
       state = FileTransferState.INIT;
-      //_is_avatar = true;
+      _is_avatar = true;
     }
 
     private static void copy_with_offset(uint8[] dest, uint8[] src, uint64 offset) {
@@ -74,7 +85,7 @@ namespace Venom {
     }
 
     public virtual bool is_avatar() {
-      return false; //_is_avatar;
+      return _is_avatar;
     }
 
     public virtual string get_description() {
@@ -90,6 +101,13 @@ namespace Venom {
     }
 
     public virtual void set_file_data(uint64 offset, uint8[] data) {
+      if (!is_avatar()) {
+        //FIXME implement this
+        transmitted_size += data.length;
+        progress_changed();
+        return;
+      }
+
       if (data.length + offset > file_data.length) {
         logger.e("set_data overflow");
         return;
@@ -99,7 +117,11 @@ namespace Venom {
       progress_changed();
     }
 
-    public virtual unowned uint8[] get_file_data() {
+    public virtual string? get_file_path() {
+      return ".";
+    }
+
+    public virtual unowned uint8[]? get_file_data() {
       return file_data;
     }
 
@@ -109,6 +131,15 @@ namespace Venom {
 
     public virtual void set_state(FileTransferState state) {
       this.state = state;
+      state_changed();
+    }
+
+    public virtual uint32 get_friend_number() {
+      return friend_number;
+    }
+
+    public virtual uint32 get_file_number() {
+      return file_number;
     }
   }
 }

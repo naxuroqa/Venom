@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class ToxAdapterFiletransferListenerImpl : ToxAdapterFiletransferListener, GLib.Object {
+  public class ToxAdapterFiletransferListenerImpl : ToxAdapterFiletransferListener, FileTransferEntryListener, GLib.Object {
     private const int MAX_AVATAR_SIZE = 250 * 1024;
 
     private unowned ToxSession session;
@@ -51,17 +51,44 @@ namespace Venom {
       friends = session.get_friends();
     }
 
+    public virtual void start_transfer(FileTransfer transfer) throws Error {
+      logger.d("start_transfer");
+      session.file_control(transfer.get_friend_number(), transfer.get_file_number(), ToxCore.FileControl.RESUME);
+      transfer.set_state(FileTransferState.RUNNING);
+    }
+
+    public virtual void stop_transfer(FileTransfer transfer) throws Error {
+      logger.d("stop_transfer");
+      session.file_control(transfer.get_friend_number(), transfer.get_file_number(), ToxCore.FileControl.CANCEL);
+      transfer.set_state(FileTransferState.CANCEL);
+    }
+
+    public virtual void pause_transfer(FileTransfer transfer) throws Error {
+      logger.d("pause_transfer");
+      session.file_control(transfer.get_friend_number(), transfer.get_file_number(), ToxCore.FileControl.PAUSE);
+      transfer.set_state(FileTransferState.PAUSED);
+    }
+
+    public virtual void remove_transfer(FileTransfer transfer) throws Error {
+      logger.d("remove_transfer %u:%u".printf(transfer.get_friend_number(), transfer.get_file_number()));
+      var state = transfer.get_state();
+      if (state != FileTransferState.CANCEL && state != FileTransferState.FINISHED) {
+        session.file_control(transfer.get_friend_number(), transfer.get_file_number(), ToxCore.FileControl.CANCEL);
+      }
+      transfers.remove(transfer);
+    }
+
     public virtual void on_file_recv_data(uint32 friend_number, uint32 file_number, uint64 file_size, string filename) {
       logger.d("on_file_recv_data");
 
       try {
-        session.file_control(friend_number, file_number, ToxCore.FileControl.RESUME);
+        // session.file_control(friend_number, file_number, ToxCore.FileControl.RESUME);
+        // logger.d("file_control resume sent");
         var contact = friends.@get(friend_number);
-        var transfer = new FileTransferImpl.File(logger, file_size, "New file from \"%s\"".printf(contact.get_name_string()));
+        var transfer = new FileTransferImpl.File(logger, friend_number, file_number, file_size, "New file from \"%s\"".printf(contact.get_name_string()));
         set_filetransfer(friend_number, file_number, transfer);
         transfers.append(transfer);
 
-        logger.d("file_control resume sent");
       } catch (Error e) {
         logger.e("file_control failed: " + e.message);
         return;
@@ -69,7 +96,7 @@ namespace Venom {
     }
 
     public virtual void on_file_recv_avatar(uint32 friend_number, uint32 file_number, uint64 file_size) {
-      logger.d("on_file_recv_avatar");
+      logger.d(@"on_file_recv_avatar $friend_number:$file_number");
       if (file_size > MAX_AVATAR_SIZE) {
         logger.i("avatar > MAX_AVATAR_SIZE, dropping transfer request");
         drop_file_recv_avatar(friend_number, file_number);
@@ -77,13 +104,14 @@ namespace Venom {
       }
 
       try {
-        session.file_control(friend_number, file_number, ToxCore.FileControl.RESUME);
+        //session.file_control(friend_number, file_number, ToxCore.FileControl.RESUME);
         var contact = friends.@get(friend_number);
-        var transfer = new FileTransferImpl.Avatar(logger, file_size, "New avatar from \"%s\"".printf(contact.get_name_string()));
+        var transfer = new FileTransferImpl.Avatar(logger, friend_number, file_number, file_size, "New avatar from \"%s\"".printf(contact.get_name_string()));
+        //transfer.set_state(FileTransferState.RUNNING);
         set_filetransfer(friend_number, file_number, transfer);
         transfers.append(transfer);
 
-        logger.d("file_control resume sent");
+        //logger.d("file_control resume sent");
       } catch (Error e) {
         logger.e("file_control failed: " + e.message);
         return;
@@ -128,6 +156,11 @@ namespace Venom {
       if (data.length > 0) {
         transfer.set_file_data(position, data);
       } else {
+        transfer.set_state(FileTransferState.FINISHED);
+        if (!transfer.is_avatar()) {
+          return;
+        }
+
         var c = contact as Contact;
         try {
           friend_transfers.remove(file_number);

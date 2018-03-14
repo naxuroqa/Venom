@@ -24,21 +24,23 @@ namespace Venom {
   public class FileTransferWidget : Gtk.Box {
     private ILogger logger;
     private ObservableList<FileTransfer> transfers;
+    private FileTransferEntryListener listener;
 
     [GtkChild]
     private Gtk.ListBox file_transfers;
 
-    public FileTransferWidget(ILogger logger, ObservableList<FileTransfer> transfers) {
+    public FileTransferWidget(ILogger logger, ObservableList<FileTransfer> transfers, FileTransferEntryListener listener) {
       logger.d("FileTransferWidget created.");
       this.logger = logger;
       this.transfers = transfers;
+      this.listener = listener;
 
       file_transfers.bind_model(new ObservableListModel<FileTransfer>(transfers), create_entry);
       unmap.connect(() => { file_transfers.bind_model(null, null); } );
     }
 
     private Gtk.Widget create_entry(GLib.Object object) {
-      return new FileTransferEntry(logger, object as FileTransfer);
+      return new FileTransferEntry(logger, object as FileTransfer, listener);
     }
 
     ~FileTransferWidget() {

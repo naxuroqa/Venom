@@ -132,7 +132,7 @@ namespace Venom {
       var options_error = ToxCore.ErrOptionsNew.OK;
       var options = new ToxCore.Options(ref options_error);
 
-      options.log_callback = on_tox_message;
+      //options.log_callback = on_tox_message;
       friends = new GLib.HashTable<uint32, IContact>(null, null);
 
       var savedata = iohandler.load_sessiondata();
@@ -376,7 +376,7 @@ namespace Venom {
       var kiB = file_size / 1024f;
       var filename_str = copy_data_string(filename);
       var kind_type_str = kind_type.to_string();
-      session.logger.d(@"on_file_recv_cb: $friend_number/$file_number ($kind_type_str) $kiB kiB ($filename_str)");
+      session.logger.d(@"on_file_recv_cb: $friend_number:$file_number ($kind_type_str) $kiB kiB");
       switch (kind_type) {
         case FileKind.DATA:
           Idle.add(() => { session.filetransfer_listener.on_file_recv_data(friend_number, file_number, file_size, filename_str); return false; });

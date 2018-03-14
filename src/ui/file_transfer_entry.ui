@@ -27,7 +27,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="delete_transfer">
+          <object class="GtkButton" id="remove_transfer">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -165,7 +165,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Start transfer</property>
+                <property name="tooltip_text" translatable="yes">Stop transfer</property>
                 <property name="valign">center</property>
                 <child>
                   <object class="GtkImage">
