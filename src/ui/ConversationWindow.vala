@@ -46,21 +46,22 @@ namespace Venom {
 
     private unowned ApplicationWindow app_window;
     private ILogger logger;
-    private Conversation conversation;
+    private ObservableList<IMessage> conversation;
     private ConversationWidgetListener listener;
     private bool is_typing;
+    private IContact contact;
 
-    public ConversationWindow(ApplicationWindow app_window, ILogger logger, Conversation conversation, ConversationWidgetListener listener) {
+    public ConversationWindow(ApplicationWindow app_window, ILogger logger, ObservableList<IMessage> conversation, IContact contact, ConversationWidgetListener listener) {
       this.app_window = app_window;
       this.logger = logger;
       this.conversation = conversation;
       this.listener = listener;
+      this.contact = contact;
 
-      var contact = conversation.get_contact();
       user_name.label = contact.get_name_string();
       user_status.label = contact.get_status_string();
 
-      var model = new ConversationModel(conversation);
+      var model = new ObservableListModel<IMessage>(conversation);
       message_list.bind_model(model, create_entry);
       unmap.connect(() => { message_list.bind_model(null, null); });
 
@@ -106,7 +107,7 @@ namespace Venom {
       logger.d("on_message");
 
       try {
-        listener.on_send_message(conversation.get_contact(), message);
+        listener.on_send_message(contact, message);
       } catch (Error e) {
         logger.e("Could not send message: " + e.message);
       }
@@ -123,7 +124,7 @@ namespace Venom {
 
     private void try_set_typing(bool typing) {
       try {
-        listener.on_set_typing(conversation.get_contact(), typing);
+        listener.on_set_typing(contact, typing);
       } catch (Error e) {
         logger.e("Could not set typing status: " + e.message);
       }
@@ -143,7 +144,7 @@ namespace Venom {
 
     private void on_contact_info() {
       logger.d("on_contact_info");
-      app_window.on_show_friend(conversation.get_contact());
+      app_window.on_show_friend(contact);
     }
 
     private void on_start_call() {
@@ -168,44 +169,5 @@ namespace Venom {
   public interface ConversationWidgetListener : GLib.Object {
     public abstract void on_send_message(IContact contact, string message) throws Error;
     public abstract void on_set_typing(IContact contact, bool typing) throws Error;
-  }
-
-  public class ConversationModel : GLib.Object, GLib.ListModel {
-    private Conversation conversation;
-
-    public ConversationModel(Conversation conversation) {
-      this.conversation = conversation;
-      conversation.message_added.connect(on_message_added);
-      conversation.message_removed.connect(on_message_removed);
-      conversation.message_changed.connect(on_message_changed);
-    }
-
-    private void on_message_added(GLib.Object sender, uint index) {
-      items_changed(index, 0, 1);
-    }
-
-    private void on_message_removed(GLib.Object sender, uint index) {
-      items_changed(index, 1, 0);
-    }
-
-    private void on_message_changed(GLib.Object sender, uint index) {
-      items_changed(index, 1, 1);
-    }
-
-    public virtual GLib.Object ? get_item(uint position) {
-      return conversation.get_item(position);
-    }
-
-    public virtual GLib.Type get_item_type() {
-      return typeof (IMessage);
-    }
-
-    public virtual uint get_n_items() {
-      return conversation.length();
-    }
-
-    public virtual GLib.Object ? get_object(uint position) {
-      return get_item(position);
-    }
   }
 }

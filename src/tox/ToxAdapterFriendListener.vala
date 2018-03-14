@@ -23,9 +23,9 @@ namespace Venom {
   public class ToxAdapterFriendListenerImpl : ToxAdapterFriendListener, AddContactWidgetListener, ConversationWidgetListener, FriendInfoWidgetListener, FriendRequestWidgetListener, GLib.Object {
     private unowned ToxSession session;
     private ILogger logger;
-    private Contacts contacts;
+    private ObservableList<IContact> contacts;
     private NotificationListener notification_listener;
-    private GLib.HashTable<IContact, Conversation> conversations;
+    private GLib.HashTable<IContact, ObservableList<IMessage>> conversations;
     private GLib.HashTable<uint32, Message> messages_waiting_for_rr;
 
     private unowned GLib.HashTable<uint32, IContact> friends;
@@ -33,7 +33,7 @@ namespace Venom {
 
     public bool show_typing { get; set; }
 
-    public ToxAdapterFriendListenerImpl(ILogger logger, Contacts contacts, GLib.HashTable<IContact, Conversation> conversations, NotificationListener notification_listener) {
+    public ToxAdapterFriendListenerImpl(ILogger logger, ObservableList<IContact> contacts, GLib.HashTable<IContact, ObservableList<IMessage>> conversations, NotificationListener notification_listener) {
       logger.d("ToxAdapterFriendListenerImpl created.");
       this.logger = logger;
       this.contacts = contacts;
@@ -79,13 +79,13 @@ namespace Venom {
       var public_key = Tools.hexstring_to_bin(id);
       session.friend_add_norequest(public_key);
       friend_requests.remove(id);
-      contacts.remove_contact(this, friend_request);
+      contacts.remove(friend_request);
     }
 
     public virtual void on_reject_friend_request(string id) throws Error {
       var friend_request = friend_requests.@get(id);
       friend_requests.remove(id);
-      contacts.remove_contact(this, friend_request);
+      contacts.remove(friend_request);
     }
 
     public virtual void on_send_message(IContact c, string message) throws Error {
@@ -107,7 +107,7 @@ namespace Venom {
       var conversation = conversations.@get(contact);
       var message = new Message.incoming(contact, message_str);
       notification_listener.on_unread_message(message);
-      conversation.add_message(this, message);
+      conversation.append(message);
     }
 
     public virtual void on_friend_read_receipt(uint32 friend_number, uint32 message_id) {
@@ -148,7 +148,7 @@ namespace Venom {
       logger.d("on_friend_request");
       var str_id = Tools.bin_to_hexstring(public_key);
       var contact = new FriendRequest(str_id, message);
-      contacts.add_contact(this, contact);
+      contacts.append(contact);
       friend_requests.@set(str_id, contact);
     }
 
@@ -172,10 +172,12 @@ namespace Venom {
       }
 
       if (!conversations.contains(contact)) {
-        conversations.@set(contact, new ConversationImpl(contact));
+        var conversation = new ObservableList<IMessage>();
+        conversation.set_list(new GLib.List<IMessage>());
+        conversations.@set(contact, conversation);
       }
       friends.@set(friend_number, contact);
-      contacts.add_contact(this, contact);
+      contacts.append(contact);
     }
 
     public virtual void on_friend_deleted(uint32 friend_number) {
@@ -183,7 +185,7 @@ namespace Venom {
       var contact = friends.@get(friend_number);
       conversations.remove(contact);
       friends.remove(friend_number);
-      contacts.remove_contact(this, contact);
+      contacts.remove(contact);
     }
 
     public virtual void on_friend_message_sent(uint32 friend_number, uint32 message_id, string message) {
@@ -192,7 +194,7 @@ namespace Venom {
       var conversation = conversations.@get(contact);
       var msg = new Message.outgoing(contact, message);
       msg.message_id = message_id;
-      conversation.add_message(this, msg);
+      conversation.append(msg);
       messages_waiting_for_rr.@set(message_id, msg);
     }
   }

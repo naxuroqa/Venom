@@ -37,7 +37,7 @@ namespace Venom {
     [GtkChild]
     private Gtk.Image image_status;
 
-    public ContactListWidget(ILogger logger, Contacts contacts, ContactListWidgetCallback callback, UserInfo user_info) {
+    public ContactListWidget(ILogger logger, ObservableList<IContact> contacts, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListWidget created.");
       this.logger = logger;
       this.callback = callback;
@@ -46,7 +46,7 @@ namespace Venom {
       refresh_user_info(this);
       user_info.info_changed.connect(refresh_user_info);
 
-      contact_list.bind_model(new ContactListModel(contacts), create_entry);
+      contact_list.bind_model(new ObservableListModel<IContact>(contacts), create_entry);
       contact_list.row_activated.connect(on_row_activated);
     }
 
@@ -98,45 +98,6 @@ namespace Venom {
 
     ~ContactListWidget() {
       logger.d("ContactListWidget destroyed.");
-    }
-  }
-
-  public class ContactListModel : GLib.Object, GLib.ListModel {
-    private Contacts contacts;
-
-    public ContactListModel(Contacts contacts) {
-      this.contacts = contacts;
-      contacts.contact_added.connect(on_contact_added);
-      contacts.contact_removed.connect(on_contact_removed);
-      contacts.contact_changed.connect(on_contact_changed);
-    }
-
-    private void on_contact_added(GLib.Object sender, uint index) {
-      items_changed(index, 0, 1);
-    }
-
-    private void on_contact_removed(GLib.Object sender, uint index) {
-      items_changed(index, 1, 0);
-    }
-
-    private void on_contact_changed(GLib.Object sender, uint index) {
-      items_changed(index, 1, 1);
-    }
-
-    public virtual GLib.Object ? get_item(uint position) {
-      return contacts.get_item(position);
-    }
-
-    public virtual GLib.Type get_item_type() {
-      return typeof (IContact);
-    }
-
-    public virtual uint get_n_items() {
-      return contacts.length();
-    }
-
-    public virtual GLib.Object ? get_object(uint position) {
-      return get_item(position);
     }
   }
 

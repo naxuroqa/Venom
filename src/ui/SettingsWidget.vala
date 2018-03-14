@@ -26,57 +26,32 @@ namespace Venom {
     private IDhtNodeDatabase nodeDatabase;
     private ILogger logger;
 
-    [GtkChild]
-    private Gtk.Stack stack;
-    [GtkChild]
-    private Gtk.ListBox sidebar;
-    [GtkChild]
-    private Gtk.ListBoxRow row_general;
-    [GtkChild]
-    private Gtk.ListBoxRow row_connection;
-    [GtkChild]
-    private Gtk.ListBoxRow row_proxy;
-    [GtkChild]
-    private Gtk.Widget content_general;
-    [GtkChild]
-    private Gtk.Widget content_connection;
-    [GtkChild]
-    private Gtk.Widget content_proxy;
+    [GtkChild] private Gtk.Stack stack;
+    [GtkChild] private Gtk.ListBox sidebar;
+    [GtkChild] private Gtk.ListBoxRow row_general;
+    [GtkChild] private Gtk.ListBoxRow row_connection;
+    [GtkChild] private Gtk.ListBoxRow row_proxy;
+    [GtkChild] private Gtk.Widget content_general;
+    [GtkChild] private Gtk.Widget content_connection;
+    [GtkChild] private Gtk.Widget content_proxy;
+    [GtkChild] private Gtk.Switch enable_dark_theme;
+    [GtkChild] private Gtk.Switch enable_notify_switch;
+    [GtkChild] private Gtk.Switch enable_tray_switch;
+    [GtkChild] private Gtk.Switch enable_show_typing;
+    [GtkChild] private Gtk.Switch keep_history;
+    [GtkChild] private Gtk.Revealer history_revealer;
+    [GtkChild] private Gtk.RadioButton history_keep_radio;
+    [GtkChild] private Gtk.SpinButton history_delete_spinbutton;
+    [GtkChild] private Gtk.ListBox node_list_box;
+    [GtkChild] private Gtk.Revealer proxy_revealer;
+    [GtkChild] private Gtk.Switch proxy_enabled;
+    [GtkChild] private Gtk.RadioButton proxy_system;
+    [GtkChild] private Gtk.RadioButton proxy_manual;
+    [GtkChild] private Gtk.Revealer proxy_manual_revealer;
+    [GtkChild] private Gtk.Entry custom_proxy_host;
+    [GtkChild] private Gtk.SpinButton custom_proxy_port;
 
-    [GtkChild]
-    private Gtk.Switch enable_dark_theme;
-
-    [GtkChild]
-    private Gtk.Switch enable_notify_switch;
-    [GtkChild]
-    private Gtk.Switch enable_tray_switch;
-    [GtkChild]
-    private Gtk.Switch enable_show_typing;
-    [GtkChild]
-    private Gtk.Switch keep_history;
-    [GtkChild]
-    private Gtk.Revealer history_revealer;
-    [GtkChild]
-    private Gtk.RadioButton history_keep_radio;
-    [GtkChild]
-    private Gtk.SpinButton history_delete_spinbutton;
-    [GtkChild]
-    private Gtk.ListBox node_list_box;
-
-    [GtkChild]
-    private Gtk.Revealer proxy_revealer;
-    [GtkChild]
-    private Gtk.Switch proxy_enabled;
-    [GtkChild]
-    private Gtk.RadioButton proxy_system;
-    [GtkChild]
-    private Gtk.RadioButton proxy_manual;
-    [GtkChild]
-    private Gtk.Revealer proxy_manual_revealer;
-    [GtkChild]
-    private Gtk.Entry custom_proxy_host;
-    [GtkChild]
-    private Gtk.SpinButton custom_proxy_port;
+    private ObservableList<IDhtNode> dht_nodes;
 
     public SettingsWidget(ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase, ILogger logger) {
       logger.d("SettingsWidget created.");
@@ -103,8 +78,9 @@ namespace Venom {
       settingsDatabase.bind_property("custom-proxy-port",   custom_proxy_port,         "value",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
       var dhtNodeFactory = new DhtNodeFactory();
-      var nodes = nodeDatabase.getDhtNodes(dhtNodeFactory);
-      node_list_box.bind_model(new GenericListModel<IDhtNode>(nodes), createListboxEntry);
+      dht_nodes = new ObservableList<IDhtNode>();
+      dht_nodes.set_list(nodeDatabase.getDhtNodes(dhtNodeFactory));
+      node_list_box.bind_model(new ObservableListModel<IDhtNode>(dht_nodes), createListboxEntry);
       unmap.connect(() => { node_list_box.bind_model(null, null); });
     }
 

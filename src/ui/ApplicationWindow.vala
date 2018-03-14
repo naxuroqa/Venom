@@ -56,18 +56,18 @@ namespace Venom {
     private ToxAdapterConferenceListenerImpl conference_listener;
     private ToxAdapterFiletransferListenerImpl filetransfer_listener;
     private ToxAdapterListenerImpl session_listener;
-    private Contacts contacts;
+    private ObservableList<IContact> contacts;
     private ObservableList<FileTransfer> transfers;
     private NotificationListener notification_listener;
 
-    private GLib.HashTable<IContact, Conversation> conversations;
+    private GLib.HashTable<IContact, ObservableList<IMessage>> conversations;
     private UserInfo user_info;
 
     public ApplicationWindow(Gtk.Application application, Factory.IWidgetFactory widget_factory, IDhtNodeDatabase node_database,
                              ISettingsDatabase settings_database, IContactDatabase contact_database) {
       Object(application: application);
 
-      conversations = new GLib.HashTable<IContact, Conversation>(null, null);
+      conversations = new GLib.HashTable<IContact, ObservableList<IMessage>>(null, null);
       user_info = new UserInfoImpl();
 
       this.widget_factory = widget_factory;
@@ -78,7 +78,8 @@ namespace Venom {
       this.settings_database = settings_database;
       this.contact_database = contact_database;
 
-      contacts = new ContactsImpl(logger);
+      contacts = new ObservableList<IContact>();
+      contacts.set_list(new GLib.List<IContact>());
       transfers = new ObservableList<FileTransfer>();
       transfers.set_list(new GLib.List<FileTransfer>());
 
@@ -145,10 +146,10 @@ namespace Venom {
       logger.d("ApplicationWindow on_contact_selected");
       if (contact is Contact) {
         var conv = conversations.@get(contact);
-        switch_content_with(() => { return new ConversationWindow(this, logger, conv, friend_listener); });
+        switch_content_with(() => { return new ConversationWindow(this, logger, conv, contact, friend_listener); });
       } else if (contact is GroupchatContact) {
         var conv = conversations.@get(contact);
-        switch_content_with(() => { return new ConferenceWindow(this, logger, conv, conference_listener); });
+        switch_content_with(() => { return new ConferenceWindow(this, logger, conv, contact, conference_listener); });
       } else if (contact is FriendRequest) {
         switch_content_with(() => { return new FriendRequestWidget(this, logger, contact, friend_listener); });
       }

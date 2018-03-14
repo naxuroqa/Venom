@@ -23,13 +23,13 @@ namespace Venom {
   public class ToxAdapterConferenceListenerImpl : ToxAdapterConferenceListener, ConferenceWidgetListener, ConferenceInfoWidgetListener, CreateGroupchatWidgetListener, GLib.Object {
     private unowned ToxSession session;
     private ILogger logger;
-    private Contacts contacts;
+    private ObservableList<IContact> contacts;
     private NotificationListener notification_listener;
-    private GLib.HashTable<IContact, Conversation> conversations;
+    private GLib.HashTable<IContact, ObservableList<IMessage>> conversations;
 
     private GLib.HashTable<uint32, IContact> conferences;
 
-    public ToxAdapterConferenceListenerImpl(ILogger logger, Contacts contacts, GLib.HashTable<IContact, Conversation> conversations, NotificationListener notification_listener) {
+    public ToxAdapterConferenceListenerImpl(ILogger logger, ObservableList<IContact> contacts, GLib.HashTable<IContact, ObservableList<IMessage>> conversations, NotificationListener notification_listener) {
       logger.d("ToxAdapterConferenceListenerImpl created.");
       this.logger = logger;
       this.contacts = contacts;
@@ -70,15 +70,17 @@ namespace Venom {
     public virtual void on_conference_new(uint32 conference_number, string title) {
       logger.d("on_conference_new");
       var contact = new GroupchatContact(conference_number, title);
-      contacts.add_contact(this, contact);
+      contacts.append(contact);
       conferences.@set(conference_number, contact);
-      conversations.@set(contact, new ConversationImpl(contact));
+      var conversation = new ObservableList<IMessage>();
+      conversation.set_list(new GLib.List<IMessage>());
+      conversations.@set(contact, conversation);
     }
 
     public virtual void on_conference_deleted(uint32 conference_number) {
       logger.d("on_conference_deleted");
       var contact = conferences.@get(conference_number);
-      contacts.remove_contact(this, contact);
+      contacts.remove(contact);
       conversations.remove(contact);
       conferences.remove(conference_number);
     }
@@ -119,7 +121,7 @@ namespace Venom {
       var conversation = conversations.@get(contact);
       var msg = new GroupMessage.incoming(contact, peer_number, message);
       notification_listener.on_unread_message(msg);
-      conversation.add_message(this, msg);
+      conversation.append(msg);
     }
 
     public virtual void on_conference_message_sent(uint32 conference_number, string message) {
@@ -128,7 +130,7 @@ namespace Venom {
       var conversation = conversations.@get(contact);
       var msg = new GroupMessage.outgoing(contact, message);
       msg.received = true;
-      conversation.add_message(this, msg);
+      conversation.append(msg);
     }
   }
 }

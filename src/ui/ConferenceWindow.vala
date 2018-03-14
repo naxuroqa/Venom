@@ -42,20 +42,21 @@ namespace Venom {
 
     private unowned ApplicationWindow app_window;
     private ILogger logger;
-    private Conversation conversation;
+    private ObservableList<IMessage> conversation;
     private ConferenceWidgetListener listener;
+    private IContact contact;
 
-    public ConferenceWindow(ApplicationWindow app_window, ILogger logger, Conversation conversation, ConferenceWidgetListener listener) {
+    public ConferenceWindow(ApplicationWindow app_window, ILogger logger, ObservableList<IMessage> conversation, IContact contact, ConferenceWidgetListener listener) {
       this.app_window = app_window;
       this.logger = logger;
       this.conversation = conversation;
       this.listener = listener;
+      this.contact = contact;
 
-      var contact = conversation.get_contact();
       contact.changed.connect(update_widgets);
       update_widgets();
 
-      var model = new ConversationModel(conversation);
+      var model = new ObservableListModel<IMessage>(conversation);
       message_list.bind_model(model, create_entry);
       unmap.connect(() => { message_list.bind_model(null, null); });
 
@@ -77,7 +78,6 @@ namespace Venom {
     }
 
     private void update_widgets() {
-      var contact = conversation.get_contact();
       conference_title.label = contact.get_name_string();
       conference_peers.label = contact.get_status_string();
     }
@@ -106,7 +106,7 @@ namespace Venom {
       logger.d("on_message");
 
       try {
-        listener.on_send_conference_message(conversation.get_contact(), message);
+        listener.on_send_conference_message(contact, message);
       } catch (Error e) {
         logger.e("Could not send message: " + e.message);
       }
@@ -125,7 +125,7 @@ namespace Venom {
     }
 
     private void on_conference_info() {
-      app_window.on_show_conference(conversation.get_contact());
+      app_window.on_show_conference(contact);
     }
 
     private void on_show_peers() {
