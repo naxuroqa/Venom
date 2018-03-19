@@ -42,5 +42,9 @@ namespace Venom {
       this.maintainer = maintainer;
       this.location = location;
     }
+
+    ~DhtNode() {
+      stdout.printf("~DhtNode()\n");
+    }
   }
 }

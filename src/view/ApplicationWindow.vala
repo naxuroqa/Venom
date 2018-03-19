@@ -128,6 +128,7 @@ namespace Venom {
 
       var gtk_settings = Gtk.Settings.get_default();
       settings_database.bind_property("enable-dark-theme", gtk_settings, "gtk-application-prefer-dark-theme", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settings_database.bind_property("enable-animations", gtk_settings, "gtk-enable-animations", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
       //status_label.label = get_header_for_status(user_status);
       set_default_icon_name(R.icons.app);

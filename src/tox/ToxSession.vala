@@ -30,7 +30,7 @@ namespace Venom {
 
   public interface ToxSession : GLib.Object {
     public abstract void set_session_listener(ToxAdapterListener listener);
-    public abstract void set_filetransfer_listener(ToxAdapterFiletransferListener listener);
+    public abstract void set_file_transfer_listener(ToxAdapterFiletransferListener listener);
     public abstract void set_friend_listener(ToxAdapterFriendListener listener);
     public abstract void set_conference_listener(ToxAdapterConferenceListener listener);
 
@@ -102,6 +102,7 @@ namespace Venom {
     public abstract void on_file_recv_avatar(uint32 friend_number, uint32 file_number, uint64 file_size);
 
     public abstract void on_file_recv_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data);
+    public abstract void on_file_recv_control(uint32 friend_number, uint32 file_number, FileControl control);
   }
 
   public class ToxSessionImpl : GLib.Object, ToxSession {
@@ -118,7 +119,7 @@ namespace Venom {
     private ToxAdapterListener listener;
     private ToxAdapterFriendListener friend_listener;
     private ToxAdapterConferenceListener conference_listener;
-    private ToxAdapterFiletransferListener filetransfer_listener;
+    private ToxAdapterFiletransferListener file_transfer_listener;
     private ToxSessionIO iohandler;
     private GLib.HashTable<uint32, IContact> friends;
 
@@ -179,6 +180,7 @@ namespace Venom {
 
       handle.callback_file_recv(on_file_recv_cb);
       handle.callback_file_recv_chunk(on_file_recv_chunk_cb);
+      handle.callback_file_recv_control(on_file_recv_control_cb);
 
       init_dht_nodes();
       sessionThread = new ToxSessionThreadImpl(this, logger, dht_nodes);
@@ -223,8 +225,8 @@ namespace Venom {
       this.listener = listener;
     }
 
-    public virtual void set_filetransfer_listener(ToxAdapterFiletransferListener listener) {
-      this.filetransfer_listener = listener;
+    public virtual void set_file_transfer_listener(ToxAdapterFiletransferListener listener) {
+      this.file_transfer_listener = listener;
     }
 
     public virtual void set_friend_listener(ToxAdapterFriendListener listener) {
@@ -379,19 +381,26 @@ namespace Venom {
       session.logger.d(@"on_file_recv_cb: $friend_number:$file_number ($kind_type_str) $kiB kiB");
       switch (kind_type) {
         case FileKind.DATA:
-          Idle.add(() => { session.filetransfer_listener.on_file_recv_data(friend_number, file_number, file_size, filename_str); return false; });
+          Idle.add(() => { session.file_transfer_listener.on_file_recv_data(friend_number, file_number, file_size, filename_str); return false; });
           break;
         case FileKind.AVATAR:
-          Idle.add(() => { session.filetransfer_listener.on_file_recv_avatar(friend_number, file_number, file_size); return false; });
+          Idle.add(() => { session.file_transfer_listener.on_file_recv_avatar(friend_number, file_number, file_size); return false; });
           break;
       }
     }
 
     private static void on_file_recv_chunk_cb(Tox self, uint32 friend_number, uint32 file_number, uint64 position, uint8[] data, void* user_data) {
       var session = (ToxSessionImpl) user_data;
-      session.logger.d(@"on_file_recv_chunk_cb: $friend_number/$file_number $position");
+      session.logger.d(@"on_file_recv_chunk_cb: $friend_number:$file_number $position");
       var data_copy = copy_data(data, data.length);
-      Idle.add(() => { session.filetransfer_listener.on_file_recv_chunk(friend_number, file_number, position, data_copy); return false; });
+      Idle.add(() => { session.file_transfer_listener.on_file_recv_chunk(friend_number, file_number, position, data_copy); return false; });
+    }
+
+    private static void on_file_recv_control_cb(Tox self, uint32 friend_number, uint32 file_number, FileControl control, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
+      var control_str = control.to_string();
+      session.logger.d(@"on_file_recv_control_cb: $friend_number:$file_number $control_str");
+      Idle.add(() => { session.file_transfer_listener.on_file_recv_control(friend_number, file_number, control); return false; });
     }
 
     private static UserStatus from_connection_status(Connection connection_status) {

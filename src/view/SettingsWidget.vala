@@ -35,6 +35,7 @@ namespace Venom {
     [GtkChild] private Gtk.Widget content_connection;
     [GtkChild] private Gtk.Widget content_proxy;
     [GtkChild] private Gtk.Switch enable_dark_theme;
+    [GtkChild] private Gtk.Switch enable_animations;
     [GtkChild] private Gtk.Switch enable_notify_switch;
     [GtkChild] private Gtk.Switch enable_tray_switch;
     [GtkChild] private Gtk.Switch enable_show_typing;
@@ -63,6 +64,7 @@ namespace Venom {
       sidebar.row_activated.connect(on_row_activated);
 
       settingsDatabase.bind_property("enable-dark-theme",   enable_dark_theme,         "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("enable-animations",   enable_animations,         "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-logging",      keep_history,              "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-logging",      history_revealer,          "reveal-child", BindingFlags.SYNC_CREATE);
       settingsDatabase.bind_property("enable-infinite-log", history_keep_radio,        "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);

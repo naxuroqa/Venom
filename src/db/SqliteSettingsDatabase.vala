@@ -22,6 +22,7 @@
 namespace Venom {
   public class SqliteSettingsDatabase : ISettingsDatabase, Object {
     public bool   enable_dark_theme           { get; set; default = false; }
+    public bool   enable_animations           { get; set; default = true; }
     public bool   enable_logging              { get; set; default = false; }
     public bool   enable_urgency_notification { get; set; default = true; }
     public bool   enable_tray                 { get; set; default = false; }
@@ -38,6 +39,7 @@ namespace Venom {
       CREATE TABLE IF NOT EXISTS Settings (
         id                   INTEGER PRIMARY KEY NOT NULL DEFAULT 0,
         darktheme            INTEGER             NOT NULL,
+        animations           INTEGER             NOT NULL,
         logging              INTEGER             NOT NULL,
         urgencynotification  INTEGER             NOT NULL,
         tray                 INTEGER             NOT NULL,
@@ -55,6 +57,7 @@ namespace Venom {
     private enum SettingsColumn {
       ID,
       DARKTHEME,
+      ANIMATIONS,
       LOGGING,
       URGENCYNOTIFICATIONS,
       TRAY,
@@ -70,6 +73,7 @@ namespace Venom {
 
     private const string TABLE_ID = "$ID";
     private const string TABLE_DARKTHEME = "$DARKTHEME";
+    private const string TABLE_ANIMATIONS = "$ANIMATIONS";
     private const string TABLE_LOGGING = "$LOGGING";
     private const string TABLE_URGENCYNOTIFICATIONS = "$URGENCYNOTIFICATIONS";
     private const string TABLE_TRAY = "$TRAY";
@@ -83,9 +87,10 @@ namespace Venom {
     private const string TABLE_CUSTOM_PROXY_PORT = "$CUSTOMPROXYPORT";
 
     private static string STATEMENT_INSERT_SETTINGS =
-      "INSERT OR REPLACE INTO Settings (id, darktheme, logging, urgencynotification, tray, notify, infinitelog, sendtyping, daystolog, enableproxy, enablecustomproxy, customproxyhost, customproxyport)"
+      "INSERT OR REPLACE INTO Settings (id, darktheme, animations, logging, urgencynotification, tray, notify, infinitelog, sendtyping, daystolog, enableproxy, enablecustomproxy, customproxyhost, customproxyport)"
       + " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);".printf(TABLE_ID,
                                                                                TABLE_DARKTHEME,
+                                                                               TABLE_ANIMATIONS,
                                                                                TABLE_LOGGING,
                                                                                TABLE_URGENCYNOTIFICATIONS,
                                                                                TABLE_TRAY,
@@ -133,6 +138,7 @@ namespace Venom {
       try {
         if (selectStatement.step() == DatabaseResult.ROW) {
           enable_dark_theme = selectStatement.column_bool(SettingsColumn.DARKTHEME);
+          enable_animations = selectStatement.column_bool(SettingsColumn.ANIMATIONS);
           enable_logging = selectStatement.column_bool(SettingsColumn.LOGGING);
           enable_urgency_notification = selectStatement.column_bool(SettingsColumn.URGENCYNOTIFICATIONS);
           enable_tray = selectStatement.column_bool(SettingsColumn.TRAY);
@@ -159,6 +165,7 @@ namespace Venom {
         insertStatement.builder()
             .bind_int( TABLE_ID, 0)
             .bind_bool(TABLE_DARKTHEME, enable_dark_theme)
+            .bind_bool(TABLE_ANIMATIONS, enable_animations)
             .bind_bool(TABLE_LOGGING, enable_logging)
             .bind_bool(TABLE_URGENCYNOTIFICATIONS, enable_urgency_notification)
             .bind_bool(TABLE_TRAY, enable_tray)

@@ -25,14 +25,12 @@ namespace Venom {
     public signal void removed(T item, uint index);
 
     private GLib.List<T> list;
-    public ObservableList() {
-    }
 
     public void set_list(owned GLib.List<T> list) {
       this.list = (owned) list;
     }
 
-    public void append(T item) {
+    public void append(owned T item) {
       var idx = list.length();
       list.append(item);
       added(item, idx);
@@ -51,7 +49,7 @@ namespace Venom {
     public uint index(T item) {
       return list.index(item);
     }
-    public T nth_data(uint index) {
+    public unowned T nth_data(uint index) {
       return list.nth_data(index);
     }
   }

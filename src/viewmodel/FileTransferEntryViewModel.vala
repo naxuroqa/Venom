@@ -22,8 +22,8 @@
 namespace Venom {
   public class FileTransferEntryViewModel : GLib.Object {
     private ILogger logger;
-    private FileTransfer file_transfer;
-    private FileTransferEntryListener listener;
+    private unowned FileTransfer file_transfer;
+    private unowned FileTransferEntryListener listener;
 
     public string description { get; set; }
     public double progress { get; set; }
