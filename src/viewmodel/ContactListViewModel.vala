@@ -24,14 +24,14 @@ namespace Venom {
     private ILogger logger;
     private ContactListWidgetCallback callback;
     private UserInfo user_info;
-    private ObservableList<IContact> contacts;
+    private ObservableList contacts;
 
     public string username { get; set; }
     public string statusmessage { get; set; }
     public Gdk.Pixbuf userimage { get; set; }
     public string image_status { get; set; }
 
-    public ContactListViewModel(ILogger logger, ObservableList<IContact> contacts, ContactListWidgetCallback callback, UserInfo user_info) {
+    public ContactListViewModel(ILogger logger, ObservableList contacts, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListViewModel created.");
       this.logger = logger;
       this.callback = callback;
@@ -43,7 +43,7 @@ namespace Venom {
     }
 
     public ListModel get_list_model() {
-      return new ObservableListModel<IContact>(contacts);
+      return new ObservableListModel(contacts);
     }
 
     public void on_row_activated(Gtk.ListBoxRow row) {

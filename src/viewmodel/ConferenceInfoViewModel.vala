@@ -31,7 +31,7 @@ namespace Venom {
     private ConferenceInfoWidgetListener listener;
 
     private GroupchatContact contact;
-    private ObservableList<GroupchatPeer> peers_list;
+    private ObservableList peers_list;
 
     public ConferenceInfoViewModel(ILogger logger, ConferenceInfoWidgetListener listener, GroupchatContact contact) {
       logger.d("ConferenceInfoViewModel created.");
@@ -41,7 +41,7 @@ namespace Venom {
 
       set_info();
       contact.changed.connect(set_info);
-      peers_list = new ObservableList<GroupchatPeer>();
+      peers_list = new ObservableList();
       peers_list.set_list(contact.get_peers().get_values());
 
       notify["title"].connect(() => { title_error_visible = false; });
@@ -52,7 +52,7 @@ namespace Venom {
     }
 
     public ListModel get_list_model() {
-      return new ObservableListModel<GroupchatPeer>(peers_list);
+      return new ObservableListModel(peers_list);
     }
 
     private void show_error(string message) {

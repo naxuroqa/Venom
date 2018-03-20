@@ -88,7 +88,7 @@ namespace Venom {
 
     private static string STATEMENT_INSERT_SETTINGS =
       "INSERT OR REPLACE INTO Settings (id, darktheme, animations, logging, urgencynotification, tray, notify, infinitelog, sendtyping, daystolog, enableproxy, enablecustomproxy, customproxyhost, customproxyport)"
-      + " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);".printf(TABLE_ID,
+      + " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);".printf(TABLE_ID,
                                                                                TABLE_DARKTHEME,
                                                                                TABLE_ANIMATIONS,
                                                                                TABLE_LOGGING,

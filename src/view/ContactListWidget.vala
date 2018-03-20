@@ -33,7 +33,7 @@ namespace Venom {
     [GtkChild] private Gtk.ListBox contact_list;
     [GtkChild] private Gtk.Image image_status;
 
-    public ContactListWidget(ILogger logger, ObservableList<IContact> contacts, ContactListWidgetCallback callback, UserInfo user_info) {
+    public ContactListWidget(ILogger logger, ObservableList contacts, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListWidget created.");
       this.logger = logger;
       this.callback = callback;

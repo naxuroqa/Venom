@@ -1,7 +1,7 @@
 /*
  *    ObservableList.vala
  *
- *    Copyright (C) 2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -20,53 +20,56 @@
  */
 
 namespace Venom {
-  public class ObservableList<T> : GLib.Object {
-    public signal void added(T item, uint index);
-    public signal void removed(T item, uint index);
+  public class ObservableList : GLib.Object {
+    public signal void added(GLib.Object item, uint index);
+    public signal void removed(GLib.Object item, uint index);
 
-    private GLib.List<T> list;
+    private Gee.List<GLib.Object> list = new Gee.ArrayList<GLib.Object>();
 
-    public void set_list(owned GLib.List<T> list) {
-      this.list = (owned) list;
+    public void set_list(GLib.List<GLib.Object> list) {
+      foreach (var item in list) {
+        this.list.add(item);
+      }
     }
 
-    public void append(owned T item) {
-      var idx = list.length();
-      list.append(item);
+    public void append(GLib.Object item) {
+      var idx = list.size;
+      list.add(item);
       added(item, idx);
     }
 
-    public void remove(T item) {
-      var idx = list.index(item);
-      list.remove(item);
+    public void remove(GLib.Object item) {
+      var idx = list.index_of(item);
       removed(item, idx);
+      list.remove_at(idx);
     }
 
     public uint length() {
-      return list.length();
+      return list.size;
     }
 
-    public uint index(T item) {
-      return list.index(item);
+    public uint index(GLib.Object item) {
+      return (uint) list.index_of(item);
     }
-    public unowned T nth_data(uint index) {
-      return list.nth_data(index);
+
+    public GLib.Object nth_data(uint index) {
+      return list.@get((int) index);
     }
   }
 
-  public class ObservableListModel<T> : GLib.Object, GLib.ListModel {
-    private unowned ObservableList<T> list;
-    public ObservableListModel(ObservableList<T> list) {
+  public class ObservableListModel : GLib.Object, GLib.ListModel {
+    private ObservableList list;
+    public ObservableListModel(ObservableList list) {
       this.list = list;
       list.added.connect(on_added);
       list.removed.connect(on_removed);
     }
 
-    private void on_added(T item, uint index) {
+    private void on_added(GLib.Object item, uint index) {
       items_changed(index, 0, 1);
     }
 
-    private void on_removed(T item, uint index) {
+    private void on_removed(GLib.Object item, uint index) {
       items_changed(index, 1, 0);
     }
 
@@ -75,7 +78,7 @@ namespace Venom {
     }
 
     public virtual GLib.Type get_item_type() {
-      return typeof (T);
+      return typeof (GLib.Object);
     }
 
     public virtual uint get_n_items() {

@@ -30,9 +30,9 @@ namespace Venom {
     private unowned GLib.HashTable<uint32, IContact> friends;
     private GLib.HashTable<uint32, GLib.HashTable<uint32, FileTransfer> > file_transfers;
 
-    private ObservableList<FileTransfer> transfers;
+    private ObservableList transfers;
 
-    public ToxAdapterFiletransferListenerImpl(ILogger logger, ObservableList<FileTransfer> transfers, NotificationListener notification_listener) {
+    public ToxAdapterFiletransferListenerImpl(ILogger logger, ObservableList transfers, NotificationListener notification_listener) {
       logger.d("ToxAdapterFiletransferListenerImpl created.");
       this.logger = logger;
       this.notification_listener = notification_listener;

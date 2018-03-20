@@ -23,13 +23,13 @@ namespace Venom {
   public class ToxAdapterConferenceListenerImpl : ToxAdapterConferenceListener, ConferenceWidgetListener, ConferenceInfoWidgetListener, CreateGroupchatWidgetListener, GLib.Object {
     private unowned ToxSession session;
     private ILogger logger;
-    private ObservableList<IContact> contacts;
+    private ObservableList contacts;
     private NotificationListener notification_listener;
-    private GLib.HashTable<IContact, ObservableList<IMessage>> conversations;
+    private GLib.HashTable<IContact, ObservableList> conversations;
 
     private GLib.HashTable<uint32, IContact> conferences;
 
-    public ToxAdapterConferenceListenerImpl(ILogger logger, ObservableList<IContact> contacts, GLib.HashTable<IContact, ObservableList<IMessage>> conversations, NotificationListener notification_listener) {
+    public ToxAdapterConferenceListenerImpl(ILogger logger, ObservableList contacts, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
       logger.d("ToxAdapterConferenceListenerImpl created.");
       this.logger = logger;
       this.contacts = contacts;
@@ -72,7 +72,7 @@ namespace Venom {
       var contact = new GroupchatContact(conference_number, title);
       contacts.append(contact);
       conferences.@set(conference_number, contact);
-      var conversation = new ObservableList<IMessage>();
+      var conversation = new ObservableList();
       conversation.set_list(new GLib.List<IMessage>());
       conversations.@set(contact, conversation);
     }

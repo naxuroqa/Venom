@@ -23,9 +23,9 @@ namespace Venom {
   public class ToxAdapterFriendListenerImpl : ToxAdapterFriendListener, AddContactWidgetListener, ConversationWidgetListener, FriendInfoWidgetListener, FriendRequestWidgetListener, GLib.Object {
     private unowned ToxSession session;
     private ILogger logger;
-    private ObservableList<IContact> contacts;
+    private ObservableList contacts;
     private NotificationListener notification_listener;
-    private GLib.HashTable<IContact, ObservableList<IMessage>> conversations;
+    private GLib.HashTable<IContact, ObservableList> conversations;
     private GLib.HashTable<uint32, Message> messages_waiting_for_rr;
 
     private unowned GLib.HashTable<uint32, IContact> friends;
@@ -33,7 +33,7 @@ namespace Venom {
 
     public bool show_typing { get; set; }
 
-    public ToxAdapterFriendListenerImpl(ILogger logger, ObservableList<IContact> contacts, GLib.HashTable<IContact, ObservableList<IMessage>> conversations, NotificationListener notification_listener) {
+    public ToxAdapterFriendListenerImpl(ILogger logger, ObservableList contacts, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
       logger.d("ToxAdapterFriendListenerImpl created.");
       this.logger = logger;
       this.contacts = contacts;
@@ -172,7 +172,7 @@ namespace Venom {
       }
 
       if (!conversations.contains(contact)) {
-        var conversation = new ObservableList<IMessage>();
+        var conversation = new ObservableList();
         conversation.set_list(new GLib.List<IMessage>());
         conversations.@set(contact, conversation);
       }

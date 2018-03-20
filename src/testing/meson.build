@@ -16,6 +16,11 @@ test_glib_testing = executable('test_glib_testing', ['TestGlibTesting.vala'],
 			dependencies : [gio_dep]
 			)
 
+test_observable_list = executable('test_observable_list', ['TestObservableList.vala',
+			join_paths(root_source_dir, 'core/ObservableList.vala')],
+			dependencies : [gio_dep, gee_dep]
+			)
+
 test_mock = executable('test_mock', ['TestMock.vala', 'MockFramework.vala'],
 			dependencies : [gio_dep]
 			)
@@ -115,6 +120,7 @@ test_plugin = executable('test_plugin', ['TestPlugin.vala', 'Mock.vala', 'MockFr
 test('test glib', test_glib_testing)
 test('test mocking framework', test_mock)
 test('test tox core vapi', test_tox_core)
+test('test observable list', test_observable_list)
 test('test venom config', test_venom_config)
 test('test contact', test_contact)
 test('test about', test_about)

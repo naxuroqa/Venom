@@ -56,18 +56,18 @@ namespace Venom {
     private ToxAdapterConferenceListenerImpl conference_listener;
     private ToxAdapterFiletransferListenerImpl filetransfer_listener;
     private ToxAdapterListenerImpl session_listener;
-    private ObservableList<IContact> contacts;
-    private ObservableList<FileTransfer> transfers;
+    private ObservableList contacts;
+    private ObservableList transfers;
     private NotificationListener notification_listener;
 
-    private GLib.HashTable<IContact, ObservableList<IMessage>> conversations;
+    private GLib.HashTable<IContact, ObservableList> conversations;
     private UserInfo user_info;
 
     public ApplicationWindow(Gtk.Application application, Factory.IWidgetFactory widget_factory, IDhtNodeDatabase node_database,
                              ISettingsDatabase settings_database, IContactDatabase contact_database) {
       Object(application: application);
 
-      conversations = new GLib.HashTable<IContact, ObservableList<IMessage>>(null, null);
+      conversations = new GLib.HashTable<IContact, ObservableList>(null, null);
       user_info = new UserInfoImpl();
 
       this.widget_factory = widget_factory;
@@ -78,9 +78,9 @@ namespace Venom {
       this.settings_database = settings_database;
       this.contact_database = contact_database;
 
-      contacts = new ObservableList<IContact>();
+      contacts = new ObservableList();
       contacts.set_list(new GLib.List<IContact>());
-      transfers = new ObservableList<FileTransfer>();
+      transfers = new ObservableList();
       transfers.set_list(new GLib.List<FileTransfer>());
 
       notification_listener = new NotificationListenerImpl(logger);

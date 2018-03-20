@@ -42,11 +42,11 @@ namespace Venom {
 
     private unowned ApplicationWindow app_window;
     private ILogger logger;
-    private ObservableList<IMessage> conversation;
+    private ObservableList conversation;
     private ConferenceWidgetListener listener;
     private IContact contact;
 
-    public ConferenceWindow(ApplicationWindow app_window, ILogger logger, ObservableList<IMessage> conversation, IContact contact, ConferenceWidgetListener listener) {
+    public ConferenceWindow(ApplicationWindow app_window, ILogger logger, ObservableList conversation, IContact contact, ConferenceWidgetListener listener) {
       this.app_window = app_window;
       this.logger = logger;
       this.conversation = conversation;
@@ -56,7 +56,7 @@ namespace Venom {
       contact.changed.connect(update_widgets);
       update_widgets();
 
-      var model = new ObservableListModel<IMessage>(conversation);
+      var model = new ObservableListModel(conversation);
       message_list.bind_model(model, create_entry);
       unmap.connect(() => { message_list.bind_model(null, null); });
 

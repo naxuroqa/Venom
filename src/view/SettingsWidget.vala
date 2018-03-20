@@ -52,7 +52,8 @@ namespace Venom {
     [GtkChild] private Gtk.Entry custom_proxy_host;
     [GtkChild] private Gtk.SpinButton custom_proxy_port;
 
-    private ObservableList<IDhtNode> dht_nodes;
+    private ObservableList dht_nodes;
+    private ObservableListModel list_model;
 
     public SettingsWidget(ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase, ILogger logger) {
       logger.d("SettingsWidget created.");
@@ -80,9 +81,10 @@ namespace Venom {
       settingsDatabase.bind_property("custom-proxy-port",   custom_proxy_port,         "value",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
       var dhtNodeFactory = new DhtNodeFactory();
-      dht_nodes = new ObservableList<IDhtNode>();
+      dht_nodes = new ObservableList();
       dht_nodes.set_list(nodeDatabase.getDhtNodes(dhtNodeFactory));
-      node_list_box.bind_model(new ObservableListModel<IDhtNode>(dht_nodes), createListboxEntry);
+      list_model = new ObservableListModel(dht_nodes);
+      node_list_box.bind_model(list_model, createListboxEntry);
       unmap.connect(() => { node_list_box.bind_model(null, null); });
     }
 

@@ -7,6 +7,7 @@ gtk_dep = dependency('gtk+-3.0')
 gdk_dep = dependency('gdk-3.0')
 gio_dep = dependency('gio-2.0')
 glib_dep = dependency('glib-2.0')
+gee_dep = dependency('gee-0.8')
 gmodule_dep = dependency('gmodule-2.0')
 sqlite_dep = dependency('sqlite3')
 json_dep = dependency('json-glib-1.0')
@@ -97,6 +98,6 @@ venom_icons_resources = gnome.compile_resources( 'venom_icons_resources', 'icons
 			c_name : 'c_venom_icons_res')
 
 venom_binary = executable('venom', [venom_source, venom_ui_resources, venom_icons_resources],
-			dependencies : [gtk_dep, gio_dep, gmodule_dep, sqlite_dep, json_dep, tox_dep, toxav_dep, config_dep, soup_dep],
+			dependencies : [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, toxav_dep, config_dep, soup_dep],
 			install : true
 			)
