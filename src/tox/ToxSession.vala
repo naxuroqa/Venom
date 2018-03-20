@@ -518,7 +518,7 @@ namespace Venom {
     public virtual void friend_send_message(uint32 friend_number, string message) throws ToxError {
       var e = ErrFriendSendMessage.OK;
       var ret = handle.friend_send_message(friend_number, MessageType.NORMAL, message, ref e);
-      if (ret == uint32.MAX) {
+      if (e != ErrFriendSendMessage.OK) {
         logger.i("friend_send_message failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
