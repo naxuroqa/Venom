@@ -20,7 +20,18 @@
  */
 
 namespace Venom {
-  public class ToxAdapterFiletransferListenerImpl : ToxAdapterFiletransferListener, FileTransferEntryListener, GLib.Object {
+  public interface ConversationWidgetFiletransferListener : GLib.Object {
+    public abstract void on_start_filetransfer(IContact contact, File file) throws Error;
+  }
+
+  public interface FileTransferEntryListener : GLib.Object {
+    public abstract void start_transfer(FileTransfer transfer) throws Error;
+    public abstract void stop_transfer(FileTransfer transfer) throws Error;
+    public abstract void pause_transfer(FileTransfer transfer) throws Error;
+    public abstract void remove_transfer(FileTransfer transfer) throws Error;
+  }
+
+  public class ToxAdapterFiletransferListenerImpl : ToxAdapterFiletransferListener, FileTransferEntryListener, ConversationWidgetFiletransferListener, GLib.Object {
     private const int MAX_AVATAR_SIZE = 250 * 1024;
 
     private unowned ToxSession session;
@@ -45,7 +56,7 @@ namespace Venom {
       logger.d("ToxAdapterFiletransferListenerImpl destroyed.");
     }
 
-    public void attach_to_session(ToxSession session) {
+    public virtual void attach_to_session(ToxSession session) {
       this.session = session;
       session.set_file_transfer_listener(this);
       friends = session.get_friends();
@@ -76,6 +87,19 @@ namespace Venom {
         session.file_control(transfer.get_friend_number(), transfer.get_file_number(), ToxCore.FileControl.CANCEL);
       }
       transfers.remove(transfer);
+    }
+
+    public virtual void on_start_filetransfer(IContact contact, File file) throws Error {
+      var c = contact as Contact;
+      session.file_send(c.tox_friend_number, ToxCore.FileKind.DATA, file);
+    }
+
+    public virtual void on_file_chunk_request(uint32 friend_number, uint32 file_number, uint64 position) {
+
+    }
+
+    public virtual void on_file_send_received(uint32 friend_number, uint32 file_number, ToxCore.FileKind kind, GLib.File file) {
+
     }
 
     public virtual void on_file_recv_control(uint32 friend_number, uint32 file_number, ToxCore.FileControl control) {

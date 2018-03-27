@@ -1,7 +1,7 @@
 /*
  *    DatabaseMock.vala
  *
- *    Copyright (C) 2017 Venom authors and contributors
+ *    Copyright (C) 2017-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -26,87 +26,64 @@ namespace Mock {
 
   public class MockStatement : IDatabaseStatement, Object {
     public DatabaseResult step() throws DatabaseStatementError {
-      mock().actual_call(this, "step");
-      return DatabaseResult.OK;
+      return (DatabaseResult) mock().actual_call(this, "step").get_int();
     }
     public void bind_text(string key, string val) throws DatabaseStatementError {
-      mock().actual_call(this, "bind_text");
+      mock().actual_call(this, "bind_text").get_throws();
     }
     public void bind_int64(string key, int64 val) throws DatabaseStatementError {
-      mock().actual_call(this, "bind_int64");
+      mock().actual_call(this, "bind_int64").get_throws();
     }
     public void bind_int(string key, int val) throws DatabaseStatementError {
-      mock().actual_call(this, "bind_int");
+      mock().actual_call(this, "bind_int").get_throws();
     }
     public void bind_bool(string key, bool val) throws DatabaseStatementError {
-      mock().actual_call(this, "bind_bool");
+      mock().actual_call(this, "bind_bool").get_throws();
     }
     public string column_text(int key) throws DatabaseStatementError {
-      mock().actual_call(this, "column_text");
-      return "";
+      return mock().actual_call(this, "column_text").get_string();
     }
     public int64 column_int64(int key) throws DatabaseStatementError {
-      mock().actual_call(this, "column_int64");
-      return 0;
+      return mock().actual_call(this, "column_int64").get_int();
     }
     public int column_int(int key) throws DatabaseStatementError {
-      mock().actual_call(this, "column_int");
-      return 0;
+      return mock().actual_call(this, "column_int").get_int();
     }
     public bool column_bool(int key) throws DatabaseStatementError {
-      mock().actual_call(this, "column_bool");
-      return false;
+      return mock().actual_call(this, "column_bool").get_bool();
     }
     public void reset() {
       mock().actual_call(this, "reset");
     }
     public IDatabaseStatementBuilder builder() {
-      mock().actual_call(this, "builder");
-      return new SqliteStatementWrapper.Builder(this);
+      return (IDatabaseStatementBuilder) mock().actual_call(this, "builder").get_object();
     }
   }
 
   public class MockDatabaseFactory : IDatabaseFactory, Object {
-    public bool throwExceptions = false;
-
-    public MockDatabaseFactory(bool throwExceptions = false) {
-      this.throwExceptions = throwExceptions;
-    }
-
     public IDatabase createDatabase(string path) throws DatabaseError {
-      mock().actual_call(this, "createDatabase");
-      if (throwExceptions) {
-        throw new DatabaseError.OPEN("Mock exception");
-      }
-      return new MockDatabase();
+      return (IDatabase) mock().actual_call(this, "createDatabase").get_object();
     }
     public IDatabaseStatementFactory createStatementFactory(IDatabase database) {
-      mock().actual_call(this, "createStatementFactory");
-      return new MockStatementFactory();
+      return (IDatabaseStatementFactory) mock().actual_call(this, "createStatementFactory").get_object();
     }
-
     public IDhtNodeDatabase createNodeDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      mock().actual_call(this, "createNodeDatabase");
-      return (IDhtNodeDatabase) null;
+      return (IDhtNodeDatabase) mock().actual_call(this, "createNodeDatabase").get_object();
     }
     public IContactDatabase createContactDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      mock().actual_call(this, "createContactDatabase");
-      return (IContactDatabase) null;
+      return (IContactDatabase) mock().actual_call(this, "createContactDatabase").get_object();
     }
     public IMessageDatabase createMessageDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      mock().actual_call(this, "createMessageDatabase");
-      return (IMessageDatabase) null;
+      return (IMessageDatabase) mock().actual_call(this, "createMessageDatabase").get_object();
     }
     public ISettingsDatabase createSettingsDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      mock().actual_call(this, "createSettingsDatabase");
-      return (ISettingsDatabase) null;
+      return (ISettingsDatabase) mock().actual_call(this, "createSettingsDatabase").get_object();
     }
   }
 
   public class MockStatementFactory : IDatabaseStatementFactory, Object {
     public IDatabaseStatement createStatement(string statement) {
-      mock().actual_call(this, "createStatement");
-      return new MockStatement();
+      return (IDatabaseStatement) mock().actual_call(this, "createStatement").get_object();
     }
   }
 }

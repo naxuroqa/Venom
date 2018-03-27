@@ -1,7 +1,7 @@
 /*
- *    MessageDbMock.vala
+ *    MockNotificationListener.vala
  *
- *    Copyright (C) 2017 Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -20,19 +20,12 @@
  */
 
 using Venom;
-using Mock;
 
 namespace Mock {
-  public class MockLoggedMessageFactory : ILoggedMessageFactory, Object {
-    public int createLoggedMessageCounter = 0;
-    public List<string> createdMessages = new List<string>();
-    public ILoggedMessage createLoggedMessage(string userId, string contactId, string message, DateTime time, bool outgoing) {
-      createLoggedMessageCounter++;
-      createdMessages.append(userId + contactId + message + time.to_string() + outgoing.to_string());
-      return new MockLoggedMessage();
+  public class MockNotificationListener : NotificationListener, GLib.Object {
+    public bool show_notifications { get; set; }
+    public void on_unread_message(Venom.IMessage message) {
+      mock().actual_call(this, "on_unread_message");
     }
-  }
-
-  public class MockLoggedMessage : ILoggedMessage, Object {
   }
 }

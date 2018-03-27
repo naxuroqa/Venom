@@ -21,8 +21,15 @@ config_vapi = meson.get_compiler('vala').find_library('config', dirs: join_paths
 config_dep = declare_dependency(dependencies: [config_vapi], include_directories : include_directories('.'))
 config_file = configure_file(input : 'config.h.in', output : 'config.h', configuration : conf_data)
 
-venom_source = files(
-			'Main.vala',
+venom_ui_resources = gnome.compile_resources( 'venom_ui_resources', 'ui/venom.gresource.xml',
+			source_dir : 'ui',
+			c_name : 'c_venom_ui_res')
+
+venom_icons_resources = gnome.compile_resources( 'venom_icons_resources', 'icons/icons.gresource.xml',
+			source_dir : 'icons',
+			c_name : 'c_venom_icons_res')
+
+venom_source = [files(
 			'core/Application.vala',
 			'core/Contact.vala',
 			'core/FileTransfer.vala',
@@ -87,17 +94,14 @@ venom_source = files(
 			'viewmodel/FriendInfoViewModel.vala',
 			'viewmodel/MessageViewModel.vala',
 			'viewmodel/UserInfoViewModel.vala'
-			)
+			),
+			venom_ui_resources,
+			venom_icons_resources
+			]
 
-venom_ui_resources = gnome.compile_resources( 'venom_ui_resources', 'ui/venom.gresource.xml',
-			source_dir : 'ui',
-			c_name : 'c_venom_ui_res')
+venom_dep = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, toxav_dep, config_dep, soup_dep]
 
-venom_icons_resources = gnome.compile_resources( 'venom_icons_resources', 'icons/icons.gresource.xml',
-			source_dir : 'icons',
-			c_name : 'c_venom_icons_res')
-
-venom_binary = executable('venom', [venom_source, venom_ui_resources, venom_icons_resources],
-			dependencies : [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, toxav_dep, config_dep, soup_dep],
+venom_binary = executable('venom', ['Main.vala', venom_source],
+			dependencies : venom_dep,
 			install : true
 			)

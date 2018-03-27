@@ -271,6 +271,7 @@ msgstr "Pokaż rozmiar pliku w"
 msgid "Miscellaneous"
 msgstr "Różne"
 
+#. dennis-ignore: W303
 #: ui/AboutDialog.vala:46
 msgid "translator-credits"
 msgstr "Zetok Zalbavar <zexavexxe@gmail.com>"

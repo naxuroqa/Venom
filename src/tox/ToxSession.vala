@@ -62,6 +62,8 @@ namespace Venom {
     public abstract string conference_get_title(uint32 conference_number) throws ToxError;
 
     public abstract void file_control(uint32 friend_number, uint32 file_number, FileControl control) throws ToxError;
+    public abstract void file_send(uint32 friend_number, FileKind kind, GLib.File file) throws ToxError;
+    public abstract void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError;
 
     public abstract unowned GLib.HashTable<uint32, IContact> get_friends();
   }
@@ -103,6 +105,9 @@ namespace Venom {
 
     public abstract void on_file_recv_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data);
     public abstract void on_file_recv_control(uint32 friend_number, uint32 file_number, FileControl control);
+
+    public abstract void on_file_chunk_request(uint32 friend_number, uint32 file_number, uint64 position);
+    public abstract void on_file_send_received(uint32 friend_number, uint32 file_number, FileKind kind, GLib.File file);
   }
 
   public class ToxSessionImpl : GLib.Object, ToxSession {
@@ -540,6 +545,19 @@ namespace Venom {
       if (e != ErrFileControl.OK) {
         throw new ToxError.GENERIC(e.to_string());
       }
+    }
+
+    public virtual void file_send(uint32 friend_number, FileKind kind, GLib.File file) throws ToxError {
+      // var e = ErrFileSend.OK;
+      // var ret = handle.file_send(friend_number, kind, file_size, file_id, filename, ref e);
+      // if (e != ErrFileSend.OK) {
+      //   throw new ToxError.GENERIC(e.to_string());
+      // }
+      // file_transfer_listener.on_file_send_received(friend_number, ret, kind, file);
+    }
+
+    public virtual void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError {
+
     }
 
     private void conference_set_title_private(uint32 conference_number, string title) throws ToxError {

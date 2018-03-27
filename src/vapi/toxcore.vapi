@@ -593,7 +593,13 @@ namespace ToxCore {
       return _file_get_file_id(friend_number, file_number, buf, ref error) ? buf : null;
     }
 
-    public uint32 file_send(uint32 friend_number, uint32 kind, uint64 file_size, [CCode(array_length = false)] uint8[] file_id, uint8[] filename, ref ErrFileSeek error);
+    [CCode(cname = "tox_file_send")]
+    private uint32 _file_send(uint32 friend_number, uint32 kind, uint64 file_size, [CCode(array_length = false)] uint8[] ? file_id, uint8[] filename, ref ErrFileSend error);
+
+    [CCode(cname = "vala_tox_file_send")]
+    public uint32 file_send(uint32 friend_number, FileKind kind, uint64 file_size, uint8[] ? file_id, string filename, ref ErrFileSend error) {
+      return _file_send(friend_number, kind, file_size, file_id, filename.data, ref error);
+    }
 
     public bool file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data, ref ErrFileSendChunk error);
 

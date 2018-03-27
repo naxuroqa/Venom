@@ -1,5 +1,5 @@
 /*
- *    DhtMock.vala
+ *    MessageDbMock.vala
  *
  *    Copyright (C) 2017 Venom authors and contributors
  *
@@ -22,19 +22,12 @@
 using Venom;
 
 namespace Mock {
-  public class MockDhtNode : IDhtNode, Object {
-    public string pub_key    { get; set; }
-    public string host       { get; set; }
-    public uint   port       { get; set; }
-    public bool   is_blocked { get; set; }
-    public string maintainer { get; set; }
-    public string location   { get; set; }
+  public class MockLoggedMessageFactory : ILoggedMessageFactory, Object {
+    public ILoggedMessage createLoggedMessage(string userId, string contactId, string message, DateTime time, bool outgoing) {
+      return (ILoggedMessage) mock().actual_call(this, "createLoggedMessage").get_object();
+    }
   }
 
-  public class MockDhtNodeFactory : IDhtNodeFactory, Object {
-    public IDhtNode createDhtNode(string address, string key, uint port, bool blocked, string owner, string location) {
-      mock().actual_call(this, "createDhtNode");
-      return new MockDhtNode();
-    }
+  public class MockLoggedMessage : ILoggedMessage, Object {
   }
 }

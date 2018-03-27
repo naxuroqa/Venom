@@ -22,18 +22,12 @@
 namespace Venom {
   [GtkTemplate(ui = "/im/tox/venom/ui/conversation_window.ui")]
   public class ConversationWindow : Gtk.Box {
-    [GtkChild]
-    private Gtk.Label user_name;
-    [GtkChild]
-    private Gtk.Label user_status;
-    [GtkChild]
-    private Gtk.Image user_image;
-    [GtkChild]
-    private Gtk.TextView text_view;
-    [GtkChild]
-    private Gtk.ListBox message_list;
-    [GtkChild]
-    private Gtk.ScrolledWindow scrolled_window;
+    [GtkChild] private Gtk.Label user_name;
+    [GtkChild] private Gtk.Label user_status;
+    [GtkChild] private Gtk.Image user_image;
+    [GtkChild] private Gtk.TextView text_view;
+    [GtkChild] private Gtk.ListBox message_list;
+    [GtkChild] private Gtk.ScrolledWindow scrolled_window;
 
     private const GLib.ActionEntry win_entries[] =
     {
@@ -48,15 +42,22 @@ namespace Venom {
     private ILogger logger;
     private ObservableList conversation;
     private ConversationWidgetListener listener;
+    private ConversationWidgetFiletransferListener filetransfer_listener;
     private bool is_typing;
     private IContact contact;
 
-    public ConversationWindow(ApplicationWindow app_window, ILogger logger, ObservableList conversation, IContact contact, ConversationWidgetListener listener) {
+    public ConversationWindow(ApplicationWindow app_window,
+                              ILogger logger,
+                              ObservableList conversation,
+                              IContact contact,
+                              ConversationWidgetListener listener,
+                              ConversationWidgetFiletransferListener filetransfer_listener) {
       this.app_window = app_window;
       this.logger = logger;
       this.conversation = conversation;
-      this.listener = listener;
       this.contact = contact;
+      this.listener = listener;
+      this.filetransfer_listener = filetransfer_listener;
 
       contact.changed.connect(update_widgets);
       update_widgets();
@@ -162,6 +163,21 @@ namespace Venom {
 
     private void on_insert_file() {
       logger.d("on_insert_file");
+      var file_chooser_dialog = new Gtk.FileChooserDialog(null, app_window,
+                                                          Gtk.FileChooserAction.OPEN,
+                                                          _("_Cancel"), Gtk.ResponseType.CANCEL,
+                                                          _("_Open"), Gtk.ResponseType.ACCEPT,
+                                                          null);
+      var result = file_chooser_dialog.run();
+      file_chooser_dialog.close();
+      var file = file_chooser_dialog.get_file();
+      if (result == Gtk.ResponseType.ACCEPT && file != null) {
+        try {
+          filetransfer_listener.on_start_filetransfer(contact, file);
+        } catch (Error e) {
+          logger.e("Could not start file transfer: " + e.message);
+        }
+      }
     }
 
     private void on_insert_smiley() {

@@ -1,5 +1,5 @@
 /*
- *    Mock.vala
+ *    MockLogger.vala
  *
  *    Copyright (C) 2017-2018 Venom authors and contributors
  *
@@ -23,25 +23,12 @@ using Venom;
 
 namespace Mock {
   public class MockLogger : ILogger, Object {
-    public MockLogger() {
-    }
-    public void d(string message) {
-      mock().actual_call(this, "d");
-    }
-    public void i(string message) {
-      mock().actual_call(this, "i");
-    }
-    public void w(string message) {
-      mock().actual_call(this, "w");
-    }
-    public void e(string message) {
-      mock().actual_call(this, "e");
-    }
-    public void f(string message) {
-      mock().actual_call(this, "f");
-    }
-    public void attach_to_glib() {
-      mock().actual_call(this, "attach_to_glib");
-    }
+    public MockLogger() {}
+    public void d(string message) { mock().actual_call(this, "d"); }
+    public void i(string message) { mock().actual_call(this, "i"); }
+    public void w(string message) { mock().actual_call(this, "w"); }
+    public void e(string message) { mock().actual_call(this, "e"); }
+    public void f(string message) { mock().actual_call(this, "f"); }
+    public void attach_to_glib() { mock().actual_call(this, "attach_to_glib"); }
   }
 }

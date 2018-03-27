@@ -21,7 +21,7 @@ test_observable_list = executable('test_observable_list', ['TestObservableList.v
 			dependencies : [gio_dep, gee_dep]
 			)
 
-test_mock = executable('test_mock', ['TestMock.vala', 'MockFramework.vala'],
+test_mock = executable('test_mock', ['TestMock.vala', 'util/MockFramework.vala'],
 			dependencies : [gio_dep]
 			)
 
@@ -42,7 +42,8 @@ test_contact = executable('test_contact', ['TestContact.vala',
 			)
 
 test_about = executable('test_about', ['TestAbout.vala',
-			'Mock.vala', 'MockFramework.vala',
+			'util/mocks/MockLogger.vala',
+			'util/MockFramework.vala',
 			join_paths(root_source_dir, 'view/AboutDialog.vala')],
 			join_paths(root_source_dir, 'core/Interfaces.vala'),
 			dependencies : [gtk_dep, config_dep]
@@ -61,9 +62,12 @@ test_sqlite_db = executable('test_sqlite_db', ['TestSqliteDb.vala',
 			)
 
 test_message_db = executable('test_message_db', ['TestMessageDb.vala',
-			'Mock.vala', 'MockFramework.vala',
-			'MockDb.vala',
-			'MockMessageDb.vala',
+			'util/mocks/MockLogger.vala',
+			'util/mocks/MockDb.vala',
+			'util/mocks/MockMessageDb.vala',
+			'util/Assert.vala',
+			'util/UnitTest.vala',
+			'util/MockFramework.vala',
 			join_paths(root_source_dir, 'tox/MessageDatabase.vala'),
 			join_paths(root_source_dir, 'tox/SqliteDhtNodeDatabase.vala'),
 			join_paths(root_source_dir, 'db/SqliteSettingsDatabase.vala'),
@@ -76,9 +80,12 @@ test_message_db = executable('test_message_db', ['TestMessageDb.vala',
 			)
 
 test_dht_node_db = executable('test_dht_node_db', ['TestDhtNodeDb.vala',
-			'Mock.vala', 'MockFramework.vala',
-			'MockDb.vala',
-			'MockDht.vala',
+			'util/mocks/MockLogger.vala',
+			'util/mocks/MockDb.vala',
+			'util/mocks/MockDht.vala',
+			'util/Assert.vala',
+			'util/MockFramework.vala',
+			'util/UnitTest.vala',
 			join_paths(root_source_dir, 'tox/DhtNodeDatabase.vala'),
 			join_paths(root_source_dir, 'db/SqliteWrapper.vala'),
 			join_paths(root_source_dir, 'tox/SqliteDhtNodeDatabase.vala'),
@@ -92,8 +99,9 @@ test_dht_node_db = executable('test_dht_node_db', ['TestDhtNodeDb.vala',
 			)
 
 test_json_web_dht_node_db = executable('test_json_web_dht_node_db', ['TestJsonWebDhtNodeDb.vala',
-			'Mock.vala', 'MockFramework.vala',
-			'MockDht.vala',
+			'util/mocks/MockLogger.vala',
+			'util/mocks/MockDht.vala',
+			'util/MockFramework.vala',
 			join_paths(root_source_dir, 'tox/JsonWebDhtNodeDatabase.vala'),
 			join_paths(root_source_dir, 'tox/DhtNodeDatabase.vala'),
 			join_paths(root_source_dir, 'core/Interfaces.vala'),
@@ -109,7 +117,9 @@ example_plugin_lib = library('example_plugin', ['ExamplePlugin.vala',
 			dependencies : [gio_dep, gmodule_dep]
 			)
 
-test_plugin = executable('test_plugin', ['TestPlugin.vala', 'Mock.vala', 'MockFramework.vala',
+test_plugin = executable('test_plugin', ['TestPlugin.vala',
+			'util/mocks/MockLogger.vala',
+			'util/MockFramework.vala',
 			join_paths(root_source_dir, 'core/Interfaces.vala'),
 			join_paths(root_source_dir, 'plugin/Pluginregistrar.vala'),
 			join_paths(root_source_dir, 'plugin/Plugin.vala')
@@ -117,9 +127,22 @@ test_plugin = executable('test_plugin', ['TestPlugin.vala', 'Mock.vala', 'MockFr
 			dependencies : [gio_dep, gmodule_dep]
 			)
 
+test_tox_transfer = executable('test_tox_transfer', ['TestToxAdapterFiletransferListener.vala',
+			'util/mocks/MockLogger.vala',
+			'util/mocks/MockFiletransfer.vala',
+			'util/mocks/MockNotificationListener.vala',
+			'util/mocks/MockToxSession.vala',
+			'util/Assert.vala',
+			'util/UnitTest.vala',
+			'util/MockFramework.vala',
+			venom_source],
+			dependencies : venom_dep
+			)
+
 test('test glib', test_glib_testing)
 test('test mocking framework', test_mock)
-test('test tox core vapi', test_tox_core)
+test('test tox core vapi', test_tox_transfer)
+test('test tox transfer', test_tox_transfer)
 test('test observable list', test_observable_list)
 test('test venom config', test_venom_config)
 test('test contact', test_contact)

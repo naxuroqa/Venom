@@ -116,11 +116,4 @@ namespace Venom {
       logger.d("FileTransferEntryViewModel destroyed.");
     }
   }
-
-  public interface FileTransferEntryListener : GLib.Object {
-    public abstract void start_transfer(FileTransfer transfer) throws Error;
-    public abstract void stop_transfer(FileTransfer transfer) throws Error;
-    public abstract void pause_transfer(FileTransfer transfer) throws Error;
-    public abstract void remove_transfer(FileTransfer transfer) throws Error;
-  }
 }
