@@ -24,37 +24,59 @@ using Mock;
 namespace TestMock {
 
   private static void test_mock() {
-    mock().expect_one_call(null, "a");
-    mock().actual_call(null, "a");
-    check_expectations_noerror();
+    var o = new GLib.Object();
+    mock().actual_call(o, "a");
+    mock().verify(o, "a");
+    mock().clear();
   }
 
   private static void test_mock_empty() {
-    check_expectations_noerror();
+    // check_expectations_noerror();
   }
 
   private static void test_mock_fail() {
-    mock().expect_one_call(null, "a");
+    var o = new GLib.Object();
     try {
-      mock().check_expectations();
-    } catch (Error e) {
+      mock().verify(o, "");
       mock().clear();
+    } catch (Error e) {
       return;
     }
     Test.fail();
   }
 
   private static void test_mock_calls() {
-    mock().expect_calls(null, "b", 1);
-    mock().actual_call(null, "b");
-    check_expectations_noerror();
+    var o = new GLib.Object();
+    mock().actual_call(o, "b");
+    mock().verify_count(o, "b", 1);
+    mock().clear();
   }
 
   private static void test_mock_calls_multi() {
-    mock().expect_calls(null, "c", 2);
-    mock().actual_call(null, "c");
-    mock().actual_call(null, "c");
-    check_expectations_noerror();
+    var o = new GLib.Object();
+    mock().actual_call(o, "c");
+    mock().actual_call(o, "c");
+    mock().verify_count(o, "c", 2);
+    mock().clear();
+  }
+
+  private static void test_mock_calls_int_arg() {
+    var o = new GLib.Object();
+    mock().actual_call(o, "c", args().int(1).create());
+    mock().verify(o, "c", args().int(1).create());
+    mock().clear();
+  }
+
+  private static void test_mock_calls_int_arg_fail() {
+    var o = new GLib.Object();
+    try {
+      mock().actual_call(o, "c", args().int(1).create());
+      mock().verify(o, "c", args().int(2).create());
+    } catch {
+      mock().clear();
+      return;
+    }
+    Test.fail();
   }
 
   private static void main(string[] args) {
@@ -65,6 +87,8 @@ namespace TestMock {
     Test.add_func("/test_mock_fail", test_mock_fail);
     Test.add_func("/test_mock_calls", test_mock_calls);
     Test.add_func("/test_mock_calls_multi", test_mock_calls_multi);
+    Test.add_func("/test_mock_calls_int_arg", test_mock_calls_int_arg);
+    Test.add_func("/test_mock_calls_int_arg_fail", test_mock_calls_int_arg_fail);
     Test.run();
   }
 }

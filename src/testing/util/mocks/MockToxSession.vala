@@ -28,25 +28,47 @@ namespace Mock {
       contacts = new GLib.HashTable<uint32, IContact>(null, null);
     }
     public void set_session_listener(ToxAdapterListener listener) {
-      mock().actual_call(this, "set_session_listener");
+      var args = Arguments.builder()
+                     .object(listener)
+                     .create();
+      mock().actual_call(this, "set_session_listener", args);
     }
     public void set_file_transfer_listener(ToxAdapterFiletransferListener listener) {
-      mock().actual_call(this, "set_file_transfer_listener");
+      var args = Arguments.builder()
+                     .object(listener)
+                     .create();
+      mock().actual_call(this, "set_file_transfer_listener", args);
     }
     public void set_friend_listener(ToxAdapterFriendListener listener) {
-      mock().actual_call(this, "set_friend_listener");
+      var args = Arguments.builder()
+                     .object(listener)
+                     .create();
+      mock().actual_call(this, "set_friend_listener", args);
     }
     public void set_conference_listener(ToxAdapterConferenceListener listener) {
-      mock().actual_call(this, "set_conference_listener");
+      var args = Arguments.builder()
+                     .object(listener)
+                     .create();
+      mock().actual_call(this, "set_conference_listener", args);
     }
     public void self_set_user_name(string name) {
-      mock().actual_call(this, "self_set_user_name");
+      var args = Arguments.builder()
+                     .string(name)
+                     .create();
+      mock().actual_call(this, "self_set_user_name", args);
     }
     public void self_set_status_message(string status) {
-      mock().actual_call(this, "self_set_status_message");
+      var args = Arguments.builder()
+                     .string(status)
+                     .create();
+      mock().actual_call(this, "self_set_status_message", args);
     }
     public void self_set_typing(uint32 friend_number, bool typing) throws ToxError {
-      mock().actual_call(this, "self_set_typing").get_throws();
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .bool(typing)
+                     .create();
+      mock().actual_call(this, "self_set_typing", args).get_throws();
     }
     public string self_get_name() {
       return mock().actual_call(this, "self_get_name").get_string();
@@ -62,46 +84,91 @@ namespace Mock {
       mock().actual_call(this, "self_get_friend_list_foreach").get_throws();
     }
     public void friend_add(uint8[] address, string message) throws ToxError {
-      mock().actual_call(this, "friend_add").get_throws();
+      var args = Arguments.builder()
+                     .string(message)
+                     .create();
+      mock().actual_call(this, "friend_add", args).get_throws();
     }
     public void friend_add_norequest(uint8[] address) throws ToxError {
       mock().actual_call(this, "friend_add_norequest").get_throws();
     }
     public void friend_delete(uint32 friend_number) throws ToxError {
-      mock().actual_call(this, "friend_delete").get_throws();
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .create();
+      mock().actual_call(this, "friend_delete", args).get_throws();
     }
     public void friend_send_message(uint32 friend_number, string message) throws ToxError {
-      mock().actual_call(this, "friend_send_message").get_throws();
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .string(message)
+                     .create();
+      mock().actual_call(this, "friend_send_message", args).get_throws();
     }
     public string friend_get_name(uint32 friend_number) throws ToxError {
-      return mock().actual_call(this, "friend_get_name").get_string();
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .create();
+      return mock().actual_call(this, "friend_get_name", args).get_string();
     }
     public string friend_get_status_message(uint32 friend_number) throws ToxError {
-      return mock().actual_call(this, "friend_get_status_message").get_string();
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .create();
+      return mock().actual_call(this, "friend_get_status_message", args).get_string();
     }
     public uint64 friend_get_last_online(uint32 friend_number) throws ToxError {
-      return mock().actual_call(this, "friend_get_last_online").get_int();
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .create();
+      return mock().actual_call(this, "friend_get_last_online", args).get_int();
     }
     public void conference_new(string title) throws ToxError {
-      mock().actual_call(this, "conference_new").get_throws();
+      var args = Arguments.builder()
+                     .string(title)
+                     .create();
+      mock().actual_call(this, "conference_new", args).get_throws();
     }
     public void conference_delete(uint32 conference_number) throws ToxError {
-      mock().actual_call(this, "conference_delete").get_throws();
+      var args = Arguments.builder()
+                     .uint(conference_number)
+                     .create();
+      mock().actual_call(this, "conference_delete", args).get_throws();
     }
     public void conference_send_message(uint32 conference_number, string message) throws ToxError {
-      mock().actual_call(this, "conference_send_message").get_throws();
+      var args = Arguments.builder()
+                     .uint(conference_number)
+                     .string(message)
+                     .create();
+      mock().actual_call(this, "conference_send_message", args).get_throws();
     }
     public void conference_set_title(uint32 conference_number, string title) throws ToxError {
-      mock().actual_call(this, "conference_set_title").get_throws();
+      var args = Arguments.builder()
+                     .uint(conference_number)
+                     .string(title)
+                     .create();
+      mock().actual_call(this, "conference_set_title", args).get_throws();
     }
     public string conference_get_title(uint32 conference_number) throws ToxError {
-      return mock().actual_call(this, "conference_get_title").get_string();
+      var args = Arguments.builder()
+                     .uint(conference_number)
+                     .create();
+      return mock().actual_call(this, "conference_get_title", args).get_string();
     }
     public void file_control(uint32 friend_number, uint32 file_number, ToxCore.FileControl control) throws ToxError {
-      mock().actual_call(this, "file_control").get_throws();
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .uint(file_number)
+                     .int(control)
+                     .create();
+      mock().actual_call(this, "file_control", args).get_throws();
     }
     public void file_send(uint32 friend_number, ToxCore.FileKind kind, GLib.File file) throws ToxError {
-      mock().actual_call(this, "file_send").get_throws();
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .int(kind)
+                     .create();
+      mock().actual_call(this, "file_send", args).get_throws();
     }
     public void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError {
       mock().actual_call(this, "file_send_chunk").get_throws();

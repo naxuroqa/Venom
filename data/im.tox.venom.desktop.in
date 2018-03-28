@@ -9,3 +9,4 @@ Icon=im.tox.venom-symbolic
 Categories=InstantMessaging;Network;AudioVideo;GTK;
 Terminal=false
 MimeType=x-scheme-handler/tox;
+DBusActivatable=true

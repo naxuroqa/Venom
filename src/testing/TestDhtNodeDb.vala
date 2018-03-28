@@ -45,10 +45,11 @@ public class TestDhtNodeDb : UnitTest {
     logger = new MockLogger();
     statement = new MockStatement();
     builder = new SqliteStatementWrapper.Builder(statement);
-    mock().when(statement, "builder").then_return_object(builder);
     statement_factory = new MockStatementFactory();
-    mock().when(statement_factory, "createStatement").then_return_object(statement);
     node_factory = new MockDhtNodeFactory();
+
+    mock().when(statement, "builder").then_return_object(builder);
+    mock().when(statement_factory, "createStatement").then_return_object(statement);
   }
 
   private void test_init() throws GLib.Error {

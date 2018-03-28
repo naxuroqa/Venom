@@ -25,7 +25,10 @@ namespace Mock {
   public class MockNotificationListener : NotificationListener, GLib.Object {
     public bool show_notifications { get; set; }
     public void on_unread_message(Venom.IMessage message) {
-      mock().actual_call(this, "on_unread_message");
+      var args = Arguments.builder()
+                     .object(message)
+                     .create();
+      mock().actual_call(this, "on_unread_message", args);
     }
   }
 }

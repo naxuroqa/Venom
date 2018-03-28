@@ -38,14 +38,159 @@ namespace Mock {
     }
   }
 
-  public interface Mock : GLib.Object {
-    public abstract MockFunctionCall when(GLib.Object object, string function_name);
-    public abstract void verify(GLib.Object object, string function_name) throws MatcherError;
-    public abstract void verify_count(GLib.Object object, string function_name, int count) throws MatcherError;
+  public static Arguments.Builder args() {
+    return Arguments.builder();
+  }
 
-    public abstract MockFunctionCall actual_call(GLib.Object? object, string function_name);
-    public abstract MockFunctionCall expect_one_call(GLib.Object? object, string function_name);
-    public abstract MockFunctionCall expect_calls(GLib.Object? object, string function_name, int call_count);
+  public static string get_object_info(GLib.Object o) {
+    if (o == null) {
+      return "unknown";
+    }
+    return "%s".printf(o.get_type().name());
+  }
+
+  public class Arguments : GLib.Object {
+    private GLib.List<GLib.Value?> arg_list;
+    construct {
+      arg_list = new GLib.List<GLib.Value?>();
+    }
+
+    public void add(GLib.Value v) {
+      arg_list.append(v);
+    }
+
+    public uint length() {
+      return arg_list.length();
+    }
+
+    private bool value_equals(GLib.Value v1, GLib.Value v2) {
+      var t1 = v1.type();
+      var t2 = v2.type();
+      if (t1 != t2) {
+        return false;
+      }
+      if (t1 == typeof(uint)) {
+        return v1.get_uint() == v2.get_uint();
+      } else if (t1 == typeof(int)) {
+        return v1.get_int() == v2.get_int();
+      } else if (t1 == typeof(uint64)) {
+        return v1.get_uint64() == v2.get_uint64();
+      } else if (t1 == typeof(int64)) {
+        return v1.get_int64() == v2.get_int64();
+      } else if (t1 == typeof(string)) {
+        return v1.get_string() == v2.get_string();
+      } else if (t1 == typeof(GLib.Object)) {
+        return v1.get_object() == v2.get_object();
+      } else if (t1 == typeof(bool)) {
+        return v1.get_boolean() == v2.get_boolean();
+      }
+      return false;
+    }
+
+    public bool equals(Arguments args){
+      if (arg_list.length() != args.arg_list.length()) {
+        return false;
+      }
+      for (var i = 0; i < arg_list.length(); i++) {
+        if (!value_equals(arg_list.nth_data(i), args.arg_list.nth_data(i))) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    const string uint64fmt = "%" + uint64.FORMAT_MODIFIER + "d";
+    const string int64fmt = "%" + int64.FORMAT_MODIFIER + "d";
+
+    public string to_string() {
+      var ret = "";
+      foreach (var v in arg_list) {
+        var t = v.type();
+        if (t == typeof(uint)) {
+          ret += "   + (uint) %u\n".printf(v.get_uint());
+        } else if (t == typeof(int)) {
+          ret += "   + (int) %i\n".printf(v.get_int());
+        } else if (t == typeof(uint64)) {
+          ret += "   + (uint64) " + uint64fmt.printf(v.get_uint64()) + "\n";
+        } else if (t == typeof(int64)) {
+          ret += "   + (int64) " + int64fmt.printf(v.get_int64()) + "\n";
+        } else if (t == typeof(string)) {
+          ret += "   + (string) \"%s\"\n".printf(v.get_string());
+        } else if (t == typeof(GLib.Object)) {
+          ret += "   + (Object) %s\n".printf(get_object_info(v.get_object()));
+        } else if (t == typeof(bool)) {
+          ret += "   + (bool) %s\n".printf(v.get_boolean() ? "true" : "false");
+        }
+      }
+      return ret;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public class Builder : GLib.Object {
+      private Arguments args;
+      construct {
+        args = new Arguments();
+      }
+      public Builder bool(bool b) {
+        var v = GLib.Value(typeof(bool));
+        v.set_boolean(b);
+        args.add(v);
+        return this;
+      }
+      public Builder int(int i) {
+        var v = GLib.Value(typeof(int));
+        v.set_int(i);
+        args.add(v);
+        return this;
+      }
+      public Builder uint(uint i) {
+        var v = GLib.Value(typeof(uint));
+        v.set_uint(i);
+        args.add(v);
+        return this;
+      }
+      public Builder int64(int64 i) {
+        var v = GLib.Value(typeof(int64));
+        v.set_int64(i);
+        args.add(v);
+        return this;
+      }
+      public Builder uint64(uint64 i) {
+        var v = GLib.Value(typeof(uint64));
+        v.set_uint64(i);
+        args.add(v);
+        return this;
+      }
+      public Builder string(string s) {
+        var v = GLib.Value(typeof(string));
+        v.set_string(s);
+        args.add(s);
+        return this;
+      }
+      public Builder object(GLib.Object o) {
+        var v = GLib.Value(typeof(GLib.Object));
+        v.set_object(o);
+        args.add(v);
+        return this;
+      }
+      public Arguments create() {
+        return args;
+      }
+    }
+  }
+
+  public interface Mock : GLib.Object {
+    public abstract MockFunctionCall when(GLib.Object object, string function_name, Arguments args = new Arguments());
+    public abstract void verify(GLib.Object object, string function_name, Arguments args = new Arguments()) throws MatcherError;
+    public abstract void verify_count(GLib.Object object, string function_name, int count, Arguments args = new Arguments()) throws MatcherError;
+
+    public abstract MockFunctionCall actual_call(GLib.Object object, string function_name, Arguments args = new Arguments());
+
+    public abstract MockFunctionCall expect_one_call(GLib.Object object, string function_name, Arguments args = new Arguments());
+    public abstract MockFunctionCall expect_calls(GLib.Object object, string function_name, int call_count, Arguments args = new Arguments());
     public abstract void verify_no_more_interactions(GLib.Object object) throws MatcherError;
 
     public abstract Mock check_expectations() throws MatcherError;
@@ -65,9 +210,10 @@ namespace Mock {
     public abstract MockFunctionCall set_call_count(int count);
     public abstract MockFunctionCall set_expected_count(int count);
 
-    public abstract GLib.Object ? get_function_object();
+    public abstract GLib.Object get_function_object();
 
     public abstract string get_function_name();
+    public abstract Arguments get_args();
 
     public abstract void set_bool(bool value);
     public abstract void set_string(string value);
@@ -82,7 +228,9 @@ namespace Mock {
 
     public abstract void get_throws() throws GLib.Error;
 
-    public abstract string to_string();
+    public abstract string to_string_expected();
+    public abstract string to_string_actual();
+    public abstract bool equals(GLib.Object o, string function_name, Arguments args);
   }
 
   public class MockImpl : GLib.Object, Mock {
@@ -95,59 +243,59 @@ namespace Mock {
       return instance;
     }
 
-    private GLib.HashTable<string, MockFunctionCall> function_calls;
+    private GLib.List<MockFunctionCall> function_calls;
 
     public MockImpl() {
-      function_calls = new GLib.HashTable<string, MockFunctionCall>(str_hash, str_equal);
+      function_calls = new GLib.List<MockFunctionCall>();
     }
 
-    private MockFunctionCall init_func(GLib.Object? object, string function_name) {
-      var function_call = function_calls.@get(function_name);
-      if (function_call == null) {
-        function_call = new MockFunctionCallImpl(object, function_name);
-        function_calls.set(function_name, function_call);
+    private MockFunctionCall init_func(GLib.Object o, string function_name, Arguments args) {
+      foreach (var call in function_calls) {
+        if (call.equals(o, function_name, args)) {
+          return call;
+        }
       }
-      return function_call;
+      var call = new MockFunctionCallImpl(o, function_name, args);
+      function_calls.prepend(call);
+      return call;
     }
 
-    public virtual MockFunctionCall actual_call(GLib.Object? object, string function_name) {
-      return init_func(object, function_name).increment_call_count();
+    public virtual MockFunctionCall actual_call(GLib.Object object, string function_name, Arguments args = new Arguments()) {
+      return init_func(object, function_name, args).increment_call_count();
     }
 
-    public virtual MockFunctionCall when(GLib.Object object, string function_name) {
-      return init_func(object, function_name);
+    public virtual MockFunctionCall when(GLib.Object object, string function_name, Arguments args = new Arguments()) {
+      return init_func(object, function_name, args);
     }
 
-    public virtual void verify(GLib.Object object, string function_name) throws MatcherError {
-      verify_call(expect_one_call(object, function_name));
+    public virtual void verify(GLib.Object object, string function_name, Arguments args = new Arguments()) throws MatcherError {
+      verify_call(expect_one_call(object, function_name, args));
     }
 
-    public virtual void verify_count(GLib.Object object, string function_name, int count) throws MatcherError {
-      verify_call_count(init_func(object, function_name), count);
+    public virtual void verify_count(GLib.Object object, string function_name, int count, Arguments args = new Arguments()) throws MatcherError {
+      verify_call_count(expect_calls(object, function_name, count, args), count);
     }
 
-    public virtual MockFunctionCall expect_one_call(GLib.Object? object, string function_name) {
-      return init_func(object, function_name).increment_expected_count();
+    public virtual MockFunctionCall expect_one_call(GLib.Object object, string function_name, Arguments args = new Arguments()) {
+      return init_func(object, function_name, args).increment_expected_count();
     }
 
-    public virtual MockFunctionCall expect_calls(GLib.Object? object, string function_name, int call_count) {
-      var function_call = init_func(object, function_name);
+    public virtual MockFunctionCall expect_calls(GLib.Object object, string function_name, int call_count, Arguments args = new Arguments()) {
+      var function_call = init_func(object, function_name, args);
       return function_call.set_expected_count(function_call.get_expected_count() + call_count);
     }
 
-    private string get_object_info(GLib.Object? o) {
-      if (o == null) {
-        return "unknown";
-      }
-      return "%s".printf(o.get_type().name());
-    }
-
     private void print_call_info(MockFunctionCall call) {
-      stderr.printf("# EXPECTED calls:\n#  %s\n   + typeof %s\n\n", call.to_string(), get_object_info(call.get_function_object()));
+      stderr.printf("# FOR OBJECT typeof %s\n", get_object_info(call.get_function_object()));
+      stderr.printf("# EXPECTED calls:\n#  %s\n%s\n", call.to_string_expected(), call.get_args().to_string());
       stderr.printf("# ACTUAL calls:\n");
-      function_calls.foreach ((key, val) => {
-        stderr.printf("#  %s\n   + typeof %s\n", val.to_string(), get_object_info(val.get_function_object()));
-      });
+      foreach (var c in function_calls) {
+        if (c.get_call_count() > 0 && c.get_function_object() == call.get_function_object()) {
+          stderr.printf("#  %s\n%s",
+                        c.to_string_actual(),
+                        c.get_args().to_string());
+        }
+      }
       stderr.printf("###\n");
     }
 
@@ -185,11 +333,11 @@ namespace Mock {
     }
 
     public virtual Mock check_expectations() throws MatcherError {
-      var keys = function_calls.get_keys();
-      var vals = function_calls.get_values();
-      for (var i = 0; i < keys.length(); i++) {
-        verify_call(vals.nth_data(i));
-      }
+      // var keys = function_calls.get_keys();
+      // var vals = function_calls.get_values();
+      // for (var i = 0; i < keys.length(); i++) {
+      //   verify_call(vals.nth_data(i));
+      // }
       return this;
     }
 
@@ -198,22 +346,24 @@ namespace Mock {
     }
 
     public virtual void clear() {
-      function_calls.remove_all();
+      function_calls = new GLib.List<MockFunctionCall>();
     }
   }
 
   public class MockFunctionCallImpl : GLib.Object, MockFunctionCall {
+    private GLib.Object object;
     private string name;
+    private Arguments args;
+
     private int call_count;
     private int expected_count;
-    private GLib.Object ? object;
     private GLib.Value ? val;
     private GLib.Error ? error;
 
-    public MockFunctionCallImpl(GLib.Object? object, string name) {
+    public MockFunctionCallImpl(GLib.Object object, string name, Arguments args) {
       this.object = object;
       this.name = name;
-      object = null;
+      this.args = args;
     }
 
     public virtual MockFunctionCall on_object(GLib.Object object) {
@@ -257,12 +407,16 @@ namespace Mock {
       return this;
     }
 
-    public virtual GLib.Object ? get_function_object() {
+    public virtual GLib.Object get_function_object() {
       return object;
     }
 
     public virtual string get_function_name() {
       return name;
+    }
+
+    public virtual Arguments get_args() {
+      return args;
     }
 
     public virtual void set_bool(bool value) {
@@ -304,7 +458,7 @@ namespace Mock {
       return val != null ? val.get_int() : 0;
     }
 
-    public virtual Object? get_object() throws GLib.Error {
+    public virtual Object ? get_object() throws GLib.Error {
       get_throws();
       return val != null ? val.get_object() : null;
     }
@@ -315,8 +469,16 @@ namespace Mock {
       }
     }
 
-    public virtual string to_string() {
+    public virtual string to_string_expected() {
+      return "function(\"%s\") x%i".printf(name, expected_count);
+    }
+
+    public virtual string to_string_actual() {
       return "function(\"%s\") x%i".printf(name, call_count);
+    }
+
+    public virtual bool equals(GLib.Object o, string function_name, Arguments args) {
+      return this.object == o && this.name == function_name && this.args.equals(args);
     }
   }
 }

@@ -24,11 +24,11 @@ using Venom;
 namespace Mock {
   public class MockLogger : ILogger, Object {
     public MockLogger() {}
-    public void d(string message) { mock().actual_call(this, "d"); }
-    public void i(string message) { mock().actual_call(this, "i"); }
-    public void w(string message) { mock().actual_call(this, "w"); }
-    public void e(string message) { mock().actual_call(this, "e"); }
-    public void f(string message) { mock().actual_call(this, "f"); }
+    public void d(string message) { mock().actual_call(this, "d", args().string(message).create()); }
+    public void i(string message) { mock().actual_call(this, "i", args().string(message).create()); }
+    public void w(string message) { mock().actual_call(this, "w", args().string(message).create()); }
+    public void e(string message) { mock().actual_call(this, "e", args().string(message).create()); }
+    public void f(string message) { mock().actual_call(this, "f", args().string(message).create()); }
     public void attach_to_glib() { mock().actual_call(this, "attach_to_glib"); }
   }
 }

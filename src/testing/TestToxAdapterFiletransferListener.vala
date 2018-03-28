@@ -46,9 +46,6 @@ public class TestToxAdapterFiletransferListener : UnitTest {
     session = new MockToxSession();
     transfer = new MockFiletransfer();
 
-    mock().when(transfer, "get_friend_number").then_return_int(1);
-    mock().when(transfer, "get_file_number").then_return_int(2);
-
     listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, notification_listener);
   }
 
@@ -60,18 +57,22 @@ public class TestToxAdapterFiletransferListener : UnitTest {
     Assert.assert_not_null(listener);
     listener.attach_to_session(session);
 
-    mock().verify(session, "set_file_transfer_listener");
+    mock().verify(session, "set_file_transfer_listener", args().object(listener).create());
   }
 
   private void test_start_transfer() throws Error {
     Assert.assert_not_null(listener);
+
+    mock().when(transfer, "get_friend_number").then_return_int(1);
+    mock().when(transfer, "get_file_number").then_return_int(2);
+
     listener.attach_to_session(session);
     listener.start_transfer(transfer);
 
     mock().verify(transfer, "get_friend_number");
     mock().verify(transfer, "get_file_number");
-    mock().verify(session, "file_control");
-    mock().verify(transfer, "set_state");
+    mock().verify(session, "file_control", args().uint(1).uint(2).int(ToxCore.FileControl.RESUME).create());
+    mock().verify(transfer, "set_state", args().int(FileTransferState.RUNNING).create());
   }
 
   private void test_remove_transfer() throws Error {
@@ -82,7 +83,8 @@ public class TestToxAdapterFiletransferListener : UnitTest {
   }
 
   private void test_remove_exception() throws Error {
-    mock().when(session, "file_control").then_throw(new ToxError.GENERIC(""));
+    mock().when(session, "file_control", args().uint(0).uint(0).int(ToxCore.FileControl.CANCEL).create())
+        .then_throw(new ToxError.GENERIC("this should be caught"));
 
     transfers.append(transfer);
     listener.attach_to_session(session);

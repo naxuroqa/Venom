@@ -24,7 +24,13 @@ using Venom;
 namespace Mock {
   public class MockLoggedMessageFactory : ILoggedMessageFactory, Object {
     public ILoggedMessage createLoggedMessage(string userId, string contactId, string message, DateTime time, bool outgoing) {
-      return (ILoggedMessage) mock().actual_call(this, "createLoggedMessage").get_object();
+      var args = Arguments.builder()
+                     .string(userId)
+                     .string(contactId)
+                     .string(message)
+                     .bool(outgoing)
+                     .create();
+      return (ILoggedMessage) mock().actual_call(this, "createLoggedMessage", args).get_object();
     }
   }
 

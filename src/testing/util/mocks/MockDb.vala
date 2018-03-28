@@ -29,28 +29,56 @@ namespace Mock {
       return (DatabaseResult) mock().actual_call(this, "step").get_int();
     }
     public void bind_text(string key, string val) throws DatabaseStatementError {
-      mock().actual_call(this, "bind_text").get_throws();
+      var args = Arguments.builder()
+                     .string(key)
+                     .string(val)
+                     .create();
+      mock().actual_call(this, "bind_text", args).get_throws();
     }
     public void bind_int64(string key, int64 val) throws DatabaseStatementError {
-      mock().actual_call(this, "bind_int64").get_throws();
+      var args = Arguments.builder()
+                     .string(key)
+                     .int64(val)
+                     .create();
+      mock().actual_call(this, "bind_int64", args).get_throws();
     }
     public void bind_int(string key, int val) throws DatabaseStatementError {
-      mock().actual_call(this, "bind_int").get_throws();
+      var args = Arguments.builder()
+                     .string(key)
+                     .int(val)
+                     .create();
+      mock().actual_call(this, "bind_int", args).get_throws();
     }
     public void bind_bool(string key, bool val) throws DatabaseStatementError {
-      mock().actual_call(this, "bind_bool").get_throws();
+      var args = Arguments.builder()
+                     .string(key)
+                     .bool(val)
+                     .create();
+      mock().actual_call(this, "bind_bool", args).get_throws();
     }
     public string column_text(int key) throws DatabaseStatementError {
-      return mock().actual_call(this, "column_text").get_string();
+      var args = Arguments.builder()
+                     .int(key)
+                     .create();
+      return mock().actual_call(this, "column_text", args).get_string();
     }
     public int64 column_int64(int key) throws DatabaseStatementError {
-      return mock().actual_call(this, "column_int64").get_int();
+      var args = Arguments.builder()
+                     .int(key)
+                     .create();
+      return mock().actual_call(this, "column_int64", args).get_int();
     }
     public int column_int(int key) throws DatabaseStatementError {
-      return mock().actual_call(this, "column_int").get_int();
+      var args = Arguments.builder()
+                     .int(key)
+                     .create();
+      return mock().actual_call(this, "column_int", args).get_int();
     }
     public bool column_bool(int key) throws DatabaseStatementError {
-      return mock().actual_call(this, "column_bool").get_bool();
+      var args = Arguments.builder()
+                     .int(key)
+                     .create();
+      return mock().actual_call(this, "column_bool", args).get_bool();
     }
     public void reset() {
       mock().actual_call(this, "reset");
@@ -62,28 +90,53 @@ namespace Mock {
 
   public class MockDatabaseFactory : IDatabaseFactory, Object {
     public IDatabase createDatabase(string path) throws DatabaseError {
-      return (IDatabase) mock().actual_call(this, "createDatabase").get_object();
+      var args = Arguments.builder()
+                     .string(path)
+                     .create();
+      return (IDatabase) mock().actual_call(this, "createDatabase", args).get_object();
     }
     public IDatabaseStatementFactory createStatementFactory(IDatabase database) {
-      return (IDatabaseStatementFactory) mock().actual_call(this, "createStatementFactory").get_object();
+      var args = Arguments.builder()
+                     .object(database)
+                     .create();
+      return (IDatabaseStatementFactory) mock().actual_call(this, "createStatementFactory", args).get_object();
     }
     public IDhtNodeDatabase createNodeDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      return (IDhtNodeDatabase) mock().actual_call(this, "createNodeDatabase").get_object();
+      var args = Arguments.builder()
+                     .object(factory)
+                     .object(logger)
+                     .create();
+      return (IDhtNodeDatabase) mock().actual_call(this, "createNodeDatabase", args).get_object();
     }
     public IContactDatabase createContactDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      return (IContactDatabase) mock().actual_call(this, "createContactDatabase").get_object();
+      var args = Arguments.builder()
+                     .object(factory)
+                     .object(logger)
+                     .create();
+      return (IContactDatabase) mock().actual_call(this, "createContactDatabase", args).get_object();
     }
     public IMessageDatabase createMessageDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      return (IMessageDatabase) mock().actual_call(this, "createMessageDatabase").get_object();
+      var args = Arguments.builder()
+                     .object(factory)
+                     .object(logger)
+                     .create();
+      return (IMessageDatabase) mock().actual_call(this, "createMessageDatabase", args).get_object();
     }
     public ISettingsDatabase createSettingsDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      return (ISettingsDatabase) mock().actual_call(this, "createSettingsDatabase").get_object();
+      var args = Arguments.builder()
+                     .object(factory)
+                     .object(logger)
+                     .create();
+      return (ISettingsDatabase) mock().actual_call(this, "createSettingsDatabase", args).get_object();
     }
   }
 
   public class MockStatementFactory : IDatabaseStatementFactory, Object {
     public IDatabaseStatement createStatement(string statement) {
-      return (IDatabaseStatement) mock().actual_call(this, "createStatement").get_object();
+      var args = Arguments.builder()
+                     .string(statement)
+                     .create();
+      return (IDatabaseStatement) mock().actual_call(this, "createStatement", args).get_object();
     }
   }
 }

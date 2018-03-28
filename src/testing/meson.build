@@ -141,7 +141,7 @@ test_tox_transfer = executable('test_tox_transfer', ['TestToxAdapterFiletransfer
 
 test('test glib', test_glib_testing)
 test('test mocking framework', test_mock)
-test('test tox core vapi', test_tox_transfer)
+test('test tox core vapi', test_tox_core)
 test('test tox transfer', test_tox_transfer)
 test('test observable list', test_observable_list)
 test('test venom config', test_venom_config)

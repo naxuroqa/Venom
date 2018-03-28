@@ -40,13 +40,19 @@ namespace Mock {
       return null;
     }
     public void set_file_data(uint64 offset, uint8[] data) {
-      mock().actual_call(this, "set_file_data");
+      var args = Arguments.builder()
+                     .uint64(offset)
+                     .create();
+      mock().actual_call(this, "set_file_data", args);
     }
     public FileTransferState get_state() {
       return (FileTransferState) mock().actual_call(this, "get_state").get_int();
     }
     public void set_state(FileTransferState state) {
-      mock().actual_call(this, "set_state");
+      var args = Arguments.builder()
+                     .int(state)
+                     .create();
+      mock().actual_call(this, "set_state", args);
     }
     public string? get_file_path() {
       return mock().actual_call(this, "get_file_path").get_string();

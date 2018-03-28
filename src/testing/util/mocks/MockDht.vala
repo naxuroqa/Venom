@@ -33,7 +33,15 @@ namespace Mock {
 
   public class MockDhtNodeFactory : IDhtNodeFactory, GLib.Object {
     public IDhtNode createDhtNode(string address, string key, uint port, bool blocked, string owner, string location) {
-      return (IDhtNode) mock().actual_call(this, "createDhtNode").get_object();
+      var args = Arguments.builder()
+                     .string(address)
+                     .string(key)
+                     .uint(port)
+                     .bool(blocked)
+                     .string(owner)
+                     .string(location)
+                     .create();
+      return (IDhtNode) mock().actual_call(this, "createDhtNode", args).get_object();
     }
   }
 }
