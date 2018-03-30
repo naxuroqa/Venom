@@ -342,7 +342,12 @@ namespace Mock {
     }
 
     public virtual void verify_no_more_interactions(GLib.Object object) throws MatcherError {
-      assert_not_reached();
+      foreach (var call in function_calls) {
+        if (call.get_function_object() == object && call.get_expected_count() != call.get_call_count()) {
+          print_expected_call_count_mismatch(call);
+          throw new MatcherError.CALL_COUNT_MISMATCH("Call count mismatch");
+        }
+      }
     }
 
     public virtual void clear() {

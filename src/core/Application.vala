@@ -20,12 +20,19 @@
  */
 namespace Venom {
   class Application : Gtk.Application {
-    private const GLib.ActionEntry app_entries[] =
-    {
+    private const GLib.ActionEntry app_entries[] = {
       { "preferences", on_preferences, null, null, null },
       { "about", on_about, null, null, null },
       { "quit", on_quit, null, null, null }
     };
+
+    private const OptionEntry[] option_entries = {
+      { "loglevel", 'l', 0, OptionArg.INT, ref loglevel, N_("Set level of messages to log"), N_("<loglevel>") },
+      { "version", 'V', 0, OptionArg.NONE, null, N_("Display version number"), null },
+      { null }
+    };
+
+    private static LogLevel loglevel = LogLevel.INFO;
 
     private ApplicationWindow applicationWindow;
     private IDatabase database;
@@ -41,6 +48,8 @@ namespace Venom {
         application_id: R.constants.app_id(),
         flags: ApplicationFlags.HANDLES_OPEN
         );
+      add_main_option_entries(option_entries);
+      add_action_entries(app_entries, this);
     }
 
     private ApplicationWindow getApplicationWindow() {
@@ -53,6 +62,7 @@ namespace Venom {
     protected override void startup() {
       base.startup();
 
+      Logger.displayed_level = loglevel;
       widget_factory = new Factory.WidgetFactory();
       logger = widget_factory.createLogger();
       database_factory = widget_factory.createDatabaseFactory();
@@ -78,7 +88,6 @@ namespace Venom {
         assert_not_reached();
       }
 
-      add_action_entries(app_entries, this);
       var app_menu = builder.get_object("app_menu") as MenuModel;
       assert(app_menu != null);
       set_app_menu(app_menu);
@@ -88,6 +97,15 @@ namespace Venom {
       hold();
       getApplicationWindow().present();
       release();
+    }
+
+    protected override int handle_local_options(GLib.VariantDict options) {
+      if (options.contains("version")) {
+        stdout.printf("%s %s\n", Environment.get_application_name(), Config.VERSION);
+        return 0;
+      }
+
+      return -1;
     }
 
     protected override void open(GLib.File[] files, string hint) {

@@ -73,6 +73,8 @@ public class TestToxAdapterFiletransferListener : UnitTest {
     mock().verify(transfer, "get_file_number");
     mock().verify(session, "file_control", args().uint(1).uint(2).int(ToxCore.FileControl.RESUME).create());
     mock().verify(transfer, "set_state", args().int(FileTransferState.RUNNING).create());
+
+    mock().verify_no_more_interactions(transfer);
   }
 
   private void test_remove_transfer() throws Error {
