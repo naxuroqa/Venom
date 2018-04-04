@@ -19,30 +19,33 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Mock {
-  public errordomain MatcherError {
-    CALL_COUNT_MISMATCH,
-    OBJECT_MISMATCH
-  }
+public errordomain MatcherError {
+  CALL_COUNT_MISMATCH,
+  OBJECT_MISMATCH
+}
 
+namespace Mock {
   public static Mock mock() {
     return MockImpl.get_instance();
   }
 
-  public static void check_expectations_noerror() {
-    try {
-      mock().check_expectations();
-    } catch (Error e) {
-      stderr.printf(e.message);
-      Test.fail();
-    }
+  public static MockFunctionCall when(GLib.Object object, string function_name, Arguments args = new Arguments()) {
+    return mock().when(object, function_name, args);
+  }
+
+  public static void verify(GLib.Object object, string function_name, Arguments args = new Arguments()) throws MatcherError {
+    mock().verify(object, function_name, args);
+  }
+
+  public static void verify_count(GLib.Object object, string function_name, int count, Arguments args = new Arguments()) throws MatcherError {
+    mock().verify_count(object, function_name, count, args);
   }
 
   public static Arguments.Builder args() {
     return Arguments.builder();
   }
 
-  public static string get_object_info(GLib.Object o) {
+  private static string get_object_info(GLib.Object o) {
     if (o == null) {
       return "unknown";
     }
@@ -233,7 +236,7 @@ namespace Mock {
     public abstract bool equals(GLib.Object o, string function_name, Arguments args);
   }
 
-  public class MockImpl : GLib.Object, Mock {
+  private class MockImpl : GLib.Object, Mock {
     private static Mock instance;
 
     public static Mock get_instance() {
@@ -355,7 +358,7 @@ namespace Mock {
     }
   }
 
-  public class MockFunctionCallImpl : GLib.Object, MockFunctionCall {
+  private class MockFunctionCallImpl : GLib.Object, MockFunctionCall {
     private GLib.Object object;
     private string name;
     private Arguments args;

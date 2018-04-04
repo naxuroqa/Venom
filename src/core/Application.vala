@@ -19,7 +19,7 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Venom {
-  class Application : Gtk.Application {
+  public class Application : Gtk.Application {
     private const GLib.ActionEntry app_entries[] = {
       { "preferences", on_preferences, null, null, null },
       { "about", on_about, null, null, null },

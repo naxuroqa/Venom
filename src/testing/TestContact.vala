@@ -20,31 +20,36 @@
  */
 
 using Venom;
+using Mock;
+using Testing;
 
-namespace TestContact {
-
-  private static void testContact() {
-    var public_key = new uint8[ToxCore.public_key_size()];
-    var contact = new Contact(1, "id");
-    assert(contact.tox_friend_number == 1);
-
-    assert(contact.get_id() == "id");
-    assert(contact.get_name_string() == "id");
-    assert(contact.get_status_string() == "");
-    assert(contact.get_status() == UserStatus.OFFLINE);
+public class TestContact : UnitTest {
+  public TestContact() {
+    add_func("/test_contact", test_contact);
+    add_func("/test_contact_name", test_contact_name);
   }
 
-  private static void testContactName() {
+  private static void test_contact() throws Error {
+    var public_key = new uint8[ToxCore.public_key_size()];
+    var contact = new Contact(1, "id");
+    Assert.assert_true(contact.tox_friend_number == 1);
+
+    Assert.assert_true(contact.get_id() == "id");
+    Assert.assert_true(contact.get_name_string() == "id");
+    Assert.assert_true(contact.get_status_string() == "");
+    Assert.assert_true(contact.get_status() == UserStatus.OFFLINE);
+  }
+
+  private static void test_contact_name() throws Error {
     var contact = new Contact(0, "");
     contact.name = "name";
-    assert(contact.name == "name");
-    assert(contact.get_name_string() == "name");
+    Assert.assert_true(contact.name == "name");
+    Assert.assert_true(contact.get_name_string() == "name");
   }
 
   private static int main(string[] args) {
     Test.init(ref args);
-    Test.add_func("/test_contact", testContact);
-    Test.add_func("/test_contact_name", testContactName);
+    var test = new TestContact();
     Test.run();
     return 0;
   }

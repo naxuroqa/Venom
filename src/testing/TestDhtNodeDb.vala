@@ -81,7 +81,7 @@ public class TestDhtNodeDb : UnitTest {
     Assert.assert_not_null(node_database);
 
     var nodes = node_database.getDhtNodes(node_factory);
-    Assert.assert_uint_equals(0, nodes.length());
+    Assert.assert_equals<uint>(0, nodes.length());
   }
 
   private void test_real_dht_node_db_insert_select() throws GLib.Error {
@@ -91,7 +91,7 @@ public class TestDhtNodeDb : UnitTest {
 
     node_database.insertDhtNode("a", "b", 0, false, "c", "d");
     var nodes = node_database.getDhtNodes(node_factory);
-    Assert.assert_uint_equals(1, nodes.length());
+    Assert.assert_equals<uint>(1, nodes.length());
   }
 
   private void test_real_dht_node_db_insert_select_duplicate() throws GLib.Error {
@@ -102,7 +102,7 @@ public class TestDhtNodeDb : UnitTest {
     node_database.insertDhtNode("a", "b", 0, false, "c", "d");
     node_database.insertDhtNode("a", "e", 0, false, "f", "g");
     var nodes = node_database.getDhtNodes(node_factory);
-    Assert.assert_uint_equals(1, nodes.length());
+    Assert.assert_equals<uint>(1, nodes.length());
   }
 
   private void test_real_dht_node_db_delete() throws GLib.Error {
@@ -121,7 +121,7 @@ public class TestDhtNodeDb : UnitTest {
     node_database.insertDhtNode("a", "b", 0, false, "c", "d");
     node_database.deleteDhtNode("a");
     var nodes = node_database.getDhtNodes(node_factory);
-    Assert.assert_uint_equals(0, nodes.length());
+    Assert.assert_equals<uint>(0, nodes.length());
   }
 
   private IDatabaseStatementFactory create_memory_stmt_factory() {

@@ -25,6 +25,8 @@ namespace Testing {
   }
 
   public class Assert {
+    private Assert() {}
+
     public static void fail(string message = "") throws AssertionError {
       throw new AssertionError.FAILED(message);
     }
@@ -35,30 +37,6 @@ namespace Testing {
 
     public static void assert_false(bool condition) throws AssertionError {
       if (condition) { fail("Condition != false"); }
-    }
-
-    public static void assert_int_equals(int expected, int actual) throws AssertionError {
-      if (expected != actual) { fail(@"$expected == $actual"); }
-    }
-
-    public static void assert_int_not_equals(int unexpected, int actual) throws AssertionError {
-      if (unexpected == actual) { fail(@"$unexpected != $actual"); }
-    }
-
-    public static void assert_uint_equals(uint expected, uint actual) throws AssertionError {
-      if (expected != actual) { fail(@"$expected == $actual"); }
-    }
-
-    public static void assert_uint_not_equals(uint unexpected, uint actual) throws AssertionError {
-      if (unexpected == actual) { fail(@"$unexpected != $actual"); }
-    }
-
-    public static void assert_float_equals(float expected, float actual) throws AssertionError {
-      if ((expected - actual).abs() > float.MIN) { fail(@"$expected == $actual"); }
-    }
-
-    public static void assert_float_not_equals(float unexpected, float actual) throws AssertionError {
-      if ((unexpected - actual).abs() < float.MIN) { fail(@"$unexpected != $actual"); }
     }
 
     public static void assert_same(void* expected, void* actual) throws AssertionError {
@@ -75,6 +53,16 @@ namespace Testing {
 
     public static void assert_not_null(void* o) throws AssertionError {
       if (o == null) { fail("Object is null"); }
+    }
+
+    public static void assert_equals<T>(T expected, T actual) throws AssertionError {
+      var f = Gee.Functions.get_equal_func_for(typeof(T));
+      if (!f(expected, actual)) { fail("expected != actual"); }
+    }
+
+    public static void assert_not_equals<T>(T unexpected, T actual) throws AssertionError {
+      var f = Gee.Functions.get_equal_func_for(typeof(T));
+      if (f(unexpected, actual)) { fail("expected == actual"); }
     }
   }
 }

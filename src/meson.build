@@ -29,7 +29,7 @@ venom_icons_resources = gnome.compile_resources( 'venom_icons_resources', 'icons
 			source_dir : 'icons',
 			c_name : 'c_venom_icons_res')
 
-venom_source = [files(
+venom_source = files(
 			'core/Application.vala',
 			'core/Contact.vala',
 			'core/FileTransfer.vala',
@@ -94,14 +94,20 @@ venom_source = [files(
 			'viewmodel/FriendInfoViewModel.vala',
 			'viewmodel/MessageViewModel.vala',
 			'viewmodel/UserInfoViewModel.vala'
-			),
-			venom_ui_resources,
-			venom_icons_resources
-			]
+			)
 
-venom_dep = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, toxav_dep, config_dep, soup_dep]
+venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, toxav_dep, config_dep, soup_dep]
 
-venom_binary = executable('venom', ['Main.vala', venom_source],
+venom_lib = static_library('venom', [venom_source, venom_ui_resources, venom_icons_resources],
+			dependencies : venom_deps
+			)
+
+venom_dep = declare_dependency(
+			dependencies : venom_deps,
+			link_with : venom_lib
+			)
+
+venom_binary = executable('venom', ['Main.vala', venom_ui_resources, venom_icons_resources],
 			dependencies : venom_dep,
 			install : true
 			)

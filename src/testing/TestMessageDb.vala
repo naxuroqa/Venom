@@ -1,7 +1,7 @@
 /*
  *    TestMessageDb.vala
  *
- *    Copyright (C) 2017 Venom authors and contributors
+ *    Copyright (C) 2017-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -40,13 +40,18 @@ public class TestMessageDb : UnitTest {
   public override void set_up() throws Error {
     statement = new MockStatement();
     builder = new SqliteStatementWrapper.Builder(statement);
-    mock().when(statement, "builder").then_return_object(builder);
+    when(statement, "builder")
+        .then_return_object(builder);
+
     statementFactory = new MockStatementFactory();
-    mock().when(statementFactory, "createStatement").then_return_object(statement);
+    when(statementFactory, "createStatement")
+        .then_return_object(statement);
 
     message = new MockLoggedMessage();
     messageFactory = new MockLoggedMessageFactory();
-    mock().when(messageFactory, "createLoggedMessage").then_return_object(message);
+    when(messageFactory, "createLoggedMessage")
+        .then_return_object(message);
+
     logger = new MockLogger();
   }
 
