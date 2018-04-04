@@ -30,5 +30,10 @@ namespace Mock {
                      .create();
       mock().actual_call(this, "on_unread_message", args);
     }
+
+
+    public void clear_notifications() {
+      mock().actual_call(this, "clear_notifications");
+    }
   }
 }

@@ -82,7 +82,6 @@ venom_source = files(
 			'view/NodeWidget.vala',
 			'view/PeerEntry.vala',
 			'view/SettingsWidget.vala',
-			'view/UITools.vala',
 			'view/UserInfoWidget.vala',
 			'view/WelcomeWidget.vala',
 			'viewmodel/AddContactViewModel.vala',

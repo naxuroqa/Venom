@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.4 -->
+<!-- Generated with glade 3.22.1 -->
 <interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
   <template class="VenomMessageWidget" parent="GtkListBoxRow">
@@ -12,9 +12,12 @@
         <property name="spacing">6</property>
         <child>
           <object class="GtkImage" id="sender_image">
+            <property name="width_request">48</property>
+            <property name="height_request">48</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="valign">start</property>
+            <property name="pixel_size">48</property>
             <property name="icon_name">user-info-symbolic</property>
             <property name="icon_size">5</property>
           </object>

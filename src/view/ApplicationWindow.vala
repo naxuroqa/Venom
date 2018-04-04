@@ -84,6 +84,7 @@ namespace Venom {
       transfers.set_list(new GLib.List<FileTransfer>());
 
       notification_listener = new NotificationListenerImpl(logger);
+      notification_listener.clear_notifications();
 
       var session_io = new ToxSessionIOImpl(logger);
       session = new ToxSessionImpl(session_io, node_database, settings_database, logger);
@@ -102,6 +103,7 @@ namespace Venom {
 
       status_icon.activate.connect(present);
       delete_event.connect(on_delete_event);
+      focus_in_event.connect(on_focus_in_event);
 
       init_widgets();
       init_callbacks();
@@ -113,6 +115,11 @@ namespace Venom {
 
     ~ApplicationWindow() {
       logger.d("ApplicationWindow destroyed.");
+    }
+
+    private bool on_focus_in_event() {
+      notification_listener.clear_notifications();
+      return false;
     }
 
     private bool on_delete_event() {

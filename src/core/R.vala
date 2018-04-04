@@ -80,4 +80,13 @@ namespace Venom {
       public string tox_get_involved() { return "https://wiki.tox.chat/users/contributing"; }
     }
   }
+
+  public static Gdk.Pixbuf ? pixbuf_from_resource(string res) {
+    try {
+      return new Gdk.Pixbuf.from_resource(R.constants.icons_prefix() + res
+                                          + R.constants.icons_suffix());
+    } catch (Error e) {
+    }
+    return null;
+  }
 }

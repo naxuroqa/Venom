@@ -47,6 +47,7 @@ test_venom_config = executable('test_venom_config', ['TestVenomConfig.vala'],
 test_contact = executable('test_contact', ['TestContact.vala',
 			join_paths(root_source_dir, 'core/Contact.vala'),
 			join_paths(root_source_dir, 'core/Interfaces.vala'),
+			join_paths(root_source_dir, 'core/R.vala'),
 			join_paths(root_source_dir, 'core/Tools.vala'),
 			join_paths(root_source_dir, 'tox/ToxContact.vala')],
 			dependencies : [gtk_dep, config_dep, gdk_dep, tox_dep, mox_dep]

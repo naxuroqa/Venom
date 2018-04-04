@@ -39,7 +39,7 @@ namespace Venom {
     public UserInfoImpl() {
       name = R.strings.default_username();
       status_message = R.strings.default_statusmessage();
-      image = UITools.pixbuf_from_resource(R.icons.default_contact);
+      image = pixbuf_from_resource(R.icons.default_contact);
       user_status = UserStatus.OFFLINE;
     }
 

@@ -79,6 +79,7 @@ namespace Venom {
     private void update_widgets() {
       user_name.label = contact.get_name_string();
       user_status.label = contact.get_status_string();
+      user_image.pixbuf = contact.get_image();
     }
 
     ~ConversationWindow() {
