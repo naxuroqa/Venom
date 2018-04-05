@@ -176,6 +176,22 @@ namespace Venom {
         conversation.set_list(new GLib.List<IMessage>());
         conversations.@set(contact, conversation);
       }
+
+      var filepath = GLib.Path.build_filename(R.constants.avatars_folder(), @"$str_id.png");
+      var file = File.new_for_path(filepath);
+      if (file.query_exists()) {
+        uint8[] buf;
+        try {
+          file.load_contents(null, out buf, null);
+          var pixbuf_loader = new Gdk.PixbufLoader();
+          pixbuf_loader.write(buf);
+          pixbuf_loader.close();
+          contact.tox_image = pixbuf_loader.get_pixbuf();
+        } catch (Error e) {
+          logger.i("could not read avatar data: " + e.message);
+        }
+      }
+
       friends.@set(friend_number, contact);
       contacts.append(contact);
     }

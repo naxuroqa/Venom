@@ -49,7 +49,10 @@ namespace Venom {
       statusmessage = contact.status_message;
       last_seen = contact.last_seen.format("%c");
       tox_id = contact.get_id();
-      userimage = contact.get_image();
+      var pixbuf = contact.get_image();
+      if (pixbuf != null) {
+        userimage = pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR);
+      }
     }
 
     public void on_apply_clicked() {

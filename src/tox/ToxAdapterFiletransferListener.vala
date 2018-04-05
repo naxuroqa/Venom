@@ -213,9 +213,19 @@ namespace Venom {
         try {
           friend_transfers.remove(file_number);
           unowned uint8[] buf = transfer.get_file_data();
-          var file = File.new_for_path(@"avatar-$(friend_number).png");
+          var directory = File.new_for_path(R.constants.avatars_folder());
+          if (!directory.query_exists()) {
+            directory.make_directory();
+          }
+
+          var id = contact.get_id();
+          var filepath = GLib.Path.build_filename(R.constants.avatars_folder(), @"$id.png");
+          var file = File.new_for_path(filepath);
           file.replace_contents(buf, null, false, FileCreateFlags.NONE, null, null);
-          contact.tox_image = new Gdk.Pixbuf.from_file_at_scale(file.get_path(), 44, 44, true);
+          var pixbuf_loader = new Gdk.PixbufLoader();
+          pixbuf_loader.write(buf);
+          pixbuf_loader.close();
+          contact.tox_image = pixbuf_loader.get_pixbuf();
           contact.changed();
         } catch (Error e) {
           logger.e("set image failed: " + e.message);

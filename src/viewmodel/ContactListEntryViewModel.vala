@@ -45,7 +45,10 @@ namespace Venom {
     private void update_contact() {
       contact_name = contact.get_name_string();
       contact_status = contact.get_status_string();
-      contact_image = contact.get_image();
+      var pixbuf = contact.get_image();
+      if (pixbuf != null) {
+        contact_image = pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR);
+      }
       contact_status_image = icon_name_from_status(contact.get_status());
     }
 
