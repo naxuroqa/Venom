@@ -22,4 +22,7 @@
     <file compressed="true" preprocess="xml-stripblanks">user_info_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">welcome_widget.ui</file>
   </gresource>
+  <gresource prefix="/im/tox/venom/css">
+    <file compressed="true">custom.css</file>
+  </gresource>
 </gresources>

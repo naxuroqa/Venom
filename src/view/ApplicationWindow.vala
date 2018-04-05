@@ -133,6 +133,11 @@ namespace Venom {
       default_height = 600;
       default_width = 600;
 
+      var screen = Gdk.Screen.get_default();
+      var css_provider = new Gtk.CssProvider();
+      css_provider.load_from_resource("/im/tox/venom/css/custom.css");
+      Gtk.StyleContext.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+
       var gtk_settings = Gtk.Settings.get_default();
       settings_database.bind_property("enable-dark-theme", gtk_settings, "gtk-application-prefer-dark-theme", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings_database.bind_property("enable-animations", gtk_settings, "gtk-enable-animations", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
