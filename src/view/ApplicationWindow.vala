@@ -86,20 +86,25 @@ namespace Venom {
       notification_listener = new NotificationListenerImpl(logger);
       notification_listener.clear_notifications();
 
-      var session_io = new ToxSessionIOImpl(logger);
-      session = new ToxSessionImpl(session_io, node_database, settings_database, logger);
       session_listener = new ToxAdapterListenerImpl(logger, user_info);
-      session_listener.attach_to_session(session);
       friend_listener = new ToxAdapterFriendListenerImpl(logger, contacts, conversations, notification_listener);
-      friend_listener.attach_to_session(session);
       conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conversations, notification_listener);
-      conference_listener.attach_to_session(session);
       filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, notification_listener);
-      filetransfer_listener.attach_to_session(session);
 
       settings_database.bind_property("enable-send-typing", friend_listener, "show-typing", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-urgency-notification", notification_listener, "show-notifications", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-tray", status_icon, "visible", BindingFlags.SYNC_CREATE);
+
+      try {
+        var session_io = new ToxSessionIOImpl(logger);
+        session = new ToxSessionImpl(session_io, node_database, settings_database, logger);
+        session_listener.attach_to_session(session);
+        friend_listener.attach_to_session(session);
+        conference_listener.attach_to_session(session);
+        filetransfer_listener.attach_to_session(session);
+      } catch (Error e) {
+        logger.e("Could not create tox instance: " + e.message);
+      }
 
       status_icon.activate.connect(present);
       delete_event.connect(on_delete_event);

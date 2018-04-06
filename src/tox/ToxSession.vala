@@ -128,7 +128,7 @@ namespace Venom {
     private ToxSessionIO iohandler;
     private GLib.HashTable<uint32, IContact> friends;
 
-    public ToxSessionImpl(ToxSessionIO iohandler, IDhtNodeDatabase node_database, ISettingsDatabase settings_database, ILogger logger) {
+    public ToxSessionImpl(ToxSessionIO iohandler, IDhtNodeDatabase node_database, ISettingsDatabase settings_database, ILogger logger) throws Error {
       this.dht_node_database = node_database;
       this.settings_database = settings_database;
       this.logger = logger;
@@ -148,26 +148,20 @@ namespace Venom {
       }
 
       if (settings_database.enable_proxy) {
-        if (settings_database.enable_custom_proxy) {
-          options.proxy_type = ProxyType.SOCKS5;
-          options.proxy_host = settings_database.custom_proxy_host;
-          options.proxy_port = (uint16) settings_database.custom_proxy_port;
-        } else {
-          //FIXME system proxy currently not supported
-        }
+        init_proxy(options);
       }
 
       // create handle
       var error = ToxCore.ErrNew.OK;
       handle = new ToxCore.Tox(options, ref error);
       if (error == ErrNew.PROXY_BAD_HOST || error == ErrNew.PROXY_BAD_PORT || error == ErrNew.PROXY_NOT_FOUND) {
-        logger.e("Proxy could not be used: " + error.to_string());
-        options.proxy_type = ProxyType.NONE;
-        handle = new ToxCore.Tox(options, ref error);
-      }
-      if (error != ToxCore.ErrNew.OK) {
-        logger.f("Could not create tox instance: " + error.to_string());
-        assert_not_reached();
+        var message = "Proxy could not be used: " + error.to_string();
+        logger.f(message);
+        throw new ToxError.GENERIC(message);
+      } else if (error != ToxCore.ErrNew.OK) {
+        var message = "Could not create tox instance: " + error.to_string();
+        logger.f(message);
+        throw new ToxError.GENERIC(message);
       }
 
       handle.callback_self_connection_status(on_self_connection_status_cb);
@@ -200,6 +194,70 @@ namespace Venom {
       logger.i("ToxSession saving session data.");
       iohandler.save_sessiondata(handle.get_savedata());
       logger.d("ToxSession destroyed.");
+    }
+
+    private void init_proxy(ToxCore.Options options) {
+      if (settings_database.enable_custom_proxy) {
+        options.udp_enabled = false;
+        options.proxy_type = ProxyType.SOCKS5;
+        options.proxy_host = settings_database.custom_proxy_host;
+        options.proxy_port = (uint16) settings_database.custom_proxy_port;
+        logger.i("Using custom socks5 proxy: socks5://%s:%u.".printf(options.proxy_host, options.proxy_port));
+        return;
+      } else {
+        string[] proxy_strings = {};
+        ProxyResolver proxy_resolver = ProxyResolver.get_default();
+        try {
+          proxy_strings = proxy_resolver.lookup("socks://tox.im");
+        } catch (Error e) {
+          logger.e("Error when looking up proxy settings: " + e.message);
+          return;
+        }
+
+        Regex proxy_regex = null;
+        try {
+          proxy_regex = new GLib.Regex("^(?P<protocol>socks5)://((?P<user>[^:]*)(:(?P<password>.*))?@)?(?P<host>.*):(?P<port>.*)");
+        } catch (GLib.Error e) {
+          logger.f("Error creating tox uri regex: " + e.message);
+          return;
+        }
+
+        foreach (var proxy in proxy_strings) {
+          if (proxy.has_prefix("socks5:")) {
+            GLib.MatchInfo info = null;
+            if (proxy_regex != null && proxy_regex.match(proxy, 0, out info)) {
+              options.udp_enabled = false;
+              options.proxy_type = ProxyType.SOCKS5;
+              options.proxy_host = info.fetch_named("host");
+              options.proxy_port = (uint16) int.parse(info.fetch_named("port"));
+              logger.i("Using socks5 proxy found in system settings: socks5://%s:%u.".printf(options.proxy_host, options.proxy_port));
+              return;
+            } else {
+              logger.i("socks5 proxy does not match regex: " + proxy);
+            }
+          }
+        }
+
+        logger.i("No usable proxy found in system settings, connecting directly.");
+      }
+    }
+
+    private void init_dht_nodes() {
+      var nodeFactory = new DhtNodeFactory();
+      dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
+      logger.d("Items in dht node list: %u".printf(dht_nodes.length()));
+      if (dht_nodes.length() == 0) {
+        logger.d("Node database empty, populating from static database.");
+        var nodeDatabase = new JsonWebDhtNodeDatabase(logger);
+        var nodes = nodeDatabase.getDhtNodes(nodeFactory);
+        foreach (var node in nodes) {
+          dht_node_database.insertDhtNode(node.pub_key, node.host, node.port, node.is_blocked, node.maintainer, node.location);
+        }
+        dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
+        if (dht_nodes.length() == 0) {
+          logger.e("Node initialisation from static database failed.");
+        }
+      }
     }
 
     public virtual unowned GLib.HashTable<uint32, IContact> get_friends() {
@@ -628,24 +686,6 @@ namespace Venom {
         throw new ToxError.GENERIC(e.to_string());
       }
       return ret;
-    }
-
-    private void init_dht_nodes() {
-      var nodeFactory = new DhtNodeFactory();
-      dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
-      logger.d("Items in dht node list: %u".printf(dht_nodes.length()));
-      if (dht_nodes.length() == 0) {
-        logger.d("Node database empty, populating from static database.");
-        var nodeDatabase = new JsonWebDhtNodeDatabase(logger);
-        var nodes = nodeDatabase.getDhtNodes(nodeFactory);
-        foreach (var node in nodes) {
-          dht_node_database.insertDhtNode(node.pub_key, node.host, node.port, node.is_blocked, node.maintainer, node.location);
-        }
-        dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
-        if (dht_nodes.length() == 0) {
-          logger.e("Node initialisation from static database failed.");
-        }
-      }
     }
 
     public void @lock() {
