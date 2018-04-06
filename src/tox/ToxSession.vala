@@ -138,7 +138,7 @@ namespace Venom {
       var options_error = ToxCore.ErrOptionsNew.OK;
       var options = new ToxCore.Options(ref options_error);
 
-      //options.log_callback = on_tox_message;
+      options.log_callback = on_tox_message;
       friends = new GLib.HashTable<uint32, IContact>(null, null);
 
       var savedata = iohandler.load_sessiondata();
@@ -150,6 +150,11 @@ namespace Venom {
       if (settings_database.enable_proxy) {
         init_proxy(options);
       }
+
+      options.udp_enabled = settings_database.enable_udp;
+      options.ipv6_enabled = settings_database.enable_ipv6;
+      options.local_discovery_enabled = settings_database.enable_local_discovery;
+      options.hole_punching_enabled = settings_database.enable_hole_punching;
 
       // create handle
       var error = ToxCore.ErrNew.OK;
@@ -198,7 +203,6 @@ namespace Venom {
 
     private void init_proxy(ToxCore.Options options) {
       if (settings_database.enable_custom_proxy) {
-        options.udp_enabled = false;
         options.proxy_type = ProxyType.SOCKS5;
         options.proxy_host = settings_database.custom_proxy_host;
         options.proxy_port = (uint16) settings_database.custom_proxy_port;
@@ -226,7 +230,6 @@ namespace Venom {
           if (proxy.has_prefix("socks5:")) {
             GLib.MatchInfo info = null;
             if (proxy_regex != null && proxy_regex.match(proxy, 0, out info)) {
-              options.udp_enabled = false;
               options.proxy_type = ProxyType.SOCKS5;
               options.proxy_host = info.fetch_named("host");
               options.proxy_port = (uint16) int.parse(info.fetch_named("port"));

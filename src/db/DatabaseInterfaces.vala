@@ -32,6 +32,10 @@ namespace Venom {
     public abstract bool   enable_custom_proxy         { get; set; }
     public abstract string custom_proxy_host           { get; set; }
     public abstract int    custom_proxy_port           { get; set; }
+    public abstract bool   enable_udp                  { get; set; }
+    public abstract bool   enable_ipv6                 { get; set; }
+    public abstract bool   enable_local_discovery      { get; set; }
+    public abstract bool   enable_hole_punching        { get; set; }
 
     public abstract void load();
     public abstract void save();

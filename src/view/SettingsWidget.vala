@@ -52,6 +52,11 @@ namespace Venom {
     [GtkChild] private Gtk.Entry custom_proxy_host;
     [GtkChild] private Gtk.SpinButton custom_proxy_port;
 
+    [GtkChild] private Gtk.Switch enable_udp;
+    [GtkChild] private Gtk.Switch enable_ipv6;
+    [GtkChild] private Gtk.Switch enable_local_discovery;
+    [GtkChild] private Gtk.Switch enable_hole_punching;
+
     private ObservableList dht_nodes;
     private ObservableListModel list_model;
 
@@ -79,6 +84,10 @@ namespace Venom {
       settingsDatabase.bind_property("enable-custom-proxy", proxy_manual_revealer,     "reveal-child", BindingFlags.SYNC_CREATE);
       settingsDatabase.bind_property("custom-proxy-host",   custom_proxy_host,         "text",   BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("custom-proxy-port",   custom_proxy_port,         "value",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("enable-udp",          enable_udp,                "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("enable-ipv6",         enable_ipv6,               "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("enable-local-discovery", enable_local_discovery, "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("enable-hole-punching", enable_hole_punching,     "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
       var dhtNodeFactory = new DhtNodeFactory();
       dht_nodes = new ObservableList();
