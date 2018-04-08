@@ -106,8 +106,8 @@ namespace Venom {
     public abstract void on_file_recv_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data);
     public abstract void on_file_recv_control(uint32 friend_number, uint32 file_number, FileControl control);
 
-    public abstract void on_file_chunk_request(uint32 friend_number, uint32 file_number, uint64 position);
-    public abstract void on_file_send_received(uint32 friend_number, uint32 file_number, FileKind kind, GLib.File file);
+    public abstract void on_file_chunk_request(uint32 friend_number, uint32 file_number, uint64 position, uint64 length);
+    public abstract void on_file_send_received(uint32 friend_number, uint32 file_number, FileKind kind, uint64 file_size, string file_name, GLib.File file);
   }
 
   public class ToxSessionImpl : GLib.Object, ToxSession {
@@ -185,6 +185,7 @@ namespace Venom {
       handle.callback_file_recv(on_file_recv_cb);
       handle.callback_file_recv_chunk(on_file_recv_chunk_cb);
       handle.callback_file_recv_control(on_file_recv_control_cb);
+      handle.callback_file_chunk_request(on_file_chunk_request_cb);
 
       init_dht_nodes();
       sessionThread = new ToxSessionThreadImpl(this, logger, dht_nodes);
@@ -469,6 +470,12 @@ namespace Venom {
       Idle.add(() => { session.file_transfer_listener.on_file_recv_control(friend_number, file_number, control); return false; });
     }
 
+    private static void on_file_chunk_request_cb(Tox self, uint32 friend_number, uint32 file_number, uint64 position, size_t length, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
+      session.logger.d(@"on_file_chunk_request_cb: $friend_number:$file_number $position $length");
+      Idle.add(() => { session.file_transfer_listener.on_file_chunk_request(friend_number, file_number, position, length); return false; });
+    }
+
     private static UserStatus from_connection_status(Connection connection_status) {
       if (connection_status == Connection.NONE) {
         return UserStatus.OFFLINE;
@@ -609,23 +616,32 @@ namespace Venom {
     }
 
     public virtual void file_send(uint32 friend_number, FileKind kind, GLib.File file) throws ToxError {
-      // var e = ErrFileSend.OK;
-      // var ret = handle.file_send(friend_number, kind, file_size, file_id, filename, ref e);
-      // if (e != ErrFileSend.OK) {
-      //   throw new ToxError.GENERIC(e.to_string());
-      // }
-      // file_transfer_listener.on_file_send_received(friend_number, ret, kind, file);
+      uint64 file_size = Tools.get_file_size(file);
+      var file_name = file.get_basename();
+
+      var e = ErrFileSend.OK;
+      var ret = handle.file_send(friend_number, kind, file_size, null, file_name, ref e);
+      if (e != ErrFileSend.OK) {
+        logger.e("file send request failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
+      file_transfer_listener.on_file_send_received(friend_number, ret, kind, file_size, file_name, file);
     }
 
     public virtual void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError {
-
+      var e = ErrFileSendChunk.OK;
+      handle.file_send_chunk(friend_number, file_number, position, data, ref e);
+      if (e != ErrFileSendChunk.OK) {
+        logger.e("sending chunk failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
     }
 
     private void conference_set_title_private(uint32 conference_number, string title) throws ToxError {
       var e = ErrConferenceTitle.OK;
       handle.conference_set_title(conference_number, title, ref e);
       if (e != ErrConferenceTitle.OK) {
-        logger.i("setting conference title failed: " + e.to_string());
+        logger.e("setting conference title failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
     }
@@ -649,7 +665,7 @@ namespace Venom {
       var e = ErrConferenceNew.OK;
       var conference_number = handle.conference_new(ref e);
       if (e != ErrConferenceNew.OK) {
-        logger.i("creating conference failed: " + e.to_string());
+        logger.e("creating conference failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
       try {
@@ -666,7 +682,7 @@ namespace Venom {
       var e = ErrConferenceDelete.OK;
       handle.conference_delete(conference_number, ref e);
       if (e != ErrConferenceDelete.OK) {
-        logger.i("deleting conference failed: " + e.to_string());
+        logger.e("deleting conference failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
       conference_listener.on_conference_deleted(conference_number);
@@ -676,7 +692,7 @@ namespace Venom {
       var e = ErrConferenceSendMessage.OK;
       handle.conference_send_message(conference_number, MessageType.NORMAL, message, ref e);
       if (e != ErrConferenceSendMessage.OK) {
-        logger.i("sending conference message failed: " + e.to_string());
+        logger.e("sending conference message failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
     }
@@ -685,7 +701,7 @@ namespace Venom {
       var e = ErrFriendByPublicKey.OK;
       var ret = handle.friend_by_public_key(public_key, ref e);
       if (ret == uint32.MAX) {
-        logger.i("get_friend_number failed: " + e.to_string());
+        logger.e("get_friend_number failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
       return ret;

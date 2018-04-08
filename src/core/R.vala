@@ -84,8 +84,8 @@ namespace Venom {
 
   public static Gdk.Pixbuf ? pixbuf_from_resource(string res) {
     try {
-      return new Gdk.Pixbuf.from_resource(R.constants.icons_prefix() + res
-                                          + R.constants.icons_suffix());
+      var resource_path = R.constants.icons_prefix() + res + R.constants.icons_suffix();
+      return new Gdk.Pixbuf.from_resource_at_scale(resource_path, 96, 96, true);
     } catch (Error e) {
     }
     return null;

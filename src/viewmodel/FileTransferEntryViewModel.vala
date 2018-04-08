@@ -33,6 +33,7 @@ namespace Venom {
     public bool stop_visible { get; set; }
 
     public signal void open_file(string filename);
+    public signal void open_save_file_dialog(string path, string filename);
 
     public FileTransferEntryViewModel(ILogger logger, FileTransfer file_transfer, FileTransferEntryListener listener) {
       logger.d("FileTransferEntryViewModel created.");
@@ -40,23 +41,51 @@ namespace Venom {
       this.file_transfer = file_transfer;
       this.listener = listener;
 
-      description = file_transfer.get_description();
-
+      update_description();
       update_progress();
       update_state();
       file_transfer.progress_changed.connect(update_progress);
       file_transfer.state_changed.connect(update_state);
     }
 
+    private void update_description() {
+      try {
+        var contact = listener.get_contact_from_transfer(file_transfer);
+        if (file_transfer.is_avatar()) {
+          description = "New avatar from %s".printf(contact.get_name_string());
+        } else {
+          description = file_transfer.get_file_name();
+        }
+      } catch (Error e) {
+        logger.e("Contact lookup failed: " + e.message);
+      }
+    }
+
     public void on_open_clicked() {
-      var path = file_transfer.get_file_path();
+      string? path = null;
+      if (file_transfer.is_avatar()) {
+        path = R.constants.avatars_folder();
+      } else {
+        path = Path.get_dirname(file_transfer.get_file_path());
+      }
+
       if (path != null) {
         open_file(path);
       }
     }
 
-    public void on_resume_transfer() {
+    public void on_save_file_chosen(File file) {
+      file_transfer.init_file(file);
       listener.start_transfer(file_transfer);
+    }
+
+    public void on_resume_transfer() {
+      if (file_transfer.get_direction() == FileTransferDirection.INCOMING
+          && file_transfer.get_state() == FileTransferState.INIT) {
+        open_save_file_dialog(".", file_transfer.get_file_name());
+      } else {
+        listener.start_transfer(file_transfer);
+      }
     }
 
     public void on_pause_transfer() {
@@ -73,14 +102,24 @@ namespace Venom {
 
     private void update_progress() {
       logger.d("update_progress");
-      progress = file_transfer.get_transmitted_size() / ((double) file_transfer.get_file_size());
+      var file_size = file_transfer.get_file_size();
+      progress = file_size > 0
+                 ? file_transfer.get_transmitted_size() / ((double) file_transfer.get_file_size())
+                 : 0;
     }
 
     private void update_state() {
       logger.d("update_state");
+      var outgoing = file_transfer.get_direction() == FileTransferDirection.OUTGOING;
       switch (file_transfer.get_state()) {
+        case FileTransferState.FAILED:
+          open_visible = false;
+          resume_visible = false;
+          pause_visible = false;
+          stop_visible = false;
+          break;
         case FileTransferState.FINISHED:
-          open_visible = true;
+          open_visible = !outgoing;
           resume_visible = false;
           pause_visible = false;
           stop_visible = false;
@@ -93,9 +132,9 @@ namespace Venom {
           break;
         case FileTransferState.INIT:
           open_visible = false;
-          resume_visible = true;
+          resume_visible = !outgoing;
           pause_visible = false;
-          stop_visible = false;
+          stop_visible = outgoing;
           break;
         case FileTransferState.RUNNING:
           open_visible = false;

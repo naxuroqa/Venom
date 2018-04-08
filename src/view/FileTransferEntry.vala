@@ -53,6 +53,7 @@ namespace Venom {
       remove_transfer.clicked.connect(view_model.on_remove_transfer);
 
       view_model.open_file.connect(on_open_file);
+      view_model.open_save_file_dialog.connect(on_open_save_file_dialog);
     }
 
     private void on_open_file(string filename) {
@@ -60,6 +61,29 @@ namespace Venom {
       string[] spawn_env = GLib.Environ.get();
 
       GLib.Process.spawn_async(null, spawn_args, spawn_env, GLib.SpawnFlags.SEARCH_PATH, null, null);
+    }
+
+    private void on_open_save_file_dialog(string path, string filename) {
+      var app = GLib.Application.get_default() as Gtk.Application;
+      if (app == null) {
+        logger.e("Could not get default application");
+        return;
+      }
+      var window = app.get_active_window();
+      var dialog = new Gtk.FileChooserDialog(_(@"Save file $filename"),
+                                             window,
+                                             Gtk.FileChooserAction.SAVE,
+                                             _("_Cancel"), Gtk.ResponseType.CANCEL,
+                                             _("_Save"), Gtk.ResponseType.ACCEPT,
+                                             null);
+      dialog.do_overwrite_confirmation = true;
+      dialog.set_current_folder(path);
+      dialog.set_current_name(filename);
+      var ret = dialog.run();
+      dialog.close();
+      if (ret == Gtk.ResponseType.ACCEPT) {
+        view_model.on_save_file_chosen(dialog.get_file());
+      }
     }
 
     ~FileTransferEntry() {

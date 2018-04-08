@@ -1,7 +1,7 @@
 /*
  *    ConversationWindow.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *

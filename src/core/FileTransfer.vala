@@ -1,7 +1,7 @@
 /*
  *    FileTransfer.vala
  *
- *    Copyright (C) 2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -25,58 +25,86 @@ namespace Venom {
     PAUSED,
     RUNNING,
     CANCEL,
-    FINISHED
+    FINISHED,
+    FAILED
+  }
+
+  public enum FileTransferDirection {
+    INCOMING,
+    OUTGOING
+  }
+
+  public errordomain FileTransferError {
+    READ,
+    WRITE,
+    INIT,
+    OVERFLOW
   }
 
   public interface FileTransfer : GLib.Object {
     public signal void state_changed();
     public signal void progress_changed();
 
-    public abstract bool is_avatar();
-    public abstract string get_description();
-    public abstract uint64 get_transmitted_size();
-    public abstract uint64 get_file_size();
-    public abstract unowned uint8[]? get_file_data();
-    public abstract void set_file_data(uint64 offset, uint8[] data);
-    public abstract FileTransferState get_state();
-    public abstract void set_state(FileTransferState state);
-    public abstract string? get_file_path();
-
+    public abstract FileTransferDirection get_direction();
     public abstract uint32 get_friend_number();
     public abstract uint32 get_file_number();
+    public abstract uint64 get_file_size();
+    public abstract uint64 get_transmitted_size();
+    public abstract FileTransferState get_state();
+    public abstract bool is_avatar();
+    public abstract unowned uint8[] ? get_avatar_buffer();
+
+    public abstract void init_file(File file) throws Error;
+
+    public abstract void write_data(uint8[] data) throws Error;
+    public abstract uint8[] read_data(uint64 length) throws Error;
+
+    public abstract string? get_file_name();
+    public abstract string? get_file_path();
+    public abstract void set_state(FileTransferState state);
   }
 
   public class FileTransferImpl : FileTransfer, GLib.Object {
-    private uint8[] file_data;
-    private uint64 transmitted_size;
-    private ILogger logger;
-    private string description;
-    private bool _is_avatar;
-    private FileTransferState state;
+    private FileTransferDirection direction;
     private uint32 friend_number;
     private uint32 file_number;
+    private uint64 file_size;
+    private uint64 transmitted_size;
+    private FileTransferState state;
 
-    private FileTransferImpl(ILogger logger, uint32 friend_number, uint32 file_number) {
-      this.logger = logger;
+    private bool _is_avatar;
+    private uint8[] avatar_buffer;
+
+    private string file_name;
+    private File file;
+
+    private FileTransferImpl(FileTransferDirection direction, uint32 friend_number, uint32 file_number, uint64 file_size) {
       this.friend_number = friend_number;
       this.file_number = file_number;
+      this.direction = direction;
+      this.file_size = file_size;
+
+      state = FileTransferState.INIT;
+      transmitted_size = 0;
     }
 
-    public FileTransferImpl.File(ILogger logger, uint32 friend_number, uint32 file_number, uint64 file_size, string filename) {
-      this(logger, friend_number, file_number);
-      this.description = filename;
-      transmitted_size = 0;
-      state = FileTransferState.INIT;
+    public FileTransferImpl.File(FileTransferDirection direction, uint32 friend_number, uint32 file_number, uint64 file_size, string file_name) {
+      this(direction, friend_number, file_number, file_size);
+      this.file_name = file_name;
       _is_avatar = false;
     }
 
-    public FileTransferImpl.Avatar(ILogger logger, uint32 friend_number, uint32 file_number, uint64 file_size, string description) {
-      this(logger, friend_number, file_number);
-      this.description = description;
-      file_data = new uint8[file_size];
-      transmitted_size = 0;
-      state = FileTransferState.INIT;
+    public FileTransferImpl.Avatar(FileTransferDirection direction, uint32 friend_number, uint32 file_number, uint64 file_size) {
+      this(direction, friend_number, file_number, file_size);
+      avatar_buffer = new uint8[file_size];
       _is_avatar = true;
+    }
+
+    public void init_file(File file) throws Error {
+      this.file = file;
+      if (direction == INCOMING) {
+        file.create(FileCreateFlags.NONE);
+      }
     }
 
     private static void copy_with_offset(uint8[] dest, uint8[] src, uint64 offset) {
@@ -84,62 +112,101 @@ namespace Venom {
       GLib.Memory.copy(dest_ptr, src, src.length);
     }
 
-    public virtual bool is_avatar() {
+    public bool is_avatar() {
       return _is_avatar;
     }
 
-    public virtual string get_description() {
-      return description;
-    }
-
-    public virtual uint64 get_transmitted_size() {
+    public uint64 get_transmitted_size() {
       return transmitted_size;
     }
 
-    public virtual uint64 get_file_size() {
-      return file_data.length;
+    public uint64 get_file_size() {
+      return file_size;
     }
 
-    public virtual void set_file_data(uint64 offset, uint8[] data) {
-      if (!is_avatar()) {
-        //FIXME implement this
-        transmitted_size += data.length;
-        progress_changed();
-        return;
+    public void write_data(uint8[] data) throws Error {
+      if (data.length + transmitted_size > file_size) {
+        set_state(FileTransferState.FAILED);
+        throw new FileTransferError.OVERFLOW("Appending too much data, discarding data");
       }
 
-      if (data.length + offset > file_data.length) {
-        logger.e("set_data overflow");
-        return;
+      if (_is_avatar) {
+        copy_with_offset(avatar_buffer, data, transmitted_size);
+      } else {
+        if (file == null) {
+          set_state(FileTransferState.FAILED);
+          throw new FileTransferError.INIT("File is not initialized");
+        }
+        try {
+          file.append_to(GLib.FileCreateFlags.NONE).write(data);
+        } catch (Error e) {
+          set_state(FileTransferState.FAILED);
+          throw new FileTransferError.WRITE("Writing to file failed: " + e.message);
+        }
       }
-      copy_with_offset(file_data, data, offset);
+
       transmitted_size += data.length;
       progress_changed();
     }
 
-    public virtual string? get_file_path() {
-      return ".";
+    public uint8[] read_data(uint64 length) throws Error {
+      if (length + transmitted_size > file_size) {
+        set_state(FileTransferState.FAILED);
+        throw new FileTransferError.OVERFLOW("Appending too much data, discarding data");
+      }
+      if (file == null) {
+        set_state(FileTransferState.FAILED);
+        throw new FileTransferError.INIT("File is not initialized");
+      }
+      var buf = new uint8[length];
+      try {
+        var istream = file.read();
+        istream.seek((int64) transmitted_size, SeekType.SET);
+        istream.read(buf);
+      } catch (Error e) {
+        set_state(FileTransferState.FAILED);
+        throw new FileTransferError.WRITE("Writing to file failed: " + e.message);
+      }
+
+      transmitted_size += length;
+      progress_changed();
+      return buf;
     }
 
-    public virtual unowned uint8[]? get_file_data() {
-      return file_data;
+    public unowned uint8[] ? get_avatar_buffer() {
+      return avatar_buffer;
     }
 
-    public virtual FileTransferState get_state() {
+    public FileTransferState get_state() {
       return state;
     }
 
-    public virtual void set_state(FileTransferState state) {
+    public void set_state(FileTransferState state) {
       this.state = state;
       state_changed();
     }
 
-    public virtual uint32 get_friend_number() {
+    public uint32 get_friend_number() {
       return friend_number;
     }
 
-    public virtual uint32 get_file_number() {
+    public uint32 get_file_number() {
       return file_number;
+    }
+
+    public FileTransferDirection get_direction() {
+      return direction;
+    }
+
+    public string? get_file_name() {
+      return file_name;
+    }
+
+    public string? get_file_path() {
+      if (file == null) {
+        return null;
+      }
+      return file.get_path();
     }
   }
 }

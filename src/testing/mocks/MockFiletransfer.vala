@@ -35,15 +35,19 @@ namespace Mock {
     public uint64 get_file_size() {
       return mock().actual_call(this, "get_file_size").get_int();
     }
-    public unowned uint8[] ? get_file_data()  {
-      mock().actual_call(this, "get_file_data");
+    public unowned uint8[] ? get_avatar_buffer()  {
+      mock().actual_call(this, "get_avatar_buffer");
       return null;
     }
-    public void set_file_data(uint64 offset, uint8[] data) {
-      var args = Arguments.builder()
-                     .uint64(offset)
-                     .create();
-      mock().actual_call(this, "set_file_data", args);
+    public void write_data(uint8[] data) throws Error {
+      mock().actual_call(this, "write_data").get_throws();
+    }
+    public uint8[] read_data(uint64 length) throws Error{
+      mock().actual_call(this, "read_data").get_throws();
+      return (uint8[]) null;
+    }
+    public void init_file(File file) throws Error {
+      mock().actual_call(this, "init_file").get_throws();
     }
     public FileTransferState get_state() {
       return (FileTransferState) mock().actual_call(this, "get_state").get_int();
@@ -54,6 +58,9 @@ namespace Mock {
                      .create();
       mock().actual_call(this, "set_state", args);
     }
+    public string? get_file_name() {
+      return mock().actual_call(this, "get_file_name").get_string();
+    }
     public string? get_file_path() {
       return mock().actual_call(this, "get_file_path").get_string();
     }
@@ -62,6 +69,9 @@ namespace Mock {
     }
     public uint32 get_file_number() {
       return mock().actual_call(this, "get_file_number").get_int();
+    }
+    public FileTransferDirection get_direction() {
+      return (FileTransferDirection) mock().actual_call(this, "get_direction").get_int();
     }
   }
 }
