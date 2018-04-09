@@ -1,7 +1,7 @@
 /*
  *    TestSqliteDb.vala
  *
- *    Copyright (C) 2017 Venom authors and contributors
+ *    Copyright (C) 2017-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -20,39 +20,39 @@
  */
 
 using Venom;
+using Mock;
+using Testing;
 
-namespace TestSqliteDb {
-
-  private static void testSqliteFactory() {
-    var factory = new SqliteWrapperFactory();
-    assert_nonnull(factory);
+public class TestSqliteDb : UnitTest {
+  public TestSqliteDb() {
+    add_func("/test_sqlite_factory", test_sqlite_factory);
+    add_func("/test_sqlite_database_wrapper", test_sqlite_database_wrapper);
+    add_func("/test_sqlite_statement_wrapper", test_sqlite_statement_wrapper);
+    add_func("/test_sqlite_fail_real_database", test_sqlite_fail_real_database);
+    add_func("/test_sqlite_fail_real_statement", test_sqlite_fail_real_statement);
+    add_func("/test_sqlite_real_statement", test_sqlite_real_statement);
   }
 
-  private static void testSqliteDatabaseWrapper() {
+  private void test_sqlite_factory() throws Error {
     var factory = new SqliteWrapperFactory();
-    try {
-      var database = factory.createDatabase(":memory:");
-      assert_nonnull(database);
-    } catch (Error e) {
-      stderr.printf(e.message);
-      Test.fail();
-    }
+    Assert.assert_not_null(factory);
   }
 
-  private static void testSqliteStatementWrapper() {
+  private void test_sqlite_database_wrapper() throws Error {
     var factory = new SqliteWrapperFactory();
-    try {
-      var database = factory.createDatabase(":memory:");
-      var stmtFactory = factory.createStatementFactory(database);
-      var statement = stmtFactory.createStatement("");
-      assert_nonnull(statement);
-    } catch (Error e) {
-      stderr.printf(e.message);
-      Test.fail();
-    }
+    var database = factory.createDatabase(":memory:");
+    Assert.assert_not_null(database);
   }
 
-  private static void testSqliteFailRealDatabase() {
+  private void test_sqlite_statement_wrapper() throws Error {
+    var factory = new SqliteWrapperFactory();
+    var database = factory.createDatabase(":memory:");
+    var stmtFactory = factory.createStatementFactory(database);
+    var statement = stmtFactory.createStatement("");
+    Assert.assert_not_null(statement);
+  }
+
+  private void test_sqlite_fail_real_database() throws Error {
     var factory = new SqliteWrapperFactory();
     try {
       factory.createDatabase("file://invalid_path");
@@ -62,7 +62,7 @@ namespace TestSqliteDb {
     Test.fail();
   }
 
-  private static void testSqliteFailRealStatement() {
+  private void test_sqlite_fail_real_statement() throws Error {
     var factory = new SqliteWrapperFactory();
     try {
       var database = factory.createDatabase(":memory:");
@@ -75,27 +75,17 @@ namespace TestSqliteDb {
     Test.fail();
   }
 
-  private static void testSqliteRealStatement() {
+  private void test_sqlite_real_statement() throws Error {
     var factory = new SqliteWrapperFactory();
-    try {
-      var database = factory.createDatabase(":memory:");
-      var stmtFactory = factory.createStatementFactory(database);
-      var statement = stmtFactory.createStatement("ANALYZE sqlite_master");
-      statement.step();
-    } catch (Error e) {
-      stdout.printf(e.message + "\n");
-      Test.fail();
-    }
+    var database = factory.createDatabase(":memory:");
+    var stmtFactory = factory.createStatementFactory(database);
+    var statement = stmtFactory.createStatement("ANALYZE sqlite_master");
+    statement.step();
   }
 
   private static void main(string[] args) {
     Test.init(ref args);
-    Test.add_func("/test_sqlite_factory", testSqliteFactory);
-    Test.add_func("/test_sqlite_database_wrapper", testSqliteDatabaseWrapper);
-    Test.add_func("/test_sqlite_statement_wrapper", testSqliteStatementWrapper);
-    Test.add_func("/test_sqlite_fail_real_database", testSqliteFailRealDatabase);
-    Test.add_func("/test_sqlite_fail_real_statement", testSqliteFailRealStatement);
-    Test.add_func("/test_sqlite_real_statement", testSqliteRealStatement);
+    var test = new TestSqliteDb();
     Test.run();
   }
 }

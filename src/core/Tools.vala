@@ -21,32 +21,7 @@
 
 namespace Venom {
   public class Tools {
-    // find our data dir (on linux most likely /usr/share or /usr/local/share)
-    public static string find_data_dir() {
-      //System data directory
-      foreach (string s in GLib.Environment.get_system_data_dirs()) {
-        string dir = Path.build_filename(s, "venom");
-        File f = File.new_for_path(dir);
-        if (f.query_exists()) {
-          return dir;
-        }
-      }
-      // Check for common directories on portable versions
-      string[] portable_directories = {
-        Path.build_filename(GLib.Environment.get_user_data_dir(), "venom"),
-        Path.build_filename("share", "venom"),
-        Path.build_filename("..", "share", "venom")
-      };
-      for (int i = 0; i < portable_directories.length; ++i) {
-        File f = File.new_for_path(portable_directories[i]);
-        if (f.query_exists()) {
-          return portable_directories[i];
-        }
-      }
-
-      // Assume that our current pwd is our data dir
-      return "";
-    }
+    private Tools() {}
 
     public static void create_path_for_file(string filename, int mode) {
       string pathname = Path.get_dirname(filename);
@@ -116,16 +91,14 @@ namespace Venom {
       }
     }
 
-    public static string markup_uris(string text) {
-      string escaped_text = Markup.escape_text(text);
-      string ret;
-      try {
-        ret = Tools.uri_regex.replace(escaped_text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
-      } catch (GLib.RegexError e) {
-        // Logger.log(LogLevel.ERROR, "Error when doing uri markup: " + e.message);
-        return text;
-      }
-      return ret;
+    public static uint64 get_file_size(GLib.File file) throws Error {
+      var is = file.read();
+      is.seek(0, SeekType.END);
+      return is.tell();
+    }
+
+    public static string markup_uris(string text) throws Error {
+      return Tools.uri_regex.replace(text, -1, 0, "<a href=\"\\g<u>\">\\g<u></a>");
     }
 
     private static GLib.Regex _action_regex;

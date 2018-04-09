@@ -1,11 +1,13 @@
 [Desktop Entry]
-Version=1.0
-Type=Application
 Name=Venom
-Comment=A modern user interface for Tox
-TryExec=venom
-Exec=venom %u
+GenericName=Venom
+Comment=A modern user interface for Toxyc
+Keywords=tox;instant messaging;video chat;
+Exec=venom
 Icon=im.tox.venom-symbolic
-Categories=InstantMessaging;Network;AudioVideo;GTK;
 Terminal=false
-MimeType=x-scheme-handler/tox;
+Type=Application
+Categories=InstantMessaging;Network;AudioVideo;GTK;
+DBusActivatable=true
+StartupNotify=true
+X-GNOME-UsesNotifications=true

@@ -75,10 +75,10 @@ namespace Venom {
     }
 
     public Gdk.Pixbuf get_sender_image() {
-      return UITools.pixbuf_from_resource(R.icons.default_contact);
+      return pixbuf_from_resource(R.icons.default_contact);
     }
 
-    public bool equals_message(IMessage m) {
+    public bool equals_sender(IMessage m) {
       return false;
     }
   }

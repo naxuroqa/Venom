@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.2 -->
+<!-- Generated with glade 3.20.4 -->
 <interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
   <template class="VenomCreateGroupchatWidget" parent="GtkBox">
@@ -95,6 +95,28 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkRevealer" id="title_error_content">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkLabel" id="title_error">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label">title_error</property>
+                            <property name="xalign">0</property>
+                            <attributes>
+                              <attribute name="style" value="italic"/>
+                            </attributes>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -108,7 +130,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="position">2</property>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                   </object>
@@ -149,8 +171,8 @@
                         <property name="can_focus">False</property>
                         <property name="homogeneous">True</property>
                         <child>
-                          <object class="GtkRadioButton" id="type">
-                            <property name="label" translatable="yes">text</property>
+                          <object class="GtkRadioButton" id="type_text">
+                            <property name="label" translatable="yes">Text</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
@@ -164,13 +186,14 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkRadioButton">
-                            <property name="label" translatable="yes">video</property>
+                          <object class="GtkRadioButton" id="type_av">
+                            <property name="label" translatable="yes">Speech</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="draw_indicator">False</property>
+                            <property name="group">type_text</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>

@@ -11,8 +11,8 @@
     <file compressed="true" preprocess="xml-stripblanks">contact_list_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">conversation_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">create_groupchat_widget.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">downloads_entry.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">downloads_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">file_transfer_entry.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">file_transfer_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">friend_info_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">friend_request_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">message_widget.ui</file>
@@ -21,5 +21,8 @@
     <file compressed="true" preprocess="xml-stripblanks">settings_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">user_info_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">welcome_widget.ui</file>
+  </gresource>
+  <gresource prefix="/im/tox/venom/css">
+    <file compressed="true">custom.css</file>
   </gresource>
 </gresources>

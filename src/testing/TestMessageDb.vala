@@ -1,7 +1,7 @@
 /*
  *    TestMessageDb.vala
  *
- *    Copyright (C) 2017 Venom authors and contributors
+ *    Copyright (C) 2017-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -21,201 +21,68 @@
 
 using Venom;
 using Mock;
+using Testing;
 
-namespace TestMessageDb {
+public class TestMessageDb : UnitTest {
+  private IDatabaseStatementBuilder builder;
+  private IDatabaseStatement statement;
+  private ILoggedMessageFactory messageFactory;
+  private IDatabaseStatementFactory statementFactory;
+  private ILogger logger;
+  private ILoggedMessage message;
 
-  private static void testMessageDb() {
-    var statementFactory = new MockStatementFactory();
-    var logger = new MockLogger();
-    try {
-      var messageDatabase = new SqliteMessageDatabase(statementFactory, logger);
-      assert_nonnull(messageDatabase);
-    } catch (Error e) {
-      Test.fail();
-      return;
-    }
-    mock().expect_calls(logger, "d", 2);
-    check_expectations_noerror();
+  public TestMessageDb() {
+    add_func("test_init", test_init);
+    add_func("test_insert", test_insert);
+    add_func("test_retrieve", test_retrieve);
   }
 
-  private static void testMessageDbInsert() {
-    var statementFactory = new MockStatementFactory();
-    var logger = new MockLogger();
-    try {
-      var messageDatabase = new SqliteMessageDatabase(statementFactory, logger);
-      assert_nonnull(messageDatabase);
-      messageDatabase.insertMessage("", "", "", new DateTime.now_local(), true);
-    } catch (Error e) {
-      Test.fail();
-      return;
-    }
-    mock().expect_calls(logger, "d", 2);
-    check_expectations_noerror();
+  public override void set_up() throws Error {
+    statement = new MockStatement();
+    builder = new SqliteStatementWrapper.Builder(statement);
+    when(statement, "builder")
+        .then_return_object(builder);
+
+    statementFactory = new MockStatementFactory();
+    when(statementFactory, "createStatement", args().string("", any_string()).create())
+        .then_return_object(statement);
+
+    message = new MockLoggedMessage();
+    messageFactory = new MockLoggedMessageFactory();
+    when(messageFactory, "createLoggedMessage")
+        .then_return_object(message);
+
+    logger = new MockLogger();
   }
 
-  private static void testMessageDbRetrieve() {
-    var statementFactory = new MockStatementFactory();
-    var messageFactory = new MockLoggedMessageFactory();
-    var logger = new MockLogger();
-    try {
-      var messageDatabase = new SqliteMessageDatabase(statementFactory, logger);
-      assert_nonnull(messageDatabase);
-      var messages = messageDatabase.retrieveMessages("", "", messageFactory);
-      assert(messages.length() == 0);
-    } catch (Error e) {
-      Test.fail();
-      return;
-    }
-    mock().expect_calls(logger, "d", 2);
-    check_expectations_noerror();
-    assert(messageFactory.createLoggedMessageCounter == 0);
+  private void test_init() throws Error {
+    var messageDatabase = new SqliteMessageDatabase(statementFactory, logger);
+    Assert.assert_not_null(messageDatabase);
   }
 
-  private static void testRealDb() {
-    var logger = new MockLogger();
-
-    var factory = new SqliteWrapperFactory();
-
-    try {
-      var database = factory.createDatabase(":memory:");
-      var statementFactory = factory.createStatementFactory(database);
-
-      var messageDatabase = new SqliteMessageDatabase(statementFactory, logger);
-      assert_nonnull(messageDatabase);
-    } catch (Error e) {
-      stderr.printf("failed: " + e.message);
-      Test.fail();
-      return;
-    }
-    mock().expect_calls(logger, "d", 2);
-    check_expectations_noerror();
-  }
-
-  private static void testRealDbInsert() {
-    var logger = new MockLogger();
-    var factory = new SqliteWrapperFactory();
-
-    try {
-      var database = factory.createDatabase(":memory:");
-      var statementFactory = factory.createStatementFactory(database);
-
-      var messageDatabase = new SqliteMessageDatabase(statementFactory, logger);
-      assert_nonnull(messageDatabase);
-      messageDatabase.insertMessage("", "", "", new DateTime.now_local(), true);
-    } catch (Error e) {
-      stderr.printf("failed: " + e.message);
-      Test.fail();
-      return;
-    }
-    mock().expect_calls(logger, "d", 2);
-    check_expectations_noerror();
-  }
-
-  private static void testRealDbRetrieve() {
-    var logger = new MockLogger();
-    var messageFactory = new MockLoggedMessageFactory();
-    var factory = new SqliteWrapperFactory();
-
-    try {
-      var database = factory.createDatabase(":memory:");
-      var statementFactory = factory.createStatementFactory(database);
-
-      var messageDatabase = new SqliteMessageDatabase(statementFactory, logger);
-      assert_nonnull(messageDatabase);
-      var messages = messageDatabase.retrieveMessages("", "", messageFactory);
-      assert(messages.length() == 0);
-    } catch (Error e) {
-      stderr.printf("failed: " + e.message);
-      Test.fail();
-      return;
-    }
-
-    mock().expect_calls(logger, "d", 2);
-    check_expectations_noerror();
-    assert(messageFactory.createLoggedMessageCounter == 0);
-  }
-
-  private static void testRealDbInsertRetrieve() {
-    var userId = "a";
-    var contactId = "b";
-    var message = "c";
+  private void test_insert() throws Error {
+    var messageDatabase = new SqliteMessageDatabase(statementFactory, logger);
+    Assert.assert_not_null(messageDatabase);
     var time = new DateTime.now_local();
-    var sender = true;
+    messageDatabase.insertMessage("a", "b", "c", time, true);
 
-    var logger = new MockLogger();
-    var messageFactory = new MockLoggedMessageFactory();
-    var factory = new SqliteWrapperFactory();
-
-    try {
-      var database = factory.createDatabase(":memory:");
-      var statementFactory = factory.createStatementFactory(database);
-
-      var messageDatabase = new SqliteMessageDatabase(statementFactory, logger);
-      assert_nonnull(messageDatabase);
-      messageDatabase.insertMessage(userId, contactId, message, time, sender);
-      var messages = messageDatabase.retrieveMessages(userId, contactId, messageFactory);
-      assert(messages.length() == 1);
-    } catch (Error e) {
-      stderr.printf("failed: " + e.message);
-      Test.fail();
-      return;
-    }
-
-    mock().expect_calls(logger, "d", 2);
-    check_expectations_noerror();
-
-    assert(messageFactory.createLoggedMessageCounter == 1);
-    assert(messageFactory.createdMessages.length() == 1);
-    stdout.printf("\n");
-    stdout.printf("received data: " + messageFactory.createdMessages.nth_data(0) + "\n");
-    var concat_str = userId + contactId + message + time.to_string() + sender.to_string();
-    stdout.printf("expected data: " + concat_str + "\n");
-    assert(messageFactory.createdMessages.nth_data(0) == concat_str);
+    mock().verify(statement, "bind_text", args().string("$USER").string("a").create());
+    mock().verify(statement, "bind_text", args().string("$CONTACT").string("b").create());
+    mock().verify(statement, "bind_text", args().string("$MESSAGE").string("c").create());
+    mock().verify(statement, "bind_int64", args().string("$TIME").int64(time.to_unix()).create());
+    mock().verify(statement, "bind_bool", args().string("$SENDER").bool(true).create());
   }
 
-  private static void testRealDbInsertSanitizeRetrieve() {
-    var userId = "a";
-    var contactId = "b";
-    var time = new DateTime.now_local();
-
-    var logger = new MockLogger();
-    var messageFactory = new MockLoggedMessageFactory();
-    var factory = new SqliteWrapperFactory();
-
-    try {
-      var database = factory.createDatabase(":memory:");
-      var statementFactory = factory.createStatementFactory(database);
-
-      var messageDatabase = new SqliteMessageDatabase(statementFactory, logger);
-      assert_nonnull(messageDatabase);
-      messageDatabase.insertMessage(userId, contactId, "", time.add_seconds(-1), false);
-      messageDatabase.insertMessage(userId, contactId, "", time.add_seconds(+1), false);
-      messageDatabase.deleteMessagesBefore(time);
-      var messages = messageDatabase.retrieveMessages(userId, contactId, messageFactory);
-      assert(messages.length() == 1);
-
-    } catch (Error e) {
-      stderr.printf("failed: " + e.message);
-      Test.fail();
-      return;
-    }
-
-    mock().expect_calls(logger, "d", 2);
-    check_expectations_noerror();
-
-    assert(messageFactory.createLoggedMessageCounter == 1);
+  private void test_retrieve() throws Error {
+    var messageDatabase = new SqliteMessageDatabase(statementFactory, logger);
+    Assert.assert_not_null(messageDatabase);
+    var messages = messageDatabase.retrieveMessages("", "", messageFactory);
+    Assert.assert_null(messages);
   }
 
   private static void main(string[] args) {
     Test.init(ref args);
-    Test.add_func("/test_message_db", testMessageDb);
-    Test.add_func("/test_message_db_insert", testMessageDbInsert);
-    Test.add_func("/test_message_db_retrieve", testMessageDbRetrieve);
-    Test.add_func("/test_real_db", testRealDb);
-    Test.add_func("/test_real_db_insert", testRealDbInsert);
-    Test.add_func("/test_real_db_retrieve", testRealDbRetrieve);
-    Test.add_func("/test_real_db_insert_retrieve", testRealDbInsertRetrieve);
-    Test.add_func("/test_real_db_insert_sanitize_retrieve", testRealDbInsertSanitizeRetrieve);
+    var test = new TestMessageDb();
     Test.run();
   }
 }

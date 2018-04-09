@@ -60,6 +60,7 @@ msgstr "%u Nutzer online"
 msgid "Packagers"
 msgstr "Verpacker"
 
+#. dennis-ignore: W303
 #: src/ui/AboutDialog.vala:58
 msgid "translator-credits"
 msgstr "Spixi <spxmar@gmail.com>, naxuroqa <naxuroqa@gmail.com>"
@@ -327,7 +328,7 @@ msgstr "Sende Schreibbenachrichtigungen"
 
 #: src/ui/settings_widget.ui:563
 msgid "<small>Show others when I am typing</small>"
-msgstr "Zeige anderen wenn du tippst"
+msgstr "<small>Zeige anderen wenn du tippst</small>"
 
 #: src/ui/settings_widget.ui:646
 msgid "History"
@@ -355,7 +356,7 @@ msgstr "Erneuere bootstrap Knoten"
 
 #: src/ui/settings_widget.ui:880
 msgid "<b>Tox bootstrap nodes</b>"
-msgstr "Tox bootstrap Knoten"
+msgstr "<b>Tox bootstrap Knoten</b>"
 
 #: src/ui/user_info_widget.ui:41
 msgid "User profile"

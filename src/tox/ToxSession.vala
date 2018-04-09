@@ -29,7 +29,10 @@ namespace Venom {
   public delegate void GetFriendListCallback(uint32 friend_number, uint8[] friend_key);
 
   public interface ToxSession : GLib.Object {
-    public abstract void set_session_listener(ToxSessionListener listener);
+    public abstract void set_session_listener(ToxAdapterListener listener);
+    public abstract void set_file_transfer_listener(ToxAdapterFiletransferListener listener);
+    public abstract void set_friend_listener(ToxAdapterFriendListener listener);
+    public abstract void set_conference_listener(ToxAdapterConferenceListener listener);
 
     public abstract void self_set_user_name(string name);
     public abstract void self_set_status_message(string status);
@@ -57,10 +60,19 @@ namespace Venom {
     public abstract void conference_send_message(uint32 conference_number, string message) throws ToxError;
     public abstract void conference_set_title(uint32 conference_number, string title) throws ToxError;
     public abstract string conference_get_title(uint32 conference_number) throws ToxError;
+
+    public abstract void file_control(uint32 friend_number, uint32 file_number, FileControl control) throws ToxError;
+    public abstract void file_send(uint32 friend_number, FileKind kind, GLib.File file) throws ToxError;
+    public abstract void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError;
+
+    public abstract unowned GLib.HashTable<uint32, IContact> get_friends();
   }
 
-  public interface ToxSessionListener : GLib.Object {
+  public interface ToxAdapterListener : GLib.Object {
     public abstract void on_self_status_changed(UserStatus status);
+  }
+
+  public interface ToxAdapterFriendListener : GLib.Object {
     public abstract void on_friend_status_changed(uint32 friend_number, UserStatus status);
     public abstract void on_friend_name_changed(uint32 friend_number, string name);
     public abstract void on_friend_status_message_changed(uint32 friend_number, string message);
@@ -72,7 +84,9 @@ namespace Venom {
     public abstract void on_friend_message(uint32 friend_number, string message);
     public abstract void on_friend_message_sent(uint32 friend_number, uint32 message_id, string message);
     public abstract void on_friend_read_receipt(uint32 friend_number, uint32 message_id);
+  }
 
+  public interface ToxAdapterConferenceListener : GLib.Object {
     public abstract void on_conference_new(uint32 conference_number, string title);
     public abstract void on_conference_deleted(uint32 conference_number);
 
@@ -83,6 +97,17 @@ namespace Venom {
 
     public abstract void on_conference_message(uint32 conference_number, uint32 peer_number, MessageType type, string message);
     public abstract void on_conference_message_sent(uint32 conference_number, string message);
+  }
+
+  public interface ToxAdapterFiletransferListener : GLib.Object {
+    public abstract void on_file_recv_data(uint32 friend_number, uint32 file_number, uint64 file_size, string filename);
+    public abstract void on_file_recv_avatar(uint32 friend_number, uint32 file_number, uint64 file_size);
+
+    public abstract void on_file_recv_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data);
+    public abstract void on_file_recv_control(uint32 friend_number, uint32 file_number, FileControl control);
+
+    public abstract void on_file_chunk_request(uint32 friend_number, uint32 file_number, uint64 position, uint64 length);
+    public abstract void on_file_send_received(uint32 friend_number, uint32 file_number, FileKind kind, uint64 file_size, string file_name, GLib.File file);
   }
 
   public class ToxSessionImpl : GLib.Object, ToxSession {
@@ -96,10 +121,14 @@ namespace Venom {
     private ILogger logger;
     private ToxSessionThread sessionThread;
 
-    private ToxSessionListener listener;
+    private ToxAdapterListener listener;
+    private ToxAdapterFriendListener friend_listener;
+    private ToxAdapterConferenceListener conference_listener;
+    private ToxAdapterFiletransferListener file_transfer_listener;
     private ToxSessionIO iohandler;
+    private GLib.HashTable<uint32, IContact> friends;
 
-    public ToxSessionImpl(ToxSessionIO iohandler, IDhtNodeDatabase node_database, ISettingsDatabase settings_database, ILogger logger) {
+    public ToxSessionImpl(ToxSessionIO iohandler, IDhtNodeDatabase node_database, ISettingsDatabase settings_database, ILogger logger) throws Error {
       this.dht_node_database = node_database;
       this.settings_database = settings_database;
       this.logger = logger;
@@ -109,7 +138,8 @@ namespace Venom {
       var options_error = ToxCore.ErrOptionsNew.OK;
       var options = new ToxCore.Options(ref options_error);
 
-      //options.log_callback = on_tox_message;
+      options.log_callback = on_tox_message;
+      friends = new GLib.HashTable<uint32, IContact>(null, null);
 
       var savedata = iohandler.load_sessiondata();
       if (savedata != null) {
@@ -118,26 +148,25 @@ namespace Venom {
       }
 
       if (settings_database.enable_proxy) {
-        if (settings_database.enable_custom_proxy) {
-          options.proxy_type = ProxyType.SOCKS5;
-          options.proxy_host = settings_database.custom_proxy_host;
-          options.proxy_port = (uint16) settings_database.custom_proxy_port;
-        } else {
-          //FIXME system proxy currently not supported
-        }
+        init_proxy(options);
       }
+
+      options.udp_enabled = settings_database.enable_udp;
+      options.ipv6_enabled = settings_database.enable_ipv6;
+      options.local_discovery_enabled = settings_database.enable_local_discovery;
+      options.hole_punching_enabled = settings_database.enable_hole_punching;
 
       // create handle
       var error = ToxCore.ErrNew.OK;
       handle = new ToxCore.Tox(options, ref error);
       if (error == ErrNew.PROXY_BAD_HOST || error == ErrNew.PROXY_BAD_PORT || error == ErrNew.PROXY_NOT_FOUND) {
-        logger.e("Proxy could not be used: " + error.to_string());
-        options.proxy_type = ProxyType.NONE;
-        handle = new ToxCore.Tox(options, ref error);
-      }
-      if (error != ToxCore.ErrNew.OK) {
-        logger.f("Could not create tox instance: " + error.to_string());
-        assert_not_reached();
+        var message = "Proxy could not be used: " + error.to_string();
+        logger.f(message);
+        throw new ToxError.GENERIC(message);
+      } else if (error != ToxCore.ErrNew.OK) {
+        var message = "Could not create tox instance: " + error.to_string();
+        logger.f(message);
+        throw new ToxError.GENERIC(message);
       }
 
       handle.callback_self_connection_status(on_self_connection_status_cb);
@@ -152,6 +181,11 @@ namespace Venom {
       handle.callback_conference_invite(on_conference_invite_cb);
       handle.callback_conference_message(on_conference_message_cb);
       handle.callback_conference_namelist_change(on_conference_namelist_change_cb);
+
+      handle.callback_file_recv(on_file_recv_cb);
+      handle.callback_file_recv_chunk(on_file_recv_chunk_cb);
+      handle.callback_file_recv_control(on_file_recv_control_cb);
+      handle.callback_file_chunk_request(on_file_chunk_request_cb);
 
       init_dht_nodes();
       sessionThread = new ToxSessionThreadImpl(this, logger, dht_nodes);
@@ -168,9 +202,75 @@ namespace Venom {
       logger.d("ToxSession destroyed.");
     }
 
+    private void init_proxy(ToxCore.Options options) {
+      if (settings_database.enable_custom_proxy) {
+        options.proxy_type = ProxyType.SOCKS5;
+        options.proxy_host = settings_database.custom_proxy_host;
+        options.proxy_port = (uint16) settings_database.custom_proxy_port;
+        logger.i("Using custom socks5 proxy: socks5://%s:%u.".printf(options.proxy_host, options.proxy_port));
+        return;
+      } else {
+        string[] proxy_strings = {};
+        ProxyResolver proxy_resolver = ProxyResolver.get_default();
+        try {
+          proxy_strings = proxy_resolver.lookup("socks://tox.im");
+        } catch (Error e) {
+          logger.e("Error when looking up proxy settings: " + e.message);
+          return;
+        }
+
+        Regex proxy_regex = null;
+        try {
+          proxy_regex = new GLib.Regex("^(?P<protocol>socks5)://((?P<user>[^:]*)(:(?P<password>.*))?@)?(?P<host>.*):(?P<port>.*)");
+        } catch (GLib.Error e) {
+          logger.f("Error creating tox uri regex: " + e.message);
+          return;
+        }
+
+        foreach (var proxy in proxy_strings) {
+          if (proxy.has_prefix("socks5:")) {
+            GLib.MatchInfo info = null;
+            if (proxy_regex != null && proxy_regex.match(proxy, 0, out info)) {
+              options.proxy_type = ProxyType.SOCKS5;
+              options.proxy_host = info.fetch_named("host");
+              options.proxy_port = (uint16) int.parse(info.fetch_named("port"));
+              logger.i("Using socks5 proxy found in system settings: socks5://%s:%u.".printf(options.proxy_host, options.proxy_port));
+              return;
+            } else {
+              logger.i("socks5 proxy does not match regex: " + proxy);
+            }
+          }
+        }
+
+        logger.i("No usable proxy found in system settings, connecting directly.");
+      }
+    }
+
+    private void init_dht_nodes() {
+      var nodeFactory = new DhtNodeFactory();
+      dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
+      logger.d("Items in dht node list: %u".printf(dht_nodes.length()));
+      if (dht_nodes.length() == 0) {
+        logger.d("Node database empty, populating from static database.");
+        var nodeDatabase = new JsonWebDhtNodeDatabase(logger);
+        var nodes = nodeDatabase.getDhtNodes(nodeFactory);
+        foreach (var node in nodes) {
+          dht_node_database.insertDhtNode(node.pub_key, node.host, node.port, node.is_blocked, node.maintainer, node.location);
+        }
+        dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
+        if (dht_nodes.length() == 0) {
+          logger.e("Node initialisation from static database failed.");
+        }
+      }
+    }
+
+    public virtual unowned GLib.HashTable<uint32, IContact> get_friends() {
+      return friends;
+    }
+
     public void on_tox_message(Tox self, ToxCore.LogLevel level, string file, uint32 line, string func, string message) {
-      //var msg = "%s:%u (%s): %s".printf(file, line, func, message);
-      var msg = "%s: %s".printf(func, message);
+      var tag = TermColor.YELLOW + "TOX" + TermColor.RESET;
+      var msg = @"[$tag] $message ($func $file:$line)";
       switch (level) {
         case ToxCore.LogLevel.TRACE:
         case ToxCore.LogLevel.DEBUG:
@@ -188,8 +288,20 @@ namespace Venom {
       }
     }
 
-    public virtual void set_session_listener(ToxSessionListener listener) {
+    public virtual void set_session_listener(ToxAdapterListener listener) {
       this.listener = listener;
+    }
+
+    public virtual void set_file_transfer_listener(ToxAdapterFiletransferListener listener) {
+      this.file_transfer_listener = listener;
+    }
+
+    public virtual void set_friend_listener(ToxAdapterFriendListener listener) {
+      this.friend_listener = listener;
+    }
+
+    public virtual void set_conference_listener(ToxAdapterConferenceListener listener) {
+      this.conference_listener = listener;
     }
 
     private static string copy_data_string(uint8[] data) {
@@ -215,14 +327,14 @@ namespace Venom {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_friend_connection_status_cb");
       var user_status = from_connection_status(connection_status);
-      Idle.add(() => { session.listener.on_friend_status_changed(friend_number, user_status); return false; });
+      Idle.add(() => { session.friend_listener.on_friend_status_changed(friend_number, user_status); return false; });
     }
 
     private static void on_friend_name_cb(Tox self, uint32 friend_number, uint8[] name, void* userdata) {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_friend_name_cb");
       var name_str = copy_data_string(name);
-      Idle.add(() => { session.listener.on_friend_name_changed(friend_number, name_str); return false; });
+      Idle.add(() => { session.friend_listener.on_friend_name_changed(friend_number, name_str); return false; });
     }
 
     private static void on_friend_request_cb(Tox self, uint8[] key, uint8[] message, void* userdata) {
@@ -230,28 +342,28 @@ namespace Venom {
       session.logger.d("on_friend_request_cb");
       var key_copy = copy_data(key, public_key_size());
       var message_str = copy_data_string(message);
-      Idle.add(() => { session.listener.on_friend_request(key_copy, message_str); return false; });
+      Idle.add(() => { session.friend_listener.on_friend_request(key_copy, message_str); return false; });
     }
 
     private static void on_friend_message_cb(Tox self, uint32 friend_number, MessageType type, uint8[] message, void* userdata) {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_friend_message_cb");
       var message_str = copy_data_string(message);
-      Idle.add(() => { session.listener.on_friend_message(friend_number, message_str); return false; });
+      Idle.add(() => { session.friend_listener.on_friend_message(friend_number, message_str); return false; });
     }
 
     private static void on_friend_status_message_cb(Tox self, uint32 friend_number, uint8[] message, void* userdata) {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_friend_status_message_cb");
       var message_str = copy_data_string(message);
-      Idle.add(() => { session.listener.on_friend_status_message_changed(friend_number, message_str); return false; });
+      Idle.add(() => { session.friend_listener.on_friend_status_message_changed(friend_number, message_str); return false; });
     }
 
     private static void on_friend_read_receipt_cb(Tox self, uint32 friend_number, uint32 message_id, void* userdata) {
       var session = (ToxSessionImpl) userdata;
       session.logger.d("on_friend_read_receipt_cb");
 
-      Idle.add(() => { session.listener.on_friend_read_receipt(friend_number, message_id); return false; });
+      Idle.add(() => { session.friend_listener.on_friend_read_receipt(friend_number, message_id); return false; });
     }
 
     private static void on_conference_title_cb(Tox self, uint32 conference_number, uint32 peer_number, uint8[] title, void *user_data) {
@@ -259,7 +371,7 @@ namespace Venom {
       session.logger.d("on_conference_title_cb");
 
       var title_str = copy_data_string(title);
-      Idle.add(() => { session.listener.on_conference_title_changed(conference_number, peer_number, title_str); return false; });
+      Idle.add(() => { session.conference_listener.on_conference_title_changed(conference_number, peer_number, title_str); return false; });
     }
 
     private static void on_conference_invite_cb(Tox self, uint32 friend_number, ConferenceType type, uint8[] cookie, void *user_data) {
@@ -271,7 +383,7 @@ namespace Venom {
         session.logger.e("Conference join failed: " + err.to_string());
         return;
       }
-      Idle.add(() => { session.listener.on_conference_new(conference_number, ""); return false; });
+      Idle.add(() => { session.conference_listener.on_conference_new(conference_number, ""); return false; });
     }
 
     private static void on_conference_message_cb(Tox self, uint32 conference_number, uint32 peer_number, MessageType type, uint8[] message, void *user_data) {
@@ -285,9 +397,9 @@ namespace Venom {
         return;
       }
       if (is_ours) {
-        Idle.add(() => { session.listener.on_conference_message_sent(conference_number, message_str); return false; });
+        Idle.add(() => { session.conference_listener.on_conference_message_sent(conference_number, message_str); return false; });
       } else {
-        Idle.add(() => { session.listener.on_conference_message(conference_number, peer_number, type, message_str); return false; });
+        Idle.add(() => { session.conference_listener.on_conference_message(conference_number, peer_number, type, message_str); return false; });
       }
     }
 
@@ -296,10 +408,10 @@ namespace Venom {
       session.logger.d("on_conference_namelist_change_cb");
       switch (change) {
         case ConferenceStateChange.PEER_JOIN:
-          Idle.add(() => { session.listener.on_conference_peer_joined(conference_number, peer_number); return false; });
+          Idle.add(() => { session.conference_listener.on_conference_peer_joined(conference_number, peer_number); return false; });
           break;
         case ConferenceStateChange.PEER_EXIT:
-          Idle.add(() => { session.listener.on_conference_peer_exited(conference_number, peer_number); return false; });
+          Idle.add(() => { session.conference_listener.on_conference_peer_exited(conference_number, peer_number); return false; });
           break;
         case ConferenceStateChange.PEER_NAME_CHANGE:
           var err = ErrConferencePeerQuery.OK;
@@ -322,9 +434,46 @@ namespace Venom {
             session.logger.e("conference_peer_get_name failed: " + err.to_string());
             return;
           }
-          Idle.add(() => { session.listener.on_conference_peer_renamed(conference_number, peer_number, false, peer_public_key, peer_name, peer_known); return false; });
+          Idle.add(() => { session.conference_listener.on_conference_peer_renamed(conference_number, peer_number, false, peer_public_key, peer_name, peer_known); return false; });
           break;
       }
+    }
+
+    private static void on_file_recv_cb(Tox self, uint32 friend_number, uint32 file_number, uint32 kind, uint64 file_size, uint8[] filename, void *user_data) {
+      var session = (ToxSessionImpl) user_data;
+      var kind_type = (FileKind) kind;
+      var kiB = file_size / 1024f;
+      var filename_str = copy_data_string(filename);
+      var kind_type_str = kind_type.to_string();
+      session.logger.d(@"on_file_recv_cb: $friend_number:$file_number ($kind_type_str) $kiB kiB");
+      switch (kind_type) {
+        case FileKind.DATA:
+          Idle.add(() => { session.file_transfer_listener.on_file_recv_data(friend_number, file_number, file_size, filename_str); return false; });
+          break;
+        case FileKind.AVATAR:
+          Idle.add(() => { session.file_transfer_listener.on_file_recv_avatar(friend_number, file_number, file_size); return false; });
+          break;
+      }
+    }
+
+    private static void on_file_recv_chunk_cb(Tox self, uint32 friend_number, uint32 file_number, uint64 position, uint8[] data, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
+      session.logger.d(@"on_file_recv_chunk_cb: $friend_number:$file_number $position");
+      var data_copy = copy_data(data, data.length);
+      Idle.add(() => { session.file_transfer_listener.on_file_recv_chunk(friend_number, file_number, position, data_copy); return false; });
+    }
+
+    private static void on_file_recv_control_cb(Tox self, uint32 friend_number, uint32 file_number, FileControl control, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
+      var control_str = control.to_string();
+      session.logger.d(@"on_file_recv_control_cb: $friend_number:$file_number $control_str");
+      Idle.add(() => { session.file_transfer_listener.on_file_recv_control(friend_number, file_number, control); return false; });
+    }
+
+    private static void on_file_chunk_request_cb(Tox self, uint32 friend_number, uint32 file_number, uint64 position, size_t length, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
+      session.logger.d(@"on_file_chunk_request_cb: $friend_number:$file_number $position $length");
+      Idle.add(() => { session.file_transfer_listener.on_file_chunk_request(friend_number, file_number, position, length); return false; });
     }
 
     private static UserStatus from_connection_status(Connection connection_status) {
@@ -417,9 +566,8 @@ namespace Venom {
         throw new ToxError.GENERIC(e.to_string());
       }
       var key = friend_get_public_key(friend_number);
-      listener.on_friend_added(friend_number, key);
+      friend_listener.on_friend_added(friend_number, key);
     }
-
 
     public virtual void friend_add_norequest(uint8[] public_key) throws ToxError {
       var e = ErrFriendAdd.OK;
@@ -428,7 +576,7 @@ namespace Venom {
         logger.i("friend_add failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      listener.on_friend_added(friend_number, public_key);
+      friend_listener.on_friend_added(friend_number, public_key);
     }
 
     public virtual void friend_delete(uint32 friend_number) throws ToxError {
@@ -437,17 +585,17 @@ namespace Venom {
         logger.i("friend_delete failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      listener.on_friend_deleted(friend_number);
+      friend_listener.on_friend_deleted(friend_number);
     }
 
     public virtual void friend_send_message(uint32 friend_number, string message) throws ToxError {
       var e = ErrFriendSendMessage.OK;
       var ret = handle.friend_send_message(friend_number, MessageType.NORMAL, message, ref e);
-      if (ret == uint32.MAX) {
+      if (e != ErrFriendSendMessage.OK) {
         logger.i("friend_send_message failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      listener.on_friend_message_sent(friend_number, ret, message);
+      friend_listener.on_friend_message_sent(friend_number, ret, message);
     }
 
     public virtual void self_set_typing(uint32 friend_number, bool typing) throws ToxError {
@@ -459,18 +607,48 @@ namespace Venom {
       }
     }
 
+    public virtual void file_control(uint32 friend_number, uint32 file_number, FileControl control) throws ToxError {
+      var e = ErrFileControl.OK;
+      handle.file_control(friend_number, file_number, control, ref e);
+      if (e != ErrFileControl.OK) {
+        throw new ToxError.GENERIC(e.to_string());
+      }
+    }
+
+    public virtual void file_send(uint32 friend_number, FileKind kind, GLib.File file) throws ToxError {
+      uint64 file_size = Tools.get_file_size(file);
+      var file_name = file.get_basename();
+
+      var e = ErrFileSend.OK;
+      var ret = handle.file_send(friend_number, kind, file_size, null, file_name, ref e);
+      if (e != ErrFileSend.OK) {
+        logger.e("file send request failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
+      file_transfer_listener.on_file_send_received(friend_number, ret, kind, file_size, file_name, file);
+    }
+
+    public virtual void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError {
+      var e = ErrFileSendChunk.OK;
+      handle.file_send_chunk(friend_number, file_number, position, data, ref e);
+      if (e != ErrFileSendChunk.OK) {
+        logger.e("sending chunk failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
+    }
+
     private void conference_set_title_private(uint32 conference_number, string title) throws ToxError {
       var e = ErrConferenceTitle.OK;
       handle.conference_set_title(conference_number, title, ref e);
       if (e != ErrConferenceTitle.OK) {
-        logger.i("setting conference title failed: " + e.to_string());
+        logger.e("setting conference title failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
     }
 
     public virtual void conference_set_title(uint32 conference_number, string title) throws ToxError {
       conference_set_title_private(conference_number, title);
-      listener.on_conference_title_changed(conference_number, 0, title);
+      conference_listener.on_conference_title_changed(conference_number, 0, title);
     }
 
     public virtual string conference_get_title(uint32 conference_number) throws ToxError {
@@ -487,28 +665,34 @@ namespace Venom {
       var e = ErrConferenceNew.OK;
       var conference_number = handle.conference_new(ref e);
       if (e != ErrConferenceNew.OK) {
-        logger.i("creating conference failed: " + e.to_string());
+        logger.e("creating conference failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      conference_set_title_private(conference_number, title);
-      listener.on_conference_new(conference_number, title);
+      try {
+        conference_set_title_private(conference_number, title);
+      } catch (ToxError e) {
+        var err_conference_delete = ErrConferenceDelete.OK;
+        handle.conference_delete(conference_number, ref err_conference_delete);
+        throw e;
+      }
+      conference_listener.on_conference_new(conference_number, title);
     }
 
     public virtual void conference_delete(uint32 conference_number) throws ToxError {
       var e = ErrConferenceDelete.OK;
       handle.conference_delete(conference_number, ref e);
       if (e != ErrConferenceDelete.OK) {
-        logger.i("deleting conference failed: " + e.to_string());
+        logger.e("deleting conference failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      listener.on_conference_deleted(conference_number);
+      conference_listener.on_conference_deleted(conference_number);
     }
 
     public virtual void conference_send_message(uint32 conference_number, string message) throws ToxError {
       var e = ErrConferenceSendMessage.OK;
       handle.conference_send_message(conference_number, MessageType.NORMAL, message, ref e);
       if (e != ErrConferenceSendMessage.OK) {
-        logger.i("sending conference message failed: " + e.to_string());
+        logger.e("sending conference message failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
     }
@@ -517,28 +701,10 @@ namespace Venom {
       var e = ErrFriendByPublicKey.OK;
       var ret = handle.friend_by_public_key(public_key, ref e);
       if (ret == uint32.MAX) {
-        logger.i("get_friend_number failed: " + e.to_string());
+        logger.e("get_friend_number failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
       return ret;
-    }
-
-    private void init_dht_nodes() {
-      var nodeFactory = new DhtNodeFactory();
-      dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
-      logger.d("Items in dht node list: %u".printf(dht_nodes.length()));
-      if (dht_nodes.length() == 0) {
-        logger.d("Node database empty, populating from static database.");
-        var nodeDatabase = new JsonWebDhtNodeDatabase(logger);
-        var nodes = nodeDatabase.getDhtNodes(nodeFactory);
-        foreach (var node in nodes) {
-          dht_node_database.insertDhtNode(node.pub_key, node.host, node.port, node.is_blocked, node.maintainer, node.location);
-        }
-        dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
-        if (dht_nodes.length() == 0) {
-          logger.e("Node initialisation from static database failed.");
-        }
-      }
     }
 
     public void @lock() {

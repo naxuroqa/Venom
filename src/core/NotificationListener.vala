@@ -22,11 +22,13 @@ namespace Venom {
   public interface NotificationListener : GLib.Object {
     public abstract bool show_notifications { get; set; }
     public abstract void on_unread_message(IMessage message);
+    public abstract void clear_notifications();
   }
 
   public class NotificationListenerImpl : NotificationListener, GLib.Object {
     public bool show_notifications { get; set; }
     private ILogger logger;
+    private static string id = "new-message";
 
     public NotificationListenerImpl(ILogger logger) {
       this.logger = logger;
@@ -50,7 +52,17 @@ namespace Venom {
 
       var notification = new Notification(_("New message from %s").printf(message.get_sender_plain()));
       notification.set_body(message.get_message_plain());
-      app.send_notification("new-message", notification);
+      notification.set_icon(message.get_sender_image());
+      app.send_notification(id, notification);
+    }
+
+    public void clear_notifications() {
+      var app = GLib.Application.get_default() as Gtk.Application;
+      if (app == null) {
+        return;
+      }
+
+      app.withdraw_notification(id);
     }
   }
 }

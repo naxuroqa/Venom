@@ -1,7 +1,7 @@
 /*
  *    TestAbout.vala
  *
- *    Copyright (C) 2017 Venom authors and contributors
+ *    Copyright (C) 2017-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -20,28 +20,41 @@
  */
 
 using Venom;
+using Mock;
+using Testing;
 
-namespace TestAbout {
+public class TestAbout : UnitTest {
+  private ILogger logger;
 
-  private static void testGtk() {
+  public TestAbout() {
+    add_func("/test_gtk", test_gtk);
+    add_func("/test_about", test_about);
+    add_func("/test_about_text", test_about_text);
+  }
+
+  public override void set_up() throws Error {
+    logger = new MockLogger();
+  }
+
+  private void test_gtk() throws Error {
     var widget = new Gtk.Button();
-    assert(widget is Gtk.Button);
+    Assert.assert_true(widget is Gtk.Button);
   }
 
-  private static void testAbout() {
-    var widget = new Venom.AboutDialog(new Mock.MockLogger());
-    assert(widget is Gtk.AboutDialog);
+  private void test_about() throws Error {
+    var widget = new Venom.AboutDialog(logger);
+    Assert.assert_true(widget is Gtk.AboutDialog);
   }
 
-  private static void testAboutText() {
-    var widget = new Venom.AboutDialog(new Mock.MockLogger());
-    assert(widget.authors != null);
-    assert(widget.artists != null);
-    assert(widget.comments == Config.SHORT_DESCRIPTION);
-    assert(widget.translator_credits != null);
-    assert(widget.copyright == Config.COPYRIGHT_NOTICE);
-    assert(widget.license_type == Gtk.License.GPL_3_0);
-    assert(widget.logo == null);
+  private void test_about_text() throws Error {
+    var widget = new Venom.AboutDialog(logger);
+    Assert.assert_not_null(widget.authors);
+    Assert.assert_not_null(widget.artists);
+    Assert.assert_equals<string>(widget.comments, Config.SHORT_DESCRIPTION);
+    Assert.assert_not_null(widget.translator_credits);
+    Assert.assert_equals<string>(widget.copyright, Config.COPYRIGHT_NOTICE);
+    Assert.assert_equals<uint>(widget.license_type, Gtk.License.GPL_3_0);
+    Assert.assert_null(widget.logo);
   }
 
   private static int main(string[] args) {
@@ -53,11 +66,8 @@ namespace TestAbout {
 
     Gtk.init(ref args);
 
-    Test.add_func("/test_gtk", testGtk);
-    Test.add_func("/test_about", testAbout);
-    Test.add_func("/test_about_text", testAboutText);
-
     Idle.add(() => {
+      var test = new TestAbout();
       Test.run();
       Gtk.main_quit();
       return false;

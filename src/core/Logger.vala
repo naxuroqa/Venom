@@ -1,7 +1,7 @@
 /*
  *    Logger.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -20,6 +20,24 @@
  */
 
 namespace Venom {
+  namespace TermColor {
+    public const string BLACK = "\x1B[30m";
+    public const string RED = "\x1B[31m";
+    public const string GREEN = "\x1B[32m";
+    public const string YELLOW = "\x1B[33m";
+    public const string BLUE = "\x1B[34m";
+    public const string MAGENTA = "\x1B[35m";
+    public const string CYAN = "\x1B[36m";
+    public const string WHITE = "\x1B[37m";
+
+    public const string RESET = "\x1B[0m";
+
+    public const string INFO = TermColor.GREEN;
+    public const string WARNING = TermColor.YELLOW;
+    public const string ERROR = TermColor.RED;
+    public const string FATAL = TermColor.MAGENTA;
+  }
+
   public enum LogLevel {
     DEBUG,
     INFO,
@@ -32,13 +50,13 @@ namespace Venom {
         case DEBUG:
           return "DEBUG";
         case INFO:
-          return "\x1B[32m" + "INFO " + "\x1B[0m";
+          return TermColor.INFO + "INFO " + TermColor.RESET;
         case WARNING:
-          return "\x1B[33m" + "WARN " + "\x1B[0m";
+          return TermColor.WARNING + "WARN " + TermColor.RESET;
         case ERROR:
-          return "\x1B[31m" + "ERROR" + "\x1B[0m";
+          return TermColor.ERROR + "ERROR" + TermColor.RESET;
         case FATAL:
-          return "\x1B[35m" + "FATAL" + "\x1B[0m";
+          return TermColor.FATAL + "FATAL" + TermColor.RESET;
         default:
           assert_not_reached();
       }
@@ -108,6 +126,7 @@ namespace Venom {
       GLib.Log.set_handler(null, LogLevelFlags.LEVEL_MASK, glib_log_function);
       GLib.Log.set_handler("GLib", LogLevelFlags.LEVEL_MASK, glib_log_function);
       GLib.Log.set_handler("GLib-GObject", LogLevelFlags.LEVEL_MASK, glib_log_function);
+      GLib.Log.set_handler("Gdk", LogLevelFlags.LEVEL_MASK, glib_log_function);
     }
 
     public static void log(LogLevel level, string message) {

@@ -61,7 +61,7 @@ namespace Venom {
     }
 
     public virtual Gdk.Pixbuf get_image() {
-      return tox_image ?? Gtk.IconTheme.get_default().load_icon("friend-symbolic", 48, 0);
+      return tox_image ?? pixbuf_from_resource(R.icons.default_contact);
     }
   }
 }

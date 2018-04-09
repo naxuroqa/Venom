@@ -69,15 +69,25 @@ namespace Venom {
     public sealed class StringResource {
       public string default_username() { return _("Tox User"); }
       public string default_statusmessage() { return ""; }
-      public string db_filename() { return "tox.db"; }
     }
 
     public sealed class ConstantsResource {
+      public string avatars_folder() { return "avatars"; }
+      public string db_filename() { return "tox.db"; }
       public string icons_prefix() { return "/im/tox/venom/icons/scalable/status/"; }
       public string icons_suffix() { return ".svg"; }
       public string app_id() { return "im.tox.venom"; }
       public string tox_about() { return "https://tox.chat/about.html"; }
       public string tox_get_involved() { return "https://wiki.tox.chat/users/contributing"; }
     }
+  }
+
+  public static Gdk.Pixbuf ? pixbuf_from_resource(string res) {
+    try {
+      var resource_path = R.constants.icons_prefix() + res + R.constants.icons_suffix();
+      return new Gdk.Pixbuf.from_resource_at_scale(resource_path, 96, 96, true);
+    } catch (Error e) {
+    }
+    return null;
   }
 }

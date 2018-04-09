@@ -13,6 +13,7 @@ RUN \
     libsoup2.4-dev \
     libsqlite3-dev \
     libvpx-dev \
+    libgee-0.8-dev \
     meson \
     valac \
     wget

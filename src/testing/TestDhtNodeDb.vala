@@ -1,7 +1,7 @@
 /*
  *    TestDhtNodeDb.vala
  *
- *    Copyright (C) 2017 Venom authors and contributors
+ *    Copyright (C) 2017-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -21,147 +21,122 @@
 
 using Venom;
 using Mock;
+using Testing;
 
-namespace TestDhtNodeDb {
-  private static void testDhtNodeDb() {
-    var logger = new MockLogger();
-    var statementFactory = new MockStatementFactory();
-    try {
-      var database = new SqliteDhtNodeDatabase(statementFactory, logger);
-      assert_nonnull(database);
-    } catch (Error e) {
-      stderr.printf(e.message);
-      Test.fail();
-    }
+public class TestDhtNodeDb : UnitTest {
+  private ILogger logger;
+  private IDatabaseStatementFactory statement_factory;
+  private IDatabaseStatement statement;
+  private IDhtNodeFactory node_factory;
+  private IDatabaseStatementBuilder builder;
+
+  public TestDhtNodeDb() {
+    add_func("test_init", test_init);
+    add_func("test_real_dht_node_db", test_real_dht_node_db);
+    add_func("test_insert", test_insert);
+    add_func("test_select", test_select);
+    add_func("test_real_dht_node_db_insert_select", test_real_dht_node_db_insert_select);
+    add_func("test_real_dht_node_db_insert_select_duplicate", test_real_dht_node_db_insert_select_duplicate);
+    add_func("test_real_dht_node_db_delete", test_real_dht_node_db_delete);
+    add_func("test_real_dht_node_db_insert_delete_select", test_real_dht_node_db_insert_delete_select);
   }
 
-  private static void testRealDhtNodeDb() {
-    var logger = new MockLogger();
-    var factory = new SqliteWrapperFactory();
-    try {
-      var db = factory.createDatabase(":memory:");
-      var statementFactory = factory.createStatementFactory(db);
-      var nodeDatabase = new SqliteDhtNodeDatabase(statementFactory, logger);
-      assert_nonnull(nodeDatabase);
-    } catch (Error e) {
-      stderr.printf(e.message);
-      Test.fail();
-    }
+  public override void set_up() throws GLib.Error {
+    logger = new MockLogger();
+    statement = new MockStatement();
+    builder = new SqliteStatementWrapper.Builder(statement);
+    statement_factory = new MockStatementFactory();
+    node_factory = new MockDhtNodeFactory();
+
+    mock().when(statement, "builder").then_return_object(builder);
+    mock().when(statement_factory, "createStatement", args().string("", any_string()).create())
+        .then_return_object(statement);
   }
 
-  private static void testRealDhtNodeDbInsert() {
-    var logger = new MockLogger();
-    var factory = new SqliteWrapperFactory();
-    try {
-      var db = factory.createDatabase(":memory:");
-      var statementFactory = factory.createStatementFactory(db);
-      var nodeDatabase = new SqliteDhtNodeDatabase(statementFactory, logger);
-      assert_nonnull(nodeDatabase);
-      nodeDatabase.insertDhtNode("", "", 0, false, "", "");
-    } catch (Error e) {
-      stderr.printf(e.message);
-      Test.fail();
-    }
+  private void test_init() throws GLib.Error {
+    var database = new SqliteDhtNodeDatabase(statement_factory, logger);
+    Assert.assert_not_null(database);
   }
 
-  private static void testRealDhtNodeDbSelect() {
-    var logger = new MockLogger();
+  private void test_real_dht_node_db() throws GLib.Error {
     var factory = new SqliteWrapperFactory();
-    var nodeFactory = new MockDhtNodeFactory();
-    try {
-      var db = factory.createDatabase(":memory:");
-      var statementFactory = factory.createStatementFactory(db);
-      var nodeDatabase = new SqliteDhtNodeDatabase(statementFactory, logger);
-      assert_nonnull(nodeDatabase);
-      var nodes = nodeDatabase.getDhtNodes(nodeFactory);
-      assert(nodes.length() == 0);
-    } catch (Error e) {
-      stderr.printf(e.message);
-      Test.fail();
-    }
+    var db = factory.createDatabase(":memory:");
+    var statement_factory = factory.createStatementFactory(db);
+    var node_database = new SqliteDhtNodeDatabase(statement_factory, logger);
+    Assert.assert_not_null(node_database);
   }
 
-  private static void testRealDhtNodeDbInsertSelect() {
-    var logger = new MockLogger();
-    var factory = new SqliteWrapperFactory();
-    var nodeFactory = new MockDhtNodeFactory();
-    try {
-      var db = factory.createDatabase(":memory:");
-      var statementFactory = factory.createStatementFactory(db);
-      var nodeDatabase = new SqliteDhtNodeDatabase(statementFactory, logger);
-      assert_nonnull(nodeDatabase);
-      nodeDatabase.insertDhtNode("a", "b", 0, false, "c", "d");
-      var nodes = nodeDatabase.getDhtNodes(nodeFactory);
-      assert(nodes.length() == 1);
-    } catch (Error e) {
-      stderr.printf(e.message);
-      Test.fail();
-    }
+  private void test_insert() throws GLib.Error {
+    var node_database = new SqliteDhtNodeDatabase(statement_factory, logger);
+    Assert.assert_not_null(node_database);
+    node_database.insertDhtNode("a", "b", 0, false, "c", "d");
+
+    mock().verify(statement, "bind_text", args().string("$KEY").string("a").create());
+    mock().verify(statement, "bind_text", args().string("$ADDRESS").string("b").create());
+    mock().verify(statement, "bind_text", args().string("$OWNER").string("c").create());
+    mock().verify(statement, "bind_text", args().string("$LOCATION").string("d").create());
+    mock().verify(statement, "bind_int", args().string("$PORT").int(0).create());
+    mock().verify(statement, "bind_bool", args().string("$ISBLOCKED").bool(false).create());
+    mock().verify_count(statement, "step", 2);
   }
 
-  private static void testRealDhtNodeDbInsertSelectDuplicate() {
-    var logger = new MockLogger();
-    var factory = new SqliteWrapperFactory();
-    var nodeFactory = new MockDhtNodeFactory();
-    try {
-      var db = factory.createDatabase(":memory:");
-      var statementFactory = factory.createStatementFactory(db);
-      var nodeDatabase = new SqliteDhtNodeDatabase(statementFactory, logger);
-      assert_nonnull(nodeDatabase);
-      nodeDatabase.insertDhtNode("a", "b", 0, false, "c", "d");
-      nodeDatabase.insertDhtNode("a", "e", 0, false, "f", "g");
-      var nodes = nodeDatabase.getDhtNodes(nodeFactory);
-      assert(nodes.length() == 1);
-    } catch (Error e) {
-      stderr.printf(e.message);
-      Test.fail();
-    }
+  private void test_select() throws GLib.Error {
+    var node_database = new SqliteDhtNodeDatabase(statement_factory, logger);
+    Assert.assert_not_null(node_database);
+
+    var nodes = node_database.getDhtNodes(node_factory);
+    Assert.assert_equals<uint>(0, nodes.length());
   }
 
-  private static void testRealDhtNodeDbDelete() {
-    var logger = new MockLogger();
-    var factory = new SqliteWrapperFactory();
-    try {
-      var db = factory.createDatabase(":memory:");
-      var statementFactory = factory.createStatementFactory(db);
-      var nodeDatabase = new SqliteDhtNodeDatabase(statementFactory, logger);
-      assert_nonnull(nodeDatabase);
-      nodeDatabase.deleteDhtNode("a");
-    } catch (Error e) {
-      stderr.printf(e.message);
-      Test.fail();
-    }
+  private void test_real_dht_node_db_insert_select() throws GLib.Error {
+    var statement_factory = create_memory_stmt_factory();
+    var node_database = new SqliteDhtNodeDatabase(statement_factory, logger);
+    Assert.assert_not_null(node_database);
+
+    node_database.insertDhtNode("a", "b", 0, false, "c", "d");
+    var nodes = node_database.getDhtNodes(node_factory);
+    Assert.assert_equals<uint>(1, nodes.length());
   }
 
-  private static void testRealDhtNodeDbInsertDeleteSelect() {
-    var logger = new MockLogger();
+  private void test_real_dht_node_db_insert_select_duplicate() throws GLib.Error {
+    var statement_factory = create_memory_stmt_factory();
+    var node_database = new SqliteDhtNodeDatabase(statement_factory, logger);
+    Assert.assert_not_null(node_database);
+
+    node_database.insertDhtNode("a", "b", 0, false, "c", "d");
+    node_database.insertDhtNode("a", "e", 0, false, "f", "g");
+    var nodes = node_database.getDhtNodes(node_factory);
+    Assert.assert_equals<uint>(1, nodes.length());
+  }
+
+  private void test_real_dht_node_db_delete() throws GLib.Error {
+    var statement_factory = create_memory_stmt_factory();
+    var node_database = new SqliteDhtNodeDatabase(statement_factory, logger);
+    Assert.assert_not_null(node_database);
+
+    node_database.deleteDhtNode("a");
+  }
+
+  private void test_real_dht_node_db_insert_delete_select() throws GLib.Error {
+    var statement_factory = create_memory_stmt_factory();
+    var node_database = new SqliteDhtNodeDatabase(statement_factory, logger);
+    Assert.assert_not_null(node_database);
+
+    node_database.insertDhtNode("a", "b", 0, false, "c", "d");
+    node_database.deleteDhtNode("a");
+    var nodes = node_database.getDhtNodes(node_factory);
+    Assert.assert_equals<uint>(0, nodes.length());
+  }
+
+  private IDatabaseStatementFactory create_memory_stmt_factory() {
     var factory = new SqliteWrapperFactory();
-    var nodeFactory = new MockDhtNodeFactory();
-    try {
-      var db = factory.createDatabase(":memory:");
-      var statementFactory = factory.createStatementFactory(db);
-      var nodeDatabase = new SqliteDhtNodeDatabase(statementFactory, logger);
-      assert_nonnull(nodeDatabase);
-      nodeDatabase.insertDhtNode("a", "b", 0, false, "c", "d");
-      nodeDatabase.deleteDhtNode("a");
-      var nodes = nodeDatabase.getDhtNodes(nodeFactory);
-      assert(nodes.length() == 0);
-    } catch (Error e) {
-      stderr.printf(e.message);
-      Test.fail();
-    }
+    var db = factory.createDatabase(":memory:");
+    return factory.createStatementFactory(db);
   }
 
   private static void main(string[] args) {
     Test.init(ref args);
-    Test.add_func("/test_dht_node_db", testDhtNodeDb);
-    Test.add_func("/test_real_dht_node_db", testRealDhtNodeDb);
-    Test.add_func("/test_real_dht_node_db_insert", testRealDhtNodeDbInsert);
-    Test.add_func("/test_real_dht_node_db_select", testRealDhtNodeDbSelect);
-    Test.add_func("/test_real_dht_node_db_insert_select", testRealDhtNodeDbInsertSelect);
-    Test.add_func("/test_real_dht_node_db_insert_select_duplicate", testRealDhtNodeDbInsertSelectDuplicate);
-    Test.add_func("/test_real_dht_node_db_delete", testRealDhtNodeDbDelete);
-    Test.add_func("/test_real_dht_node_db_insert_delete_select", testRealDhtNodeDbInsertDeleteSelect);
+    var test = new TestDhtNodeDb();
     Test.run();
   }
 }

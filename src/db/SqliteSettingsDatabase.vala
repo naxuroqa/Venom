@@ -22,6 +22,7 @@
 namespace Venom {
   public class SqliteSettingsDatabase : ISettingsDatabase, Object {
     public bool   enable_dark_theme           { get; set; default = false; }
+    public bool   enable_animations           { get; set; default = true; }
     public bool   enable_logging              { get; set; default = false; }
     public bool   enable_urgency_notification { get; set; default = true; }
     public bool   enable_tray                 { get; set; default = false; }
@@ -33,11 +34,16 @@ namespace Venom {
     public bool   enable_custom_proxy         { get; set; default = false; }
     public string custom_proxy_host           { get; set; default = "localhost"; }
     public int    custom_proxy_port           { get; set; default = 9150; }
+    public bool   enable_udp                  { get; set; default = true; }
+    public bool   enable_ipv6                 { get; set; default = true; }
+    public bool   enable_local_discovery      { get; set; default = true; }
+    public bool   enable_hole_punching        { get; set; default = true; }
 
     private const string CREATE_TABLE_SETTINGS = """
       CREATE TABLE IF NOT EXISTS Settings (
         id                   INTEGER PRIMARY KEY NOT NULL DEFAULT 0,
         darktheme            INTEGER             NOT NULL,
+        animations           INTEGER             NOT NULL,
         logging              INTEGER             NOT NULL,
         urgencynotification  INTEGER             NOT NULL,
         tray                 INTEGER             NOT NULL,
@@ -48,13 +54,18 @@ namespace Venom {
         enableproxy          INTEGER             NOT NULL,
         enablecustomproxy    INTEGER             NOT NULL,
         customproxyhost      STRING              NOT NULL,
-        customproxyport      INTEGER             NOT NULL
+        customproxyport      INTEGER             NOT NULL,
+        enableudp            INTEGER             NOT NULL,
+        enableipv6           INTEGER             NOT NULL,
+        enablelocaldiscovery INTEGER             NOT NULL,
+        enableholepunching   INTEGER             NOT NULL
       );
     """;
 
     private enum SettingsColumn {
       ID,
       DARKTHEME,
+      ANIMATIONS,
       LOGGING,
       URGENCYNOTIFICATIONS,
       TRAY,
@@ -65,11 +76,16 @@ namespace Venom {
       ENABLE_PROXY,
       ENABLE_CUSTOM_PROXY,
       CUSTOM_PROXY_HOST,
-      CUSTOM_PROXY_PORT
+      CUSTOM_PROXY_PORT,
+      ENABLE_UDP,
+      ENABLE_IPV6,
+      ENABLE_LOCAL_DISCOVERY,
+      ENABLE_HOLE_PUNCHING
     }
 
     private const string TABLE_ID = "$ID";
     private const string TABLE_DARKTHEME = "$DARKTHEME";
+    private const string TABLE_ANIMATIONS = "$ANIMATIONS";
     private const string TABLE_LOGGING = "$LOGGING";
     private const string TABLE_URGENCYNOTIFICATIONS = "$URGENCYNOTIFICATIONS";
     private const string TABLE_TRAY = "$TRAY";
@@ -81,22 +97,33 @@ namespace Venom {
     private const string TABLE_ENABLE_CUSTOM_PROXY = "$CUSTOMPROXY";
     private const string TABLE_CUSTOM_PROXY_HOST = "$CUSTOMPROXYHOST";
     private const string TABLE_CUSTOM_PROXY_PORT = "$CUSTOMPROXYPORT";
+    private const string TABLE_UDP = "$UDP";
+    private const string TABLE_IPV6 = "$IPV6";
+    private const string TABLE_LOCAL_DISCOVERY = "$LOCALDISCOVERY";
+    private const string TABLE_HOLE_PUNCHING = "$HOLEPUNCHING";
 
     private static string STATEMENT_INSERT_SETTINGS =
-      "INSERT OR REPLACE INTO Settings (id, darktheme, logging, urgencynotification, tray, notify, infinitelog, sendtyping, daystolog, enableproxy, enablecustomproxy, customproxyhost, customproxyport)"
-      + " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);".printf(TABLE_ID,
-                                                                               TABLE_DARKTHEME,
-                                                                               TABLE_LOGGING,
-                                                                               TABLE_URGENCYNOTIFICATIONS,
-                                                                               TABLE_TRAY,
-                                                                               TABLE_NOTIFY,
-                                                                               TABLE_INFINITELOG,
-                                                                               TABLE_SENDTYPING,
-                                                                               TABLE_DAYSTOLOG,
-                                                                               TABLE_ENABLE_PROXY,
-                                                                               TABLE_ENABLE_CUSTOM_PROXY,
-                                                                               TABLE_CUSTOM_PROXY_HOST,
-                                                                               TABLE_CUSTOM_PROXY_PORT);
+      "INSERT OR REPLACE INTO Settings (id, darktheme, animations, logging, urgencynotification, tray, notify, infinitelog, sendtyping, daystolog, enableproxy, enablecustomproxy, customproxyhost, customproxyport, enableudp, enableipv6, enablelocaldiscovery, enableholepunching)"
+      + " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+          .printf(TABLE_ID,
+                  TABLE_DARKTHEME,
+                  TABLE_ANIMATIONS,
+                  TABLE_LOGGING,
+                  TABLE_URGENCYNOTIFICATIONS,
+                  TABLE_TRAY,
+                  TABLE_NOTIFY,
+                  TABLE_INFINITELOG,
+                  TABLE_SENDTYPING,
+                  TABLE_DAYSTOLOG,
+                  TABLE_ENABLE_PROXY,
+                  TABLE_ENABLE_CUSTOM_PROXY,
+                  TABLE_CUSTOM_PROXY_HOST,
+                  TABLE_CUSTOM_PROXY_PORT,
+                  TABLE_UDP,
+                  TABLE_IPV6,
+                  TABLE_LOCAL_DISCOVERY,
+                  TABLE_HOLE_PUNCHING);
+
     private static string STATEMENT_SELECT_SETTINGS = "SELECT * FROM Settings WHERE id = 0";
 
     private IDatabaseStatement insertStatement;
@@ -133,6 +160,7 @@ namespace Venom {
       try {
         if (selectStatement.step() == DatabaseResult.ROW) {
           enable_dark_theme = selectStatement.column_bool(SettingsColumn.DARKTHEME);
+          enable_animations = selectStatement.column_bool(SettingsColumn.ANIMATIONS);
           enable_logging = selectStatement.column_bool(SettingsColumn.LOGGING);
           enable_urgency_notification = selectStatement.column_bool(SettingsColumn.URGENCYNOTIFICATIONS);
           enable_tray = selectStatement.column_bool(SettingsColumn.TRAY);
@@ -144,6 +172,10 @@ namespace Venom {
           enable_custom_proxy = selectStatement.column_bool(SettingsColumn.ENABLE_CUSTOM_PROXY);
           custom_proxy_host = selectStatement.column_text(SettingsColumn.CUSTOM_PROXY_HOST);
           custom_proxy_port = selectStatement.column_int(SettingsColumn.CUSTOM_PROXY_PORT);
+          enable_udp = selectStatement.column_bool(SettingsColumn.ENABLE_UDP);
+          enable_ipv6 = selectStatement.column_bool(SettingsColumn.ENABLE_IPV6);
+          enable_local_discovery = selectStatement.column_bool(SettingsColumn.ENABLE_LOCAL_DISCOVERY);
+          enable_hole_punching = selectStatement.column_bool(SettingsColumn.ENABLE_HOLE_PUNCHING);
         } else {
           logger.i("No settings entry found.");
         }
@@ -159,6 +191,7 @@ namespace Venom {
         insertStatement.builder()
             .bind_int( TABLE_ID, 0)
             .bind_bool(TABLE_DARKTHEME, enable_dark_theme)
+            .bind_bool(TABLE_ANIMATIONS, enable_animations)
             .bind_bool(TABLE_LOGGING, enable_logging)
             .bind_bool(TABLE_URGENCYNOTIFICATIONS, enable_urgency_notification)
             .bind_bool(TABLE_TRAY, enable_tray)
@@ -170,6 +203,10 @@ namespace Venom {
             .bind_bool(TABLE_ENABLE_CUSTOM_PROXY, enable_custom_proxy)
             .bind_text(TABLE_CUSTOM_PROXY_HOST, custom_proxy_host)
             .bind_int(TABLE_CUSTOM_PROXY_PORT, custom_proxy_port)
+            .bind_bool(TABLE_UDP, enable_udp)
+            .bind_bool(TABLE_IPV6, enable_ipv6)
+            .bind_bool(TABLE_LOCAL_DISCOVERY, enable_local_discovery)
+            .bind_bool(TABLE_HOLE_PUNCHING, enable_hole_punching)
             .step();
       } catch (DatabaseStatementError e) {
         logger.e("Could not insert settings into database: " + e.message);

@@ -39,8 +39,7 @@ namespace Venom {
     public abstract string get_time_plain();
 
     public abstract Gdk.Pixbuf get_sender_image();
-
-    public abstract bool equals_message(IMessage m);
+    public abstract bool equals_sender(IMessage m);
   }
 
   public class Message : IMessage, ILoggedMessage, Object {
@@ -92,10 +91,10 @@ namespace Venom {
     }
 
     public Gdk.Pixbuf get_sender_image() {
-      return UITools.pixbuf_from_resource(R.icons.default_contact);
+      return from != null ? from.get_image() : pixbuf_from_resource(R.icons.default_contact);
     }
 
-    public bool equals_message(IMessage m) {
+    public bool equals_sender(IMessage m) {
       if (m is Message) {
         return (from == (m as Message).from);
       }

@@ -1,0 +1,4 @@
+.avatar {
+  background: alpha(@theme_bg_color, .3);
+  border-radius: 10%;
+}

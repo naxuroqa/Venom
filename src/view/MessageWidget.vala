@@ -1,0 +1,58 @@
+/*
+ *    MessageWidget.vala
+ *
+ *    Copyright (C) 2013-2018 Venom authors and contributors
+ *
+ *    This file is part of Venom.
+ *
+ *    Venom is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    Venom is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace Venom {
+  [GtkTemplate(ui = "/im/tox/venom/ui/message_widget.ui")]
+  public class MessageWidget : Gtk.ListBoxRow {
+    [GtkChild] private Gtk.Label sender;
+    [GtkChild] private Gtk.Image sender_image;
+    [GtkChild] private Gtk.Label timestamp;
+    [GtkChild] private Gtk.Label message;
+    [GtkChild] private Gtk.Image sent;
+    [GtkChild] private Gtk.Image received;
+    [GtkChild] private Gtk.Box additional_info;
+
+    private ILogger logger;
+    private MessageViewModel view_model;
+
+    public MessageWidget(ILogger logger, IMessage message_content) {
+      this.logger = logger;
+      this.view_model = new MessageViewModel(logger, message_content);
+
+      view_model.bind_property("additional-info-visible", additional_info, "visible", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("timestamp", timestamp, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("message", message, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sender-image", sender_image, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sender", sender, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sender-sensitive", sender, "sensitive", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sent-visible", sent, "visible", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("received-visible", received, "visible", GLib.BindingFlags.SYNC_CREATE);
+
+      state_flags_changed.connect(() => { view_model.on_state_flags_changed(get_state_flags()); });
+
+      logger.d("MessageWidget created.");
+    }
+
+    ~MessageWidget() {
+      logger.d("MessageWidget destroyed.");
+    }
+  }
+}

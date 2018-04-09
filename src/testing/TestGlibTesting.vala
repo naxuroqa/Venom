@@ -21,13 +21,13 @@
 
 namespace TestGlibTesting {
 
-  private static void testGlibTesting() {
+  private static void test_glib_testing() {
     stdout.printf("Unit test frameworks appears to be ok.\n");
   }
 
   private static void main(string[] args) {
     Test.init(ref args);
-    Test.add_func("/test_glib_testing", testGlibTesting);
+    Test.add_func("/test_glib_testing", test_glib_testing);
     Test.run();
   }
 }
