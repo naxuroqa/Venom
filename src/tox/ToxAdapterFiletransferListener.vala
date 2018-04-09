@@ -155,10 +155,10 @@ namespace Venom {
         case ToxCore.FileControl.CANCEL:
           set_file_transfer(friend_number, file_number, null);
           file_transfer.set_state(FileTransferState.CANCEL);
+          set_file_transfer(friend_number, file_number, null);
           break;
         case ToxCore.FileControl.PAUSE:
-          //FIXME handle this somehow
-          //file_transfer.set_state(FileTransferState.PAUSED);
+          file_transfer.set_state(FileTransferState.PAUSED);
           break;
         case ToxCore.FileControl.RESUME:
           if (state == FileTransferState.INIT) {
