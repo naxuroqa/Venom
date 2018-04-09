@@ -103,10 +103,12 @@ namespace Venom {
 
     public virtual void on_friend_message(uint32 friend_number, string message_str) {
       logger.d("on_friend_message");
-      var contact = friends.@get(friend_number);
+      var contact = friends.@get(friend_number) as Contact;
       var conversation = conversations.@get(contact);
       var message = new Message.incoming(contact, message_str);
       notification_listener.on_unread_message(message);
+      contact.unread_messages++;
+      contact.changed();
       conversation.append(message);
     }
 

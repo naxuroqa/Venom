@@ -2,3 +2,23 @@
   background: alpha(@theme_bg_color, .3);
   border-radius: 10%;
 }
+
+@keyframes pulse {
+  0% {
+    opacity: 0.2;
+    -gtk-icon-transform: scale(1);
+  }
+  50% {
+    opacity: 1.0;
+    -gtk-icon-transform: scale(1.1);
+  }
+  100% {
+    opacity: 0.2;
+    -gtk-icon-transform: scale(1);
+  }
+}
+
+.highlight {
+  animation: pulse 2s infinite;
+  animation-timing-function: ease-out;
+}

@@ -44,24 +44,32 @@ namespace Venom {
       tox_id = id;
     }
 
-    public virtual string get_id() {
+    public string get_id() {
       return tox_id;
     }
 
-    public virtual string get_name_string() {
+    public string get_name_string() {
       return alias != "" ? alias : (name != "" ? name : tox_id);
     }
 
-    public virtual string get_status_string() {
+    public string get_status_string() {
       return status_message;
     }
 
-    public virtual UserStatus get_status() {
+    public UserStatus get_status() {
       return user_status;
     }
 
-    public virtual Gdk.Pixbuf get_image() {
+    public Gdk.Pixbuf get_image() {
       return tox_image ?? pixbuf_from_resource(R.icons.default_contact);
+    }
+
+    public bool get_requires_attention() {
+      return unread_messages > 0;
+    }
+
+    public void clear_attention() {
+      unread_messages = 0;
     }
   }
 }

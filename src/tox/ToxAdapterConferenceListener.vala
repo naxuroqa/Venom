@@ -121,6 +121,8 @@ namespace Venom {
       var conversation = conversations.@get(contact);
       var msg = new GroupMessage.incoming(contact, peer_number, message);
       notification_listener.on_unread_message(msg);
+      contact.unread_messages++;
+      contact.changed();
       conversation.append(msg);
     }
 

@@ -28,6 +28,7 @@ namespace Venom {
     public string contact_status { get; set; }
     public Gdk.Pixbuf contact_image { get; set; }
     public string contact_status_image { get; set; }
+    public bool contact_requires_attention { get; set; }
 
     public ContactListEntryViewModel(ILogger logger, IContact contact) {
       logger.d("ContactListEntryViewModel created.");
@@ -45,11 +46,18 @@ namespace Venom {
     private void update_contact() {
       contact_name = contact.get_name_string();
       contact_status = contact.get_status_string();
+      contact_requires_attention = contact.get_requires_attention();
+
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
         contact_image = pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR);
       }
-      contact_status_image = icon_name_from_status(contact.get_status());
+
+      if (contact_requires_attention) {
+        contact_status_image = "mail-unread-symbolic";
+      } else {
+        contact_status_image = icon_name_from_status(contact.get_status());
+      }
     }
 
     private string icon_name_from_status(UserStatus status) {
