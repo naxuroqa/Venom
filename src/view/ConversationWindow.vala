@@ -69,6 +69,7 @@ namespace Venom {
       text_view.key_press_event.connect(on_keypress);
       text_view.buffer.changed.connect(on_buffer_changed);
       app_window.add_action_entries(win_entries, this);
+      app_window.focus_in_event.connect(focus_in_event);
 
       delayed_scroll_to_end();
       model.items_changed.connect(on_items_changed);
@@ -77,12 +78,23 @@ namespace Venom {
     }
 
     private void update_widgets() {
+      if (contact.get_requires_attention() && app_window.is_active) {
+        contact.clear_attention();
+        contact.changed();
+        return;
+      }
       user_name.label = contact.get_name_string();
       user_status.label = contact.get_status_string();
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
         user_image.pixbuf = pixbuf.scale_simple(48, 48, Gdk.InterpType.BILINEAR);
       }
+    }
+
+    private bool focus_in_event() {
+      contact.clear_attention();
+      contact.changed();
+      return false;
     }
 
     ~ConversationWindow() {

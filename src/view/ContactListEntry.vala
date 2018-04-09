@@ -43,6 +43,16 @@ namespace Venom {
       view_model.bind_property("contact-status", contact_status, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("contact-image", contact_image, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("contact-status-image", status_image, "icon-name", GLib.BindingFlags.SYNC_CREATE);
+      view_model.notify["contact-requires-attention"].connect(refresh_attention);
+    }
+
+    private void refresh_attention() {
+      var ctx = status_image.get_style_context();
+      if (view_model.contact_requires_attention) {
+        ctx.add_class("highlight");
+      } else {
+        ctx.remove_class("highlight");
+      }
     }
 
     public IContact get_contact() {

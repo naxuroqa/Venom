@@ -25,6 +25,7 @@ namespace Venom {
     public uint32      tox_conference_number { get; set; }
     public string      title           { get; set; }
     public string      status_message  { get; set; default = ""; }
+    public int         unread_messages { get; set; }
     private GLib.HashTable<uint32, GroupchatPeer> peers;
 
     public GroupchatContact(uint32 conference_number, string title) {
@@ -33,29 +34,32 @@ namespace Venom {
       peers = new GLib.HashTable<uint32, GroupchatPeer>(null, null);
     }
 
-    public virtual string get_id() {
+    public string get_id() {
       return tox_conference_number.to_string();
     }
 
-    public virtual string get_name_string() {
+    public string get_name_string() {
       return title != "" ? title : "Unnamed conference %u".printf(tox_conference_number);
     }
 
-    public virtual string get_status_string() {
+    public string get_status_string() {
       return _("%u Peers online").printf(peers.size());
     }
 
-    public virtual UserStatus get_status() {
+    public UserStatus get_status() {
       return UserStatus.ONLINE;
     }
 
-    public virtual Gdk.Pixbuf get_image() {
+    public Gdk.Pixbuf get_image() {
       return Gtk.IconTheme.get_default().load_icon(R.icons.default_groupchat, 48, 0);
     }
 
-    public virtual unowned GLib.HashTable<uint32, GroupchatPeer> get_peers() {
+    public unowned GLib.HashTable<uint32, GroupchatPeer> get_peers() {
       return peers;
     }
+
+    public bool get_requires_attention() { return unread_messages > 0; }
+    public void clear_attention() { unread_messages = 0; }
   }
 
   public interface GroupchatPeer : GLib.Object {

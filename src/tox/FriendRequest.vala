@@ -27,17 +27,19 @@ namespace Venom {
       this.id = id;
       this.message = message;
     }
-    public virtual string get_id() {
+    public string get_id() {
       return id;
     }
-    public virtual string get_name_string() {
+    public string get_name_string() {
       return _("Friend request");
     }
-    public virtual string get_status_string() {
+    public string get_status_string() {
       return message;
     }
-    public virtual UserStatus get_status() {return UserStatus.OFFLINE;}
-    public virtual Gdk.Pixbuf get_image() {return null;}
+    public UserStatus get_status() { return UserStatus.OFFLINE; }
+    public Gdk.Pixbuf get_image() { return null; }
+    public bool get_requires_attention() { return true; }
+    public void clear_attention() {}
   }
 
 }

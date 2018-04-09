@@ -62,6 +62,7 @@ namespace Venom {
 
       text_view.key_press_event.connect(on_keypress);
       app_window.add_action_entries(win_entries, this);
+      app_window.focus_in_event.connect(focus_in_event);
 
       delayed_scroll_to_end();
       model.items_changed.connect(on_items_changed);
@@ -77,7 +78,18 @@ namespace Venom {
       logger = null;
     }
 
+    private bool focus_in_event() {
+      contact.clear_attention();
+      contact.changed();
+      return false;
+    }
+
     private void update_widgets() {
+      if (contact.get_requires_attention() && app_window.is_active) {
+        contact.clear_attention();
+        contact.changed();
+        return;
+      }
       conference_title.label = contact.get_name_string();
       conference_peers.label = contact.get_status_string();
     }
