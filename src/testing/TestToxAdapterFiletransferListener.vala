@@ -78,6 +78,7 @@ public class TestToxAdapterFiletransferListener : UnitTest {
   }
 
   private void test_remove_transfer() throws Error {
+    when(transfer, "get_state").then_return_int(FileTransferState.CANCEL);
     transfers.append(transfer);
     listener.attach_to_session(session);
     listener.remove_transfer(transfer);
@@ -93,7 +94,7 @@ public class TestToxAdapterFiletransferListener : UnitTest {
     try {
       listener.remove_transfer(transfer);
     } catch (Error e) {
-      Assert.assert_true(transfers.length() == 1);
+      Assert.assert_true(transfers.length() == 0);
       return;
     }
     Assert.fail();

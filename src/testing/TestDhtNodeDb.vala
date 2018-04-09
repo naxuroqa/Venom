@@ -49,7 +49,8 @@ public class TestDhtNodeDb : UnitTest {
     node_factory = new MockDhtNodeFactory();
 
     mock().when(statement, "builder").then_return_object(builder);
-    mock().when(statement_factory, "createStatement").then_return_object(statement);
+    mock().when(statement_factory, "createStatement", args().string("", any_string()).create())
+        .then_return_object(statement);
   }
 
   private void test_init() throws GLib.Error {
@@ -68,12 +69,15 @@ public class TestDhtNodeDb : UnitTest {
   private void test_insert() throws GLib.Error {
     var node_database = new SqliteDhtNodeDatabase(statement_factory, logger);
     Assert.assert_not_null(node_database);
-    node_database.insertDhtNode("", "", 0, false, "", "");
+    node_database.insertDhtNode("a", "b", 0, false, "c", "d");
 
-    mock().verify_count(statement, "bind_text", 4);
-    mock().verify(statement, "bind_int");
-    mock().verify(statement, "bind_bool");
-    mock().verify(statement, "step");
+    mock().verify(statement, "bind_text", args().string("$KEY").string("a").create());
+    mock().verify(statement, "bind_text", args().string("$ADDRESS").string("b").create());
+    mock().verify(statement, "bind_text", args().string("$OWNER").string("c").create());
+    mock().verify(statement, "bind_text", args().string("$LOCATION").string("d").create());
+    mock().verify(statement, "bind_int", args().string("$PORT").int(0).create());
+    mock().verify(statement, "bind_bool", args().string("$ISBLOCKED").bool(false).create());
+    mock().verify_count(statement, "step", 2);
   }
 
   private void test_select() throws GLib.Error {

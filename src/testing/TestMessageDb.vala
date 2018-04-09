@@ -44,7 +44,7 @@ public class TestMessageDb : UnitTest {
         .then_return_object(builder);
 
     statementFactory = new MockStatementFactory();
-    when(statementFactory, "createStatement")
+    when(statementFactory, "createStatement", args().string("", any_string()).create())
         .then_return_object(statement);
 
     message = new MockLoggedMessage();
@@ -63,11 +63,14 @@ public class TestMessageDb : UnitTest {
   private void test_insert() throws Error {
     var messageDatabase = new SqliteMessageDatabase(statementFactory, logger);
     Assert.assert_not_null(messageDatabase);
-    messageDatabase.insertMessage("", "", "", new DateTime.now_local(), true);
+    var time = new DateTime.now_local();
+    messageDatabase.insertMessage("a", "b", "c", time, true);
 
-    mock().verify_count(statement, "bind_text", 3);
-    mock().verify(statement, "bind_int64");
-    mock().verify(statement, "bind_bool");
+    mock().verify(statement, "bind_text", args().string("$USER").string("a").create());
+    mock().verify(statement, "bind_text", args().string("$CONTACT").string("b").create());
+    mock().verify(statement, "bind_text", args().string("$MESSAGE").string("c").create());
+    mock().verify(statement, "bind_int64", args().string("$TIME").int64(time.to_unix()).create());
+    mock().verify(statement, "bind_bool", args().string("$SENDER").bool(true).create());
   }
 
   private void test_retrieve() throws Error {

@@ -41,8 +41,12 @@ namespace Mock {
     mock().verify_count(object, function_name, count, args);
   }
 
-  public static Arguments.Builder args() {
+  public static Arguments.ArgBuilder args() {
     return Arguments.builder();
+  }
+
+  public static Matcher any_string() {
+    return new AnyStringMatcher();
   }
 
   private static string get_object_info(GLib.Object o) {
@@ -52,21 +56,12 @@ namespace Mock {
     return "%s".printf(o.get_type().name());
   }
 
-  public class Arguments : GLib.Object {
-    private GLib.List<GLib.Value?> arg_list;
-    construct {
-      arg_list = new GLib.List<GLib.Value?>();
-    }
+  public interface Matcher : GLib.Object {
+    public abstract bool equals(GLib.Value v1, GLib.Value v2);
+  }
 
-    public void add(GLib.Value v) {
-      arg_list.append(v);
-    }
-
-    public uint length() {
-      return arg_list.length();
-    }
-
-    private bool value_equals(GLib.Value v1, GLib.Value v2) {
+  public class ValueMatcher : Matcher, GLib.Object {
+    public bool equals(GLib.Value v1, GLib.Value v2) {
       var t1 = v1.type();
       var t2 = v2.type();
       if (t1 != t2) {
@@ -89,13 +84,54 @@ namespace Mock {
       }
       return false;
     }
+  }
+
+  public class AnyStringMatcher : Matcher, GLib.Object {
+    public bool equals(GLib.Value v1, GLib.Value v2) {
+      var t1 = v1.type();
+      var t2 = v2.type();
+      return (t1 == t2 && t1 == typeof (string));
+    }
+  }
+
+  public class Argument : GLib.Object {
+    private GLib.Value value;
+    private Matcher matcher;
+
+    public Argument(GLib.Value value, Matcher matcher = new ValueMatcher()) {
+      this.value = value;
+      this.matcher = matcher;
+    }
+
+    public bool equals(Argument arg) {
+      return matcher.equals(value, arg.value);
+    }
+
+    public GLib.Value get_value() {
+      return value;
+    }
+  }
+
+  public class Arguments : GLib.Object {
+    private Gee.List<Argument> arg_list;
+    construct {
+      arg_list = new Gee.ArrayList<Argument>();
+    }
+
+    public void add(Argument arg) {
+      arg_list.add(arg);
+    }
+
+    public uint length() {
+      return arg_list.size;
+    }
 
     public bool equals(Arguments args){
-      if (arg_list.length() != args.arg_list.length()) {
+      if (length() != args.length()) {
         return false;
       }
-      for (var i = 0; i < arg_list.length(); i++) {
-        if (!value_equals(arg_list.nth_data(i), args.arg_list.nth_data(i))) {
+      for (var i = 0; i < length(); i++) {
+        if (!arg_list.@get(i).equals(args.arg_list.@get(i))) {
           return false;
         }
       }
@@ -107,7 +143,8 @@ namespace Mock {
 
     public string to_string() {
       var ret = "";
-      foreach (var v in arg_list) {
+      foreach (var arg in arg_list) {
+        var v = arg.get_value();
         var t = v.type();
         if (t == typeof(uint)) {
           ret += "   + (uint) %u\n".printf(v.get_uint());
@@ -128,55 +165,55 @@ namespace Mock {
       return ret;
     }
 
-    public static Builder builder() {
-      return new Builder();
+    public static ArgBuilder builder() {
+      return new ArgBuilder();
     }
 
-    public class Builder : GLib.Object {
+    public class ArgBuilder : GLib.Object {
       private Arguments args;
       construct {
         args = new Arguments();
       }
-      public Builder bool(bool b) {
+      public ArgBuilder bool(bool b, Matcher m = new ValueMatcher()) {
         var v = GLib.Value(typeof(bool));
         v.set_boolean(b);
-        args.add(v);
+        args.add(new Argument(v, m));
         return this;
       }
-      public Builder int(int i) {
+      public ArgBuilder int(int i, Matcher m = new ValueMatcher()) {
         var v = GLib.Value(typeof(int));
         v.set_int(i);
-        args.add(v);
+        args.add(new Argument(v, m));
         return this;
       }
-      public Builder uint(uint i) {
+      public ArgBuilder uint(uint i, Matcher m = new ValueMatcher()) {
         var v = GLib.Value(typeof(uint));
         v.set_uint(i);
-        args.add(v);
+        args.add(new Argument(v, m));
         return this;
       }
-      public Builder int64(int64 i) {
+      public ArgBuilder int64(int64 i, Matcher m = new ValueMatcher()) {
         var v = GLib.Value(typeof(int64));
         v.set_int64(i);
-        args.add(v);
+        args.add(new Argument(v, m));
         return this;
       }
-      public Builder uint64(uint64 i) {
+      public ArgBuilder uint64(uint64 i, Matcher m = new ValueMatcher()) {
         var v = GLib.Value(typeof(uint64));
         v.set_uint64(i);
-        args.add(v);
+        args.add(new Argument(v, m));
         return this;
       }
-      public Builder string(string s) {
+      public ArgBuilder string(string s, Matcher m = new ValueMatcher()) {
         var v = GLib.Value(typeof(string));
         v.set_string(s);
-        args.add(s);
+        args.add(new Argument(v, m));
         return this;
       }
-      public Builder object(GLib.Object o) {
+      public ArgBuilder object(GLib.Object o, Matcher m = new ValueMatcher()) {
         var v = GLib.Value(typeof(GLib.Object));
         v.set_object(o);
-        args.add(v);
+        args.add(new Argument(v, m));
         return this;
       }
       public Arguments create() {
