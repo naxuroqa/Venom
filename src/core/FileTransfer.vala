@@ -103,7 +103,7 @@ namespace Venom {
     public void init_file(File file) throws Error {
       this.file = file;
       if (direction == INCOMING) {
-        file.create(FileCreateFlags.NONE);
+        file.replace(null, false, GLib.FileCreateFlags.NONE);
       }
     }
 
