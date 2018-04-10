@@ -34,7 +34,7 @@ namespace Venom {
     }
 
     public virtual uint8[] ? load_sessiondata() {
-      var file = File.new_for_path("tox.data");
+      var file = File.new_for_path(R.constants.tox_data_filename());
       uint8[] contents;
       string etag_out;
       try {
@@ -47,7 +47,7 @@ namespace Venom {
     }
 
     public virtual void save_sessiondata(uint8[] sessiondata) {
-      var file = File.new_for_path("tox.data");
+      var file = File.new_for_path(R.constants.tox_data_filename());
       try {
         file.replace_contents(sessiondata, null, false, FileCreateFlags.NONE, null, null);
       } catch (Error e) {

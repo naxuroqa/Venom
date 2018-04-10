@@ -72,8 +72,11 @@ namespace Venom {
     }
 
     public sealed class ConstantsResource {
-      public string avatars_folder() { return "avatars"; }
-      public string db_filename() { return "tox.db"; }
+      public string user_config_dir { get; set; default = GLib.Environment.get_user_config_dir(); }
+      public string profile_name { get; set; default = "tox"; }
+      public string avatars_folder() { return GLib.Path.build_filename(user_config_dir, "avatars"); }
+      public string db_filename() { return GLib.Path.build_filename(user_config_dir, "tox", profile_name + ".db"); }
+      public string tox_data_filename() { return GLib.Path.build_filename(user_config_dir, "tox", profile_name + ".data"); }
       public string icons_prefix() { return "/im/tox/venom/icons/scalable/status/"; }
       public string icons_suffix() { return ".svg"; }
       public string app_id() { return "im.tox.venom"; }
@@ -84,7 +87,7 @@ namespace Venom {
 
   public static Gdk.Pixbuf ? pixbuf_from_resource(string res) {
     try {
-      var resource_path = R.constants.icons_prefix() + res + R.constants.icons_suffix();
+      var resource_path = GLib.Path.build_path("/", R.constants.icons_prefix(), res + R.constants.icons_suffix());
       return new Gdk.Pixbuf.from_resource_at_scale(resource_path, 96, 96, true);
     } catch (Error e) {
     }
