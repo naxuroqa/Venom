@@ -68,7 +68,7 @@ namespace Venom {
       database_factory = widget_factory.createDatabaseFactory();
 
       try {
-        database = database_factory.createDatabase("tox.db");
+        database = database_factory.createDatabase(R.constants.db_filename());
         var statementFactory = database_factory.createStatementFactory(database);
         nodeDatabase = database_factory.createNodeDatabase(statementFactory, logger);
         contact_database = database_factory.createContactDatabase(statementFactory, logger);
