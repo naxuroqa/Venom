@@ -32,8 +32,8 @@ namespace TestToxCore {
 
   private static void testToxOptions() {
     var e = ErrOptionsNew.OK;
-    var options = new Options(ref e);
-    var default_options = new Options(ref e);
+    var options = new Options(out e);
+    var default_options = new Options(out e);
     default_options.default ();
     assert(options != null);
     assert(default_options != null);
@@ -50,17 +50,17 @@ namespace TestToxCore {
 
   private static void testToxCoreSession() {
     var e = ErrOptionsNew.OK;
-    var options = new Options(ref e);
+    var options = new Options(out e);
     var error = ErrNew.OK;
-    var tox = new Tox(null, ref error);
+    var tox = new Tox(null, out error);
     assert(error == ErrNew.OK);
-    tox = new Tox(options, ref error);
+    tox = new Tox(options, out error);
     assert(error == ErrNew.OK);
   }
 
   private static void testToxSaveData() {
     var error = ErrNew.OK;
-    var tox = new Tox(null, ref error);
+    var tox = new Tox(null, out error);
     var savedata = tox.get_savedata();
     assert(savedata != null);
     assert(savedata.length > 0);
@@ -68,78 +68,78 @@ namespace TestToxCore {
 
   private static void testToxUserStatus() {
     var error = ErrNew.OK;
-    var tox = new Tox(null, ref error);
-    var user_status = UserStatus.AWAY;
-    tox.user_status = user_status;
-    assert(tox.user_status == user_status);
+    var tox = new Tox(null, out error);
+    var self_status = UserStatus.AWAY;
+    tox.self_status = self_status;
+    assert(tox.self_status == self_status);
   }
 
   private static void testToxPersistentUserStatus() {
     var error = ErrNew.OK;
-    var tox = new Tox(null, ref error);
-    var user_status = UserStatus.BUSY;
-    tox.user_status = user_status;
-    tox = new Tox(null, ref error);
-    assert(tox.user_status != user_status);
+    var tox = new Tox(null, out error);
+    var self_status = UserStatus.BUSY;
+    tox.self_status = self_status;
+    tox = new Tox(null, out error);
+    assert(tox.self_status != self_status);
   }
 
   private static void testToxStatusMessage() {
     var error = ErrNew.OK;
-    var tox = new Tox(null, ref error);
+    var tox = new Tox(null, out error);
     var message = "message";
     var setStatusError = ErrSetInfo.OK;
-    assert(tox.self_set_status_message(message, ref setStatusError));
+    assert(tox.self_set_status_message(message, out setStatusError));
     assert(tox.self_get_status_message() == message);
   }
 
   private static void testToxName() {
     var error = ErrNew.OK;
-    var tox = new Tox(null, ref error);
+    var tox = new Tox(null, out error);
     var name = "test";
     var setNameError = ErrSetInfo.OK;
-    assert(tox.self_set_name(name, ref setNameError));
+    assert(tox.self_set_name(name, out setNameError));
     assert(tox.self_get_name() == name);
   }
 
   private static void testToxConnection() {
     var error = ErrNew.OK;
-    var tox = new Tox(null, ref error);
+    var tox = new Tox(null, out error);
     assert(tox.self_get_connection_status() == Connection.NONE);
   }
 
   private static void testToxPersistentAddress() {
     var error = ErrNew.OK;
-    var tox = new Tox(null, ref error);
+    var tox = new Tox(null, out error);
     var address = tox.self_get_address();
     assert(equals(tox.self_get_address(), address));
-    tox = new Tox(null, ref error);
+    tox = new Tox(null, out error);
     assert(!equals(tox.self_get_address(), address));
   }
 
   private static void testToxBootstrapNull() {
     var error = ErrNew.OK;
-    var tox = new Tox(null, ref error);
+    var tox = new Tox(null, out error);
     var bootstrapError = ErrBootstrap.OK;
     string s = null;
-    assert(!tox.bootstrap(s, 0, {}, ref bootstrapError));
+    assert(!tox.bootstrap(s, 0, {}, out bootstrapError));
     assert(bootstrapError == ErrBootstrap.NULL);
   }
 
   private static void testToxBootstrapBadPort() {
     var error = ErrNew.OK;
-    var tox = new Tox(null, ref error);
+    var tox = new Tox(null, out error);
     var bootstrapError = ErrBootstrap.OK;
     var pubkey = new uint8[ToxCore.public_key_size()];
-    assert(!tox.bootstrap("", 0, pubkey, ref bootstrapError));
+    assert(!tox.bootstrap("", 0, pubkey, out bootstrapError));
     assert(bootstrapError == ErrBootstrap.BAD_PORT);
   }
 
   private static void testToxBootstrapBadHost() {
     var error = ErrNew.OK;
-    var tox = new Tox(null, ref error);
+    var tox = new Tox(null, out error);
     var bootstrapError = ErrBootstrap.OK;
     var pubkey = new uint8[ToxCore.public_key_size()];
-    assert(!tox.bootstrap("", 1, pubkey, ref bootstrapError));
+    assert(!tox.bootstrap("", 1, pubkey, out bootstrapError));
     assert(bootstrapError == ErrBootstrap.BAD_HOST);
   }
 

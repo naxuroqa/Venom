@@ -62,7 +62,7 @@ namespace Venom {
           }
           logger.d("  %s".printf(dht_node.to_string()));
           var bootstrap_err = ToxCore.ErrBootstrap.OK;
-          session.handle.bootstrap(dht_node.host, (uint16) dht_node.port, Tools.hexstring_to_bin(dht_node.pub_key), ref bootstrap_err);
+          session.handle.bootstrap(dht_node.host, (uint16) dht_node.port, Tools.hexstring_to_bin(dht_node.pub_key), out bootstrap_err);
           if (bootstrap_err != ToxCore.ErrBootstrap.OK) {
             logger.e("Connecting to node %s failed: %s".printf(dht_node.to_string(), bootstrap_err.to_string()));
           }
@@ -85,7 +85,7 @@ namespace Venom {
         status = newStatus;
 
         session.@lock();
-        session.handle.iterate<ToxSession>(session);
+        session.handle.iterate(session);
         session.unlock();
         Thread.usleep(session.handle.iteration_interval() * 1000);
       }

@@ -26,12 +26,12 @@ namespace Venom {
     public string      title           { get; set; }
     public string      status_message  { get; set; default = ""; }
     public int         unread_messages { get; set; }
-    private GLib.HashTable<uint32, GroupchatPeer> peers;
+    private Gee.Map<uint32, GroupchatPeer> peers;
 
     public GroupchatContact(uint32 conference_number, string title) {
       tox_conference_number = conference_number;
       this.title = title;
-      peers = new GLib.HashTable<uint32, GroupchatPeer>(null, null);
+      peers = new Gee.HashMap<uint32, GroupchatPeer>();
     }
 
     public string get_id() {
@@ -43,7 +43,7 @@ namespace Venom {
     }
 
     public string get_status_string() {
-      return _("%u Peers online").printf(peers.size());
+      return _("%u Peers online").printf(peers.size);
     }
 
     public UserStatus get_status() {
@@ -54,7 +54,7 @@ namespace Venom {
       return Gtk.IconTheme.get_default().load_icon(R.icons.default_groupchat, 48, 0);
     }
 
-    public unowned GLib.HashTable<uint32, GroupchatPeer> get_peers() {
+    public unowned Gee.Map<uint32, GroupchatPeer> get_peers() {
       return peers;
     }
 

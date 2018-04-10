@@ -8,7 +8,7 @@ endif
 if gst_dep.found()
 			executable('toxav', ['ToxAVTest.vala',
 						join_paths(root_source_dir, 'core/Tools.vala')],
-						dependencies : [gtk_dep, tox_dep, toxav_dep, gst_dep]
+						dependencies : [gtk_dep, tox_dep, gst_dep]
 						)
 endif
 

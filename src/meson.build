@@ -13,7 +13,6 @@ sqlite_dep = dependency('sqlite3')
 json_dep = dependency('json-glib-1.0')
 soup_dep = dependency('libsoup-2.4')
 tox_dep = dependency('toxcore')
-toxav_dep = dependency('toxav')
 gst_dep = dependency('gstreamer-1.0', required : false)
 posix_dep = meson.get_compiler('vala').find_library('posix', required : false)
 
@@ -95,7 +94,7 @@ venom_source = files(
 			'viewmodel/UserInfoViewModel.vala'
 			)
 
-venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, toxav_dep, config_dep, soup_dep]
+venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, config_dep, soup_dep]
 
 venom_lib = static_library('venom', [venom_source, venom_ui_resources, venom_icons_resources],
 			dependencies : venom_deps

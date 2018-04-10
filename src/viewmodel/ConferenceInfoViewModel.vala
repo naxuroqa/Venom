@@ -42,7 +42,7 @@ namespace Venom {
       set_info();
       contact.changed.connect(set_info);
       peers_list = new ObservableList();
-      peers_list.set_list(contact.get_peers().get_values());
+      peers_list.set_collection(contact.get_peers().values);
 
       notify["title"].connect(() => { title_error_visible = false; });
     }

@@ -26,6 +26,21 @@ namespace Venom {
     GENERIC
   }
 
+  public class ToxConferencePeer : GLib.Object {
+    public uint32 peer_number;
+    public string? peer_name;
+    public uint8[] ? peer_key;
+    public bool is_self;
+    public bool is_known;
+    public ToxConferencePeer(uint32 peer_number, string? peer_name, uint8[] ? peer_key, bool is_self, bool is_known) {
+      this.peer_number = peer_number;
+      this.peer_name = peer_name;
+      this.peer_key = peer_key;
+      this.is_self = is_self;
+      this.is_known = is_known;
+    }
+  }
+
   public delegate void GetFriendListCallback(uint32 friend_number, uint8[] friend_key);
 
   public interface ToxSession : GLib.Object {
@@ -91,9 +106,8 @@ namespace Venom {
     public abstract void on_conference_deleted(uint32 conference_number);
 
     public abstract void on_conference_title_changed(uint32 conference_number, uint32 peer_number, string title);
-    public abstract void on_conference_peer_joined(uint32 conference_number, uint32 peer_number);
-    public abstract void on_conference_peer_exited(uint32 conference_number, uint32 peer_number);
-    public abstract void on_conference_peer_renamed(uint32 conference_number, uint32 peer_number, bool is_self, uint8[] peer_public_key, string peer_name, bool peer_known);
+    public abstract void on_conference_peer_list_changed(uint32 conference_number, ToxConferencePeer[] peers);
+    public abstract void on_conference_peer_renamed(uint32 conference_number, ToxConferencePeer peer);
 
     public abstract void on_conference_message(uint32 conference_number, uint32 peer_number, MessageType type, string message);
     public abstract void on_conference_message_sent(uint32 conference_number, string message);
@@ -136,7 +150,7 @@ namespace Venom {
       this.iohandler = iohandler;
 
       var options_error = ToxCore.ErrOptionsNew.OK;
-      var options = new ToxCore.Options(ref options_error);
+      var options = new ToxCore.Options(out options_error);
 
       options.log_callback = on_tox_message;
       friends = new GLib.HashTable<uint32, IContact>(null, null);
@@ -144,7 +158,7 @@ namespace Venom {
       var savedata = iohandler.load_sessiondata();
       if (savedata != null) {
         options.savedata_type = SaveDataType.TOX_SAVE;
-        options.savedata_data = savedata;
+        options.set_savedata_data(savedata);
       }
 
       if (settings_database.enable_proxy) {
@@ -158,7 +172,7 @@ namespace Venom {
 
       // create handle
       var error = ToxCore.ErrNew.OK;
-      handle = new ToxCore.Tox(options, ref error);
+      handle = new ToxCore.Tox(options, out error);
       if (error == ErrNew.PROXY_BAD_HOST || error == ErrNew.PROXY_BAD_PORT || error == ErrNew.PROXY_NOT_FOUND) {
         var message = "Proxy could not be used: " + error.to_string();
         logger.f(message);
@@ -180,7 +194,8 @@ namespace Venom {
       handle.callback_conference_title(on_conference_title_cb);
       handle.callback_conference_invite(on_conference_invite_cb);
       handle.callback_conference_message(on_conference_message_cb);
-      handle.callback_conference_namelist_change(on_conference_namelist_change_cb);
+      handle.callback_conference_peer_name(on_conference_peer_name_cb);
+      handle.callback_conference_peer_list_changed(on_conference_peer_list_changed_cb);
 
       handle.callback_file_recv(on_file_recv_cb);
       handle.callback_file_recv_chunk(on_file_recv_chunk_cb);
@@ -378,7 +393,7 @@ namespace Venom {
       var session = (ToxSessionImpl) user_data;
       session.logger.d("on_conference_message_cb");
       var err = ErrConferenceJoin.OK;
-      var conference_number = self.conference_join(friend_number, cookie, ref err);
+      var conference_number = self.conference_join(friend_number, cookie, out err);
       if (err != ErrConferenceJoin.OK) {
         session.logger.e("Conference join failed: " + err.to_string());
         return;
@@ -391,7 +406,7 @@ namespace Venom {
       session.logger.d("on_conference_message_cb");
       var message_str = copy_data_string(message);
       var err = ErrConferencePeerQuery.OK;
-      var is_ours = self.conference_peer_number_is_ours(conference_number, peer_number, ref err);
+      var is_ours = self.conference_peer_number_is_ours(conference_number, peer_number, out err);
       if (err != ErrConferencePeerQuery.OK) {
         session.logger.e("conference_peer_number_is_ours failed: " + err.to_string());
         return;
@@ -403,40 +418,47 @@ namespace Venom {
       }
     }
 
-    private static void on_conference_namelist_change_cb(Tox self, uint32 conference_number, uint32 peer_number, ConferenceStateChange change, void *user_data) {
+    private static void on_conference_peer_name_cb(Tox self, uint32 conference_number, uint32 peer_number, uint8[] name, void* user_data) {
       var session = (ToxSessionImpl) user_data;
-      session.logger.d("on_conference_namelist_change_cb");
-      switch (change) {
-        case ConferenceStateChange.PEER_JOIN:
-          Idle.add(() => { session.conference_listener.on_conference_peer_joined(conference_number, peer_number); return false; });
-          break;
-        case ConferenceStateChange.PEER_EXIT:
-          Idle.add(() => { session.conference_listener.on_conference_peer_exited(conference_number, peer_number); return false; });
-          break;
-        case ConferenceStateChange.PEER_NAME_CHANGE:
-          var err = ErrConferencePeerQuery.OK;
-          // This oddly requires a connection to the conference
-          // var is_self = self.conference_peer_number_is_ours(conference_number, peer_number, ref err);
-          // if (err != ErrConferencePeerQuery.OK) {
-          //   session.logger.e("conference_peer_number_is_ours failed: " + err.to_string());
-          //   return;
-          // }
-          var peer_public_key = self.conference_peer_get_public_key(conference_number, peer_number, ref err);
-          if (err != ErrConferencePeerQuery.OK) {
-            session.logger.e("conference_peer_get_public_key failed: " + err.to_string());
-            return;
-          }
-          var err_pubkey = ErrFriendByPublicKey.OK;
-          var peer_known = uint32.MAX != self.friend_by_public_key(peer_public_key, ref err_pubkey);
-
-          var peer_name = self.conference_peer_get_name(conference_number, peer_number, ref err);
-          if (err != ErrConferencePeerQuery.OK) {
-            session.logger.e("conference_peer_get_name failed: " + err.to_string());
-            return;
-          }
-          Idle.add(() => { session.conference_listener.on_conference_peer_renamed(conference_number, peer_number, false, peer_public_key, peer_name, peer_known); return false; });
-          break;
+      session.logger.d("on_conference_peer_name_cb");
+      var peer_name = copy_data_string(name);
+      var err = ErrConferencePeerQuery.OK;
+      var peer_public_key = self.conference_peer_get_public_key(conference_number, peer_number, out err);
+      if (err != ErrConferencePeerQuery.OK) {
+        session.logger.e("conference_peer_get_public_key failed: " + err.to_string());
+        return;
       }
+      var is_self = self.conference_peer_number_is_ours(conference_number, peer_number, out err);
+      var is_known = false;
+      if (!is_self) {
+        var err_pubkey = ErrFriendByPublicKey.OK;
+        self.friend_by_public_key(peer_public_key, out err_pubkey);
+        is_known = err_pubkey == ErrFriendByPublicKey.OK;
+      }
+      var peer = new ToxConferencePeer(peer_number, peer_name, peer_public_key, is_self, is_known);
+      Idle.add(() => { session.conference_listener.on_conference_peer_renamed(conference_number, peer); return false; });
+    }
+
+    private static void on_conference_peer_list_changed_cb(Tox self, uint32 conference_number, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
+      session.logger.d("on_conference_peer_list_changed_cb");
+      var err = ErrConferencePeerQuery.OK;
+      var peer_count = self.conference_peer_count(conference_number, out err);
+      if (err != ErrConferencePeerQuery.OK) {
+        session.logger.e(@"Could not query peer count for conference $conference_number: " + err.to_string());
+        return;
+      }
+      var peers = new ToxConferencePeer[peer_count];
+      for (var i = 0; i < peer_count; i++) {
+        var peer_public_key = self.conference_peer_get_public_key(conference_number, i, out err);
+        var peer_name = self.conference_peer_get_name(conference_number, i, out err);
+        var is_self = self.conference_peer_number_is_ours(conference_number, i, out err);
+        var err_pubkey = ErrFriendByPublicKey.OK;
+        self.friend_by_public_key(peer_public_key, out err_pubkey);
+        var is_known = err_pubkey == ErrFriendByPublicKey.OK;
+        peers[i] = new ToxConferencePeer(i, peer_name, peer_public_key, is_self, is_known);
+      }
+      Idle.add(() => { session.conference_listener.on_conference_peer_list_changed(conference_number, peers); return false; });
     }
 
     private static void on_file_recv_cb(Tox self, uint32 friend_number, uint32 file_number, uint32 kind, uint64 file_size, uint8[] filename, void *user_data) {
@@ -502,7 +524,7 @@ namespace Venom {
 
     public virtual void self_set_user_name(string name) {
       var e = ErrSetInfo.OK;
-      if (!handle.self_set_name(name, ref e)) {
+      if (!handle.self_set_name(name, out e)) {
         logger.e("set_user_name failed: " + e.to_string());
       }
     }
@@ -513,14 +535,14 @@ namespace Venom {
 
     public virtual void self_set_status_message(string status) {
       var e = ErrSetInfo.OK;
-      if (!handle.self_set_status_message(status, ref e)) {
+      if (!handle.self_set_status_message(status, out e)) {
         logger.e("set_user_status failed: " + e.to_string());
       }
     }
 
     public virtual uint8[] friend_get_public_key(uint32 friend_number) throws ToxError {
       var e = ErrFriendGetPublicKey.OK;
-      var ret = handle.friend_get_public_key(friend_number, ref e);
+      var ret = handle.friend_get_public_key(friend_number, out e);
       if (e != ErrFriendGetPublicKey.OK) {
         logger.e("friend_get_public_key failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -530,7 +552,7 @@ namespace Venom {
 
     public virtual string friend_get_name(uint32 friend_number) throws ToxError {
       var e = ErrFriendQuery.OK;
-      var ret = handle.friend_get_name(friend_number, ref e);
+      var ret = handle.friend_get_name(friend_number, out e);
       if (e != ErrFriendQuery.OK) {
         logger.e("friend_get_name failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -540,7 +562,7 @@ namespace Venom {
 
     public virtual string friend_get_status_message(uint32 friend_number) throws ToxError {
       var e = ErrFriendQuery.OK;
-      var ret = handle.friend_get_status_message(friend_number, ref e);
+      var ret = handle.friend_get_status_message(friend_number, out e);
       if (e != ErrFriendQuery.OK) {
         logger.e("friend_get_status_message failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -550,7 +572,7 @@ namespace Venom {
 
     public virtual uint64 friend_get_last_online(uint32 friend_number) throws ToxError {
       var e = ErrFriendGetLastOnline.OK;
-      var ret = handle.friend_get_last_online(friend_number, ref e);
+      var ret = handle.friend_get_last_online(friend_number, out e);
       if (e != ErrFriendGetLastOnline.OK) {
         logger.e("friend_get_last_online failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -560,7 +582,7 @@ namespace Venom {
 
     public virtual void friend_add(uint8[] address, string message) throws ToxError {
       var e = ErrFriendAdd.OK;
-      var friend_number = handle.friend_add(address, message, ref e);
+      var friend_number = handle.friend_add(address, message, out e);
       if (e != ErrFriendAdd.OK) {
         logger.i("friend_add failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -571,7 +593,7 @@ namespace Venom {
 
     public virtual void friend_add_norequest(uint8[] public_key) throws ToxError {
       var e = ErrFriendAdd.OK;
-      var friend_number = handle.friend_add_norequest(public_key, ref e);
+      var friend_number = handle.friend_add_norequest(public_key, out e);
       if (e != ErrFriendAdd.OK) {
         logger.i("friend_add failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -581,7 +603,7 @@ namespace Venom {
 
     public virtual void friend_delete(uint32 friend_number) throws ToxError {
       var e = ErrFriendDelete.OK;
-      if (!handle.friend_delete(friend_number, ref e)) {
+      if (!handle.friend_delete(friend_number, out e)) {
         logger.i("friend_delete failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
@@ -590,7 +612,7 @@ namespace Venom {
 
     public virtual void friend_send_message(uint32 friend_number, string message) throws ToxError {
       var e = ErrFriendSendMessage.OK;
-      var ret = handle.friend_send_message(friend_number, MessageType.NORMAL, message, ref e);
+      var ret = handle.friend_send_message(friend_number, MessageType.NORMAL, message, out e);
       if (e != ErrFriendSendMessage.OK) {
         logger.i("friend_send_message failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -600,7 +622,7 @@ namespace Venom {
 
     public virtual void self_set_typing(uint32 friend_number, bool typing) throws ToxError {
       var e = ErrSetTyping.OK;
-      handle.self_set_typing(friend_number, typing, ref e);
+      handle.self_set_typing(friend_number, typing, out e);
       if (e != ErrSetTyping.OK) {
         logger.i("self_set_typing failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -609,7 +631,7 @@ namespace Venom {
 
     public virtual void file_control(uint32 friend_number, uint32 file_number, FileControl control) throws ToxError {
       var e = ErrFileControl.OK;
-      handle.file_control(friend_number, file_number, control, ref e);
+      handle.file_control(friend_number, file_number, control, out e);
       if (e != ErrFileControl.OK) {
         throw new ToxError.GENERIC(e.to_string());
       }
@@ -620,7 +642,7 @@ namespace Venom {
       var file_name = file.get_basename();
 
       var e = ErrFileSend.OK;
-      var ret = handle.file_send(friend_number, kind, file_size, null, file_name, ref e);
+      var ret = handle.file_send(friend_number, kind, file_size, null, file_name, out e);
       if (e != ErrFileSend.OK) {
         logger.e("file send request failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -630,7 +652,7 @@ namespace Venom {
 
     public virtual void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError {
       var e = ErrFileSendChunk.OK;
-      handle.file_send_chunk(friend_number, file_number, position, data, ref e);
+      handle.file_send_chunk(friend_number, file_number, position, data, out e);
       if (e != ErrFileSendChunk.OK) {
         logger.e("sending chunk failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -639,7 +661,7 @@ namespace Venom {
 
     private void conference_set_title_private(uint32 conference_number, string title) throws ToxError {
       var e = ErrConferenceTitle.OK;
-      handle.conference_set_title(conference_number, title, ref e);
+      handle.conference_set_title(conference_number, title, out e);
       if (e != ErrConferenceTitle.OK) {
         logger.e("setting conference title failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -653,7 +675,7 @@ namespace Venom {
 
     public virtual string conference_get_title(uint32 conference_number) throws ToxError {
       var e = ErrConferenceTitle.OK;
-      var title = handle.conference_get_title(conference_number, ref e);
+      var title = handle.conference_get_title(conference_number, out e);
       if (e != ErrConferenceTitle.OK) {
         logger.e("getting conference title failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -663,7 +685,7 @@ namespace Venom {
 
     public virtual void conference_new(string title) throws ToxError {
       var e = ErrConferenceNew.OK;
-      var conference_number = handle.conference_new(ref e);
+      var conference_number = handle.conference_new(out e);
       if (e != ErrConferenceNew.OK) {
         logger.e("creating conference failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -672,7 +694,7 @@ namespace Venom {
         conference_set_title_private(conference_number, title);
       } catch (ToxError e) {
         var err_conference_delete = ErrConferenceDelete.OK;
-        handle.conference_delete(conference_number, ref err_conference_delete);
+        handle.conference_delete(conference_number, out err_conference_delete);
         throw e;
       }
       conference_listener.on_conference_new(conference_number, title);
@@ -680,7 +702,7 @@ namespace Venom {
 
     public virtual void conference_delete(uint32 conference_number) throws ToxError {
       var e = ErrConferenceDelete.OK;
-      handle.conference_delete(conference_number, ref e);
+      handle.conference_delete(conference_number, out e);
       if (e != ErrConferenceDelete.OK) {
         logger.e("deleting conference failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -690,7 +712,7 @@ namespace Venom {
 
     public virtual void conference_send_message(uint32 conference_number, string message) throws ToxError {
       var e = ErrConferenceSendMessage.OK;
-      handle.conference_send_message(conference_number, MessageType.NORMAL, message, ref e);
+      handle.conference_send_message(conference_number, MessageType.NORMAL, message, out e);
       if (e != ErrConferenceSendMessage.OK) {
         logger.e("sending conference message failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
@@ -699,7 +721,7 @@ namespace Venom {
 
     private uint32 get_friend_number(uint8[] public_key) throws ToxError {
       var e = ErrFriendByPublicKey.OK;
-      var ret = handle.friend_by_public_key(public_key, ref e);
+      var ret = handle.friend_by_public_key(public_key, out e);
       if (ret == uint32.MAX) {
         logger.e("get_friend_number failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
