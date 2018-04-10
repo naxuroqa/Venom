@@ -27,7 +27,15 @@ namespace Venom {
     private Gee.List<GLib.Object> list = new Gee.ArrayList<GLib.Object>();
 
     public void set_list(GLib.List<GLib.Object> list) {
+      this.list.clear();
       foreach (var item in list) {
+        this.list.add(item);
+      }
+    }
+
+    public void set_collection(Gee.Collection<GLib.Object> collection) {
+      this.list.clear();
+      foreach (var item in collection) {
         this.list.add(item);
       }
     }

@@ -91,14 +91,14 @@ public class VideoSample : Window {
 
   private void create_tox() {
     var err_options = ToxCore.ErrOptionsNew.OK;
-    var options = new ToxCore.Options(ref err_options);
+    var options = new ToxCore.Options(out err_options);
     if (err_options != ToxCore.ErrOptionsNew.OK) {
       stderr.printf("[FTL] Could not create options: %s\n", err_options.to_string());
       assert_not_reached();
     }
 
     var err = ToxCore.ErrNew.OK;
-    tox = new ToxCore.Tox(options, ref err);
+    tox = new ToxCore.Tox(options, out err);
     if (err != ToxCore.ErrNew.OK) {
       stderr.printf("[FTL] Could not create instance: %s\n", err.to_string());
       assert_not_reached();
@@ -107,7 +107,7 @@ public class VideoSample : Window {
     tox.callback_friend_request(on_friend_request);
 
     var err_av = ToxAV.ErrNew.OK;
-    tox_av = new ToxAV.ToxAV(tox, ref err_av);
+    tox_av = new ToxAV.ToxAV(tox, out err_av);
     if (err_av != ToxAV.ErrNew.OK) {
       stderr.printf("[FTL] Could not create av instance: %s\n", err_av.to_string());
       assert_not_reached();
@@ -115,14 +115,15 @@ public class VideoSample : Window {
 
     tox_av.callback_call(on_call);
     tox_av.callback_call_state(on_call_state);
-    tox_av.callback_bit_rate_status(on_bit_rate_status);
+    tox_av.callback_audio_bit_rate(on_audio_bit_rate);
+    tox_av.callback_video_bit_rate(on_video_bit_rate);
     tox_av.callback_video_receive_frame(on_video_receive_frame);
     tox_av.callback_audio_receive_frame(on_audio_receive_frame);
 
     var address = tox.self_get_address();
     stdout.printf("[LOG] Tox ID: %s\n", Venom.Tools.bin_to_hexstring(address));
     var err_info = ToxCore.ErrSetInfo.OK;
-    if (!tox.self_set_name("AV Test bot", ref err_info)) {
+    if (!tox.self_set_name("AV Test bot", out err_info)) {
       stderr.printf("[FTL] Could not set name: %s\n", err_info.to_string());
       assert_not_reached();
     }
@@ -133,7 +134,7 @@ public class VideoSample : Window {
     var pub_key = Venom.Tools.hexstring_to_bin(pub_key_string);
 
     var err_bootstrap = ToxCore.ErrBootstrap.OK;
-    if (!tox.bootstrap(ip_string, (uint16) port, pub_key, ref err_bootstrap)) {
+    if (!tox.bootstrap(ip_string, (uint16) port, pub_key, out err_bootstrap)) {
       stderr.printf("[ERR] Bootstrapping failed: %s\n", err_bootstrap.to_string());
       assert_not_reached();
     }
@@ -161,7 +162,7 @@ public class VideoSample : Window {
 
   private string friend_get_name(uint32 friend_number) {
     var err = ToxCore.ErrFriendQuery.OK;
-    var name = tox.friend_get_name(friend_number, ref err);
+    var name = tox.friend_get_name(friend_number, out err);
     return err != ToxCore.ErrFriendQuery.OK ? "FRIEND #%u".printf(friend_number) : name;
   }
 
@@ -173,11 +174,15 @@ public class VideoSample : Window {
     stdout.printf("[LOG] on_call_state %s: %i\n", friend_get_name(friend_number), state);
   }
 
-  private void on_bit_rate_status(ToxAV.ToxAV self, uint32 friend_number, uint32 audio_bit_rate, uint32 video_bit_rate) {
-    stdout.printf("[LOG] on_bit_rate_status %s: audio_bit_rate: %u, video_bit_rate: %u\n", friend_get_name(friend_number), audio_bit_rate, video_bit_rate);
+  private void on_audio_bit_rate(ToxAV.ToxAV self, uint32 friend_number, uint32 audio_bit_rate) {
+    stdout.printf("[LOG] on_audio_bit_rate %s: audio_bit_rate: %u\n", friend_get_name(friend_number), audio_bit_rate);
   }
 
-  private void on_audio_receive_frame(ToxAV.ToxAV self, uint32 friend_number, int16[] pcm, uint8 channels, uint32 sampling_rate) {
+  private void on_video_bit_rate(ToxAV.ToxAV self, uint32 friend_number, uint32 video_bit_rate) {
+    stdout.printf("[LOG] on_video_bit_rate %s: video_bit_rate: %u\n", friend_get_name(friend_number), video_bit_rate);
+  }
+
+  private void on_audio_receive_frame(ToxAV.ToxAV self, uint32 friend_number, int16[] pcm, size_t sample_count, uint8 channels, uint32 sampling_rate) {
     stdout.printf("[LOG] on_audio_receive_frame %s: channels: %u, sampling_rate: %u\n", friend_get_name(friend_number), channels, sampling_rate);
   }
 
@@ -188,7 +193,7 @@ public class VideoSample : Window {
   private static void on_friend_request(ToxCore.Tox tox, uint8[] key, uint8[] message, void* user_data) {
     stdout.printf("[LOG] Friend request from %s received: %s\n", Venom.Tools.bin_to_hexstring(key), (string) message);
     var error = ToxCore.ErrFriendAdd.OK;
-    tox.friend_add_norequest(key, ref error);
+    tox.friend_add_norequest(key, out error);
     if (error != ToxCore.ErrFriendAdd.OK) {
       stderr.printf("[ERR] Friend could not be added: %s\n", error.to_string());
     }
