@@ -1,5 +1,5 @@
 /*
- *    GroupMessage.vala
+ *    ConferenceMessage.vala
  *
  *    Copyright (C) 2018  Venom authors and contributors
  *
@@ -20,21 +20,18 @@
  */
 
 namespace Venom {
-  public class GroupMessage : IMessage, Object {
-    public unowned GroupchatContact contact   { get; protected set; }
-    public uint32 peer_number                 { get; protected set; }
-    public string message                     { get; protected set; }
-
-    public string sender_name                 { get; set; }
+  public class ConferenceMessage : IMessage, Object {
     public GLib.DateTime timestamp            { get; protected set; }
     public MessageDirection message_direction { get; protected set; }
     public bool important                     { get; set; }
     public bool is_action                     { get; set; }
-    public uint32 message_id                  { get; set; }
     public bool received                      { get; set; }
 
-    private GroupMessage(IContact contact, MessageDirection direction, string message, GLib.DateTime timestamp) {
-      this.contact = contact as GroupchatContact;
+    public string message                     { get; protected set; }
+    public string peer_name                   { get; protected set; }
+    public string peer_key                    { get; protected set; }
+
+    private ConferenceMessage(MessageDirection direction, string message, GLib.DateTime timestamp) {
       this.message_direction = direction;
       this.message = message;
       this.timestamp = timestamp;
@@ -42,36 +39,30 @@ namespace Venom {
       this.is_action = false;
     }
 
-    public GroupMessage.outgoing(IContact contact, string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
-      this(contact, MessageDirection.OUTGOING, message, timestamp);
+    public ConferenceMessage.outgoing(string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
+      this(MessageDirection.OUTGOING, message, timestamp);
     }
 
-    public GroupMessage.incoming(IContact contact, uint32 peer_number, string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
-      this(contact, MessageDirection.INCOMING, message, timestamp);
-      this.peer_number = peer_number;
-      var c = contact as GroupchatContact;
-      this.sender_name = c.get_peers().@get(peer_number).name;
+    public ConferenceMessage.incoming(string peer_key, string peer_name, string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
+      this(MessageDirection.INCOMING, message, timestamp);
+      this.peer_key = peer_key;
+      this.peer_name = peer_name;
     }
 
-    public virtual string get_sender_plain() {
+    public string get_sender_plain() {
       if (message_direction == MessageDirection.OUTGOING) {
         return _("me");
       } else {
-        return sender_name;
+        return peer_name;
       }
     }
 
-    public virtual string get_message_plain() {
+    public string get_message_plain() {
       return message;
     }
 
-    public virtual string get_time_plain() {
-      var now = new DateTime.now_local();
-      if (now.difference(timestamp) > GLib.TimeSpan.DAY) {
-        return timestamp.format("%c");
-      } else {
-        return timestamp.format("%X");
-      }
+    public string get_time_plain() {
+      return timestamp.format("%c");
     }
 
     public Gdk.Pixbuf get_sender_image() {
@@ -79,7 +70,7 @@ namespace Venom {
     }
 
     public bool equals_sender(IMessage m) {
-      return false;
+      return m is ConferenceMessage && ((ConferenceMessage) m).peer_key == peer_key;
     }
   }
 }

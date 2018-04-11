@@ -43,15 +43,16 @@ namespace Venom {
   }
 
   public class Message : IMessage, ILoggedMessage, Object {
-    public unowned IContact from              { get; protected set; }
-    public unowned IContact to                { get; protected set; }
-    public string message                     { get; protected set; }
     public GLib.DateTime timestamp            { get; protected set; }
     public MessageDirection message_direction { get; protected set; }
     public bool important                     { get; set; default = false; }
     public bool is_action                     { get; set; default = false; }
-    public uint32 message_id                  { get; set; }
     public bool received                      { get; set; }
+
+    public unowned IContact from              { get; protected set; }
+    public unowned IContact to                { get; protected set; }
+    public string message                     { get; protected set; }
+    public uint32 message_id                  { get; set; }
 
     public Message.outgoing(IContact receiver, string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
       this.message_direction = MessageDirection.OUTGOING;
@@ -82,12 +83,7 @@ namespace Venom {
     }
 
     public virtual string get_time_plain() {
-      var now = new DateTime.now_local();
-      if (now.difference(timestamp) > GLib.TimeSpan.DAY) {
-        return timestamp.format("%c");
-      } else {
-        return timestamp.format("%X");
-      }
+      return timestamp.format("%c");
     }
 
     public Gdk.Pixbuf get_sender_image() {
@@ -95,10 +91,7 @@ namespace Venom {
     }
 
     public bool equals_sender(IMessage m) {
-      if (m is Message) {
-        return (from == (m as Message).from);
-      }
-      return false;
+      return m is Message && from == (m as Message).from;
     }
   }
 }

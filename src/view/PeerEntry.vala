@@ -35,11 +35,11 @@ namespace Venom {
 
     private ILogger logger;
 
-    public PeerEntry(ILogger logger, GroupchatPeer peer) {
+    public PeerEntry(ILogger logger, ConferencePeer peer) {
       this.logger = logger;
-      peer_name.label = peer.name;
-      peer_key.label = peer.tox_public_key;
-      peer_known.visible = peer.known;
+      peer_name.label = peer.peer_name;
+      peer_key.label = peer.peer_key;
+      peer_known.visible = peer.is_known;
       peer_self.visible = peer.is_self;
       logger.d("PeerEntry created.");
     }

@@ -30,10 +30,10 @@ namespace Venom {
     private ILogger logger;
     private ConferenceInfoWidgetListener listener;
 
-    private GroupchatContact contact;
+    private Conference contact;
     private ObservableList peers_list;
 
-    public ConferenceInfoViewModel(ILogger logger, ConferenceInfoWidgetListener listener, GroupchatContact contact) {
+    public ConferenceInfoViewModel(ILogger logger, ConferenceInfoWidgetListener listener, Conference contact) {
       logger.d("ConferenceInfoViewModel created.");
       this.logger = logger;
       this.contact = contact;

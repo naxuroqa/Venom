@@ -1,5 +1,5 @@
 /*
- *    GroupchatContact.vala
+ *    Conference.vala
  *
  *    Copyright (C) 2013-2018  Venom authors and contributors
  *
@@ -20,26 +20,26 @@
  */
 
 namespace Venom {
-  public class GroupchatContact : IContact, GLib.Object {
+  public class Conference : IContact, GLib.Object {
     // Saved in toxs savefile
-    public uint32      tox_conference_number { get; set; }
-    public string      title           { get; set; }
-    public string      status_message  { get; set; default = ""; }
-    public int         unread_messages { get; set; }
-    private Gee.Map<uint32, GroupchatPeer> peers;
+    public uint32 conference_number { get; set; }
+    public string title             { get; set; }
+    public string status_message    { get; set; default = ""; }
+    public int    unread_messages   { get; set; default = 0; }
+    private Gee.Map<uint32, ConferencePeer> peers;
 
-    public GroupchatContact(uint32 conference_number, string title) {
-      tox_conference_number = conference_number;
+    public Conference(uint32 conference_number, string title) {
+      this.conference_number = conference_number;
       this.title = title;
-      peers = new Gee.HashMap<uint32, GroupchatPeer>();
+      peers = new Gee.HashMap<uint32, ConferencePeer>();
     }
 
     public string get_id() {
-      return tox_conference_number.to_string();
+      return conference_number.to_string();
     }
 
     public string get_name_string() {
-      return title != "" ? title : "Unnamed conference %u".printf(tox_conference_number);
+      return title != "" ? title : _("Unnamed conference %u").printf(conference_number);
     }
 
     public string get_status_string() {
@@ -54,7 +54,7 @@ namespace Venom {
       return Gtk.IconTheme.get_default().load_icon(R.icons.default_groupchat, 48, 0);
     }
 
-    public unowned Gee.Map<uint32, GroupchatPeer> get_peers() {
+    public unowned Gee.Map<uint32, ConferencePeer> get_peers() {
       return peers;
     }
 
@@ -62,26 +62,19 @@ namespace Venom {
     public void clear_attention() { unread_messages = 0; }
   }
 
-  public interface GroupchatPeer : GLib.Object {
-    public abstract uint32 peer_number { get; set; }
-    public abstract string tox_public_key { get; set; }
-    public abstract string name { get; set; }
-    public abstract bool known { get; set; }
-    public abstract bool is_self { get; set; }
-  }
-
-  public class GroupchatPeerImpl : GroupchatPeer, GLib.Object {
+  public class ConferencePeer : GLib.Object {
     public uint32 peer_number { get; set; }
-    public string tox_public_key { get; set; }
-    public string name { get; set; }
-    public bool known { get; set; }
+    public string peer_key { get; set; }
+    public string peer_name { get; set; }
+    public bool is_known { get; set; }
     public bool is_self { get; set; }
 
-    public GroupchatPeerImpl(uint32 peer_number) {
+    public ConferencePeer(uint32 peer_number, string peer_key, string peer_name, bool is_known, bool is_self) {
       this.peer_number = peer_number;
-      this.tox_public_key = "";
-      this.name = "Peer %u".printf(peer_number);
-      this.is_self = false;
+      this.peer_key = peer_key;
+      this.peer_name = peer_name;
+      this.is_known = is_known;
+      this.is_self = is_self;
     }
   }
 }

@@ -165,7 +165,7 @@ namespace Venom {
       if (contact is Contact) {
         var conv = conversations.@get(contact);
         switch_content_with(() => { return new ConversationWindow(this, logger, conv, contact, friend_listener, filetransfer_listener); });
-      } else if (contact is GroupchatContact) {
+      } else if (contact is Conference) {
         var conv = conversations.@get(contact);
         switch_content_with(() => { return new ConferenceWindow(this, logger, conv, contact, conference_listener); });
       } else if (contact is FriendRequest) {

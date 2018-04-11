@@ -21,14 +21,14 @@
 
 namespace Venom {
   public class MessageViewModel : GLib.Object {
-    public bool additional_info_visible { get; set; }
+    public bool   additional_info_visible { get; set; }
     public string sender { get; set; }
-    public bool sender_sensitive { get; set; }
+    public bool   sender_sensitive { get; set; }
     public Gdk.Pixbuf sender_image { get; set; }
     public string timestamp { get; set; }
     public string message { get; set; }
-    public bool sent_visible { get; set; }
-    public bool received_visible { get; set; }
+    public bool   sent_visible { get; set; }
+    public bool   received_visible { get; set; }
 
     private ILogger logger;
     private IMessage message_content;
@@ -42,17 +42,38 @@ namespace Venom {
       on_message_changed();
     }
 
+    private DateTime get_midnight() {
+      var now = new DateTime.now_local();
+      return new DateTime.local(now.get_year(), now.get_month(), now.get_day_of_month(), 0, 0, 0);
+    }
+
+    private string get_timestamp_string() {
+      var midnight = get_midnight();
+      var yesterday = midnight.add_days(-1);
+      var timestamp = message_content.timestamp;
+      var now = new DateTime.now_local();
+      if (timestamp.compare(midnight) > 0) {
+        return _("Today at %s").printf(timestamp.format("%X"));
+      } else if (timestamp.compare(yesterday) > 0) {
+        return _("Yesterday at %s").printf(timestamp.format("%X"));
+      }
+      return timestamp.format("%c");
+    }
+
     public void on_state_flags_changed(Gtk.StateFlags flag) {
       additional_info_visible = Gtk.StateFlags.PRELIGHT in flag || Gtk.StateFlags.SELECTED in flag;
+      if (additional_info_visible) {
+        timestamp = get_timestamp_string();
+      }
     }
 
     private void on_message_changed() {
-      if (message_content.message_direction == MessageDirection.OUTGOING) {
+      var outoing = message_content.message_direction == MessageDirection.OUTGOING;
+      sender_sensitive = !outoing;
+      if (outoing) {
         received_visible = message_content.received;
         sent_visible = !message_content.received;
-
         sender = _("me");
-        sender_sensitive = false;
       } else {
         sender = message_content.get_sender_plain();
       }
@@ -62,7 +83,7 @@ namespace Venom {
       if (pixbuf != null) {
         sender_image = pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR);
       }
-      timestamp = message_content.get_time_plain();
+      timestamp = get_timestamp_string();
     }
 
     ~MessageViewModel() {
