@@ -51,7 +51,7 @@ namespace Venom {
 
     private Gtk.Widget create_entry(GLib.Object object) {
       var c = object as IContact;
-      if (c is Contact || c is GroupchatContact) {
+      if (c is Contact || c is Conference) {
         return new ContactListEntry(logger, c);
       }
       return new ContactListRequestEntry(logger, c);

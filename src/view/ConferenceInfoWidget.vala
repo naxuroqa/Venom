@@ -37,7 +37,7 @@ namespace Venom {
       logger.d("ConferenceInfoWidget created.");
       this.logger = logger;
       this.app_window = app_window;
-      this.view_model = new ConferenceInfoViewModel(logger, listener, contact as GroupchatContact);
+      this.view_model = new ConferenceInfoViewModel(logger, listener, contact as Conference);
 
       view_model.bind_property("title", title, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       view_model.bind_property("title-error", title_error, "label", BindingFlags.SYNC_CREATE);
@@ -57,7 +57,7 @@ namespace Venom {
     }
 
     private Gtk.Widget on_create_peer_widget(Object o) {
-      return new PeerEntry(logger, o as GroupchatPeer);
+      return new PeerEntry(logger, o as ConferencePeer);
     }
 
     ~ConferenceInfoWidget() {
