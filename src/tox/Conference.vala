@@ -47,7 +47,11 @@ namespace Venom {
     }
 
     public UserStatus get_status() {
-      return UserStatus.ONLINE;
+      return UserStatus.NONE;
+    }
+
+    public bool is_connected() {
+      return !peers.is_empty;
     }
 
     public Gdk.Pixbuf get_image() {

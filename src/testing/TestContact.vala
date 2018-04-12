@@ -37,7 +37,8 @@ public class TestContact : UnitTest {
     Assert.assert_true(contact.get_id() == "id");
     Assert.assert_true(contact.get_name_string() == "id");
     Assert.assert_true(contact.get_status_string() == "");
-    Assert.assert_true(contact.get_status() == UserStatus.OFFLINE);
+    Assert.assert_true(contact.get_status() == UserStatus.NONE);
+    Assert.assert_true(contact.is_connected() == false);
   }
 
   private static void test_contact_name() throws Error {

@@ -56,25 +56,28 @@ namespace Venom {
     }
 
     private void refresh_user_info(GLib.Object sender) {
-      username = user_info.get_name();
-      statusmessage = user_info.get_status_message();
-      var userimage_pixbuf = scalePixbuf(user_info.get_image());
+      username = user_info.name;
+      statusmessage = user_info.status_message;
+      var userimage_pixbuf = scalePixbuf(user_info.image);
       if (userimage_pixbuf != null) {
         userimage = userimage_pixbuf;
       }
-      image_status = get_resource_from_status(user_info.get_user_status());
+      if (user_info.is_connected) {
+        image_status = get_resource_from_status(user_info.user_status);
+      } else {
+        image_status = R.icons.offline;;
+      }
     }
 
     private string get_resource_from_status(UserStatus status) {
       switch (status) {
-        case UserStatus.ONLINE:
-          return R.icons.online;
         case UserStatus.AWAY:
           return R.icons.idle;
         case UserStatus.BUSY:
           return R.icons.busy;
+        default:
+          return R.icons.online;
       }
-      return R.icons.offline;
     }
 
     private Gdk.Pixbuf ? scalePixbuf(Gdk.Pixbuf ? pixbuf) {
