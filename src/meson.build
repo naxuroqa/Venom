@@ -58,7 +58,7 @@ venom_source = files(
 			'tox/ToxAdapterConferenceListener.vala',
 			'tox/ToxAdapterFriendListener.vala',
 			'tox/ToxAdapterFiletransferListener.vala',
-			'tox/ToxAdapterListener.vala',
+			'tox/ToxAdapterSelfListener.vala',
 			'tox/ToxContact.vala',
 			'tox/ToxSession.vala',
 			'tox/ToxSessionIO.vala',

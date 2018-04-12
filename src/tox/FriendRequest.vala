@@ -36,7 +36,8 @@ namespace Venom {
     public string get_status_string() {
       return message;
     }
-    public UserStatus get_status() { return UserStatus.OFFLINE; }
+    public UserStatus get_status() { return UserStatus.NONE; }
+    public bool is_connected() { return false; }
     public Gdk.Pixbuf get_image() { return null; }
     public bool get_requires_attention() { return true; }
     public void clear_attention() {}

@@ -27,7 +27,7 @@ namespace Mock {
     public MockToxSession() {
       contacts = new GLib.HashTable<uint32, IContact>(null, null);
     }
-    public void set_session_listener(ToxAdapterListener listener) {
+    public void set_session_listener(ToxAdapterSelfListener listener) {
       var args = Arguments.builder()
                      .object(listener)
                      .create();

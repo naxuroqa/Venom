@@ -44,7 +44,7 @@ namespace Venom {
   public delegate void GetFriendListCallback(uint32 friend_number, uint8[] friend_key);
 
   public interface ToxSession : GLib.Object {
-    public abstract void set_session_listener(ToxAdapterListener listener);
+    public abstract void set_session_listener(ToxAdapterSelfListener listener);
     public abstract void set_file_transfer_listener(ToxAdapterFiletransferListener listener);
     public abstract void set_friend_listener(ToxAdapterFriendListener listener);
     public abstract void set_conference_listener(ToxAdapterConferenceListener listener);
@@ -83,12 +83,13 @@ namespace Venom {
     public abstract unowned GLib.HashTable<uint32, IContact> get_friends();
   }
 
-  public interface ToxAdapterListener : GLib.Object {
-    public abstract void on_self_status_changed(UserStatus status);
+  public interface ToxAdapterSelfListener : GLib.Object {
+    public abstract void on_self_connection_status_changed(bool is_connected);
   }
 
   public interface ToxAdapterFriendListener : GLib.Object {
     public abstract void on_friend_status_changed(uint32 friend_number, UserStatus status);
+    public abstract void on_friend_connection_status_changed(uint32 friend_number, bool connected);
     public abstract void on_friend_name_changed(uint32 friend_number, string name);
     public abstract void on_friend_status_message_changed(uint32 friend_number, string message);
 
@@ -135,7 +136,7 @@ namespace Venom {
     private ILogger logger;
     private ToxSessionThread sessionThread;
 
-    private ToxAdapterListener listener;
+    private ToxAdapterSelfListener self_listener;
     private ToxAdapterFriendListener friend_listener;
     private ToxAdapterConferenceListener conference_listener;
     private ToxAdapterFiletransferListener file_transfer_listener;
@@ -188,6 +189,7 @@ namespace Venom {
       handle.callback_friend_message(on_friend_message_cb);
       handle.callback_friend_name(on_friend_name_cb);
       handle.callback_friend_status_message(on_friend_status_message_cb);
+      handle.callback_friend_status(on_friend_status_cb);
       handle.callback_friend_read_receipt(on_friend_read_receipt_cb);
       handle.callback_friend_request(on_friend_request_cb);
 
@@ -303,8 +305,8 @@ namespace Venom {
       }
     }
 
-    public virtual void set_session_listener(ToxAdapterListener listener) {
-      this.listener = listener;
+    public virtual void set_session_listener(ToxAdapterSelfListener listener) {
+      this.self_listener = listener;
     }
 
     public virtual void set_file_transfer_listener(ToxAdapterFiletransferListener listener) {
@@ -331,51 +333,58 @@ namespace Venom {
       return t;
     }
 
-    private static void on_self_connection_status_cb(Tox self, Connection connection_status, void* userdata) {
-      var session = (ToxSessionImpl) userdata;
+    private static void on_self_connection_status_cb(Tox self, Connection connection_status, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
       session.logger.d("on_self_connection_status_cb");
-      var user_status = from_connection_status(connection_status);
-      Idle.add(() => { session.listener.on_self_status_changed(user_status); return false; });
+      var user_status = from_connection(connection_status);
+      Idle.add(() => { session.self_listener.on_self_connection_status_changed(user_status); return false; });
     }
 
-    private static void on_friend_connection_status_cb(Tox self, uint32 friend_number, Connection connection_status, void* userdata) {
-      var session = (ToxSessionImpl) userdata;
+    private static void on_friend_connection_status_cb(Tox self, uint32 friend_number, Connection connection_status, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
       session.logger.d("on_friend_connection_status_cb");
-      var user_status = from_connection_status(connection_status);
-      Idle.add(() => { session.friend_listener.on_friend_status_changed(friend_number, user_status); return false; });
+      var user_status = from_connection(connection_status);
+      Idle.add(() => { session.friend_listener.on_friend_connection_status_changed(friend_number, user_status); return false; });
     }
 
-    private static void on_friend_name_cb(Tox self, uint32 friend_number, uint8[] name, void* userdata) {
-      var session = (ToxSessionImpl) userdata;
+    private static void on_friend_name_cb(Tox self, uint32 friend_number, uint8[] name, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
       session.logger.d("on_friend_name_cb");
       var name_str = copy_data_string(name);
       Idle.add(() => { session.friend_listener.on_friend_name_changed(friend_number, name_str); return false; });
     }
 
-    private static void on_friend_request_cb(Tox self, uint8[] key, uint8[] message, void* userdata) {
-      var session = (ToxSessionImpl) userdata;
+    private static void on_friend_request_cb(Tox self, uint8[] key, uint8[] message, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
       session.logger.d("on_friend_request_cb");
       var key_copy = copy_data(key, public_key_size());
       var message_str = copy_data_string(message);
       Idle.add(() => { session.friend_listener.on_friend_request(key_copy, message_str); return false; });
     }
 
-    private static void on_friend_message_cb(Tox self, uint32 friend_number, MessageType type, uint8[] message, void* userdata) {
-      var session = (ToxSessionImpl) userdata;
+    private static void on_friend_message_cb(Tox self, uint32 friend_number, MessageType type, uint8[] message, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
       session.logger.d("on_friend_message_cb");
       var message_str = copy_data_string(message);
       Idle.add(() => { session.friend_listener.on_friend_message(friend_number, message_str); return false; });
     }
 
-    private static void on_friend_status_message_cb(Tox self, uint32 friend_number, uint8[] message, void* userdata) {
-      var session = (ToxSessionImpl) userdata;
+    private static void on_friend_status_message_cb(Tox self, uint32 friend_number, uint8[] message, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
       session.logger.d("on_friend_status_message_cb");
       var message_str = copy_data_string(message);
       Idle.add(() => { session.friend_listener.on_friend_status_message_changed(friend_number, message_str); return false; });
     }
 
-    private static void on_friend_read_receipt_cb(Tox self, uint32 friend_number, uint32 message_id, void* userdata) {
-      var session = (ToxSessionImpl) userdata;
+    private static void on_friend_status_cb(Tox self, uint32 friend_number, ToxCore.UserStatus status, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
+      session.logger.d("on_friend_status_cb");
+      var user_status = from_user_status(status);
+      Idle.add(() => { session.friend_listener.on_friend_status_changed(friend_number, user_status); return false; });
+    }
+
+    private static void on_friend_read_receipt_cb(Tox self, uint32 friend_number, uint32 message_id, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
       session.logger.d("on_friend_read_receipt_cb");
 
       Idle.add(() => { session.friend_listener.on_friend_read_receipt(friend_number, message_id); return false; });
@@ -498,11 +507,20 @@ namespace Venom {
       Idle.add(() => { session.file_transfer_listener.on_file_chunk_request(friend_number, file_number, position, length); return false; });
     }
 
-    private static UserStatus from_connection_status(Connection connection_status) {
-      if (connection_status == Connection.NONE) {
-        return UserStatus.OFFLINE;
+    private static bool from_connection(Connection connection_status) {
+      return connection_status != Connection.NONE;
+    }
+
+    private static Venom.UserStatus from_user_status(ToxCore.UserStatus user_status) {
+      switch(user_status) {
+        case ToxCore.UserStatus.NONE:
+          return Venom.UserStatus.NONE;
+        case ToxCore.UserStatus.AWAY:
+          return Venom.UserStatus.AWAY;
+        case ToxCore.UserStatus.BUSY:
+          return Venom.UserStatus.BUSY;
       }
-      return UserStatus.ONLINE;
+      assert_not_reached();
     }
 
     public virtual string self_get_name() {

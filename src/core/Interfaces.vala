@@ -43,9 +43,8 @@ namespace Venom {
   }
 
   public enum UserStatus {
-    ONLINE,
+    NONE,
     AWAY,
-    BUSY,
-    OFFLINE
+    BUSY
   }
 }

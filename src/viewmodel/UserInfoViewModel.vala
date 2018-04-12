@@ -36,18 +36,18 @@ namespace Venom {
       this.logger = logger;
       this.user_info = user_info;
 
-      username = user_info.get_name();
-      statusmessage = user_info.get_status_message();
-      userimage = user_info.get_image();
-      tox_id = user_info.get_tox_id();
+      username = user_info.name;
+      statusmessage = user_info.status_message;
+      userimage = user_info.image;
+      tox_id = user_info.tox_id;
       filename = "";
     }
 
     public void on_apply_clicked() {
       logger.d("on_apply_clicked.");
-      user_info.set_name(username);
-      user_info.set_status_message(statusmessage);
-      user_info.set_image(userimage);
+      user_info.name = username;
+      user_info.status_message = statusmessage;
+      user_info.image = userimage;
       user_info.info_changed(this);
     }
 

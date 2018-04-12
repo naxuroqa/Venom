@@ -55,21 +55,21 @@ namespace Venom {
 
       if (contact_requires_attention) {
         contact_status_image = "mail-unread-symbolic";
-      } else {
+      } else if (contact.is_connected()) {
         contact_status_image = icon_name_from_status(contact.get_status());
+      } else {
+        contact_status_image = R.icons.offline;
       }
     }
 
     private string icon_name_from_status(UserStatus status) {
       switch (status) {
-        case UserStatus.ONLINE:
-          return R.icons.online;
         case UserStatus.AWAY:
           return R.icons.idle;
         case UserStatus.BUSY:
           return R.icons.busy;
         default:
-          return R.icons.offline;
+          return R.icons.online;
       }
     }
 

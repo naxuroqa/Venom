@@ -23,18 +23,18 @@ namespace Venom {
   public class Contact : IContact, GLib.Object {
     // Saved in toxs savefile
     public string      tox_id          { get; set; }
-    public uint32      tox_friend_number {get; set;}
+    public uint32      tox_friend_number { get; set; }
     public string      name            { get; set; default = ""; }
     public string      status_message  { get; set; default = ""; }
     public DateTime    last_seen       { get; set; default = new DateTime.now_local(); }
-    public UserStatus  user_status     { get; set; default = UserStatus.OFFLINE; }
+    public UserStatus  user_status     { get; set; default = UserStatus.NONE; }
     // Saved in venoms savefile
     public string      note            { get; set; default = ""; }
     public string      alias           { get; set; default = ""; }
     public bool        is_blocked      { get; set; default = false; }
     public string      group           { get; set; default = ""; }
     // Not saved
-    public bool        online          { get; set; default = false; }
+    public bool        connected       { get; set; default = false; }
     public Gdk.Pixbuf ? tox_image      { get; set; default = null; }
     public int         unread_messages { get; set; default = 0; }
     public bool        is_typing       { get; set; default = false; }
@@ -58,6 +58,10 @@ namespace Venom {
 
     public UserStatus get_status() {
       return user_status;
+    }
+
+    public bool is_connected() {
+      return connected;
     }
 
     public Gdk.Pixbuf get_image() {

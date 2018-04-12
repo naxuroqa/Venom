@@ -32,8 +32,6 @@ namespace Venom {
       { "show_user",    on_show_user, null, null, null }
     };
 
-    UserStatus user_status = UserStatus.OFFLINE;
-
     [GtkChild]
     private Gtk.Box contact_list_box;
 
@@ -55,7 +53,7 @@ namespace Venom {
     private ToxAdapterFriendListenerImpl friend_listener;
     private ToxAdapterConferenceListenerImpl conference_listener;
     private ToxAdapterFiletransferListenerImpl filetransfer_listener;
-    private ToxAdapterListenerImpl session_listener;
+    private ToxAdapterSelfListenerImpl session_listener;
     private ObservableList contacts;
     private ObservableList transfers;
     private NotificationListener notification_listener;
@@ -86,7 +84,7 @@ namespace Venom {
       notification_listener = new NotificationListenerImpl(logger);
       notification_listener.clear_notifications();
 
-      session_listener = new ToxAdapterListenerImpl(logger, user_info);
+      session_listener = new ToxAdapterSelfListenerImpl(logger, user_info);
       friend_listener = new ToxAdapterFriendListenerImpl(logger, contacts, conversations, notification_listener);
       conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conversations, notification_listener);
       filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, notification_listener);
@@ -147,7 +145,6 @@ namespace Venom {
       settings_database.bind_property("enable-dark-theme", gtk_settings, "gtk-application-prefer-dark-theme", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings_database.bind_property("enable-animations", gtk_settings, "gtk-enable-animations", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
-      //status_label.label = get_header_for_status(user_status);
       set_default_icon_name(R.icons.app);
       var icon_theme = Gtk.IconTheme.get_default();
       try {
@@ -236,7 +233,7 @@ namespace Venom {
     private void on_copy_id() {
       logger.d("on_copy_id()");
       var clipboard = Gtk.Clipboard.@get(Gdk.SELECTION_CLIPBOARD);
-      var id = user_info.get_tox_id();
+      var id = user_info.tox_id;
       clipboard.set_text(id, id.length);
     }
 
