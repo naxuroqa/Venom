@@ -59,6 +59,13 @@ namespace Venom {
       return applicationWindow;
     }
 
+    private static void create_path_for_filename(string filename) throws Error {
+      var path = GLib.File.new_for_path(GLib.Path.get_dirname(filename));
+      if (!path.query_exists()) {
+        path.make_directory_with_parents();
+      }
+    }
+
     protected override void startup() {
       base.startup();
 
@@ -68,7 +75,9 @@ namespace Venom {
       database_factory = widget_factory.createDatabaseFactory();
 
       try {
-        database = database_factory.createDatabase(R.constants.db_filename());
+        var db_file = R.constants.db_filename();
+        create_path_for_filename(db_file);
+        database = database_factory.createDatabase(db_file);
         var statementFactory = database_factory.createStatementFactory(database);
         nodeDatabase = database_factory.createNodeDatabase(statementFactory, logger);
         contact_database = database_factory.createContactDatabase(statementFactory, logger);
