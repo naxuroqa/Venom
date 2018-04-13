@@ -93,6 +93,7 @@ namespace Venom {
     public abstract void on_friend_connection_status_changed(uint32 friend_number, bool connected);
     public abstract void on_friend_name_changed(uint32 friend_number, string name);
     public abstract void on_friend_status_message_changed(uint32 friend_number, string message);
+    public abstract void on_friend_typing_status_changed(uint32 friend_number, bool is_typing);
 
     public abstract void on_friend_request(uint8[] public_key, string message);
     public abstract void on_friend_added(uint32 friend_number, uint8[] public_key);
@@ -202,6 +203,7 @@ namespace Venom {
       handle.callback_friend_status(on_friend_status_cb);
       handle.callback_friend_read_receipt(on_friend_read_receipt_cb);
       handle.callback_friend_request(on_friend_request_cb);
+      handle.callback_friend_typing(on_friend_typing_cb);
 
       handle.callback_conference_title(on_conference_title_cb);
       handle.callback_conference_invite(on_conference_invite_cb);
@@ -393,6 +395,12 @@ namespace Venom {
       session.logger.d("on_friend_status_cb");
       var user_status = from_user_status(status);
       Idle.add(() => { session.friend_listener.on_friend_status_changed(friend_number, user_status); return false; });
+    }
+
+    private static void on_friend_typing_cb(Tox self, uint32 friend_number, bool is_typing, void* user_data) {
+      var session = (ToxSessionImpl) user_data;
+      session.logger.d("on_friend_typing_cb");
+      Idle.add(() => { session.friend_listener.on_friend_typing_status_changed(friend_number, is_typing); return false; });
     }
 
     private static void on_friend_read_receipt_cb(Tox self, uint32 friend_number, uint32 message_id, void* user_data) {

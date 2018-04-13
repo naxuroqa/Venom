@@ -322,4 +322,20 @@
       </packing>
     </child>
   </template>
+  <object class="GtkRevealer" id="typing_revealer">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="halign">end</property>
+    <property name="valign">end</property>
+    <property name="border_width">6</property>
+    <property name="transition_type">slide-up</property>
+    <property name="reveal_child">True</property>
+    <child>
+      <object class="GtkLabel" id="typing_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label">typing_label</property>
+      </object>
+    </child>
+  </object>
 </interface>

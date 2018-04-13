@@ -37,7 +37,7 @@ namespace Venom {
     public bool        connected       { get; set; default = false; }
     public Gdk.Pixbuf ? tox_image      { get; set; default = null; }
     public int         unread_messages { get; set; default = 0; }
-    public bool        is_typing       { get; set; default = false; }
+    public bool        _is_typing      { get; set; default = false; }
 
     public Contact(uint32 friend_number, string id) {
       tox_friend_number = friend_number;
@@ -62,6 +62,10 @@ namespace Venom {
 
     public bool is_connected() {
       return connected;
+    }
+
+    public bool is_typing() {
+      return _is_typing;
     }
 
     public Gdk.Pixbuf get_image() {
