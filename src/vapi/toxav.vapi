@@ -357,6 +357,15 @@ namespace ToxAV {
                                                  int32 ustride,
                                                  int32 vstride);
 
+  [CCode(cname = "toxav_audio_receive_frame_cb")]
+  public delegate void GroupchatAudioReceiveFrameCallback(ToxCore.Tox self,
+                                                          uint32 group_number,
+                                                          uint32 peer_number,
+                                                          [CCode(array_length = false)] int16[] pcm,
+                                                          uint samples,
+                                                          uint8 channels,
+                                                          uint32 sampling_rate);
+
   /**
    * The ToxAV instance type. Each ToxAV instance can be bound to only one Tox
    * instance, and Tox instance can have only one ToxAV instance. One must make
@@ -541,5 +550,46 @@ namespace ToxAV {
      *
      */
     public void callback_video_receive_frame(VideoReceiveFrameCallback callback);
+
+    /**
+     * Create a new toxav group.
+     *
+     * Audio data callback format:
+     * audio_callback(Tox *tox, uint32_t groupnumber, uint32_t peernumber, const int16_t *pcm, unsigned int samples, uint8_t channels, uint32_t sample_rate, void *userdata)
+     *
+     * Note that total size of pcm in bytes is equal to (samples * channels * sizeof(int16_t)).
+     * @return group number on success.
+     * @return -1 on failure.
+     */
+    public static int add_av_groupchat(ToxCore.Tox tox, GroupchatAudioReceiveFrameCallback callback);
+
+    /**
+     * Join a AV group (you need to have been invited first.)
+     *
+     * Audio data callback format (same as the one for toxav_add_av_groupchat()):
+     * audio_callback(Tox *tox, uint32_t groupnumber, uint32_t peernumber, const int16_t *pcm, unsigned int samples, uint8_t channels, uint32_t sample_rate, void *userdata)
+     *
+     * Note that total size of pcm in bytes is equal to (samples * channels * sizeof(int16_t)).
+     *
+     * @return group number on success
+     * @return -1 on failure.
+     */
+    public static int join_av_groupchat(ToxCore.Tox tox, uint32 friend_number, uint8[] data, GroupchatAudioReceiveFrameCallback callback);
+
+    /**
+     * Send audio to the group chat.
+     * Note that total size of pcm in bytes is equal to (samples * channels * sizeof(int16_t)).
+     *
+     * Valid number of samples are ((sample rate) * (audio length (Valid ones are: 2.5, 5, 10, 20, 40 or 60 ms)) / 1000)
+     * Valid number of channels are 1 or 2.
+     * Valid sample rates are 8000, 12000, 16000, 24000, or 48000.
+     *
+     * Recommended values are: samples = 960, channels = 1, sample_rate = 48000
+     *
+     * @return 0 on success.
+     * @return -1 on failure.
+     *
+     */
+    public static int group_send_audio(ToxCore.Tox tox, uint32 group_number, [CCode(array_length = false)] int16[] pcm, uint samples, uint8 channels, uint32 sample_rate);
   }
 }
