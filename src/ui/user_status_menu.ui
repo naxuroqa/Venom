@@ -1,0 +1,24 @@
+<interface>
+  <menu id="menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Online</attribute>
+        <attribute name="action">win.change_userstatus</attribute>
+        <attribute name="target">online</attribute>
+        <attribute name="icon">online-symbolic</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Away</attribute>
+        <attribute name="action">win.change_userstatus</attribute>
+        <attribute name="target">away</attribute>
+        <attribute name="icon">idle-symbolic</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Busy</attribute>
+        <attribute name="action">win.change_userstatus</attribute>
+        <attribute name="target">busy</attribute>
+        <attribute name="icon">busy-symbolic</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

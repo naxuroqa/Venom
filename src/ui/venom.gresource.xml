@@ -20,6 +20,7 @@
     <file compressed="true" preprocess="xml-stripblanks">peer_entry.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">settings_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">user_info_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">user_status_menu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">welcome_widget.ui</file>
   </gresource>
   <gresource prefix="/im/tox/venom/css">

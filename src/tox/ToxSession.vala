@@ -52,6 +52,7 @@ namespace Venom {
     public abstract void self_set_user_name(string name);
     public abstract void self_set_status_message(string status);
     public abstract void self_set_typing(uint32 friend_number, bool typing) throws ToxError;
+    public abstract void self_set_user_status(UserStatus status);
 
     public abstract string self_get_name();
     public abstract string self_get_status_message();
@@ -555,6 +556,20 @@ namespace Venom {
       var e = ErrSetInfo.OK;
       if (!handle.self_set_status_message(status, out e)) {
         logger.e("set_user_status failed: " + e.to_string());
+      }
+    }
+
+    public void self_set_user_status(UserStatus status) {
+      switch(status) {
+        case UserStatus.AWAY:
+          handle.self_status = ToxCore.UserStatus.AWAY;
+          break;
+        case UserStatus.BUSY:
+          handle.self_status = ToxCore.UserStatus.BUSY;
+          break;
+        default:
+          handle.self_status = ToxCore.UserStatus.NONE;
+          break;
       }
     }
 
