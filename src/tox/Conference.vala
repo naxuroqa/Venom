@@ -35,7 +35,7 @@ namespace Venom {
     }
 
     public string get_id() {
-      return conference_number.to_string();
+      return "";
     }
 
     public string get_name_string() {

@@ -27,6 +27,9 @@ namespace Venom {
     public string last_seen { get; set; }
     public string alias { get; set; }
     public string tox_id { get; set; }
+    public bool auto_conference { get; set; }
+    public bool auto_filetransfer { get; set; }
+
     public signal void leave_view();
 
     private ILogger logger;
@@ -40,6 +43,8 @@ namespace Venom {
       this.listener = listener;
 
       alias = contact.alias;
+      auto_conference = contact.auto_conference;
+      auto_filetransfer = contact.auto_filetransfer;
       set_info();
       contact.changed.connect(set_info);
     }
@@ -58,6 +63,8 @@ namespace Venom {
     public void on_apply_clicked() {
       logger.d("on_apply_clicked.");
       contact.alias = alias;
+      contact.auto_conference = auto_conference;
+      contact.auto_filetransfer = auto_filetransfer;
       contact.changed();
     }
 

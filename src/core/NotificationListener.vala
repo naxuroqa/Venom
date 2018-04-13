@@ -22,13 +22,15 @@ namespace Venom {
   public interface NotificationListener : GLib.Object {
     public abstract bool show_notifications { get; set; }
     public abstract void on_unread_message(IMessage message);
+    public abstract void on_filetransfer(FileTransfer transfer, IContact contact);
     public abstract void clear_notifications();
   }
 
   public class NotificationListenerImpl : NotificationListener, GLib.Object {
     public bool show_notifications { get; set; }
     private ILogger logger;
-    private static string id = "new-message";
+    private static string message_id = "new-message";
+    private static string transfer_id = "new-transfer";
 
     public NotificationListenerImpl(ILogger logger) {
       this.logger = logger;
@@ -53,7 +55,29 @@ namespace Venom {
       var notification = new Notification(_("New message from %s").printf(message.get_sender_plain()));
       notification.set_body(message.get_message_plain());
       notification.set_icon(message.get_sender_image());
-      app.send_notification(id, notification);
+      notification.set_default_action_and_target_value("app.show-contact", new GLib.Variant.string(message.get_sender_id()));
+      app.send_notification(message_id, notification);
+    }
+
+    public virtual void on_filetransfer(FileTransfer transfer, IContact contact) {
+      logger.d("on_filetransfer");
+      if (!show_notifications) {
+        return;
+      }
+
+      var app = GLib.Application.get_default() as Gtk.Application;
+      if (app == null) {
+        return;
+      }
+
+      var file_name = transfer.get_file_name();
+      var file_size = GLib.format_size(transfer.get_file_size());
+
+      var notification = new Notification(_("New file from %s").printf(contact.get_name_string()));
+      notification.set_body("%s (%s)".printf(file_name, file_size));
+      notification.set_icon(contact.get_image());
+      notification.set_default_action("app.show-filetransfers");
+      app.send_notification(transfer_id, notification);
     }
 
     public void clear_notifications() {
@@ -62,7 +86,7 @@ namespace Venom {
         return;
       }
 
-      app.withdraw_notification(id);
+      app.withdraw_notification(message_id);
     }
   }
 }

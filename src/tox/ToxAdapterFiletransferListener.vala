@@ -174,15 +174,38 @@ namespace Venom {
       }
     }
 
+    private GLib.File create_auto_file(string filename) throws Error {
+      if (filename.length < 1 || filename == ".") {
+        filename = "file";
+      }
+      var index = filename.index_of(".", 1);
+      var start = filename.substring(0, index);
+      var end = index > 0 ? filename.substring(index) : "";
+
+      for(var i = 0;; i++) {
+        var name = GLib.Path.build_filename(R.constants.downloads_dir, start + (i == 0 ? "" : @"_$i") + end);
+        var file = File.new_for_path(name);
+        if (!file.query_exists()) {
+          return file;
+        }
+      }
+    }
+
     public virtual void on_file_recv_data(uint32 friend_number, uint32 file_number, uint64 file_size, string filename) {
       logger.d("on_file_recv_data");
 
-      var contact = friends.@get(friend_number);
+      var contact = friends.@get(friend_number) as Contact;
       var name = contact.get_name_string();
       try {
         var transfer = new FileTransferImpl.File(FileTransferDirection.INCOMING, friend_number, file_number, file_size, filename);
         set_file_transfer(friend_number, file_number, transfer);
         transfers.append(transfer);
+        notification_listener.on_filetransfer(transfer, contact);
+
+        if (contact.auto_filetransfer) {
+          transfer.init_file(create_auto_file(filename));
+          start_transfer(transfer);
+        }
 
       } catch (Error e) {
         logger.e("file_control failed: " + e.message);

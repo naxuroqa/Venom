@@ -28,6 +28,8 @@ namespace Venom {
     [GtkChild] private Gtk.Label last_seen;
     [GtkChild] private Gtk.Entry alias;
     [GtkChild] private Gtk.Label tox_id;
+    [GtkChild] private Gtk.Switch auto_conference;
+    [GtkChild] private Gtk.Switch auto_filetransfer;
     [GtkChild] private Gtk.Button remove;
     [GtkChild] private Gtk.Button apply;
 
@@ -51,6 +53,8 @@ namespace Venom {
       view_model.bind_property("userimage", userimage, "pixbuf", BindingFlags.SYNC_CREATE);
       view_model.bind_property("last_seen", last_seen, "label", BindingFlags.SYNC_CREATE);
       view_model.bind_property("alias", alias, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      view_model.bind_property("auto_conference", auto_conference, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      view_model.bind_property("auto_filetransfer", auto_filetransfer, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       view_model.bind_property("tox_id", tox_id, "label", BindingFlags.SYNC_CREATE);
     }
 

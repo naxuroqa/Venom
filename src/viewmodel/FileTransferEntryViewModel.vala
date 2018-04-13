@@ -82,7 +82,7 @@ namespace Venom {
     public void on_resume_transfer() {
       if (file_transfer.get_direction() == FileTransferDirection.INCOMING
           && file_transfer.get_state() == FileTransferState.INIT) {
-        open_save_file_dialog(".", file_transfer.get_file_name());
+        open_save_file_dialog(R.constants.downloads_dir, file_transfer.get_file_name());
       } else {
         listener.start_transfer(file_transfer);
       }

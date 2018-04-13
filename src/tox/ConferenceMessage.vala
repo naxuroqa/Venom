@@ -57,6 +57,10 @@ namespace Venom {
       }
     }
 
+    public string get_sender_id() {
+      return "";
+    }
+
     public string get_message_plain() {
       return message;
     }
