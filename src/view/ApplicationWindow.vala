@@ -25,11 +25,12 @@ namespace Venom {
 
     private const GLib.ActionEntry win_entries[] =
     {
-      { "add_contact",  on_add_contact, null, null, null },
-      { "copy_id",      on_copy_id, null, null, null },
-      { "filetransfer", on_filetransfer, null, null, null },
-      { "groupchats",   on_create_groupchat, null, null, null },
-      { "show_user",    on_show_user, null, null, null }
+      { "add_contact",  on_add_contact },
+      { "copy_id",      on_copy_id },
+      { "filetransfer", on_filetransfer },
+      { "groupchats",   on_create_groupchat },
+      { "show_user",    on_show_user },
+      { "change_userstatus", on_change_userstatus, "s", "'online'" }
     };
 
     [GtkChild]
@@ -220,6 +221,23 @@ namespace Venom {
 
     public void on_show_conference(IContact contact) {
       switch_content_with(() => { return new ConferenceInfoWidget(logger, this, conference_listener, contact); });
+    }
+
+    private void on_change_userstatus(GLib.SimpleAction action, GLib.Variant? parameter) {
+      logger.d("on_change_userstatus()");
+      var status = parameter.get_string();
+      switch (status) {
+        case "online":
+          session_listener.self_set_user_status(UserStatus.NONE);
+          break;
+        case "away":
+          session_listener.self_set_user_status(UserStatus.AWAY);
+          break;
+        case "busy":
+          session_listener.self_set_user_status(UserStatus.BUSY);
+          break;
+      }
+      action.set_state(status);
     }
 
     private void on_add_contact() {

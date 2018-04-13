@@ -61,18 +61,15 @@ namespace Venom {
       session.self_set_status_message(user_info.status_message);
     }
 
-    public virtual void on_self_connection_status_changed(bool is_connected) {
+    public void on_self_connection_status_changed(bool is_connected) {
       user_info.is_connected = is_connected;
       user_info.info_changed(this);
     }
 
-    private void set_self_status(UserStatus status) {
+    public void self_set_user_status(UserStatus status) {
+      session.self_set_user_status(status);
       user_info.user_status = status;
       user_info.info_changed(this);
     }
-  }
-
-  public errordomain LookupError {
-    GENERIC
   }
 }

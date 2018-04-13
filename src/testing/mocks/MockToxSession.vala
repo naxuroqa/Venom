@@ -57,6 +57,12 @@ namespace Mock {
                      .create();
       mock().actual_call(this, "self_set_user_name", args);
     }
+    public void self_set_user_status(UserStatus status) {
+      var args = Arguments.builder()
+                     .int(status)
+                     .create();
+      mock().actual_call(this, "self_set_user_status", args);
+    }
     public void self_set_status_message(string status) {
       var args = Arguments.builder()
                      .string(status)

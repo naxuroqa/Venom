@@ -32,6 +32,7 @@ namespace Venom {
     [GtkChild] private Gtk.Image userimage;
     [GtkChild] private Gtk.ListBox contact_list;
     [GtkChild] private Gtk.Image image_status;
+    [GtkChild] private Gtk.MenuButton user_status_menu;
 
     public ContactListWidget(ILogger logger, ObservableList contacts, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListWidget created.");
@@ -39,6 +40,18 @@ namespace Venom {
       this.callback = callback;
       this.user_info = user_info;
       this.view_model = new ContactListViewModel(logger, contacts, callback, user_info);
+
+      try {
+        var builder = new Gtk.Builder.from_resource("/im/tox/venom/ui/user_status_menu.ui");
+        var menu_model = builder.get_object("menu") as GLib.MenuModel;
+        user_status_menu.set_menu_model(menu_model);
+
+      } catch (Error e) {
+        logger.f("Loading user status menu failed: " + e.message);
+        assert_not_reached();
+      }
+
+      user_status_menu.set_image(image_status);
 
       view_model.bind_property("username", username, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("statusmessage", statusmessage, "label", GLib.BindingFlags.SYNC_CREATE);
