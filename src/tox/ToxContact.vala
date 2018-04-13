@@ -33,6 +33,8 @@ namespace Venom {
     public string      alias           { get; set; default = ""; }
     public bool        is_blocked      { get; set; default = false; }
     public string      group           { get; set; default = ""; }
+    public bool        auto_conference { get; set; default = false; }
+    public bool        auto_filetransfer { get; set; default = false; }
     // Not saved
     public bool        connected       { get; set; default = false; }
     public Gdk.Pixbuf ? tox_image      { get; set; default = null; }

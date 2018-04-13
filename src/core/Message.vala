@@ -35,6 +35,7 @@ namespace Venom {
     public abstract bool received                      { get; set; }
 
     public abstract string get_sender_plain();
+    public abstract string get_sender_id();
     public abstract string get_message_plain();
     public abstract string get_time_plain();
 
@@ -70,7 +71,7 @@ namespace Venom {
       this.timestamp = timestamp;
     }
 
-    public virtual string get_sender_plain() {
+    public string get_sender_plain() {
       if (from == null) {
         return _("me");
       } else {
@@ -78,11 +79,17 @@ namespace Venom {
       }
     }
 
-    public virtual string get_message_plain() {
+    public string get_sender_id() {
+      if (from == null)
+        return null;
+      return from.get_id();
+    }
+
+    public string get_message_plain() {
       return message;
     }
 
-    public virtual string get_time_plain() {
+    public string get_time_plain() {
       return timestamp.format("%c");
     }
 

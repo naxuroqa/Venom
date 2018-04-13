@@ -73,6 +73,7 @@ namespace Venom {
 
     public sealed class ConstantsResource {
       public string user_config_dir { get; set; default = GLib.Environment.get_user_config_dir(); }
+      public string downloads_dir { get; set; default = GLib.Environment.get_user_special_dir(GLib.UserDirectory.DOWNLOAD); }
       public string profile_name { get; set; default = "tox"; }
       public string avatars_folder() { return GLib.Path.build_filename(user_config_dir, "avatars"); }
       public string db_filename() { return GLib.Path.build_filename(user_config_dir, "tox", profile_name + ".db"); }

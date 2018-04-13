@@ -24,13 +24,20 @@ using Venom;
 namespace Mock {
   public class MockNotificationListener : NotificationListener, GLib.Object {
     public bool show_notifications { get; set; }
-    public void on_unread_message(Venom.IMessage message) {
+    public void on_unread_message(IMessage message) {
       var args = Arguments.builder()
                      .object(message)
                      .create();
       mock().actual_call(this, "on_unread_message", args);
     }
 
+    public void on_filetransfer(FileTransfer transfer, IContact contact) {
+      var args = Arguments.builder()
+                     .object(transfer)
+                     .object(contact)
+                     .create();
+      mock().actual_call(this, "on_filetransfer", args);
+    }
 
     public void clear_notifications() {
       mock().actual_call(this, "clear_notifications");

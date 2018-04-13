@@ -211,7 +211,7 @@ namespace Venom {
       switch_content_with(() => { return new CreateGroupchatWidget(logger, conference_listener); });
     }
 
-    private void on_filetransfer() {
+    public void on_filetransfer() {
       switch_content_with(() => { return new FileTransferWidget(logger, transfers, filetransfer_listener); });
     }
 
@@ -221,6 +221,18 @@ namespace Venom {
 
     public void on_show_conference(IContact contact) {
       switch_content_with(() => { return new ConferenceInfoWidget(logger, this, conference_listener, contact); });
+    }
+
+    public void on_show_contact(string contact_id) {
+      logger.d(@"on_show_contact($contact_id)");
+      for (var i = 0; i < contacts.length(); i++) {
+        var c = contacts.nth_data(i) as IContact;
+        if (c.get_id() == contact_id) {
+          on_contact_selected(c);
+          return;
+        }
+      }
+      logger.i(@"Friend with id $contact_id not found.");
     }
 
     private void on_change_userstatus(GLib.SimpleAction action, GLib.Variant? parameter) {

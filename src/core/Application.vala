@@ -21,9 +21,11 @@
 namespace Venom {
   public class Application : Gtk.Application {
     private const GLib.ActionEntry app_entries[] = {
-      { "preferences", on_preferences, null, null, null },
-      { "about", on_about, null, null, null },
-      { "quit", on_quit, null, null, null }
+      { "preferences", on_show_preferences, null, null, null },
+      { "about", on_show_about, null, null, null },
+      { "quit", on_quit, null, null, null },
+      { "show-filetransfers", on_show_filetransfers, null, null, null },
+      { "show-contact", on_show_contact, "s", null, null }
     };
 
     private const OptionEntry[] option_entries = {
@@ -121,15 +123,30 @@ namespace Venom {
       logger.f("not implemented.");
     }
 
-    private void on_preferences() {
+    private void on_show_preferences() {
       getApplicationWindow().show_settings();
     }
 
-    public void on_about() {
+    public void on_show_about() {
       var about_dialog = widget_factory.createAboutDialog();
       about_dialog.transient_for = getApplicationWindow();
       about_dialog.run();
       about_dialog.destroy();
+    }
+
+    public void on_show_contact(GLib.SimpleAction action, GLib.Variant? parameter) {
+      logger.i("on_show_contact");
+      activate();
+      if (parameter == null || parameter.get_string() == "") {
+        return;
+      }
+      getApplicationWindow().on_show_contact(parameter.get_string());
+    }
+
+    public void on_show_filetransfers() {
+      logger.i("on_show_filetransfers");
+      activate();
+      getApplicationWindow().on_filetransfer();
     }
 
     private void on_quit() {
