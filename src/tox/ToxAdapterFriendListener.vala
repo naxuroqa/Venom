@@ -168,6 +168,13 @@ namespace Venom {
       contact.changed();
     }
 
+    public virtual void on_friend_typing_status_changed(uint32 friend_number, bool is_typing) {
+      logger.d("on_friend_typing_status_changed");
+      var contact = friends.@get(friend_number) as Contact;
+      contact._is_typing = is_typing;
+      contact.changed();
+    }
+
     public virtual void on_friend_added(uint32 friend_number, uint8[] public_key) {
       logger.d("on_friend_added");
       var str_id = Tools.bin_to_hexstring(public_key);

@@ -28,6 +28,7 @@ namespace Venom {
     public abstract string get_status_string();
     public abstract UserStatus get_status();
     public abstract bool is_connected();
+    public abstract bool is_typing();
     public abstract Gdk.Pixbuf get_image();
     public abstract bool get_requires_attention();
     public abstract void clear_attention();

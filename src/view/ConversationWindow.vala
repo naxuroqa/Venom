@@ -28,6 +28,9 @@ namespace Venom {
     [GtkChild] private Gtk.TextView text_view;
     [GtkChild] private Gtk.ListBox message_list;
     [GtkChild] private Gtk.ScrolledWindow scrolled_window;
+    [GtkChild] private Gtk.Revealer typing_revealer;
+    [GtkChild] private Gtk.Label typing_label;
+    [GtkChild] private Gtk.Overlay overlay;
 
     private const GLib.ActionEntry win_entries[] =
     {
@@ -59,6 +62,8 @@ namespace Venom {
       this.listener = listener;
       this.filetransfer_listener = filetransfer_listener;
 
+      overlay.add_overlay(typing_revealer);
+
       contact.changed.connect(update_widgets);
       update_widgets();
 
@@ -89,6 +94,8 @@ namespace Venom {
       if (pixbuf != null) {
         user_image.pixbuf = pixbuf.scale_simple(48, 48, Gdk.InterpType.BILINEAR);
       }
+      typing_label.label = _("%s is typing...").printf(contact.get_name_string());
+      typing_revealer.reveal_child = contact.is_typing();
     }
 
     private bool focus_in_event() {
