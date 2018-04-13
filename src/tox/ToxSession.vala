@@ -128,6 +128,7 @@ namespace Venom {
 
   public class ToxSessionImpl : GLib.Object, ToxSession {
     public Tox handle;
+    public ToxAV.ToxAV handle_av;
     private Mutex mutex;
 
     private IDhtNodeDatabase dht_node_database;
@@ -185,6 +186,14 @@ namespace Venom {
         throw new ToxError.GENERIC(message);
       }
 
+      var error_av = ToxAV.ErrNew.OK;
+      handle_av = new ToxAV.ToxAV(handle, out error_av);
+      if (error_av != ToxAV.ErrNew.OK) {
+        var message = "Could not create toxav instance: " + error_av.to_string();
+        logger.f(message);
+        throw new ToxError.GENERIC(message);
+      }
+
       handle.callback_self_connection_status(on_self_connection_status_cb);
       handle.callback_friend_connection_status(on_friend_connection_status_cb);
       handle.callback_friend_message(on_friend_message_cb);
@@ -217,6 +226,8 @@ namespace Venom {
       sessionThread.stop();
       logger.i("ToxSession saving session data.");
       iohandler.save_sessiondata(handle.get_savedata());
+      handle = null;
+      handle_av = null;
       logger.d("ToxSession destroyed.");
     }
 
@@ -401,14 +412,29 @@ namespace Venom {
 
     private static void on_conference_invite_cb(Tox self, uint32 friend_number, ConferenceType type, uint8[] cookie, void *user_data) {
       var session = (ToxSessionImpl) user_data;
-      session.logger.d("on_conference_message_cb");
-      var err = ErrConferenceJoin.OK;
-      var conference_number = self.conference_join(friend_number, cookie, out err);
-      if (err != ErrConferenceJoin.OK) {
-        session.logger.e("Conference join failed: " + err.to_string());
-        return;
+      session.logger.d("on_conference_invite_cb type:" + type.to_string());
+      if (type == ConferenceType.TEXT) {
+        var err = ErrConferenceJoin.OK;
+        var conference_number = self.conference_join(friend_number, cookie, out err);
+        if (err != ErrConferenceJoin.OK) {
+          session.logger.e("Conference join failed: " + err.to_string());
+          return;
+        }
+        Idle.add(() => { session.conference_listener.on_conference_new(conference_number, ""); return false; });
+      } else if (type == ConferenceType.AV) {
+        var conference_number = ToxAV.ToxAV.join_av_groupchat(self, friend_number, cookie, session.on_av_conference_audio_frame);
+        if (conference_number < 0) {
+          session.logger.e(@"Conference AV join failed: $conference_number");
+          return;
+        }
+        Idle.add(() => { session.conference_listener.on_conference_new(conference_number, ""); return false; });
+      } else {
+        session.logger.e("Conference join failed: Invalid Conference Type");
       }
-      Idle.add(() => { session.conference_listener.on_conference_new(conference_number, ""); return false; });
+    }
+
+    private void on_av_conference_audio_frame() {
+
     }
 
     private static void on_conference_message_cb(Tox self, uint32 conference_number, uint32 peer_number, MessageType type, uint8[] message, void *user_data) {
@@ -513,7 +539,7 @@ namespace Venom {
     }
 
     private static Venom.UserStatus from_user_status(ToxCore.UserStatus user_status) {
-      switch(user_status) {
+      switch (user_status) {
         case ToxCore.UserStatus.NONE:
           return Venom.UserStatus.NONE;
         case ToxCore.UserStatus.AWAY:
@@ -560,7 +586,7 @@ namespace Venom {
     }
 
     public void self_set_user_status(UserStatus status) {
-      switch(status) {
+      switch (status) {
         case UserStatus.AWAY:
           handle.self_status = ToxCore.UserStatus.AWAY;
           break;
