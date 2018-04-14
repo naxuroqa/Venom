@@ -174,7 +174,14 @@ namespace Venom {
       }
     }
 
-    private GLib.File create_auto_file(string filename) throws Error {
+    private string create_auto_path(string auto_location) {
+      if (auto_location != "" && GLib.File.new_for_path(auto_location).query_exists()) {
+        return auto_location;
+      }
+      return R.constants.downloads_dir;
+    }
+
+    private GLib.File create_auto_file(string path, string filename) throws Error {
       if (filename.length < 1 || filename == ".") {
         filename = "file";
       }
@@ -183,7 +190,7 @@ namespace Venom {
       var end = index > 0 ? filename.substring(index) : "";
 
       for(var i = 0;; i++) {
-        var name = GLib.Path.build_filename(R.constants.downloads_dir, start + (i == 0 ? "" : @"_$i") + end);
+        var name = GLib.Path.build_filename(path, start + (i == 0 ? "" : @"_$i") + end);
         var file = File.new_for_path(name);
         if (!file.query_exists()) {
           return file;
@@ -203,7 +210,8 @@ namespace Venom {
         notification_listener.on_filetransfer(transfer, contact);
 
         if (contact.auto_filetransfer) {
-          transfer.init_file(create_auto_file(filename));
+          var path = create_auto_path(contact.auto_location);
+          transfer.init_file(create_auto_file(path, filename));
           start_transfer(transfer);
         }
 

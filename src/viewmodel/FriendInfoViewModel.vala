@@ -29,6 +29,7 @@ namespace Venom {
     public string tox_id { get; set; }
     public bool auto_conference { get; set; }
     public bool auto_filetransfer { get; set; }
+    public string location { get; set; }
 
     public signal void leave_view();
 
@@ -42,22 +43,32 @@ namespace Venom {
       this.contact = contact;
       this.listener = listener;
 
-      alias = contact.alias;
-      auto_conference = contact.auto_conference;
-      auto_filetransfer = contact.auto_filetransfer;
       set_info();
       contact.changed.connect(set_info);
+    }
+
+    private bool file_exists(string file) {
+      return file != "" && GLib.File.new_for_path(file).query_exists();
+    }
+
+    private bool file_equals_default(string file) {
+      return GLib.File.new_for_path(file).equal(File.new_for_path(R.constants.downloads_dir));
     }
 
     private void set_info() {
       username = contact.name;
       statusmessage = contact.status_message;
+      alias = contact.alias;
       last_seen = contact.last_seen.format("%c");
       tox_id = contact.get_id();
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
         userimage = pixbuf.scale_simple(96, 96, Gdk.InterpType.BILINEAR);
       }
+      auto_conference = contact.auto_conference;
+      auto_filetransfer = contact.auto_filetransfer;
+      var location_exists = file_exists(contact.auto_location);
+      location = location_exists ? contact.auto_location : R.constants.downloads_dir;
     }
 
     public void on_apply_clicked() {
@@ -65,6 +76,11 @@ namespace Venom {
       contact.alias = alias;
       contact.auto_conference = auto_conference;
       contact.auto_filetransfer = auto_filetransfer;
+      if (auto_filetransfer && file_exists(location) && !file_equals_default(location)) {
+        contact.auto_location = location;
+      } else {
+        contact.auto_location = "";
+      }
       contact.changed();
     }
 

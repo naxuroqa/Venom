@@ -58,10 +58,11 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="additional_info">
+                  <object class="GtkRevealer" id="additional_info">
+                    <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="no_show_all">True</property>
-                    <property name="spacing">6</property>
+                    <property name="transition_type">slide-right</property>
+                    <property name="transition_duration">125</property>
                     <child>
                       <object class="GtkLabel" id="timestamp">
                         <property name="visible">True</property>
@@ -71,17 +72,12 @@
                           <class name="dim-label"/>
                         </style>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
