@@ -71,6 +71,7 @@ venom_source = files(
 			'view/ContactListEntry.vala',
 			'view/ContactListRequestEntry.vala',
 			'view/ContactListWidget.vala',
+			'view/ContextStyleBinding.vala',
 			'view/ConversationWindow.vala',
 			'view/CreateGroupchatWidget.vala',
 			'view/FileTransferEntry.vala',

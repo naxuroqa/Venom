@@ -33,26 +33,19 @@ namespace Venom {
 
     private ILogger logger;
     private ContactListEntryViewModel view_model;
+    private ContextStyleBinding attention_binding;
 
     public ContactListEntry(ILogger logger, IContact contact) {
       logger.d("ContactListEntry created.");
       this.logger = logger;
       this.view_model = new ContactListEntryViewModel(logger, contact);
+      this.attention_binding = new ContextStyleBinding(status_image, "highlight");
 
       view_model.bind_property("contact-name", contact_name, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("contact-status", contact_status, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("contact-image", contact_image, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("contact-status-image", status_image, "icon-name", GLib.BindingFlags.SYNC_CREATE);
-      view_model.notify["contact-requires-attention"].connect(refresh_attention);
-    }
-
-    private void refresh_attention() {
-      var ctx = status_image.get_style_context();
-      if (view_model.contact_requires_attention) {
-        ctx.add_class("highlight");
-      } else {
-        ctx.remove_class("highlight");
-      }
+      view_model.bind_property("contact-requires-attention", attention_binding, "enable", GLib.BindingFlags.SYNC_CREATE);
     }
 
     public IContact get_contact() {
