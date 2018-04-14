@@ -28,7 +28,7 @@ namespace Venom {
     [GtkChild] private Gtk.Label message;
     [GtkChild] private Gtk.Image sent;
     [GtkChild] private Gtk.Image received;
-    [GtkChild] private Gtk.Box additional_info;
+    [GtkChild] private Gtk.Revealer additional_info;
 
     private ILogger logger;
     private MessageViewModel view_model;
@@ -37,7 +37,7 @@ namespace Venom {
       this.logger = logger;
       this.view_model = new MessageViewModel(logger, message_content);
 
-      view_model.bind_property("additional-info-visible", additional_info, "visible", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("additional-info-visible", additional_info, "reveal-child", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("timestamp", timestamp, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("message", message, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("sender-image", sender_image, "pixbuf", GLib.BindingFlags.SYNC_CREATE);

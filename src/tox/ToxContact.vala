@@ -35,6 +35,7 @@ namespace Venom {
     public string      group           { get; set; default = ""; }
     public bool        auto_conference { get; set; default = false; }
     public bool        auto_filetransfer { get; set; default = false; }
+    public string      auto_location   { get; set; default = ""; }
     // Not saved
     public bool        connected       { get; set; default = false; }
     public Gdk.Pixbuf ? tox_image      { get; set; default = null; }
