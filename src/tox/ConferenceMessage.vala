@@ -27,11 +27,13 @@ namespace Venom {
     public bool is_action                     { get; set; }
     public bool received                      { get; set; }
 
+    public uint32 conference_number           { get; protected set; }
     public string message                     { get; protected set; }
     public string peer_name                   { get; protected set; }
     public string peer_key                    { get; protected set; }
 
-    private ConferenceMessage(MessageDirection direction, string message, GLib.DateTime timestamp) {
+    private ConferenceMessage(uint32 conference_number, MessageDirection direction, string message, GLib.DateTime timestamp) {
+      this.conference_number = conference_number;
       this.message_direction = direction;
       this.message = message;
       this.timestamp = timestamp;
@@ -39,12 +41,12 @@ namespace Venom {
       this.is_action = false;
     }
 
-    public ConferenceMessage.outgoing(string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
-      this(MessageDirection.OUTGOING, message, timestamp);
+    public ConferenceMessage.outgoing(uint32 conference_number, string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
+      this(conference_number, MessageDirection.OUTGOING, message, timestamp);
     }
 
-    public ConferenceMessage.incoming(string peer_key, string peer_name, string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
-      this(MessageDirection.INCOMING, message, timestamp);
+    public ConferenceMessage.incoming(uint32 conference_number, string peer_key, string peer_name, string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
+      this(conference_number, MessageDirection.INCOMING, message, timestamp);
       this.peer_key = peer_key;
       this.peer_name = peer_name;
     }
@@ -58,7 +60,7 @@ namespace Venom {
     }
 
     public string get_sender_id() {
-      return "";
+      return @"tox.conference.$conference_number";
     }
 
     public string get_message_plain() {

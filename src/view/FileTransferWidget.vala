@@ -26,8 +26,8 @@ namespace Venom {
     private ObservableList transfers;
     private FileTransferEntryListener listener;
 
-    [GtkChild]
-    private Gtk.ListBox file_transfers;
+    [GtkChild] private Gtk.ListBox file_transfers;
+    [GtkChild] private Gtk.Widget placeholder;
 
     public FileTransferWidget(ILogger logger, ObservableList transfers, FileTransferEntryListener listener) {
       logger.d("FileTransferWidget created.");
@@ -35,6 +35,7 @@ namespace Venom {
       this.transfers = transfers;
       this.listener = listener;
 
+      file_transfers.set_placeholder(placeholder);
       file_transfers.bind_model(new ObservableListModel(transfers), create_entry);
       unmap.connect(() => { file_transfers.bind_model(null, null); } );
     }
