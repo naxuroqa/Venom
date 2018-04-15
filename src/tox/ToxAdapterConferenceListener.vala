@@ -121,7 +121,7 @@ namespace Venom {
       var contact = conferences.@get(conference_number) as Conference;
       var conversation = conversations.@get(contact);
       var peer = contact.get_peers().@get(peer_number);
-      var msg = new ConferenceMessage.incoming(peer.peer_key, peer.peer_name, message);
+      var msg = new ConferenceMessage.incoming(conference_number, peer.peer_key, peer.peer_name, message);
       notification_listener.on_unread_message(msg);
       contact.unread_messages++;
       contact.changed();
@@ -132,7 +132,7 @@ namespace Venom {
       logger.d("on_conference_message_sent");
       var contact = conferences.@get(conference_number) as Conference;
       var conversation = conversations.@get(contact);
-      var msg = new ConferenceMessage.outgoing(message);
+      var msg = new ConferenceMessage.outgoing(conference_number, message);
       msg.received = true;
       conversation.append(msg);
     }

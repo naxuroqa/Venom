@@ -648,6 +648,9 @@ namespace Venom {
     }
 
     public virtual void friend_add(uint8[] address, string message) throws ToxError {
+      if (address.length != address_size()) {
+        throw new ToxError.GENERIC(_("Address must consist of 76 hexadecimal characters"));
+      }
       var e = ErrFriendAdd.OK;
       var friend_number = handle.friend_add(address, message, out e);
       if (e != ErrFriendAdd.OK) {

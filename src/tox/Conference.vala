@@ -35,7 +35,7 @@ namespace Venom {
     }
 
     public string get_id() {
-      return "";
+      return @"tox.conference.$conference_number";
     }
 
     public string get_name_string() {
