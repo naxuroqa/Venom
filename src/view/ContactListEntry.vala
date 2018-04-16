@@ -45,6 +45,7 @@ namespace Venom {
       view_model.bind_property("contact-status", contact_status, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("contact-image", contact_image, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("contact-status-image", status_image, "icon-name", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("contact-status-tooltip", status_image, "tooltip-text", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("contact-requires-attention", attention_binding, "enable", GLib.BindingFlags.SYNC_CREATE);
     }
 

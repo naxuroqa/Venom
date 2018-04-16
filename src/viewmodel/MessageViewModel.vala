@@ -51,7 +51,6 @@ namespace Venom {
       var midnight = get_midnight();
       var yesterday = midnight.add_days(-1);
       var timestamp = message_content.timestamp;
-      var now = new DateTime.now_local();
       if (timestamp.compare(midnight) > 0) {
         return _("Today at %s").printf(timestamp.format("%X"));
       } else if (timestamp.compare(yesterday) > 0) {
