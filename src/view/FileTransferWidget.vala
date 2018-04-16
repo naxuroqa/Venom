@@ -36,16 +36,25 @@ namespace Venom {
       this.listener = listener;
 
       file_transfers.set_placeholder(placeholder);
-      file_transfers.bind_model(new ObservableListModel(transfers), create_entry);
-      unmap.connect(() => { file_transfers.bind_model(null, null); } );
-    }
-
-    private Gtk.Widget create_entry(GLib.Object object) {
-      return new FileTransferEntry(logger, object as FileTransfer, listener);
+      var creator = new FileTransferEntryCreator(logger, listener);
+      file_transfers.bind_model(new ObservableListModel(transfers), creator.create_entry);
     }
 
     ~FileTransferWidget() {
       logger.d("FileTransferWidget destroyed.");
+    }
+
+    private class FileTransferEntryCreator {
+      private unowned ILogger logger;
+      private unowned FileTransferEntryListener listener;
+      public FileTransferEntryCreator(ILogger logger, FileTransferEntryListener listener) {
+        this.logger = logger;
+        this.listener = listener;
+      }
+
+      public Gtk.Widget create_entry(GLib.Object object) {
+        return new FileTransferEntry(logger, object as FileTransfer, listener);
+      }
     }
   }
 }

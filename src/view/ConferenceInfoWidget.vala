@@ -43,8 +43,8 @@ namespace Venom {
       view_model.bind_property("title-error", title_error, "label", BindingFlags.SYNC_CREATE);
       view_model.bind_property("title-error-visible", title_error_content, "reveal-child", BindingFlags.SYNC_CREATE);
 
-      peers.bind_model(view_model.get_list_model(), on_create_peer_widget);
-      unmap.connect(() => { peers.bind_model(null, null); });
+      var creator = new ConferencePeerWidgetCreator(logger);
+      peers.bind_model(view_model.get_list_model(), creator.create_peer_widget);
 
       apply.clicked.connect(view_model.on_apply_clicked);
       leave.clicked.connect(view_model.on_leave_clicked);
@@ -56,12 +56,18 @@ namespace Venom {
       app_window.show_welcome();
     }
 
-    private Gtk.Widget on_create_peer_widget(Object o) {
-      return new PeerEntry(logger, o as ConferencePeer);
-    }
-
     ~ConferenceInfoWidget() {
       logger.d("ConferenceInfoWidget destroyed.");
+    }
+
+    private class ConferencePeerWidgetCreator {
+      private unowned ILogger logger;
+      public ConferencePeerWidgetCreator(ILogger logger) {
+        this.logger = logger;
+      }
+      public Gtk.Widget create_peer_widget(Object o) {
+        return new PeerEntry(logger, o as ConferencePeer);
+      }
     }
   }
 }

@@ -65,7 +65,7 @@ namespace Venom {
       if (user_info.is_connected) {
         image_status = get_resource_from_status(user_info.user_status);
       } else {
-        image_status = R.icons.offline;;
+        image_status = R.icons.offline;
       }
     }
 

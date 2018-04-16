@@ -68,8 +68,8 @@ namespace Venom {
       update_widgets();
 
       var model = new ObservableListModel(conversation);
-      message_list.bind_model(model, create_entry);
-      unmap.connect(() => { message_list.bind_model(null, null); });
+      var creator = new MessageWidgetCreator(logger);
+      message_list.bind_model(model, creator.create_message);
 
       text_view.key_press_event.connect(on_keypress);
       text_view.buffer.changed.connect(on_buffer_changed);
@@ -126,10 +126,6 @@ namespace Venom {
       var adjustment = scrolled_window.vadjustment;
       adjustment.value = adjustment.upper - adjustment.page_size;
       return false;
-    }
-
-    private Gtk.Widget create_entry(GLib.Object object) {
-      return new MessageWidget(logger, object as IMessage);
     }
 
     private void on_message(string message) {
@@ -207,6 +203,17 @@ namespace Venom {
       logger.d("on_insert_smiley");
       text_view.grab_focus();
       text_view.insert_emoji();
+    }
+  }
+
+  public class MessageWidgetCreator {
+    private unowned ILogger logger;
+    public MessageWidgetCreator(ILogger logger) {
+      this.logger = logger;
+    }
+
+    public Gtk.Widget create_message(GLib.Object object) {
+      return new MessageWidget(logger, object as IMessage);
     }
   }
 
