@@ -28,6 +28,7 @@ namespace Venom {
     public string contact_status { get; set; }
     public Gdk.Pixbuf contact_image { get; set; }
     public string contact_status_image { get; set; }
+    public string contact_status_tooltip { get; set; }
     public bool contact_requires_attention { get; set; }
 
     public ContactListEntryViewModel(ILogger logger, IContact contact) {
@@ -54,11 +55,25 @@ namespace Venom {
       }
 
       if (contact_requires_attention) {
+        contact_status_tooltip = _("New Message!");
         contact_status_image = "mail-unread-symbolic";
       } else if (contact.is_connected()) {
+        contact_status_tooltip = tooltip_from_status(contact.get_status());
         contact_status_image = icon_name_from_status(contact.get_status());
       } else {
+        contact_status_tooltip = _("Offline");
         contact_status_image = R.icons.offline;
+      }
+    }
+
+    private string tooltip_from_status(UserStatus status) {
+      switch(status) {
+        case UserStatus.AWAY:
+          return _("Away");
+        case UserStatus.BUSY:
+          return _("Busy");
+        default:
+          return _("Online");
       }
     }
 
