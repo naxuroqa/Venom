@@ -57,8 +57,8 @@ namespace Venom {
       update_widgets();
 
       var model = new ObservableListModel(conversation);
-      message_list.bind_model(model, create_entry);
-      unmap.connect(() => { message_list.bind_model(null, null); });
+      var creator = new MessageWidgetCreator(logger);
+      message_list.bind_model(model, creator.create_message);
 
       text_view.key_press_event.connect(on_keypress);
       app_window.add_action_entries(win_entries, this);
@@ -108,10 +108,6 @@ namespace Venom {
       var adjustment = scrolled_window.vadjustment;
       adjustment.value = adjustment.upper - adjustment.page_size;
       return false;
-    }
-
-    private Gtk.Widget create_entry(GLib.Object object) {
-      return new MessageWidget(logger, object as IMessage);
     }
 
     private void on_message(string message) {

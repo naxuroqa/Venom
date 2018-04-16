@@ -23,8 +23,6 @@ namespace Venom {
   [GtkTemplate(ui = "/im/tox/venom/ui/contact_list_widget.ui")]
   public class ContactListWidget : Gtk.Box {
     private ILogger logger;
-    private ContactListWidgetCallback callback;
-    private UserInfo user_info;
     private ContactListViewModel view_model;
 
     [GtkChild] private Gtk.Label username;
@@ -37,8 +35,6 @@ namespace Venom {
     public ContactListWidget(ILogger logger, ObservableList contacts, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListWidget created.");
       this.logger = logger;
-      this.callback = callback;
-      this.user_info = user_info;
       this.view_model = new ContactListViewModel(logger, contacts, callback, user_info);
 
       try {
@@ -58,20 +54,28 @@ namespace Venom {
       view_model.bind_property("userimage", userimage, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("image-status", image_status, "icon-name", GLib.BindingFlags.SYNC_CREATE);
 
-      contact_list.bind_model(view_model.get_list_model(), create_entry);
+      var creator = new ContactListEntryCreator(logger);
+      contact_list.bind_model(view_model.get_list_model(), creator.create_entry);
       contact_list.row_activated.connect(view_model.on_row_activated);
-    }
-
-    private Gtk.Widget create_entry(GLib.Object object) {
-      var c = object as IContact;
-      if (c is Contact || c is Conference) {
-        return new ContactListEntry(logger, c);
-      }
-      return new ContactListRequestEntry(logger, c);
     }
 
     ~ContactListWidget() {
       logger.d("ContactListWidget destroyed.");
+    }
+
+    private class ContactListEntryCreator {
+      private unowned ILogger logger;
+      public ContactListEntryCreator(ILogger logger) {
+        this.logger = logger;
+      }
+
+      public Gtk.Widget create_entry(GLib.Object object) {
+        var c = object as IContact;
+        if (c is Contact || c is Conference) {
+          return new ContactListEntry(logger, c);
+        }
+        return new ContactListRequestEntry(logger, c);
+      }
     }
   }
 }

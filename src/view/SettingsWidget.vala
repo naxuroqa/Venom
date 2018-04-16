@@ -93,8 +93,8 @@ namespace Venom {
       dht_nodes = new ObservableList();
       dht_nodes.set_list(nodeDatabase.getDhtNodes(dhtNodeFactory));
       list_model = new ObservableListModel(dht_nodes);
-      node_list_box.bind_model(list_model, createListboxEntry);
-      unmap.connect(() => { node_list_box.bind_model(null, null); });
+      var creator = new SettingsDhtNodeCreator(logger, this);
+      node_list_box.bind_model(list_model, creator.create_dht_node);
     }
 
     ~SettingsWidget() {
@@ -111,16 +111,25 @@ namespace Venom {
       }
     }
 
-    private Gtk.Widget createListboxEntry(GLib.Object o) {
-      var node = o as IDhtNode;
-      var widget = new NodeWidget(logger, node);
-      widget.node_changed.connect(on_node_changed);
-      return widget;
-    }
-
-    private void on_node_changed(IDhtNode node) {
+    public void on_node_changed(IDhtNode node) {
       logger.d("on_node_changed");
       nodeDatabase.insertDhtNode(node.pub_key, node.host, node.port, node.is_blocked, node.maintainer, node.location);
+    }
+
+    private class SettingsDhtNodeCreator {
+      private unowned ILogger logger;
+      private unowned SettingsWidget settings_widget;
+      public SettingsDhtNodeCreator(ILogger logger, SettingsWidget settings_widget) {
+        this.logger = logger;
+        this.settings_widget = settings_widget;
+      }
+
+      public Gtk.Widget create_dht_node(GLib.Object o) {
+        var node = o as IDhtNode;
+        var widget = new NodeWidget(logger, node);
+        widget.node_changed.connect(settings_widget.on_node_changed);
+        return widget;
+      }
     }
   }
 }
