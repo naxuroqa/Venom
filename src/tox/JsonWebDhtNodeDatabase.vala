@@ -20,7 +20,22 @@
  */
 
 namespace Venom {
-  public class JsonWebDhtNodeDatabase : IDhtNodeDatabase, Object {
+  public class JsonDhtNode : GLib.Object {
+    public string ipv4 { get; set; }
+    public string ipv6 { get; set; }
+    public int port { get; set; }
+    //public int[] tcp_ports { get; set; }
+    public string public_key { get; set; }
+    public string maintainer { get; set; }
+    public string location { get; set; }
+    public bool status_udp { get; set; }
+    public bool status_tcp { get; set; }
+    public string version { get; set; }
+    public string motd { get; set; }
+    public int last_ping { get; set; }
+  }
+
+  public class JsonWebDhtNodeDatabase : IDhtNodeDatabase, GLib.Object {
     private ILogger logger;
     public JsonWebDhtNodeDatabase(ILogger logger) {
       this.logger = logger;
@@ -36,30 +51,22 @@ namespace Venom {
 
       try {
         var parser = new Json.Parser();
-        parser.load_from_data((string) message.response_body.flatten().data, -1);
-
+        parser.load_from_data((string) message.response_body.flatten().data);
         var root_object = parser.get_root().get_object();
         //var last_scan = (uint) root_object.get_int_member("last_scan");
         //var last_refresh = (uint) root_object.get_int_member("last_refresh");
 
         var nodes = root_object.get_array_member("nodes");
-
         foreach (var node in nodes.get_elements()) {
-          var nodeObj = node.get_object();
-          var ipv4 = nodeObj.get_string_member("ipv4");
-          //var ipv6 = nodeObj.get_string_member("ipv6");
-          var port = (int) nodeObj.get_int_member("port");
-          var key = nodeObj.get_string_member("public_key");
-          var maintainer = nodeObj.get_string_member("maintainer");
-          var location = nodeObj.get_string_member("location");
-          //var statusUdp = nodeObj.get_boolean_member("status_udp");
-          //var statusTcp = nodeObj.get_boolean_member("status_tcp");
-          //var version = nodeObj.get_string_member("version");
-          //var motd = nodeObj.get_string_member("motd");
-          //var last_ping = nodeObj.get_int_member("last_ping");
+          var json_node = Json.gobject_deserialize(typeof(JsonDhtNode), node) as JsonDhtNode;
+          if (json_node.ipv4 != "-") {
+            dhtNodes.append(factory.createDhtNode(json_node.public_key, json_node.ipv4, json_node.port, false, json_node.maintainer, json_node.location));
+          }
+          //FIXME allow multiple addresses per pubkey in node database
+          // if (json_node.ipv6 != "-") {
+          //   dhtNodes.append(factory.createDhtNode(json_node.public_key, json_node.ipv6, json_node.port, false, json_node.maintainer, json_node.location));
+          // }
 
-          var dhtNode = factory.createDhtNode(key, ipv4, port, false, maintainer, location);
-          dhtNodes.append(dhtNode);
         }
       } catch (Error e) {
         logger.e("Failed to load dht nodes from uri: " + e.message);

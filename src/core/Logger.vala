@@ -127,6 +127,7 @@ namespace Venom {
       GLib.Log.set_handler("GLib", LogLevelFlags.LEVEL_MASK, glib_log_function);
       GLib.Log.set_handler("GLib-GObject", LogLevelFlags.LEVEL_MASK, glib_log_function);
       GLib.Log.set_handler("Gdk", LogLevelFlags.LEVEL_MASK, glib_log_function);
+      GLib.Log.set_handler("Json", LogLevelFlags.LEVEL_MASK, glib_log_function);
     }
 
     public static void log(LogLevel level, string message) {

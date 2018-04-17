@@ -111,7 +111,7 @@ test_json_web_dht_node_db = executable('test_json_web_dht_node_db', ['TestJsonWe
 			join_paths(root_source_dir, 'core/Interfaces.vala'),
 			join_paths(root_source_dir, 'db/DatabaseInterfaces.vala')
 			],
-			dependencies : [gtk_dep, soup_dep, json_dep, mox_dep]
+			dependencies : [gtk_dep, soup_dep, json_dep, gee_dep, mox_dep]
 			)
 
 example_plugin_lib = library('example_plugin', ['ExamplePlugin.vala',
