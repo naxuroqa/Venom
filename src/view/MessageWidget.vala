@@ -39,6 +39,7 @@ namespace Venom {
 
       view_model.bind_property("additional-info-visible", additional_info, "reveal-child", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("timestamp", timestamp, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("timestamp-tooltip", timestamp, "tooltip-text", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("message", message, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("sender-image", sender_image, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("sender", sender, "label", GLib.BindingFlags.SYNC_CREATE);
