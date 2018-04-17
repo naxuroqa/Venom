@@ -58,6 +58,7 @@ namespace Venom {
     private ObservableList contacts;
     private ObservableList transfers;
     private NotificationListener notification_listener;
+    private WindowState window_state;
 
     private GLib.HashTable<IContact, ObservableList> conversations;
     private UserInfo user_info;
@@ -108,7 +109,10 @@ namespace Venom {
       status_icon.activate.connect(present);
       delete_event.connect(on_delete_event);
       focus_in_event.connect(on_focus_in_event);
+      window_state_event.connect(on_window_state_event);
+      size_allocate.connect(on_window_size_allocate);
 
+      init_window_state();
       init_widgets();
       init_callbacks();
 
@@ -119,11 +123,28 @@ namespace Venom {
 
     ~ApplicationWindow() {
       logger.d("ApplicationWindow destroyed.");
+      save_window_state();
     }
 
     private bool on_focus_in_event() {
       notification_listener.clear_notifications();
       return false;
+    }
+
+    private bool on_window_state_event(Gdk.EventWindowState event) {
+      window_state.is_maximized = (event.new_window_state & Gdk.WindowState.MAXIMIZED) != 0;
+      window_state.is_fullscreen = (event.new_window_state & Gdk.WindowState.FULLSCREEN) != 0;
+      return Gdk.EVENT_PROPAGATE;
+    }
+
+    private void on_window_size_allocate(Gtk.Allocation allocation) {
+      if (!window_state.is_maximized && !window_state.is_fullscreen) {
+        var width = 0;
+        var height = 0;
+        get_size(out width, out height);
+        window_state.width = width;
+        window_state.height = height;
+      }
     }
 
     private bool on_delete_event() {
@@ -133,10 +154,37 @@ namespace Venom {
       return hide_on_delete();
     }
 
-    private void init_widgets() {
-      default_height = 600;
-      default_width = 600;
+    private void init_window_state() {
+      try {
+        var window_state_string = FileIO.load_contents_text(R.constants.window_state_filename());
+        window_state = WindowState.deserialize(window_state_string);
+      } catch (Error e) {
+        logger.i("Loading window state failed: " + e.message);
+        window_state = new WindowState();
+      }
+      set_window_state();
+    }
 
+    private void set_window_state() {
+      set_default_size(window_state.width, window_state.height);
+      if (window_state.is_maximized) {
+        maximize();
+      }
+      if (window_state.is_fullscreen) {
+        fullscreen();
+      }
+    }
+
+    private void save_window_state() {
+      try {
+        var data = WindowState.serialize(window_state);
+        FileIO.save_contents_text(R.constants.window_state_filename(), data);
+      } catch (Error e) {
+        logger.e("Saving window state failed: " + e.message);
+      }
+    }
+
+    private void init_widgets() {
       var screen = Gdk.Screen.get_default();
       var css_provider = new Gtk.CssProvider();
       css_provider.load_from_resource("/im/tox/venom/css/custom.css");

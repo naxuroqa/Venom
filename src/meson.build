@@ -31,6 +31,7 @@ venom_icons_resources = gnome.compile_resources( 'venom_icons_resources', 'icons
 venom_source = files(
 			'core/Application.vala',
 			'core/Contact.vala',
+			'core/FileIO.vala',
 			'core/FileTransfer.vala',
 			'core/Interfaces.vala',
 			'core/Logger.vala',
@@ -40,6 +41,7 @@ venom_source = files(
 			'core/R.vala',
 			'core/Tools.vala',
 			'core/WidgetFactory.vala',
+			'core/WindowState.vala',
 			'core/UserInfo.vala',
 			'db/DatabaseInterfaces.vala',
 			'db/SqliteSettingsDatabase.vala',
