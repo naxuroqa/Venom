@@ -24,9 +24,10 @@ using Venom;
 namespace Mock {
   public class MockNotificationListener : NotificationListener, GLib.Object {
     public bool show_notifications { get; set; }
-    public void on_unread_message(IMessage message) {
+    public void on_unread_message(IMessage message, IContact c) {
       var args = Arguments.builder()
                      .object(message)
+                     .object(c)
                      .create();
       mock().actual_call(this, "on_unread_message", args);
     }

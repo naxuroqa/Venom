@@ -32,6 +32,9 @@ namespace Venom {
     [GtkChild] private Gtk.Switch auto_filetransfer;
     [GtkChild] private Gtk.Revealer location_revealer;
     [GtkChild] private Gtk.FileChooserButton location;
+    [GtkChild] private Gtk.Switch show_notifications;
+    [GtkChild] private Gtk.Box notifications_box;
+    [GtkChild] private Gtk.Revealer notifications_notice;
     [GtkChild] private Gtk.Button remove;
     [GtkChild] private Gtk.Button apply;
 
@@ -39,7 +42,7 @@ namespace Venom {
     private unowned ApplicationWindow app_window;
     private FriendInfoViewModel view_model;
 
-    public FriendInfoWidget(ILogger logger, ApplicationWindow app_window, FriendInfoWidgetListener listener, IContact contact) {
+    public FriendInfoWidget(ILogger logger, ApplicationWindow app_window, FriendInfoWidgetListener listener, IContact contact, ISettingsDatabase settings_database) {
       logger.d("FriendInfoWidget created.");
       this.logger = logger;
       this.app_window = app_window;
@@ -53,12 +56,16 @@ namespace Venom {
       view_model.bind_property("username", username, "label", BindingFlags.SYNC_CREATE);
       view_model.bind_property("statusmessage", statusmessage, "label", BindingFlags.SYNC_CREATE);
       view_model.bind_property("userimage", userimage, "pixbuf", BindingFlags.SYNC_CREATE);
-      view_model.bind_property("last_seen", last_seen, "label", BindingFlags.SYNC_CREATE);
-      view_model.bind_property("tox_id", tox_id, "label", BindingFlags.SYNC_CREATE);
+      view_model.bind_property("last-seen", last_seen, "label", BindingFlags.SYNC_CREATE);
+      view_model.bind_property("tox-id", tox_id, "label", BindingFlags.SYNC_CREATE);
 
       view_model.bind_property("alias", alias, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-      view_model.bind_property("auto_conference", auto_conference, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-      view_model.bind_property("auto_filetransfer", auto_filetransfer, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      view_model.bind_property("auto-conference", auto_conference, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      view_model.bind_property("auto-filetransfer", auto_filetransfer, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      view_model.bind_property("show-notifications", show_notifications, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
+      settings_database.bind_property("enable-urgency-notification", notifications_box, "sensitive", BindingFlags.SYNC_CREATE);
+      settings_database.bind_property("enable-urgency-notification", notifications_notice, "reveal-child", BindingFlags.SYNC_CREATE | BindingFlags.INVERT_BOOLEAN);
 
       auto_filetransfer.bind_property("active", location_revealer, "reveal-child", BindingFlags.SYNC_CREATE);
 

@@ -30,6 +30,7 @@ namespace Venom {
     public bool auto_conference { get; set; }
     public bool auto_filetransfer { get; set; }
     public string location { get; set; }
+    public bool show_notifications { get; set; }
 
     public signal void leave_view();
 
@@ -60,6 +61,7 @@ namespace Venom {
       statusmessage = contact.status_message;
       alias = contact.alias;
       last_seen = contact.last_seen.format("%c");
+      show_notifications = contact._show_notifications;
       tox_id = contact.get_id();
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
@@ -81,6 +83,7 @@ namespace Venom {
       } else {
         contact.auto_location = "";
       }
+      contact._show_notifications = show_notifications;
       contact.changed();
     }
 

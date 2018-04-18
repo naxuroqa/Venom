@@ -32,5 +32,6 @@ namespace Venom {
     public abstract Gdk.Pixbuf get_image();
     public abstract bool get_requires_attention();
     public abstract void clear_attention();
+    public abstract bool show_notifications();
   }
 }
