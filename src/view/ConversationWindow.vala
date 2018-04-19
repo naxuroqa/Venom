@@ -48,6 +48,8 @@ namespace Venom {
     private ConversationWidgetFiletransferListener filetransfer_listener;
     private bool is_typing;
     private IContact contact;
+    private TextViewEventHandler text_view_event_handler;
+    private AdjustmentAutoScroller auto_scroller;
 
     public ConversationWindow(ApplicationWindow app_window,
                               ILogger logger,
@@ -62,6 +64,10 @@ namespace Venom {
       this.listener = listener;
       this.filetransfer_listener = filetransfer_listener;
 
+      text_view_event_handler = new TextViewEventHandler();
+      text_view_event_handler.send.connect(on_send);
+      text_view.key_press_event.connect(text_view_event_handler.on_key_press_event);
+
       overlay.add_overlay(typing_revealer);
 
       contact.changed.connect(update_widgets);
@@ -71,13 +77,12 @@ namespace Venom {
       var creator = new MessageWidgetCreator(logger);
       message_list.bind_model(model, creator.create_message);
 
-      text_view.key_press_event.connect(on_keypress);
       text_view.buffer.changed.connect(on_buffer_changed);
       app_window.add_action_entries(win_entries, this);
-      app_window.focus_in_event.connect(focus_in_event);
+      app_window.focus_in_event.connect(on_focus_in_event);
 
-      delayed_scroll_to_end();
-      model.items_changed.connect(on_items_changed);
+      auto_scroller = new AdjustmentAutoScroller(scrolled_window.vadjustment);
+      auto_scroller.scroll_to_bottom();
 
       logger.d("ConversationWindow created.");
     }
@@ -98,7 +103,7 @@ namespace Venom {
       typing_revealer.reveal_child = contact.is_typing();
     }
 
-    private bool focus_in_event() {
+    private bool on_focus_in_event() {
       contact.clear_attention();
       contact.changed();
       return false;
@@ -110,33 +115,6 @@ namespace Venom {
         app_window.remove_action(entry.name);
       }
       logger = null;
-    }
-
-    private void on_items_changed(uint pos, uint rem, uint add) {
-      if (add - rem > 0) {
-        delayed_scroll_to_end();
-      }
-    }
-
-    private void delayed_scroll_to_end() {
-      GLib.Timeout.add(50, scroll_to_end);
-    }
-
-    private bool scroll_to_end() {
-      var adjustment = scrolled_window.vadjustment;
-      adjustment.value = adjustment.upper - adjustment.page_size;
-      return false;
-    }
-
-    private void on_message(string message) {
-      logger.d("on_message");
-
-      try {
-        listener.on_send_message(contact, message);
-      } catch (Error e) {
-        logger.e("Could not send message: " + e.message);
-      }
-      try_set_typing(false);
     }
 
     private void on_buffer_changed() {
@@ -155,16 +133,19 @@ namespace Venom {
       }
     }
 
-    private bool on_keypress(Gdk.EventKey event) {
-      if (event.keyval == Gdk.Key.Return) {
-        var message = text_view.buffer.text;
-        text_view.buffer.text = "";
-        if (message.length > 0) {
-          on_message(message);
+    private void on_send() {
+      logger.d("on_send");
+      var message = text_view.buffer.text;
+      if (message.length > 0) {
+        try {
+          listener.on_send_message(contact, message);
+        } catch (Error e) {
+          logger.e("Could not send message: " + e.message);
+          return;
         }
-        return true;
+        text_view.buffer.text = "";
+        try_set_typing(false);
       }
-      return false;
     }
 
     private void on_contact_info() {
@@ -203,6 +184,48 @@ namespace Venom {
       logger.d("on_insert_smiley");
       text_view.grab_focus();
       text_view.insert_emoji();
+    }
+  }
+
+  public class AdjustmentAutoScroller {
+    public bool auto_scroll { get; set; default = true; }
+    private bool scrolled_to_bottom = true;
+    private Gtk.Adjustment adjustment;
+
+    public AdjustmentAutoScroller(Gtk.Adjustment adjustment) {
+      this.adjustment = adjustment;
+      adjustment.changed.connect(on_changed);
+      adjustment.value_changed.connect(on_value_changed);
+    }
+
+    public void scroll_to_bottom() {
+      adjustment.value = adjustment.upper - adjustment.page_size;
+    }
+
+    private void on_changed() {
+      if (scrolled_to_bottom && auto_scroll) {
+        scroll_to_bottom();
+      }
+    }
+
+    private void on_value_changed() {
+      scrolled_to_bottom = (adjustment.value == adjustment.upper - adjustment.page_size);
+    }
+  }
+
+  public class TextViewEventHandler {
+    public signal void send();
+
+    public bool on_key_press_event(Gdk.EventKey event) {
+      if (Gdk.ModifierType.SHIFT_MASK in event.state) {
+        return false;
+      }
+
+      if (event.keyval == Gdk.Key.Return) {
+        send();
+        return true;
+      }
+      return false;
     }
   }
 
