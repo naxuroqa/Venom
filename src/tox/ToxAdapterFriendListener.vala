@@ -106,7 +106,7 @@ namespace Venom {
       var contact = friends.@get(friend_number) as Contact;
       var conversation = conversations.@get(contact);
       var message = new Message.incoming(contact, message_str);
-      notification_listener.on_unread_message(message);
+      notification_listener.on_unread_message(message, contact);
       contact.unread_messages++;
       contact.changed();
       conversation.append(message);

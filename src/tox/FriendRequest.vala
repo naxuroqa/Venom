@@ -42,6 +42,7 @@ namespace Venom {
     public bool get_requires_attention() { return true; }
     public void clear_attention() {}
     public bool is_typing() { return false; }
+    public bool show_notifications() { return true; }
   }
 
 }

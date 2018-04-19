@@ -264,11 +264,11 @@ namespace Venom {
     }
 
     public void on_show_friend(IContact contact) {
-      switch_content_with(() => { return new FriendInfoWidget(logger, this, friend_listener, contact); });
+      switch_content_with(() => { return new FriendInfoWidget(logger, this, friend_listener, contact, settings_database); });
     }
 
     public void on_show_conference(IContact contact) {
-      switch_content_with(() => { return new ConferenceInfoWidget(logger, this, conference_listener, contact); });
+      switch_content_with(() => { return new ConferenceInfoWidget(logger, this, conference_listener, contact, settings_database); });
     }
 
     public void on_show_contact(string contact_id) {

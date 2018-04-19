@@ -26,6 +26,7 @@ namespace Venom {
     public string title             { get; set; }
     public string status_message    { get; set; default = ""; }
     public int    unread_messages   { get; set; default = 0; }
+    public bool   _show_notifications { get; set; default = true; }
     private Gee.Map<uint32, ConferencePeer> peers;
 
     public Conference(uint32 conference_number, string title) {
@@ -64,6 +65,10 @@ namespace Venom {
 
     public unowned Gee.Map<uint32, ConferencePeer> get_peers() {
       return peers;
+    }
+
+    public bool show_notifications() {
+      return _show_notifications;
     }
 
     public bool get_requires_attention() { return unread_messages > 0; }

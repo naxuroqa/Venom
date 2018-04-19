@@ -41,6 +41,7 @@ namespace Venom {
     public Gdk.Pixbuf ? tox_image      { get; set; default = null; }
     public int         unread_messages { get; set; default = 0; }
     public bool        _is_typing      { get; set; default = false; }
+    public bool        _show_notifications { get; set; default = true; }
 
     public Contact(uint32 friend_number, string id) {
       tox_friend_number = friend_number;
@@ -81,6 +82,10 @@ namespace Venom {
 
     public void clear_attention() {
       unread_messages = 0;
+    }
+
+    public bool show_notifications() {
+      return _show_notifications;
     }
   }
 }

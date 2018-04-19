@@ -25,6 +25,7 @@ namespace Venom {
     public string title { get; set; }
     public string title_error { get; set; }
     public bool title_error_visible { get; set; }
+    public bool show_notifications { get; set; }
     public signal void leave_view();
 
     private ILogger logger;
@@ -49,6 +50,7 @@ namespace Venom {
 
     private void set_info() {
       title = contact.title;
+      show_notifications = contact._show_notifications;
     }
 
     public ListModel get_list_model() {
@@ -62,12 +64,15 @@ namespace Venom {
 
     public void on_apply_clicked() {
       logger.d("on_apply_clicked");
-      try {
-        listener.on_change_conference_title(contact, title);
-      } catch (Error e) {
-        var message = "Could not change title: " + e.message;
-        show_error(message);
-        logger.e(message);
+      contact._show_notifications = show_notifications;
+      if (title != contact.title) {
+        try {
+          listener.on_change_conference_title(contact, title);
+        } catch (Error e) {
+          var message = "Could not change title: " + e.message;
+          show_error(message);
+          logger.e(message);
+        }
       }
     }
 

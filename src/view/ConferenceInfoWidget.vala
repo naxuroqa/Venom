@@ -28,12 +28,15 @@ namespace Venom {
     [GtkChild] private Gtk.Button leave;
     [GtkChild] private Gtk.Revealer title_error_content;
     [GtkChild] private Gtk.Label title_error;
+    [GtkChild] private Gtk.Switch show_notifications;
+    [GtkChild] private Gtk.Box notifications_box;
+    [GtkChild] private Gtk.Revealer notifications_notice;
 
     private ILogger logger;
     private ConferenceInfoViewModel view_model;
     private unowned ApplicationWindow app_window;
 
-    public ConferenceInfoWidget(ILogger logger, ApplicationWindow app_window, ConferenceInfoWidgetListener listener, IContact contact) {
+    public ConferenceInfoWidget(ILogger logger, ApplicationWindow app_window, ConferenceInfoWidgetListener listener, IContact contact, ISettingsDatabase settings_database) {
       logger.d("ConferenceInfoWidget created.");
       this.logger = logger;
       this.app_window = app_window;
@@ -42,6 +45,10 @@ namespace Venom {
       view_model.bind_property("title", title, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       view_model.bind_property("title-error", title_error, "label", BindingFlags.SYNC_CREATE);
       view_model.bind_property("title-error-visible", title_error_content, "reveal-child", BindingFlags.SYNC_CREATE);
+      view_model.bind_property("show-notifications", show_notifications, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
+      settings_database.bind_property("enable-urgency-notification", notifications_box, "sensitive", BindingFlags.SYNC_CREATE);
+      settings_database.bind_property("enable-urgency-notification", notifications_notice, "reveal-child", BindingFlags.SYNC_CREATE | BindingFlags.INVERT_BOOLEAN);
 
       var creator = new ConferencePeerWidgetCreator(logger);
       peers.bind_model(view_model.get_list_model(), creator.create_peer_widget);

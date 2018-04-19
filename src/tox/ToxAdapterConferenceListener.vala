@@ -122,7 +122,7 @@ namespace Venom {
       var conversation = conversations.@get(contact);
       var peer = contact.get_peers().@get(peer_number);
       var msg = new ConferenceMessage.incoming(conference_number, peer.peer_key, peer.peer_name, message);
-      notification_listener.on_unread_message(msg);
+      notification_listener.on_unread_message(msg, contact);
       contact.unread_messages++;
       contact.changed();
       conversation.append(msg);

@@ -21,8 +21,8 @@
 namespace Venom {
   public interface NotificationListener : GLib.Object {
     public abstract bool show_notifications { get; set; }
-    public abstract void on_unread_message(IMessage message);
-    public abstract void on_filetransfer(FileTransfer transfer, IContact contact);
+    public abstract void on_unread_message(IMessage message, IContact sender);
+    public abstract void on_filetransfer(FileTransfer transfer, IContact sender);
     public abstract void clear_notifications();
   }
 
@@ -36,9 +36,9 @@ namespace Venom {
       this.logger = logger;
     }
 
-    public virtual void on_unread_message(IMessage message) {
+    public virtual void on_unread_message(IMessage message, IContact sender) {
       logger.d("on_unread_message");
-      if (!show_notifications) {
+      if (!show_notifications || !sender.show_notifications()) {
         return;
       }
 
@@ -59,7 +59,7 @@ namespace Venom {
       app.send_notification(message_id, notification);
     }
 
-    public virtual void on_filetransfer(FileTransfer transfer, IContact contact) {
+    public virtual void on_filetransfer(FileTransfer transfer, IContact sender) {
       logger.d("on_filetransfer");
       if (!show_notifications) {
         return;
@@ -73,9 +73,9 @@ namespace Venom {
       var file_name = transfer.get_file_name();
       var file_size = GLib.format_size(transfer.get_file_size());
 
-      var notification = new Notification(_("New file from %s").printf(contact.get_name_string()));
+      var notification = new Notification(_("New file from %s").printf(sender.get_name_string()));
       notification.set_body("%s (%s)".printf(file_name, file_size));
-      notification.set_icon(contact.get_image());
+      notification.set_icon(sender.get_image());
       notification.set_default_action("app.show-filetransfers");
       app.send_notification(transfer_id, notification);
     }
