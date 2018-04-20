@@ -102,4 +102,30 @@ namespace Venom {
       logger.d("MessageViewModel destroyed.");
     }
   }
+
+  public class UriTransform {
+    private ILogger logger;
+    public UriTransform(ILogger logger) {
+      this.logger = logger;
+    }
+
+    public bool transform(GLib.Binding binding, GLib.Value source, ref GLib.Value dest) {
+      var source_string = source.get_string();
+      try {
+        dest.set_string(uri_regex().replace(Markup.escape_text(source_string), -1, 0, "<a href=\"\\g<u>\">\\g<u></a>"));
+      } catch (RegexError e) {
+        logger.e("Error transforming text: " + e.message);
+        return false;
+      }
+      return true;
+    }
+
+    private static GLib.Regex _uri_regex;
+    private static GLib.Regex uri_regex() throws RegexError {
+      if (_uri_regex == null) {
+        _uri_regex = new GLib.Regex("(?<u>[a-z]+://\\S*)");
+      }
+      return _uri_regex;
+    }
+  }
 }

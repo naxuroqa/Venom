@@ -133,6 +133,7 @@
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="label">message</property>
+                <property name="use_markup">True</property>
                 <property name="wrap">True</property>
                 <property name="wrap_mode">word-char</property>
                 <property name="selectable">True</property>
