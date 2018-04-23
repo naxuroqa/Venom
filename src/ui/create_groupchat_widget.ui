@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.4 -->
+<!-- Generated with glade 3.22.1 -->
 <interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
   <template class="VenomCreateGroupchatWidget" parent="GtkBox">
@@ -32,7 +32,7 @@
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Create a groupchat</property>
+            <property name="label" translatable="yes">Create a conference</property>
             <property name="xalign">0</property>
             <attributes>
               <attribute name="weight" value="bold"/>
@@ -85,7 +85,7 @@
                         <property name="can_focus">True</property>
                         <property name="hexpand">True</property>
                         <property name="activates_default">True</property>
-                        <property name="text" translatable="yes">Groupchat</property>
+                        <property name="text" translatable="yes">Conference</property>
                         <property name="secondary_icon_tooltip_text" translatable="yes">paste from clipboard</property>
                       </object>
                       <packing>
@@ -120,7 +120,7 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;small&gt;Name the groupchat (optional)&lt;/small&gt;</property>
+                        <property name="label" translatable="yes">&lt;small&gt;Name the conference (optional)&lt;/small&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="xalign">0</property>
                         <style>
@@ -215,7 +215,7 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;small&gt;Select a groupchat type&lt;/small&gt;</property>
+                        <property name="label" translatable="yes">&lt;small&gt;Select a conference type&lt;/small&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="xalign">0</property>
                         <style>

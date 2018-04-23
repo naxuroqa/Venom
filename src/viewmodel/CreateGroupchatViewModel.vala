@@ -52,7 +52,7 @@ namespace Venom {
       try {
         listener.on_create_groupchat(title, group_chat_type);
       } catch (Error e) {
-        show_error("Could not create groupchat: " + e.message);
+        show_error("Could not create conference: " + e.message);
         return;
       }
       logger.d("on_create successful");

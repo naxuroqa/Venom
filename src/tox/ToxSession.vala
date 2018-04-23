@@ -70,8 +70,9 @@ namespace Venom {
     public abstract string friend_get_status_message(uint32 friend_number) throws ToxError;
     public abstract uint64 friend_get_last_online(uint32 friend_number) throws ToxError;
 
-    public abstract void conference_new(string title) throws ToxError;
+    public abstract uint32 conference_new(string title) throws ToxError;
     public abstract void conference_delete(uint32 conference_number) throws ToxError;
+    public abstract void conference_invite(uint32 friend_number, uint32 conference_number) throws ToxError;
 
     public abstract void conference_send_message(uint32 conference_number, string message) throws ToxError;
     public abstract void conference_set_title(uint32 conference_number, string title) throws ToxError;
@@ -753,21 +754,24 @@ namespace Venom {
       return title;
     }
 
-    public virtual void conference_new(string title) throws ToxError {
+    public virtual uint32 conference_new(string title) throws ToxError {
       var e = ErrConferenceNew.OK;
       var conference_number = handle.conference_new(out e);
       if (e != ErrConferenceNew.OK) {
         logger.e("creating conference failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      try {
-        conference_set_title_private(conference_number, title);
-      } catch (ToxError e) {
-        var err_conference_delete = ErrConferenceDelete.OK;
-        handle.conference_delete(conference_number, out err_conference_delete);
-        throw e;
+      if (title != "") {
+        try {
+          conference_set_title_private(conference_number, title);
+        } catch (ToxError e) {
+          var err_conference_delete = ErrConferenceDelete.OK;
+          handle.conference_delete(conference_number, out err_conference_delete);
+          throw e;
+        }
       }
       conference_listener.on_conference_new(conference_number, title);
+      return conference_number;
     }
 
     public virtual void conference_delete(uint32 conference_number) throws ToxError {
@@ -778,6 +782,15 @@ namespace Venom {
         throw new ToxError.GENERIC(e.to_string());
       }
       conference_listener.on_conference_deleted(conference_number);
+    }
+
+    public virtual void conference_invite(uint32 friend_number, uint32 conference_number) throws ToxError {
+      var e = ErrConferenceInvite.OK;
+      handle.conference_invite(friend_number, conference_number, out e);
+      if (e != ErrConferenceInvite.OK) {
+        logger.e("Sending conference invite failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
     }
 
     public virtual void conference_send_message(uint32 conference_number, string message) throws ToxError {

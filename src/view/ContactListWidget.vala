@@ -32,6 +32,8 @@ namespace Venom {
     [GtkChild] private Gtk.Image image_status;
     [GtkChild] private Gtk.MenuButton user_status_menu;
 
+    private unowned Gtk.ListBoxRow? selected_row;
+
     public ContactListWidget(ILogger logger, ObservableList contacts, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListWidget created.");
       this.logger = logger;
@@ -54,9 +56,53 @@ namespace Venom {
       view_model.bind_property("userimage", userimage, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("image-status", image_status, "icon-name", GLib.BindingFlags.SYNC_CREATE);
 
+      contact_list.button_press_event.connect(on_button_pressed);
+      contact_list.popup_menu.connect(on_popup_menu);
+      contact_list.row_activated.connect(on_row_activated);
+
       var creator = new ContactListEntryCreator(logger);
       contact_list.bind_model(view_model.get_list_model(), creator.create_entry);
-      contact_list.row_activated.connect(view_model.on_row_activated);
+    }
+
+    public unowned ContactListViewModel get_model() {
+      return view_model;
+    }
+
+    private void on_row_activated(Gtk.ListBox listbox, Gtk.ListBoxRow? row) {
+      logger.d("on_row_selected");
+      selected_row = row;
+      if (row == null) {
+        view_model.on_contact_selected(null);
+      } else {
+        var entry = row as IContactListEntry;
+        view_model.on_contact_selected(entry.get_contact());
+      }
+    }
+
+    private bool on_popup_menu() {
+      logger.d("on_popup_menu");
+      if (selected_row == null) {
+        return false;
+      }
+
+      var menu = view_model.popup_menu(null);
+      var popover = new Gtk.Popover.from_model(selected_row, menu);
+      popover.popup();
+      return true;
+    }
+
+    private bool on_button_pressed(Gtk.Widget widget, Gdk.EventButton ev) {
+      logger.d("on_button_pressed");
+      if (ev.type == Gdk.EventType.BUTTON_PRESS && ev.button == 3) {
+        logger.d("right mouse clicked");
+        var row = contact_list.get_row_at_y((int) ev.y);
+        var entry = row as IContactListEntry;
+        var menu = view_model.popup_menu(entry.get_contact());
+        var popover = new Gtk.Popover.from_model(row, menu);
+        popover.popup();
+        return true;
+      }
+      return false;
     }
 
     ~ContactListWidget() {

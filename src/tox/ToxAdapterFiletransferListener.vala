@@ -307,12 +307,21 @@ namespace Venom {
           var id = contact.get_id();
           var filepath = GLib.Path.build_filename(R.constants.avatars_folder(), @"$id.png");
           var file = GLib.File.new_for_path(filepath);
-          file.replace_contents(buf, null, false, FileCreateFlags.NONE, null, null);
-          var pixbuf_loader = new Gdk.PixbufLoader();
-          pixbuf_loader.write(buf);
-          pixbuf_loader.close();
-          contact.tox_image = pixbuf_loader.get_pixbuf();
-          contact.changed();
+          if (buf == null) {
+            logger.d("Empty avatar received.");
+            if (file.query_exists()) {
+              file.@delete();
+            }
+            contact.tox_image = null;
+            contact.changed();
+          } else {
+            file.replace_contents(buf, null, false, FileCreateFlags.NONE, null);
+            var pixbuf_loader = new Gdk.PixbufLoader();
+            pixbuf_loader.write(buf);
+            pixbuf_loader.close();
+            contact.tox_image = pixbuf_loader.get_pixbuf();
+            contact.changed();
+          }
         } catch (Error e) {
           logger.e("set image failed: " + e.message);
         }
