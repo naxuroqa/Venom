@@ -67,6 +67,23 @@ namespace Venom {
       session.conference_new(title);
     }
 
+    public virtual void on_conference_invite(IContact c, string id) throws Error {
+      logger.d("on_conference_invite");
+      if (c is Contact) {
+        var contact = c as Contact;
+        if (id == "") {
+          var conference_number = session.conference_new("");
+          session.conference_invite(contact.tox_friend_number, conference_number);
+        } else {
+          var index = id.last_index_of(".");
+          var conference_number = int.parse(id.substring(index + 1));
+          session.conference_invite(contact.tox_friend_number, conference_number);
+        }
+      } else {
+        assert_not_reached();
+      }
+    }
+
     public virtual void on_conference_new(uint32 conference_number, string title) {
       logger.d("on_conference_new");
       var contact = new Conference(conference_number, title);
@@ -95,7 +112,7 @@ namespace Venom {
       var contact = conferences.@get(conference_number) as Conference;
       var gcpeers = contact.get_peers();
       gcpeers.clear();
-      for(var i = 0; i < peers.length; i++) {
+      for (var i = 0; i < peers.length; i++) {
         var peer_number = peers[i].peer_number;
         var peer_key = Tools.bin_to_hexstring(peers[i].peer_key);;
         var peer = new ConferencePeer(peer_number, peer_key, peers[i].peer_name, peers[i].is_known, peers[i].is_self);

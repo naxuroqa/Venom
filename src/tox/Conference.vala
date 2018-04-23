@@ -59,6 +59,10 @@ namespace Venom {
       return false;
     }
 
+    public bool is_conference() {
+      return true;
+    }
+
     public Gdk.Pixbuf get_image() {
       return Gtk.IconTheme.get_default().load_icon(R.icons.default_groupchat, 48, 0);
     }

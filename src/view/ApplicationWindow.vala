@@ -30,7 +30,9 @@ namespace Venom {
       { "filetransfer", on_filetransfer },
       { "groupchats",   on_create_groupchat },
       { "show_user",    on_show_user },
-      { "change_userstatus", on_change_userstatus, "s", "'online'" }
+      { "change_userstatus", on_change_userstatus, "s", "'online'" },
+      { "show-contact-details", on_show_contact_details, "s", null, null },
+      { "invite-to-conference", on_invite_to_conference, "s", null, null }
     };
 
     [GtkChild]
@@ -59,6 +61,7 @@ namespace Venom {
     private ObservableList transfers;
     private NotificationListener notification_listener;
     private WindowState window_state;
+    private unowned ContactListViewModel contact_list_view_model;
 
     private GLib.HashTable<IContact, ObservableList> conversations;
     private UserInfo user_info;
@@ -204,6 +207,7 @@ namespace Venom {
 
       var contact_list = new ContactListWidget(logger, contacts, this, user_info);
       contact_list_box.pack_start(contact_list, true, true);
+      contact_list_view_model = contact_list.get_model();
     }
 
     public virtual void on_contact_selected(IContact contact) {
@@ -215,7 +219,7 @@ namespace Venom {
         var conv = conversations.@get(contact);
         switch_content_with(() => { return new ConferenceWindow(this, logger, conv, contact, conference_listener); });
       } else if (contact is FriendRequest) {
-        switch_content_with(() => { return new FriendRequestWidget(this, logger, contact, friend_listener); });
+        on_show_friend_request(contact);
       }
     }
 
@@ -271,16 +275,67 @@ namespace Venom {
       switch_content_with(() => { return new ConferenceInfoWidget(logger, this, conference_listener, contact, settings_database); });
     }
 
-    public void on_show_contact(string contact_id) {
-      logger.d(@"on_show_contact($contact_id)");
+    public void on_show_friend_request(IContact contact) {
+      switch_content_with(() => { return new FriendRequestWidget(this, logger, contact, friend_listener); });
+    }
+
+    private IContact ? find_contact(string contact_id) {
       for (var i = 0; i < contacts.length(); i++) {
         var c = contacts.nth_data(i) as IContact;
         if (c.get_id() == contact_id) {
-          on_contact_selected(c);
-          return;
+          return c;
         }
       }
-      logger.i(@"Friend with id $contact_id not found.");
+      return null;
+    }
+
+    public void on_show_contact(string contact_id) {
+      logger.d(@"on_show_contact($contact_id)");
+      var c = find_contact(contact_id);
+      if (c != null) {
+        on_contact_selected(c);
+      } else {
+        logger.i(@"Friend with id $contact_id not found.");
+      }
+    }
+
+    public void on_show_contact_details(GLib.SimpleAction action, GLib.Variant? parameter) {
+      if (parameter == null) {
+        return;
+      }
+
+      var contact_id = parameter.get_string();
+      logger.d(@"on_show_contact_details($contact_id)");
+      var c = find_contact(contact_id);
+      if (c == null) {
+        logger.i(@"Friend with id $contact_id not found.");
+        return;
+      }
+      if (c is Contact) {
+        on_show_friend(c);
+      } else if (c is Conference) {
+        on_show_conference(c);
+      } else if (c is FriendRequest) {
+        on_show_friend_request(c);
+      }
+    }
+
+    public void on_invite_to_conference(GLib.SimpleAction action, GLib.Variant? parameter) {
+      if (parameter == null) {
+        return;
+      }
+
+      var contact_id = parameter.get_string();
+      logger.d(@"on_invite_to_conference($contact_id)");
+      contact_list_view_model.on_invite_to_conference(contact_id);
+    }
+
+    public void on_invite_id_to_conference(IContact contact, string id) {
+      try {
+        conference_listener.on_conference_invite(contact, id);
+      } catch (Error e) {
+        logger.e("Could not send conference invite: " + e.message);
+      }
     }
 
     private void on_change_userstatus(GLib.SimpleAction action, GLib.Variant? parameter) {

@@ -129,17 +129,24 @@ namespace Mock {
                      .create();
       return mock().actual_call(this, "friend_get_last_online", args).get_int();
     }
-    public void conference_new(string title) throws ToxError {
+    public uint32 conference_new(string title) throws ToxError {
       var args = Arguments.builder()
                      .string(title)
                      .create();
-      mock().actual_call(this, "conference_new", args).get_throws();
+      return mock().actual_call(this, "conference_new", args).get_int();
     }
     public void conference_delete(uint32 conference_number) throws ToxError {
       var args = Arguments.builder()
                      .uint(conference_number)
                      .create();
       mock().actual_call(this, "conference_delete", args).get_throws();
+    }
+    public void conference_invite(uint32 friend_number, uint32 conference_number) throws ToxError {
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .uint(conference_number)
+                     .create();
+      mock().actual_call(this, "conference_invite", args).get_throws();
     }
     public void conference_send_message(uint32 conference_number, string message) throws ToxError {
       var args = Arguments.builder()

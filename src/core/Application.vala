@@ -135,7 +135,7 @@ namespace Venom {
     }
 
     public void on_show_contact(GLib.SimpleAction action, GLib.Variant? parameter) {
-      logger.i("on_show_contact");
+      logger.d("on_show_contact");
       activate();
       if (parameter == null || parameter.get_string() == "") {
         return;

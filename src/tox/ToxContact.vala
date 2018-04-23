@@ -72,6 +72,10 @@ namespace Venom {
       return _is_typing;
     }
 
+    public bool is_conference() {
+      return false;
+    }
+
     public Gdk.Pixbuf get_image() {
       return tox_image ?? pixbuf_from_resource(R.icons.default_contact);
     }
