@@ -131,7 +131,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="no_show_all">True</property>
-                <property name="tooltip_text" translatable="yes">Start a videocall</property>
+                <property name="tooltip_text" translatable="yes">Start a video call</property>
                 <property name="action_name">win.start-video</property>
                 <child>
                   <object class="GtkImage">
