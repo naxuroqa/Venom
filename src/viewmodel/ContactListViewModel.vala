@@ -25,6 +25,8 @@ namespace Venom {
     private ContactListWidgetCallback callback;
     private UserInfo user_info;
     private ObservableList contacts;
+    private ObservableList friend_requests;
+    private ObservableList conference_invites;
 
     private WeakRef right_clicked_contact;
     private WeakRef selected_contact;
@@ -33,19 +35,31 @@ namespace Venom {
     public string statusmessage { get; set; }
     public Gdk.Pixbuf userimage { get; set; }
     public string image_status { get; set; }
+    public bool friend_request_visible { get; set; }
+    public string friend_request_label { get; set; }
+    public bool conference_invite_visible { get; set; }
+    public string conference_invite_label { get; set; }
 
-    public ContactListViewModel(ILogger logger, ObservableList contacts, ContactListWidgetCallback callback, UserInfo user_info) {
+    public ContactListViewModel(ILogger logger, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListViewModel created.");
       this.logger = logger;
+      this.contacts = contacts;
+      this.friend_requests = friend_requests;
+      this.conference_invites = conference_invites;
       this.callback = callback;
       this.user_info = user_info;
-      this.contacts = contacts;
 
       right_clicked_contact = new WeakRef(null);
       selected_contact = new WeakRef(null);
 
       refresh_user_info(this);
       user_info.info_changed.connect(refresh_user_info);
+
+      refresh_friend_requests();
+      friend_requests.changed.connect(refresh_friend_requests);
+
+      refresh_conference_invites();
+      conference_invites.changed.connect(refresh_conference_invites);
     }
 
     public ListModel get_list_model() {
@@ -60,7 +74,7 @@ namespace Venom {
     }
 
     private bool peers_contain(Gee.Collection<ConferencePeer> peers, string id) {
-      foreach(var peer in peers) {
+      foreach (var peer in peers) {
         if (peer.peer_key == id) {
           return true;
         }
@@ -87,7 +101,7 @@ namespace Venom {
         var conference_menu = new GLib.Menu();
         conference_menu.append(_("New conference…"), @"win.invite-to-conference('')");
 
-        for(var i = 0; i < contacts.length(); i++) {
+        for (var i = 0; i < contacts.length(); i++) {
           if (contacts.nth_data(i) is Conference) {
             var conference = contacts.nth_data(i) as Conference;
             var peers = conference.get_peers().values;
@@ -116,6 +130,22 @@ namespace Venom {
         image_status = get_resource_from_status(user_info.user_status);
       } else {
         image_status = R.icons.offline;
+      }
+    }
+
+    private void refresh_friend_requests() {
+      var count = friend_requests.length();
+      friend_request_visible = count > 0;
+      if (count > 0) {
+        friend_request_label = ngettext("%u new friend request", "%u new friend requests", count).printf(count);
+      }
+    }
+
+    private void refresh_conference_invites() {
+      var count = conference_invites.length();
+      conference_invite_visible = count > 0;
+      if (count > 0) {
+        conference_invite_label = ngettext("%u new conference invite", "%u new conference invites", count).printf(count);
       }
     }
 

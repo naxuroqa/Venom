@@ -20,30 +20,27 @@
  */
 
 namespace Venom {
-  public class FriendRequest : IContact, GLib.Object {
-    private string id;
-    private string message;
+  public class FriendRequest : GLib.Object {
+    public string id { get; set; }
+    public string message { get; set; }
+
     public FriendRequest(string id, string message) {
       this.id = id;
       this.message = message;
     }
-    public string get_id() {
-      return id;
-    }
-    public string get_name_string() {
-      return _("Friend request");
-    }
-    public string get_status_string() {
-      return message;
-    }
-    public UserStatus get_status() { return UserStatus.NONE; }
-    public bool is_connected() { return false; }
-    public Gdk.Pixbuf get_image() { return null; }
-    public bool get_requires_attention() { return true; }
-    public void clear_attention() {}
-    public bool is_typing() { return false; }
-    public bool show_notifications() { return true; }
-    public bool is_conference() { return false; }
   }
 
+  public class ConferenceInvite : GLib.Object {
+    public IContact sender { get; set; }
+    public ConferenceType conference_type { get; set; }
+    public uint8[] get_cookie() {
+      return cookie;
+    }
+    private uint8[] cookie;
+    public ConferenceInvite(IContact sender, ConferenceType conference_type, uint8[] cookie) {
+      this.sender = sender;
+      this.conference_type = conference_type;
+      this.cookie = cookie;
+    }
+  }
 }

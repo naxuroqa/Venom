@@ -31,13 +31,17 @@ namespace Venom {
     [GtkChild] private Gtk.ListBox contact_list;
     [GtkChild] private Gtk.Image image_status;
     [GtkChild] private Gtk.MenuButton user_status_menu;
+    [GtkChild] private Gtk.Revealer friend_request_revealer;
+    [GtkChild] private Gtk.Button friend_request_button;
+    [GtkChild] private Gtk.Revealer conference_invite_revealer;
+    [GtkChild] private Gtk.Button conference_invite_button;
 
     private unowned Gtk.ListBoxRow? selected_row;
 
-    public ContactListWidget(ILogger logger, ObservableList contacts, ContactListWidgetCallback callback, UserInfo user_info) {
+    public ContactListWidget(ILogger logger, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListWidget created.");
       this.logger = logger;
-      this.view_model = new ContactListViewModel(logger, contacts, callback, user_info);
+      this.view_model = new ContactListViewModel(logger, contacts, friend_requests, conference_invites, callback, user_info);
 
       try {
         var builder = new Gtk.Builder.from_resource("/im/tox/venom/ui/user_status_menu.ui");
@@ -55,6 +59,10 @@ namespace Venom {
       view_model.bind_property("statusmessage", statusmessage, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("userimage", userimage, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("image-status", image_status, "icon-name", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("friend-request-visible", friend_request_revealer, "reveal-child", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("friend-request-label", friend_request_button, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("conference-invite-visible", conference_invite_revealer, "reveal-child", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("conference-invite-label", conference_invite_button, "label", GLib.BindingFlags.SYNC_CREATE);
 
       contact_list.button_press_event.connect(on_button_pressed);
       contact_list.popup_menu.connect(on_popup_menu);

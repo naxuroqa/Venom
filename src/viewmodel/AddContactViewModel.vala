@@ -25,16 +25,30 @@ namespace Venom {
     public string contact_message { get; set; }
     public bool contact_id_error_visible { get; set; }
     public string contact_id_error_message { get; set; }
+    public bool new_friend_request { get; set; }
 
     private ILogger logger;
     private AddContactWidgetListener listener;
+    private ObservableList friend_requests;
 
-    public AddContactViewModel(ILogger logger, AddContactWidgetListener listener) {
+    public AddContactViewModel(ILogger logger, ObservableList friend_requests, AddContactWidgetListener listener) {
       logger.d("AddContactViewModel created.");
       this.logger = logger;
+      this.friend_requests = friend_requests;
       this.listener = listener;
 
       this.notify["contact-id"].connect(() => { contact_id_error_visible = false; });
+
+      friend_requests.changed.connect(update_content);
+      update_content();
+    }
+
+    private void update_content() {
+      new_friend_request = friend_requests.length() > 0;
+    }
+
+    public ListModel get_list_model() {
+      return new ObservableListModel(friend_requests);
     }
 
     public void on_send() {
@@ -60,5 +74,21 @@ namespace Venom {
 
   public interface AddContactWidgetListener : GLib.Object {
     public abstract void on_send_friend_request(string id, string message) throws Error;
+  }
+
+  public class ContainerChildBooleanBinding : GLib.Object {
+    private Gtk.Container container;
+    private Gtk.Widget child;
+    private string property_name;
+    public bool active {
+      set {
+        container.child_set(child, property_name, value);
+      }
+    }
+    public ContainerChildBooleanBinding(Gtk.Container container, Gtk.Widget child, string property_name) {
+      this.container = container;
+      this.child = child;
+      this.property_name = property_name;
+    }
   }
 }
