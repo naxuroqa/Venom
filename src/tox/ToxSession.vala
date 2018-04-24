@@ -26,6 +26,11 @@ namespace Venom {
     GENERIC
   }
 
+  public enum ConferenceType {
+    TEXT,
+    AV
+  }
+
   public class ToxConferencePeer : GLib.Object {
     public uint32 peer_number;
     public string? peer_name;
@@ -73,6 +78,7 @@ namespace Venom {
     public abstract uint32 conference_new(string title) throws ToxError;
     public abstract void conference_delete(uint32 conference_number) throws ToxError;
     public abstract void conference_invite(uint32 friend_number, uint32 conference_number) throws ToxError;
+    public abstract void conference_join(uint32 friend_number, ConferenceType type, uint8[] cookie) throws ToxError;
 
     public abstract void conference_send_message(uint32 conference_number, string message) throws ToxError;
     public abstract void conference_set_title(uint32 conference_number, string title) throws ToxError;
@@ -108,6 +114,7 @@ namespace Venom {
   public interface ToxAdapterConferenceListener : GLib.Object {
     public abstract void on_conference_new(uint32 conference_number, string title);
     public abstract void on_conference_deleted(uint32 conference_number);
+    public abstract void on_conference_invite_received(uint32 friend_number, Venom.ConferenceType type, uint8[] cookie);
 
     public abstract void on_conference_title_changed(uint32 conference_number, uint32 peer_number, string title);
     public abstract void on_conference_peer_list_changed(uint32 conference_number, ToxConferencePeer[] peers);
@@ -419,27 +426,12 @@ namespace Venom {
       Idle.add(() => { session.conference_listener.on_conference_title_changed(conference_number, peer_number, title_str); return false; });
     }
 
-    private static void on_conference_invite_cb(Tox self, uint32 friend_number, ConferenceType type, uint8[] cookie, void *user_data) {
+    private static void on_conference_invite_cb(Tox self, uint32 friend_number, ToxCore.ConferenceType type, uint8[] cookie, void *user_data) {
       var session = (ToxSessionImpl) user_data;
       session.logger.d("on_conference_invite_cb type:" + type.to_string());
-      if (type == ConferenceType.TEXT) {
-        var err = ErrConferenceJoin.OK;
-        var conference_number = self.conference_join(friend_number, cookie, out err);
-        if (err != ErrConferenceJoin.OK) {
-          session.logger.e("Conference join failed: " + err.to_string());
-          return;
-        }
-        Idle.add(() => { session.conference_listener.on_conference_new(conference_number, ""); return false; });
-      } else if (type == ConferenceType.AV) {
-        var conference_number = ToxAV.ToxAV.join_av_groupchat(self, friend_number, cookie, session.on_av_conference_audio_frame);
-        if (conference_number < 0) {
-          session.logger.e(@"Conference AV join failed: $conference_number");
-          return;
-        }
-        Idle.add(() => { session.conference_listener.on_conference_new(conference_number, ""); return false; });
-      } else {
-        session.logger.e("Conference join failed: Invalid Conference Type");
-      }
+      var gc_type = (type == ToxCore.ConferenceType.AV) ? ConferenceType.AV : ConferenceType.TEXT;
+      var cookie_copy = copy_data(cookie, cookie.length);
+      Idle.add(() => { session.conference_listener.on_conference_invite_received(friend_number, gc_type, cookie_copy); return false; });
     }
 
     private void on_av_conference_audio_frame() {
@@ -772,6 +764,30 @@ namespace Venom {
       }
       conference_listener.on_conference_new(conference_number, title);
       return conference_number;
+    }
+
+    public virtual void conference_join(uint32 friend_number, ConferenceType type, uint8[] cookie) throws ToxError {
+      uint32 conference_number;
+      switch (type) {
+        case ConferenceType.AV:
+          conference_number = ToxAV.ToxAV.join_av_groupchat(handle, friend_number, cookie, on_av_conference_audio_frame);
+          if (conference_number < 0) {
+            var message = @"Conference AV join failed: $conference_number";
+            logger.e(message);
+            throw new ToxError.GENERIC(message);
+          }
+          break;
+        default:
+          var err = ErrConferenceJoin.OK;
+          conference_number = handle.conference_join(friend_number, cookie, out err);
+          if (err != ErrConferenceJoin.OK) {
+            logger.e("Conference join failed: " + err.to_string());
+            throw new ToxError.GENERIC(err.to_string());
+          }
+          break;
+      }
+
+      conference_listener.on_conference_new(conference_number, "");
     }
 
     public virtual void conference_delete(uint32 conference_number) throws ToxError {

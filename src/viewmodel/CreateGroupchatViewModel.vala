@@ -22,21 +22,36 @@
 namespace Venom {
   public class CreateGroupchatViewModel : GLib.Object {
     public string title { get; set; }
-    public GroupchatType group_chat_type { get; set; }
+    public ConferenceType conference_type { get; set; }
     public bool title_error_visible { get; set; }
     public string title_error { get; set; }
+    public bool new_conference_invite { get; set; }
+
     public signal void leave_view();
 
     private ILogger logger;
+    private ObservableList conference_invites;
     private CreateGroupchatWidgetListener listener;
 
-    public CreateGroupchatViewModel(ILogger logger, CreateGroupchatWidgetListener listener) {
+    public CreateGroupchatViewModel(ILogger logger, ObservableList conference_invites, CreateGroupchatWidgetListener listener) {
       logger.d("CreateGroupchatViewModel created.");
       this.logger = logger;
       this.listener = listener;
+      this.conference_invites = conference_invites;
 
-      group_chat_type = GroupchatType.TEXT;
+      conference_type = ConferenceType.TEXT;
       notify["title"].connect(() => { title_error_visible = false; });
+
+      conference_invites.changed.connect(update_content);
+      update_content();
+    }
+
+    public GLib.ListModel get_list_model() {
+      return new ObservableListModel(conference_invites);
+    }
+
+    private void update_content() {
+      new_conference_invite = conference_invites.length() > 0;
     }
 
     private void show_error(string message) {
@@ -50,7 +65,7 @@ namespace Venom {
         return;
       }
       try {
-        listener.on_create_groupchat(title, group_chat_type);
+        listener.on_create_groupchat(title, conference_type);
       } catch (Error e) {
         show_error("Could not create conference: " + e.message);
         return;
@@ -64,12 +79,7 @@ namespace Venom {
     }
   }
 
-  public enum GroupchatType {
-    TEXT,
-    AV
-  }
-
   public interface CreateGroupchatWidgetListener : GLib.Object {
-    public abstract void on_create_groupchat(string title, GroupchatType type) throws Error;
+    public abstract void on_create_groupchat(string title, ConferenceType type) throws Error;
   }
 }

@@ -35,14 +35,9 @@ namespace Venom {
       { "invite-to-conference", on_invite_to_conference, "s", null, null }
     };
 
-    [GtkChild]
-    private Gtk.Box contact_list_box;
-
-    [GtkChild]
-    private Gtk.Revealer content_revealer;
-
-    [GtkChild]
-    private Gtk.StatusIcon status_icon;
+    [GtkChild] private Gtk.Box contact_list_box;
+    [GtkChild] private Gtk.Revealer content_revealer;
+    [GtkChild] private Gtk.StatusIcon status_icon;
 
     private Gtk.Widget current_content_widget;
     private WidgetProvider next_content_widget;
@@ -57,11 +52,14 @@ namespace Venom {
     private ToxAdapterConferenceListenerImpl conference_listener;
     private ToxAdapterFiletransferListenerImpl filetransfer_listener;
     private ToxAdapterSelfListenerImpl session_listener;
-    private ObservableList contacts;
-    private ObservableList transfers;
     private NotificationListener notification_listener;
     private WindowState window_state;
     private unowned ContactListViewModel contact_list_view_model;
+
+    private ObservableList contacts;
+    private ObservableList transfers;
+    private ObservableList friend_requests;
+    private ObservableList conference_invites;
 
     private GLib.HashTable<IContact, ObservableList> conversations;
     private UserInfo user_info;
@@ -85,13 +83,17 @@ namespace Venom {
       contacts.set_list(new GLib.List<IContact>());
       transfers = new ObservableList();
       transfers.set_list(new GLib.List<FileTransfer>());
+      friend_requests = new ObservableList();
+      friend_requests.set_list(new GLib.List<FriendRequest>());
+      conference_invites = new ObservableList();
+      conference_invites.set_list(new GLib.List<ConferenceInvite>());
 
       notification_listener = new NotificationListenerImpl(logger);
       notification_listener.clear_notifications();
 
       session_listener = new ToxAdapterSelfListenerImpl(logger, user_info);
-      friend_listener = new ToxAdapterFriendListenerImpl(logger, contacts, conversations, notification_listener);
-      conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conversations, notification_listener);
+      friend_listener = new ToxAdapterFriendListenerImpl(logger, contacts, friend_requests, conversations, notification_listener);
+      conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conference_invites, conversations, notification_listener);
       filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, notification_listener);
 
       settings_database.bind_property("enable-send-typing", friend_listener, "show-typing", BindingFlags.SYNC_CREATE);
@@ -205,7 +207,7 @@ namespace Venom {
         logger.f("Could not set icon from theme: " + e.message);
       }
 
-      var contact_list = new ContactListWidget(logger, contacts, this, user_info);
+      var contact_list = new ContactListWidget(logger, contacts, friend_requests, conference_invites, this, user_info);
       contact_list_box.pack_start(contact_list, true, true);
       contact_list_view_model = contact_list.get_model();
     }
@@ -218,8 +220,6 @@ namespace Venom {
       } else if (contact is Conference) {
         var conv = conversations.@get(contact);
         switch_content_with(() => { return new ConferenceWindow(this, logger, conv, contact, conference_listener); });
-      } else if (contact is FriendRequest) {
-        on_show_friend_request(contact);
       }
     }
 
@@ -260,7 +260,7 @@ namespace Venom {
     }
 
     private void on_create_groupchat() {
-      switch_content_with(() => { return new CreateGroupchatWidget(logger, conference_listener); });
+      switch_content_with(() => { return new CreateGroupchatWidget(logger, conference_invites, conference_listener, conference_listener); });
     }
 
     public void on_filetransfer() {
@@ -273,10 +273,6 @@ namespace Venom {
 
     public void on_show_conference(IContact contact) {
       switch_content_with(() => { return new ConferenceInfoWidget(logger, this, conference_listener, contact, settings_database); });
-    }
-
-    public void on_show_friend_request(IContact contact) {
-      switch_content_with(() => { return new FriendRequestWidget(this, logger, contact, friend_listener); });
     }
 
     private IContact ? find_contact(string contact_id) {
@@ -315,8 +311,6 @@ namespace Venom {
         on_show_friend(c);
       } else if (c is Conference) {
         on_show_conference(c);
-      } else if (c is FriendRequest) {
-        on_show_friend_request(c);
       }
     }
 
@@ -332,7 +326,7 @@ namespace Venom {
 
     public void on_invite_id_to_conference(IContact contact, string id) {
       try {
-        conference_listener.on_conference_invite(contact, id);
+        conference_listener.on_send_conference_invite(contact, id);
       } catch (Error e) {
         logger.e("Could not send conference invite: " + e.message);
       }
@@ -358,7 +352,7 @@ namespace Venom {
     private void on_add_contact() {
       logger.d("on_add_contact()");
       switch_content_with(() => {
-        var widget = new AddContactWidget(logger, friend_listener);
+        var widget = new AddContactWidget(logger, friend_requests, friend_listener, friend_listener);
         return widget;
       });
     }

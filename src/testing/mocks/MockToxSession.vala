@@ -148,6 +148,13 @@ namespace Mock {
                      .create();
       mock().actual_call(this, "conference_invite", args).get_throws();
     }
+    public void conference_join(uint32 friend_number, ConferenceType type, uint8[] cookie) throws ToxError {
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .int(type)
+                     .create();
+      mock().actual_call(this, "conference_join", args).get_throws();
+    }
     public void conference_send_message(uint32 conference_number, string message) throws ToxError {
       var args = Arguments.builder()
                      .uint(conference_number)

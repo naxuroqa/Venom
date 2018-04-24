@@ -2,7 +2,7 @@
 <!-- Generated with glade 3.22.1 -->
 <interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
-  <template class="VenomFriendRequestWidget" parent="GtkListBoxRow">
+  <template class="VenomConferenceInviteEntry" parent="GtkListBoxRow">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
     <child>
@@ -12,12 +12,11 @@
         <property name="border_width">6</property>
         <property name="spacing">12</property>
         <child>
-          <object class="GtkImage">
+          <object class="GtkImage" id="contact_image">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="valign">start</property>
-            <property name="pixel_size">44</property>
+            <property name="halign">center</property>
+            <property name="pixel_size">24</property>
             <property name="icon_name">friend-symbolic</property>
           </object>
           <packing>
@@ -30,18 +29,18 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="valign">center</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
-                <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">_Public key:</property>
+                    <property name="label" translatable="yes">Invite from:</property>
                     <property name="use_underline">True</property>
                     <property name="xalign">0</property>
                     <attributes>
@@ -55,74 +54,16 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="contact_id">
+                  <object class="GtkLabel" id="contact_name">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label">contact_id</property>
-                    <property name="selectable">True</property>
+                    <property name="label">contact_name</property>
                     <property name="xalign">0</property>
-                    <style>
-                      <class name="monospace"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">_Message:</property>
-                    <property name="use_underline">True</property>
-                    <property name="xalign">0</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="height_request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel" id="contact_message">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin_left">6</property>
-                        <property name="margin_right">6</property>
-                        <property name="margin_top">6</property>
-                        <property name="margin_bottom">6</property>
-                        <property name="label">contact_message</property>
-                        <property name="wrap">True</property>
-                        <property name="wrap_mode">word-char</property>
-                        <property name="xalign">0</property>
-                        <property name="yalign">0</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <style>
-                      <class name="frame"/>
-                      <class name="content"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>
@@ -136,23 +77,23 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
+                <property name="valign">center</property>
                 <property name="spacing">6</property>
                 <child>
-                  <object class="GtkButton" id="reject">
+                  <object class="GtkButton" id="accept">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Reject request</property>
+                    <property name="tooltip_text" translatable="yes">Accept invite</property>
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="icon_name">user-trash-symbolic</property>
+                        <property name="icon_name">object-select-symbolic</property>
                       </object>
                     </child>
                     <style>
-                      <class name="destructive-action"/>
+                      <class name="suggested-action"/>
                       <class name="image-button"/>
                     </style>
                   </object>
@@ -163,20 +104,20 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="accept">
+                  <object class="GtkButton" id="reject">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Accept request</property>
+                    <property name="tooltip_text" translatable="yes">Reject invite</property>
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="icon_name">object-select-symbolic</property>
+                        <property name="icon_name">user-trash-symbolic</property>
                       </object>
                     </child>
                     <style>
-                      <class name="suggested-action"/>
+                      <class name="destructive-action"/>
                       <class name="image-button"/>
                     </style>
                   </object>

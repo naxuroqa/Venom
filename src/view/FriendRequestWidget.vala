@@ -21,39 +21,32 @@
 
 namespace Venom {
   [GtkTemplate(ui = "/im/tox/venom/ui/friend_request_widget.ui")]
-  public class FriendRequestWidget : Gtk.Box {
+  public class FriendRequestWidget : Gtk.ListBoxRow {
     private ILogger logger;
-    private IContact contact;
+    private FriendRequest friend_request;
     private FriendRequestWidgetListener listener;
-    private unowned ApplicationWindow app;
 
-    [GtkChild]
-    private Gtk.Label contact_id;
-    [GtkChild]
-    private Gtk.Label contact_message;
+    [GtkChild] private Gtk.Label contact_id;
+    [GtkChild] private Gtk.Label contact_message;
 
-    [GtkChild]
-    private Gtk.Button accept;
-    [GtkChild]
-    private Gtk.Button reject;
+    [GtkChild] private Gtk.Button accept;
+    [GtkChild] private Gtk.Button reject;
 
-    public FriendRequestWidget(ApplicationWindow app, ILogger logger, IContact contact, FriendRequestWidgetListener listener) {
+    public FriendRequestWidget(ILogger logger, FriendRequest friend_request, FriendRequestWidgetListener listener) {
       logger.d("FriendRequestWidget created.");
       this.logger = logger;
-      this.contact = contact;
-      this.app = app;
+      this.friend_request = friend_request;
       this.listener = listener;
 
-      contact_id.label = contact.get_id();
-      contact_message.label = contact.get_status_string();
+      contact_id.label = friend_request.id;
+      contact_message.label = friend_request.message;
       accept.clicked.connect(on_accept_clicked);
       reject.clicked.connect(on_reject_clicked);
     }
 
     private void on_accept_clicked() {
       try {
-        listener.on_accept_friend_request(contact.get_id());
-        app.show_welcome();
+        listener.on_accept_friend_request(friend_request.id);
       } catch (Error e) {
         logger.i("Could not accept friend request: " + e.message);
       }
@@ -61,8 +54,7 @@ namespace Venom {
 
     private void on_reject_clicked() {
       try {
-        listener.on_reject_friend_request(contact.get_id());
-        app.show_welcome();
+        listener.on_reject_friend_request(friend_request.id);
       } catch (Error e) {
         logger.i("Could not reject friend request: " + e.message);
       }

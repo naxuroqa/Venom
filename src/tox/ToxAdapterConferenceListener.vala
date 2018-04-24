@@ -20,19 +20,22 @@
  */
 
 namespace Venom {
-  public class ToxAdapterConferenceListenerImpl : ToxAdapterConferenceListener, ConferenceWidgetListener, ConferenceInfoWidgetListener, CreateGroupchatWidgetListener, GLib.Object {
+  public class ToxAdapterConferenceListenerImpl : ToxAdapterConferenceListener, ConferenceInviteEntryListener, ConferenceWidgetListener, ConferenceInfoWidgetListener, CreateGroupchatWidgetListener, GLib.Object {
     private unowned ToxSession session;
     private ILogger logger;
     private ObservableList contacts;
+    private ObservableList conference_invites;
     private NotificationListener notification_listener;
     private GLib.HashTable<IContact, ObservableList> conversations;
 
     private GLib.HashTable<uint32, IContact> conferences;
+    private unowned GLib.HashTable<uint32, IContact> friends;
 
-    public ToxAdapterConferenceListenerImpl(ILogger logger, ObservableList contacts, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
+    public ToxAdapterConferenceListenerImpl(ILogger logger, ObservableList contacts, ObservableList conference_invites, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
       logger.d("ToxAdapterConferenceListenerImpl created.");
       this.logger = logger;
       this.contacts = contacts;
+      this.conference_invites = conference_invites;
       this.conversations = conversations;
       this.notification_listener = notification_listener;
 
@@ -46,6 +49,7 @@ namespace Venom {
     public virtual void attach_to_session(ToxSession session) {
       this.session = session;
       session.set_conference_listener(this);
+      friends = session.get_friends();
     }
 
     public virtual void on_remove_conference(IContact c) throws Error {
@@ -63,12 +67,12 @@ namespace Venom {
       session.conference_send_message(conference.conference_number, message);
     }
 
-    public virtual void on_create_groupchat(string title, GroupchatType type) throws Error {
+    public virtual void on_create_groupchat(string title, ConferenceType type) throws Error {
       session.conference_new(title);
     }
 
-    public virtual void on_conference_invite(IContact c, string id) throws Error {
-      logger.d("on_conference_invite");
+    public virtual void on_send_conference_invite(IContact c, string id) throws Error {
+      logger.d("on_send_conference_invite");
       if (c is Contact) {
         var contact = c as Contact;
         if (id == "") {
@@ -81,6 +85,49 @@ namespace Venom {
         }
       } else {
         assert_not_reached();
+      }
+    }
+
+    public virtual void on_accept_conference_invite(ConferenceInvite invite) throws Error {
+      var c = invite.sender as Contact;
+      session.conference_join(c.tox_friend_number, invite.conference_type, invite.get_cookie());
+      conference_invites.remove(invite);
+    }
+
+    public virtual void on_reject_conference_invite(ConferenceInvite invite) throws Error {
+      conference_invites.remove(invite);
+    }
+
+    private bool invite_equals(ConferenceInvite invite, uint32 friend_number, ConferenceType type, uint8[] cookie) {
+      var cmp_sender = invite.sender as Contact;
+      var cmp_cookie = invite.get_cookie();
+      return (cmp_sender.tox_friend_number == friend_number
+              && invite.conference_type == type
+              && cmp_cookie.length == cookie.length
+              && Memory.cmp(cookie, cmp_cookie, cookie.length) == 0);
+    }
+
+    public virtual void on_conference_invite_received(uint32 friend_number, ConferenceType type, uint8[] cookie) {
+      logger.d("on_conference_invite_received");
+
+      if (friend_number == uint32.MAX) {
+        session.conference_join(friend_number, type, cookie);
+      } else {
+        for (var i = 0; i < conference_invites.length(); i++) {
+          var invite = conference_invites.nth_data(i) as ConferenceInvite;
+          if (invite_equals(invite, friend_number, type, cookie)) {
+            logger.d("duplicate invite received, discarding");
+            return;
+          }
+        }
+
+        var contact = friends.@get(friend_number) as Contact;
+        if (contact.auto_conference) {
+          session.conference_join(friend_number, type, cookie);
+        } else {
+          var invite = new ConferenceInvite(contact, type, cookie);
+          conference_invites.append(invite);
+        }
       }
     }
 

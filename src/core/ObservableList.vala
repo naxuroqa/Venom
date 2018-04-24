@@ -23,6 +23,7 @@ namespace Venom {
   public class ObservableList : GLib.Object {
     public signal void added(GLib.Object item, uint index);
     public signal void removed(GLib.Object item, uint index);
+    public signal void changed();
 
     private Gee.List<GLib.Object> list = new Gee.ArrayList<GLib.Object>();
 
@@ -44,12 +45,14 @@ namespace Venom {
       var idx = list.size;
       list.add(item);
       added(item, idx);
+      changed();
     }
 
     public void remove(GLib.Object item) {
       var idx = list.index_of(item);
       removed(item, idx);
       list.remove_at(idx);
+      changed();
     }
 
     public uint length() {

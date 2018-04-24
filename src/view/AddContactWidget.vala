@@ -27,20 +27,32 @@ namespace Venom {
     [GtkChild] private Gtk.Button send;
     [GtkChild] private Gtk.Label contact_id_error;
     [GtkChild] private Gtk.Revealer contact_id_error_content;
+    [GtkChild] private Gtk.Box placeholder;
+    [GtkChild] private Gtk.ListBox friend_requests;
+
+    [GtkChild] private Gtk.Stack stack;
+    [GtkChild] private Gtk.Box friend_request_item;
 
     private ILogger logger;
     private AddContactWidgetListener listener;
     private AddContactViewModel view_model;
+    private ContainerChildBooleanBinding stack_binding;
 
-    public AddContactWidget(ILogger logger, AddContactWidgetListener listener) {
+    public AddContactWidget(ILogger logger, ObservableList friend_requests_model, AddContactWidgetListener listener, FriendRequestWidgetListener friend_request_listener) {
       logger.d("AddContactWidget created.");
       this.logger = logger;
-      view_model = new AddContactViewModel(logger, listener);
+      view_model = new AddContactViewModel(logger, friend_requests_model, listener);
+      stack_binding = new ContainerChildBooleanBinding(stack, friend_request_item, "needs-attention");
 
       contact_id.bind_property("text", view_model, "contact-id", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       contact_message.buffer.bind_property("text", view_model, "contact-message", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-      view_model.bind_property("contact-id-error-message", contact_id_error, "label" , BindingFlags.SYNC_CREATE);
+      view_model.bind_property("contact-id-error-message", contact_id_error, "label", BindingFlags.SYNC_CREATE);
       view_model.bind_property("contact-id-error-visible", contact_id_error_content, "reveal-child", BindingFlags.SYNC_CREATE);
+      view_model.bind_property("new-friend-request", stack_binding, "active", BindingFlags.SYNC_CREATE);
+
+      friend_requests.set_placeholder(placeholder);
+      var creator = new FriendRequestWidgetCreator(logger, friend_request_listener);
+      friend_requests.bind_model(view_model.get_list_model(), creator.create);
 
       contact_id.icon_release.connect(view_model.on_paste_clipboard);
       send.clicked.connect(view_model.on_send);
@@ -48,6 +60,19 @@ namespace Venom {
 
     ~AddContactWidget() {
       logger.d("AddContactWidget destroyed.");
+    }
+
+    public class FriendRequestWidgetCreator {
+      private unowned ILogger logger;
+      private FriendRequestWidgetListener listener;
+      public FriendRequestWidgetCreator(ILogger logger, FriendRequestWidgetListener listener) {
+        this.logger = logger;
+        this.listener = listener;
+      }
+
+      public Gtk.Widget create(GLib.Object o) {
+        return new FriendRequestWidget(logger, o as FriendRequest, listener);
+      }
     }
   }
 }

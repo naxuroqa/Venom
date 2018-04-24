@@ -29,20 +29,21 @@ namespace Venom {
     private GLib.HashTable<uint32, Message> messages_waiting_for_rr;
 
     private unowned GLib.HashTable<uint32, IContact> friends;
-    private GLib.HashTable<string, IContact> friend_requests;
+    private Gee.Map<string, FriendRequest> tox_friend_requests;
+    private ObservableList friend_requests;
 
     public bool show_typing { get; set; }
 
-    public ToxAdapterFriendListenerImpl(ILogger logger, ObservableList contacts, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
+    public ToxAdapterFriendListenerImpl(ILogger logger, ObservableList contacts, ObservableList friend_requests, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
       logger.d("ToxAdapterFriendListenerImpl created.");
       this.logger = logger;
       this.contacts = contacts;
+      this.friend_requests = friend_requests;
       this.conversations = conversations;
       this.notification_listener = notification_listener;
 
       messages_waiting_for_rr = new GLib.HashTable<uint32, Message>(null, null);
-
-      friend_requests = new GLib.HashTable<string, IContact>(str_hash, str_equal);
+      tox_friend_requests = new Gee.HashMap<string, FriendRequest>();
     }
 
     ~ToxAdapterFriendListenerImpl() {
@@ -75,17 +76,19 @@ namespace Venom {
     }
 
     public virtual void on_accept_friend_request(string id) throws Error {
-      var friend_request = friend_requests.@get(id);
+      var friend_request = tox_friend_requests.@get(id);
       var public_key = Tools.hexstring_to_bin(id);
       session.friend_add_norequest(public_key);
-      friend_requests.remove(id);
-      contacts.remove(friend_request);
+
+      friend_requests.remove(friend_request);
+      tox_friend_requests.remove(id);
     }
 
     public virtual void on_reject_friend_request(string id) throws Error {
-      var friend_request = friend_requests.@get(id);
-      friend_requests.remove(id);
-      contacts.remove(friend_request);
+      var friend_request = tox_friend_requests.@get(id);
+
+      friend_requests.remove(friend_request);
+      tox_friend_requests.remove(id);
     }
 
     public virtual void on_send_message(IContact c, string message) throws Error {
@@ -148,10 +151,10 @@ namespace Venom {
 
     public virtual void on_friend_request(uint8[] public_key, string message) {
       logger.d("on_friend_request");
-      var str_id = Tools.bin_to_hexstring(public_key);
-      var contact = new FriendRequest(str_id, message);
-      contacts.append(contact);
-      friend_requests.@set(str_id, contact);
+      var id = Tools.bin_to_hexstring(public_key);
+      var request = new FriendRequest(id, message);
+      friend_requests.append(request);
+      tox_friend_requests.@set(id, request);
     }
 
     public virtual void on_friend_status_changed(uint32 friend_number, UserStatus status) {
