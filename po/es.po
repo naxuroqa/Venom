@@ -14,7 +14,7 @@ msgstr "Establecer el nivel de mensajes para iniciar sesión"
 
 #: src/core/Application.vala:32
 msgid "<loglevel>"
-msgstr "<nivel de log>"
+msgstr ""
 
 #: src/core/Application.vala:33
 msgid "Display version number"
@@ -22,7 +22,7 @@ msgstr "Mostrar número de versión"
 
 #: src/core/NotificationListener.vala:55
 msgid "New message from %s"
-msgstr "Nuevo mensaje de% s"
+msgstr "Nuevo mensaje de %s"
 
 #: src/core/R.vala:70
 msgid "Tox User"
@@ -30,7 +30,7 @@ msgstr "Usuario de Tox"
 
 #: src/tox/Conference.vala:47
 msgid "%u Peers online"
-msgstr "% u Pares en línea"
+msgstr "%u Pares en línea"
 
 #: src/view/AboutDialog.vala:53
 msgid "Packagers"
@@ -45,9 +45,8 @@ msgid "Visit us on Github"
 msgstr "Visítanos en Github"
 
 #: src/ui/add_contact_widget.ui:43
-#, fuzzy
 msgid "Please let me add you to my contact list. 😁"
-msgstr "Por favor dejame agregarte a mi lista de contactos."
+msgstr ""
 
 #: src/ui/add_contact_widget.ui:99
 msgid "Send a friend request"
@@ -55,21 +54,19 @@ msgstr "Envía un solicitud de amistad"
 
 #: src/ui/add_contact_widget.ui:133
 msgid "_ID:"
-msgstr "_CARNÉ DE IDENTIDAD:"
+msgstr ""
 
 #: src/ui/add_contact_widget.ui:150
-#, fuzzy
 msgid "Enter a Tox ID or URI here"
-msgstr "Inserte un Tox ID o un Tox URI aquí"
+msgstr ""
 
 #: src/ui/create_groupchat_widget.ui:113 src/ui/add_contact_widget.ui:154
-#, fuzzy
 msgid "paste from clipboard"
-msgstr "_Copiar ID al portapapeles"
+msgstr ""
 
 #: src/ui/add_contact_widget.ui:188
 msgid "<small>Enter your friends Tox ID</small>"
-msgstr "<small> Introduce la ID de Tox de tus amigos </ small>"
+msgstr "<small>Introduce la ID de Tox de tus amigos</small>"
 
 #: src/ui/friend_request_widget.ui:78 src/ui/add_contact_widget.ui:220
 #, fuzzy
@@ -81,9 +78,8 @@ msgid "Send a custom message to be displayed to the friend you are adding"
 msgstr "Envíe un mensaje personalizado para el contacto que está agregando"
 
 #: src/ui/add_contact_widget.ui:268
-#, fuzzy
 msgid "<small>Send your friend a short message</small>"
-msgstr "Mostrar a _otros cuando estoy escribiendo"
+msgstr ""
 
 #: src/ui/add_contact_widget.ui:298
 msgid "Send"
@@ -103,9 +99,8 @@ msgid "_Quit"
 msgstr "_Dejar"
 
 #: src/ui/create_groupchat_widget.ui:112 src/ui/conference_info_widget.ui:39
-#, fuzzy
 msgid "Conference"
-msgstr "Abrir preferencias"
+msgstr ""
 
 #: src/ui/conference_info_widget.ui:105
 msgid "Title:"
@@ -135,15 +130,12 @@ msgid "All"
 msgstr "Todo"
 
 #: src/ui/contact_list_widget.ui:329
-#, fuzzy
 msgid "Add a contact"
-msgstr "Añadir contacto"
+msgstr ""
 
 #: src/ui/contact_list_widget.ui:371
-#, fuzzy
 msgid "View file transfers"
-msgstr "Finalizó transferencia de archivo para %s de %s\n"
-""
+msgstr ""
 
 #: src/ui/contact_list_widget.ui:392
 msgid "Open preferences"
@@ -154,9 +146,8 @@ msgid "Start a call"
 msgstr "Comience una llamada"
 
 #: src/ui/conversation_window.ui:290
-#, fuzzy
 msgid "Insert attachment"
-msgstr "Insertar Smiley"
+msgstr ""
 
 #: src/ui/create_groupchat_widget.ui:93
 msgid "_Title:"
@@ -171,14 +162,12 @@ msgid "Create"
 msgstr "Crear"
 
 #: src/ui/file_transfer_widget.ui:35
-#, fuzzy
 msgid "File transfers"
-msgstr "El archivo fue rechazado."
+msgstr ""
 
 #: src/ui/friend_info_widget.ui:45
-#, fuzzy
 msgid "Friend profile"
-msgstr "Enviar archivo"
+msgstr ""
 
 #: src/ui/friend_info_widget.ui:62
 msgid "Remove from your friends list"
@@ -193,9 +182,8 @@ msgid "Image:"
 msgstr "Imagen:"
 
 #: src/ui/friend_info_widget.ui:245
-#, fuzzy
 msgid "Last seen:"
-msgstr "Visto por última vez: %s"
+msgstr ""
 
 #: src/ui/friend_info_widget.ui:290
 msgid "Alias:"
@@ -203,7 +191,7 @@ msgstr "Alias:"
 
 #: src/ui/friend_info_widget.ui:321
 msgid "<small>Set a custom alias to quickly find your friends</small>"
-msgstr "<small> Establece un alias personalizado para encontrar rápidamente a tus amigos </ small>"
+msgstr "<small>Establece un alias personalizado para encontrar rápidamente a tus amigos</small>"
 
 #: src/ui/user_info_widget.ui:291 src/ui/friend_info_widget.ui:579
 msgid "Tox"
@@ -214,14 +202,12 @@ msgid "ID:"
 msgstr "ID:"
 
 #: src/ui/message_widget.ui:91
-#, fuzzy
 msgid "Message sent ✓"
-msgstr "Mensaje demasiado largo"
+msgstr ""
 
 #: src/ui/message_widget.ui:107
-#, fuzzy
 msgid "Message received ✓"
-msgstr "El archivo fue rechazado."
+msgstr ""
 
 #: src/ui/peer_entry.ui:55
 msgid "This peer is also in your friends list"
@@ -256,20 +242,16 @@ msgid "Privacy"
 msgstr "Privacidad"
 
 #: src/ui/settings_widget.ui:663
-#, fuzzy
 msgid "Send typing notifications"
-msgstr "Error en la carga del ícono: %s\n"
-""
+msgstr ""
 
 #: src/ui/settings_widget.ui:676
-#, fuzzy
 msgid "<small>Show others when I am typing</small>"
-msgstr "Mostrar a _otros cuando estoy escribiendo"
+msgstr ""
 
 #: src/ui/settings_widget.ui:759
-#, fuzzy
 msgid "History"
-msgstr "Mantener historial"
+msgstr ""
 
 #: src/ui/settings_widget.ui:893
 msgid "days"
@@ -294,7 +276,7 @@ msgstr "_Copiar ID al portapapeles"
 
 #: src/ui/welcome_widget.ui:40
 msgid "<big>A new kind of instant messaging</big>"
-msgstr "<big> Un nuevo tipo de mensajería instantánea </ big>"
+msgstr "<big>Un nuevo tipo de mensajería instantánea</big>"
 
 #: src/ui/welcome_widget.ui:56
 msgid "Chat with your friends and family without anyone else listening in."
@@ -323,7 +305,7 @@ msgstr "Aceptar petición"
 
 #: src/ui/application_window.ui:55
 msgid "venom"
-msgstr "veneno"
+msgstr ""
 
 #: src/core/NotificationListener.vala:76
 msgid "New file from %s"
