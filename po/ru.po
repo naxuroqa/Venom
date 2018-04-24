@@ -14,7 +14,7 @@ msgstr "Установить уровень логирования"
 
 #: src/core/Application.vala:32
 msgid "<loglevel>"
-msgstr "<LogLevel>"
+msgstr "<loglevel>"
 
 #: src/core/Application.vala:33
 msgid "Display version number"

@@ -22,7 +22,7 @@ msgstr "Afficher le numéro de version"
 
 #: src/core/NotificationListener.vala:55
 msgid "New message from %s"
-msgstr "Nouveau message de% s"
+msgstr "Nouveau message de %s"
 
 #: src/core/R.vala:70
 msgid "Tox User"
@@ -30,7 +30,7 @@ msgstr "Utilisateur de Tox"
 
 #: src/tox/Conference.vala:47
 msgid "%u Peers online"
-msgstr "% u pairs en ligne"
+msgstr "%u pairs en ligne"
 
 #: src/view/AboutDialog.vala:53
 msgid "Packagers"
@@ -66,7 +66,7 @@ msgstr "coller du presse-papiers"
 
 #: src/ui/add_contact_widget.ui:188
 msgid "<small>Enter your friends Tox ID</small>"
-msgstr "<small> Entrez vos amis Tox ID </ small>"
+msgstr "<small>Entrez vos amis Tox ID</small>"
 
 #: src/ui/friend_request_widget.ui:78 src/ui/add_contact_widget.ui:220
 msgid "_Message:"
@@ -78,7 +78,7 @@ msgstr "Envoyez un message personnalisé à l'ami que vous ajoutez"
 
 #: src/ui/add_contact_widget.ui:268
 msgid "<small>Send your friend a short message</small>"
-msgstr "<small> Envoyer un petit message à votre ami </ small>"
+msgstr "<small>Envoyer un petit message à votre ami</small>"
 
 #: src/ui/add_contact_widget.ui:298
 msgid "Send"
@@ -188,7 +188,7 @@ msgstr "Alias:"
 
 #: src/ui/friend_info_widget.ui:321
 msgid "<small>Set a custom alias to quickly find your friends</small>"
-msgstr "<small> Définir un alias personnalisé pour trouver rapidement vos amis </ small>"
+msgstr "<small>Définir un alias personnalisé pour trouver rapidement vos amis</small>"
 
 #: src/ui/user_info_widget.ui:291 src/ui/friend_info_widget.ui:579
 msgid "Tox"
@@ -244,7 +244,7 @@ msgstr "Envoyer des notifications de frappe"
 
 #: src/ui/settings_widget.ui:676
 msgid "<small>Show others when I am typing</small>"
-msgstr "<small> Afficher les autres lorsque je tape </ small>"
+msgstr "<small>Afficher les autres lorsque je tape</small>"
 
 #: src/ui/settings_widget.ui:759
 msgid "History"
@@ -272,7 +272,7 @@ msgstr "Copier dans le presse-papier"
 
 #: src/ui/welcome_widget.ui:40
 msgid "<big>A new kind of instant messaging</big>"
-msgstr "<big> Un nouveau type de messagerie instantanée </ big>"
+msgstr "<big>Un nouveau type de messagerie instantanée</big>"
 
 #: src/ui/welcome_widget.ui:56
 msgid "Chat with your friends and family without anyone else listening in."
@@ -305,7 +305,7 @@ msgstr "venin"
 
 #: src/core/NotificationListener.vala:76
 msgid "New file from %s"
-msgstr "Nouveau fichier de% s"
+msgstr "Nouveau fichier de %s"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:58
 msgid "New Message!"
@@ -331,15 +331,15 @@ msgstr "En ligne"
 
 #: src/viewmodel/MessageViewModel.vala:65
 msgid "Today at %s"
-msgstr "Aujourd'hui à% s"
+msgstr "Aujourd'hui à %s"
 
 #: src/viewmodel/MessageViewModel.vala:69
 msgid "Yesterday at %s"
-msgstr "Hier à% s"
+msgstr "Hier à %s"
 
 #: src/tox/Conference.vala:43
 msgid "Unnamed conference %u"
-msgstr "Conférence sans nom% u"
+msgstr "Conférence sans nom %u"
 
 #: src/tox/ToxSession.vala:645
 msgid "Address must consist of 76 hexadecimal characters"
@@ -347,7 +347,7 @@ msgstr "L'adresse doit comporter 76 caractères hexadécimaux"
 
 #: src/view/ConversationWindow.vala:102
 msgid "%s is typing..."
-msgstr "% s tape ..."
+msgstr "%s tape ..."
 
 #: src/view/ConversationWindow.vala:168 src/view/FileTransferEntry.vala:76
 msgid "_Cancel"
@@ -407,7 +407,7 @@ msgstr "Procuration"
 
 #: src/ui/settings_widget.ui:326
 msgid "<small>Use a dark variant of the theme</small>"
-msgstr "<small> Utiliser une variante sombre du thème </ small>"
+msgstr "<small>Utiliser une variante sombre du thème</small>"
 
 #: src/ui/settings_widget.ui:383
 msgid "Animations"
@@ -415,7 +415,7 @@ msgstr "Animations"
 
 #: src/ui/settings_widget.ui:396
 msgid "<small>Enable animated transitions</small>"
-msgstr "<small> Activer les transitions animées </ small>"
+msgstr "<small>Activer les transitions animées</small>"
 
 #: src/ui/settings_widget.ui:453
 msgid "Notifications"
@@ -423,11 +423,11 @@ msgstr "Notifications"
 
 #: src/ui/settings_widget.ui:466
 msgid "<small>Show notifications for unread messages</small>"
-msgstr "<small> Afficher les notifications pour les messages non lus </ small>"
+msgstr "<small>Afficher les notifications pour les messages non lus</small>"
 
 #: src/ui/settings_widget.ui:536
 msgid "<small>Minimize app to system tray on close</small>"
-msgstr "<small> Réduire l'application à la barre d'état système à proximité </ small>"
+msgstr "<small>Réduire l'application à la barre d'état système à proximité</small>"
 
 #: src/ui/settings_widget.ui:823
 msgid "Keep forever"
@@ -439,7 +439,7 @@ msgstr "Retirer plus de"
 
 #: src/ui/settings_widget.ui:1017
 msgid "<b>Connection</b>"
-msgstr "<b> Connexion </ b>"
+msgstr "<b>Connexion</b>"
 
 #: src/ui/settings_widget.ui:1060
 msgid "UDP"
@@ -451,7 +451,7 @@ msgstr "IPv6"
 
 #: src/ui/settings_widget.ui:1143
 msgid "<small>Allow both IPv4 and IPv6 communication</small>"
-msgstr "<small> Autoriser les communications IPv4 et IPv6 </ small>"
+msgstr "<small>Autoriser les communications IPv4 et IPv6</small>"
 
 #: src/ui/settings_widget.ui:1200
 msgid "Local discovery"
@@ -459,7 +459,7 @@ msgstr "Découverte locale"
 
 #: src/ui/settings_widget.ui:1213
 msgid "<small>Look for peers on the local network</small>"
-msgstr "<small> Rechercher des pairs sur le réseau local </ small>"
+msgstr "<small>Rechercher des pairs sur le réseau local</small>"
 
 #: src/ui/settings_widget.ui:1270
 msgid "Hole punching"
@@ -467,15 +467,15 @@ msgstr "Perforation"
 
 #: src/ui/settings_widget.ui:1283
 msgid "<small>Enable UDP <a href=\"https://en.wikipedia.org/wiki/Hole_punching_(networking)\">hole punching</a></small>"
-msgstr "<small> Activer UDP <a href=\"https://en.wikipedia.org/wiki/Hole_punching_(networking)\"> perforation </a> </ small>"
+msgstr "<small>Activer UDP<a href=\"https://en.wikipedia.org/wiki/Hole_punching_(networking)\">perforation</a></small>"
 
 #: src/ui/settings_widget.ui:1376
 msgid "<b>Bootstrap nodes</b>"
-msgstr "<b> Noeuds Bootstrap </ b>"
+msgstr "<b>Noeuds Bootstrap</b>"
 
 #: src/ui/settings_widget.ui:1511
 msgid "<b>Proxy</b>"
-msgstr "<b> Proxy </ b>"
+msgstr "<b>Proxy</b>"
 
 #: src/ui/settings_widget.ui:1578
 msgid "System settings"
@@ -483,7 +483,7 @@ msgstr "Les paramètres du système"
 
 #: src/ui/settings_widget.ui:1591
 msgid "<small>Use your systems proxy settings</small>"
-msgstr "<small> Utilisez les paramètres de proxy de votre système </ small>"
+msgstr "<small>Utilisez les paramètres de proxy de votre système</small>"
 
 #: src/ui/settings_widget.ui:1645
 msgid "Manual settings"
@@ -491,7 +491,7 @@ msgstr "Paramètres manuels"
 
 #: src/ui/settings_widget.ui:1658
 msgid "<small>Use custom proxy settings</small>"
-msgstr "<small> Utiliser les paramètres de proxy personnalisés </ small>"
+msgstr "<small>Utiliser les paramètres de proxy personnalisés</small>"
 
 #: src/ui/settings_widget.ui:1699
 msgid "Host"
@@ -499,7 +499,7 @@ msgstr "Hôte"
 
 #: src/ui/settings_widget.ui:1739
 msgid "<small>Set a SOCKS5 proxy to connect to</small>"
-msgstr "<small> Définir un proxy SOCKS5 pour se connecter à </ small>"
+msgstr "<small>Définir un proxy SOCKS5 pour se connecter à</small>"
 
 #: src/ui/friend_info_widget.ui:309
 msgid "Reset alias"
