@@ -33,8 +33,10 @@ src/core/R.vala
 src/core/Logger.vala
 src/core/Message.vala
 src/core/Contact.vala
+src/core/FileIO.vala
 src/core/WidgetFactory.vala
 src/core/Tools.vala
+src/core/WindowState.vala
 src/core/Application.vala
 src/core/ObservableList.vala
 src/core/AVManager.vala
@@ -84,6 +86,7 @@ src/view/AddContactWidget.vala
 src/view/ConversationWindow.vala
 src/view/PeerEntry.vala
 src/view/FileTransferEntry.vala
+src/view/ConferenceInviteEntry.vala
 src/view/UserInfoWidget.vala
 src/view/FriendInfoWidget.vala
 src/view/ContextStyleBinding.vala
@@ -99,6 +102,7 @@ src/ui/friend_request_widget.ui
 src/ui/conference_info_widget.ui
 src/ui/peer_entry.ui
 src/ui/welcome_widget.ui
+src/ui/conference_invite_entry.ui
 src/ui/node_widget.ui
 src/ui/message_widget.ui
 src/ui/user_status_menu.ui

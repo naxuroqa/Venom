@@ -1070,7 +1070,7 @@ Author: Venom authors
                                               <object class="GtkLabel">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
-                                                <property name="label" translatable="yes">&lt;small&gt;Use UDP communication when availlable&lt;/small&gt;</property>
+                                                <property name="label" translatable="yes">&lt;small&gt;Use UDP communication when available&lt;/small&gt;</property>
                                                 <property name="use_markup">True</property>
                                                 <property name="xalign">0</property>
                                                 <style>
@@ -1809,7 +1809,7 @@ Author: Venom authors
               </object>
               <packing>
                 <property name="name">page2</property>
-                <property name="title" translatable="yes">page2</property>
+                <property name="title">page2</property>
                 <property name="position">2</property>
               </packing>
             </child>

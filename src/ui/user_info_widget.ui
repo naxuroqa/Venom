@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.4 -->
+<!-- Generated with glade 3.22.1 -->
 <interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkSizeGroup"/>
@@ -38,9 +38,6 @@
           <placeholder/>
         </child>
       </object>
-    </child>
-    <child>
-      <placeholder/>
     </child>
   </object>
   <template class="VenomUserInfoWidget" parent="GtkBox">
@@ -158,7 +155,7 @@
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Statusmessage:</property>
+                            <property name="label" translatable="yes">Status message:</property>
                             <property name="use_underline">True</property>
                             <property name="xalign">0</property>
                             <attributes>

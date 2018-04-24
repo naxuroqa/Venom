@@ -1,991 +1,661 @@
-# Russian translation for PACKAGE package.
-# Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# herrniemand, 2014.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: Venom\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-19 16:47+0100\n"
-"PO-Revision-Date: 2014-07-03 12:46+1200\n"
-"Last-Translator: Ackermann Yuriy <ackermann.yuriy@gmail.com>\n"
-"Language-Team: Russian\n"
-"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Venom\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/Main.vala:29
+#: src/core/Application.vala:32
 msgid "Set level of messages to log"
-msgstr ""
+msgstr "Установить уровень логирования"
 
-#: src/Main.vala:29
+#: src/core/Application.vala:32
 msgid "<loglevel>"
-msgstr ""
+msgstr "<LogLevel>"
 
-#: src/Main.vala:30
+#: src/core/Application.vala:33
 msgid "Display version number"
-msgstr ""
+msgstr "Показывать номер версии"
 
-#: src/Main.vala:65
-#, c-format
-msgid "error: %s\n"
-msgstr "ошибка: %s\n"
-
-#: src/Main.vala:66
-#, c-format
-msgid "Run '%s --help' to see a full list of available command line options.\n"
-msgstr ""
-"Используйте '%s --help' чтобы увидеть полный список доступных параметров "
-"командной строки.\n"
-
-#: src/core/NotificationListener.vala:51
-#, c-format
+#: src/core/NotificationListener.vala:55
 msgid "New message from %s"
-msgstr ""
+msgstr "Новое сообщение от %s"
 
 #: src/core/R.vala:70
 msgid "Tox User"
-msgstr "Tox пользователь"
+msgstr "Пользователь Tox"
 
-#: src/tox/GroupchatContact.vala:45
-#, c-format
+#: src/tox/Conference.vala:47
 msgid "%u Peers online"
-msgstr ""
+msgstr "%u пиров онлайн"
 
-#: src/ui/AboutDialog.vala:53
+#: src/view/AboutDialog.vala:53
 msgid "Packagers"
-msgstr ""
+msgstr "Упаковщиков"
 
-#: src/ui/AboutDialog.vala:58
+#: src/view/AboutDialog.vala:58
 msgid "translator-credits"
-msgstr "Ackermann Yuriy"
+msgstr "Ackermann Yuriy, Sorrow, Wrewolf"
 
-#: src/ui/AboutDialog.vala:61
+#: src/view/AboutDialog.vala:61
 msgid "Visit us on Github"
-msgstr ""
+msgstr "Посетите нас на Github"
 
-#: src/ui/add_contact_widget.ui:6
+#: src/ui/add_contact_widget.ui:43
 #, fuzzy
 msgid "Please let me add you to my contact list. 😁"
-msgstr "Пожалуйста, добавьте меня в свой список контактов."
+msgstr "Пожалуйста, добавьте меня в свой список контактов. 😁"
 
-#: src/ui/add_contact_widget.ui:38
+#: src/ui/add_contact_widget.ui:99
 msgid "Send a friend request"
-msgstr ""
+msgstr "Отправить запрос другу"
 
-#: src/ui/add_contact_widget.ui:72
+#: src/ui/add_contact_widget.ui:133
 msgid "_ID:"
-msgstr ""
+msgstr "_ID:"
 
-#: src/ui/add_contact_widget.ui:89
-#, fuzzy
+#: src/ui/add_contact_widget.ui:150
 msgid "Enter a Tox ID or URI here"
-msgstr "Вставьте Tox ID или Tox URI"
+msgstr "Вставьте Tox ID или URI"
 
-#: src/ui/add_contact_widget.ui:93 src/ui/create_groupchat_widget.ui:89
-#, fuzzy
+#: src/ui/create_groupchat_widget.ui:113 src/ui/add_contact_widget.ui:154
 msgid "paste from clipboard"
-msgstr "_Скопировать Tox ID в буфер обмена"
+msgstr "вставить из буфера обмена"
 
-#: src/ui/add_contact_widget.ui:105
+#: src/ui/add_contact_widget.ui:188
 msgid "<small>Enter your friends Tox ID</small>"
-msgstr ""
+msgstr "<small>Введите Tox ID друга</small>"
 
-#: src/ui/add_contact_widget.ui:137
-#, fuzzy
+#: src/ui/friend_request_widget.ui:78 src/ui/add_contact_widget.ui:220
 msgid "_Message:"
-msgstr "_Статус (необязательный):"
+msgstr "_Сообщение:"
 
-#: src/ui/add_contact_widget.ui:163
+#: src/ui/add_contact_widget.ui:246
 msgid "Send a custom message to be displayed to the friend you are adding"
-msgstr "Отправьте сообщение которое уви"
+msgstr "Отправьте сообщение которое увидит друг, которого вы добавите"
 
-#: src/ui/add_contact_widget.ui:185
-#, fuzzy
+#: src/ui/add_contact_widget.ui:268
 msgid "<small>Send your friend a short message</small>"
-msgstr "Показывать остальным когда я печатаю."
+msgstr "<small>Отправить другу короткое сообщение</small>"
 
-#: src/ui/add_contact_widget.ui:215
+#: src/ui/add_contact_widget.ui:298
 msgid "Send"
-msgstr ""
+msgstr "Отправить"
 
 #: src/ui/app_menu.ui:7
 #, fuzzy
 msgid "_Preferences"
-msgstr "Настройки"
+msgstr "_Настройки"
 
 #: src/ui/app_menu.ui:13
 msgid "About"
-msgstr ""
+msgstr "О программе"
 
 #: src/ui/app_menu.ui:17
 msgid "_Quit"
-msgstr ""
+msgstr "_Выход"
 
-#: src/ui/conference_info_widget.ui:39
-#, fuzzy
+#: src/ui/create_groupchat_widget.ui:112 src/ui/conference_info_widget.ui:39
 msgid "Conference"
-msgstr "Настройки"
-
-#: src/ui/conference_info_widget.ui:56
-#, fuzzy
-msgid "Leave Groupchat"
-msgstr "Создать групповой чат"
+msgstr "Конференция"
 
 #: src/ui/conference_info_widget.ui:105
 msgid "Title:"
-msgstr ""
+msgstr "Заголовок:"
 
-#: src/ui/conference_info_widget.ui:145 src/ui/friend_info_widget.ui:449
-#: src/ui/user_info_widget.ui:401
+#: src/ui/conference_info_widget.ui:243 src/ui/user_info_widget.ui:449
+#: src/ui/friend_info_widget.ui:666
 msgid "Apply"
-msgstr ""
+msgstr "Применить"
 
-#: src/ui/conference_info_widget.ui:163
+#: src/ui/conference_info_widget.ui:261
 msgid "Peers"
-msgstr ""
+msgstr "Пиры"
 
-#: src/ui/conference_window.ui:206 src/ui/conversation_window.ui:262
-#: src/ui/user_info_widget.ui:139 src/ui/user_info_widget.ui:140
+#: src/ui/conference_window.ui:209 src/ui/conversation_window.ui:268
+#: src/ui/user_info_widget.ui:177 src/ui/user_info_widget.ui:178
 #, fuzzy
 msgid "Insert Emoji"
 msgstr "Вставить смайлик"
 
-#: src/ui/contact_list_widget.ui:136
+#: src/ui/contact_list_widget.ui:216
 msgid "Filter contacts by status"
-msgstr ""
+msgstr "Фильтровать контакты по статусу"
 
-#: src/ui/contact_list_widget.ui:142
+#: src/ui/contact_list_widget.ui:222
 msgid "All"
 msgstr "Все"
 
-#: src/ui/contact_list_widget.ui:249
-#, fuzzy
+#: src/ui/contact_list_widget.ui:329
 msgid "Add a contact"
 msgstr "Добавить контакт"
 
-#: src/ui/contact_list_widget.ui:270 src/ui/create_groupchat_widget.ui:35
-#, fuzzy
-msgid "Create a groupchat"
-msgstr "Создать групповой чат"
-
-#: src/ui/contact_list_widget.ui:291
+#: src/ui/contact_list_widget.ui:371
 #, fuzzy
 msgid "View file transfers"
-msgstr "Законченна передача файла от %s к %s\n"
+msgstr "Смотреть передачи файлов"
 
-#: src/ui/contact_list_widget.ui:312
+#: src/ui/contact_list_widget.ui:392
 msgid "Open preferences"
 msgstr "Настройки"
 
-#: src/ui/conversation_window.ui:103
+#: src/ui/conversation_window.ui:109
 msgid "Start a call"
-msgstr ""
+msgstr "Позвонить"
 
-#: src/ui/conversation_window.ui:128
-msgid "Start a videocall"
-msgstr ""
-
-#: src/ui/conversation_window.ui:284
+#: src/ui/conversation_window.ui:290
 #, fuzzy
 msgid "Insert attachment"
-msgstr "Вставить смайлик"
+msgstr "Вставить вложение"
 
-#: src/ui/create_groupchat_widget.ui:69
+#: src/ui/create_groupchat_widget.ui:93
 msgid "_Title:"
-msgstr ""
+msgstr "_Заголовок:"
 
-#: src/ui/create_groupchat_widget.ui:88
-#, fuzzy
-msgid "Groupchat"
-msgstr "Групповой чат #%i"
-
-#: src/ui/create_groupchat_widget.ui:101
-msgid "<small>Name the groupchat (optional)</small>"
-msgstr ""
-
-#: src/ui/create_groupchat_widget.ui:133
+#: src/ui/create_groupchat_widget.ui:179
 msgid "T_ype:"
-msgstr ""
+msgstr "_Тип:"
 
-#: src/ui/create_groupchat_widget.ui:153
-msgid "text"
-msgstr ""
-
-#: src/ui/create_groupchat_widget.ui:168
-msgid "video"
-msgstr ""
-
-#: src/ui/create_groupchat_widget.ui:195
-msgid "<small>Select a groupchat type</small>"
-msgstr ""
-
-#: src/ui/create_groupchat_widget.ui:224
+#: src/ui/create_groupchat_widget.ui:271
 msgid "Create"
-msgstr ""
+msgstr "Создать"
 
-#: src/ui/downloads_widget.ui:35
+#: src/ui/file_transfer_widget.ui:35
 #, fuzzy
 msgid "File transfers"
-msgstr "Пользователь отклонил прием файла."
+msgstr "Передачи файлов"
 
 #: src/ui/friend_info_widget.ui:45
-#, fuzzy
 msgid "Friend profile"
-msgstr "Отправить файл"
+msgstr "Профиль друга"
 
 #: src/ui/friend_info_widget.ui:62
 msgid "Remove from your friends list"
-msgstr ""
+msgstr "Удалить из списка друзей"
 
-#: src/ui/friend_info_widget.ui:111 src/ui/user_info_widget.ui:75
+#: src/ui/user_info_widget.ui:113 src/ui/friend_info_widget.ui:111
 msgid "Username:"
-msgstr ""
+msgstr "Имя пользователя:"
 
-#: src/ui/friend_info_widget.ui:155 src/ui/user_info_widget.ui:120
-#, fuzzy
-msgid "Statusmessage:"
-msgstr "Статус:"
-
-#: src/ui/friend_info_widget.ui:200 src/ui/user_info_widget.ui:168
+#: src/ui/user_info_widget.ui:206 src/ui/friend_info_widget.ui:200
 msgid "Image:"
-msgstr ""
+msgstr "Изображение:"
 
 #: src/ui/friend_info_widget.ui:245
 #, fuzzy
 msgid "Last seen:"
-msgstr "Был онлайн: %s"
+msgstr "Был онлайн:"
 
 #: src/ui/friend_info_widget.ui:290
 msgid "Alias:"
-msgstr ""
+msgstr "Псевдоним:"
 
-#: src/ui/friend_info_widget.ui:318
+#: src/ui/friend_info_widget.ui:321
 msgid "<small>Set a custom alias to quickly find your friends</small>"
-msgstr ""
+msgstr "<small>Установите пользовательский псевдоним, чтобы быстро найти своих друзей</small>"
 
-#: src/ui/friend_info_widget.ui:362 src/ui/user_info_widget.ui:251
+#: src/ui/user_info_widget.ui:291 src/ui/friend_info_widget.ui:579
 msgid "Tox"
-msgstr ""
+msgstr "Tox"
 
-#: src/ui/friend_info_widget.ui:395 src/ui/user_info_widget.ui:290
+#: src/ui/user_info_widget.ui:330 src/ui/friend_info_widget.ui:612
 msgid "ID:"
 msgstr "ID:"
 
-#: src/ui/message_widget.ui:88
-#, fuzzy
+#: src/ui/message_widget.ui:91
 msgid "Message sent ✓"
-msgstr "Размер сообщения превышает максимально допустимый размер."
+msgstr "Сообщение отправлено ✓"
 
-#: src/ui/message_widget.ui:104
-#, fuzzy
+#: src/ui/message_widget.ui:107
 msgid "Message received ✓"
-msgstr "Пользователь отклонил прием файла."
+msgstr "Сообщение получено ✓"
 
+#. This is shown on peers in groupchats, if you have them also added to your friends
 #: src/ui/peer_entry.ui:55
 msgid "This peer is also in your friends list"
-msgstr ""
+msgstr "Этот пир также находится в вашем списке друзей"
 
-#: src/ui/settings_widget.ui:41
+#: src/ui/settings_widget.ui:38
 msgid "KiB/MiB"
 msgstr "KiB/MiB"
 
-#: src/ui/settings_widget.ui:45
+#: src/ui/settings_widget.ui:42
 msgid "KB/MB"
 msgstr "Кбайт/Мбайт"
 
-#: src/ui/settings_widget.ui:95
+#: src/ui/settings_widget.ui:98
 msgid "General"
-msgstr ""
+msgstr "Основные"
 
-#: src/ui/settings_widget.ui:138
-#, fuzzy
-msgid "Connection"
-msgstr "подключение..."
-
-#: src/ui/settings_widget.ui:225
+#: src/ui/settings_widget.ui:268
 msgid "Appearance"
-msgstr ""
+msgstr "Внешний вид"
 
-#: src/ui/settings_widget.ui:270
+#: src/ui/settings_widget.ui:313
 msgid "Dark Theme"
-msgstr ""
+msgstr "Темная тема"
 
-#: src/ui/settings_widget.ui:283
-msgid "<small>Whether Venom should use a dark theme</small>"
-msgstr ""
-
-#: src/ui/settings_widget.ui:340
-#, fuzzy
-msgid "Show notifications"
-msgstr "Ошибка при загрузке иконки: %s\n"
-
-#: src/ui/settings_widget.ui:353
-msgid "<small>Show a notification for new messages</small>"
-msgstr ""
-
-#: src/ui/settings_widget.ui:410
+#: src/ui/settings_widget.ui:523
 msgid "Minimize to tray"
-msgstr ""
+msgstr "Свернуть в трей"
 
-#: src/ui/settings_widget.ui:423
-msgid "<small>Minimize app to system tray</small>"
-msgstr ""
-
-#: src/ui/settings_widget.ui:506
+#: src/ui/settings_widget.ui:619
 msgid "Privacy"
 msgstr "Приватность"
 
-#: src/ui/settings_widget.ui:550
-#, fuzzy
+#: src/ui/settings_widget.ui:663
 msgid "Send typing notifications"
-msgstr "Ошибка при загрузке иконки: %s\n"
+msgstr "Отправлять уведомления о наборе текста"
 
-#: src/ui/settings_widget.ui:563
-#, fuzzy
+#: src/ui/settings_widget.ui:676
 msgid "<small>Show others when I am typing</small>"
-msgstr "Показывать остальным когда я печатаю."
+msgstr "<small>Показывать остальным когда я печатаю</small>"
 
-#: src/ui/settings_widget.ui:646
-#, fuzzy
+#: src/ui/settings_widget.ui:759
 msgid "History"
-msgstr "Сохранять историю"
+msgstr "История"
 
-#: src/ui/settings_widget.ui:694
-#, fuzzy
-msgid "Keep indefinitely"
-msgstr "неопределенный срок"
-
-#: src/ui/settings_widget.ui:714
-msgid "delete after"
-msgstr "удалить после"
-
-#: src/ui/settings_widget.ui:731
+#: src/ui/settings_widget.ui:893
 msgid "days"
 msgstr "дни"
 
-#: src/ui/settings_widget.ui:785
+#: src/ui/settings_widget.ui:923
 msgid "Delete all previous conversations"
-msgstr ""
+msgstr "Удалить все предыдущие разговоры"
 
-#: src/ui/settings_widget.ui:844
+#: src/ui/settings_widget.ui:1340
 msgid "Update bootstrap nodes"
-msgstr ""
+msgstr "Обновление узлов начальной загрузки"
 
-#: src/ui/settings_widget.ui:880
-msgid "<b>Tox bootstrap nodes</b>"
-msgstr ""
-
-#: src/ui/user_info_widget.ui:41
+#: src/ui/user_info_widget.ui:79
 msgid "User profile"
-msgstr ""
+msgstr "Профиль пользователя"
 
-#: src/ui/user_info_widget.ui:332
-#, fuzzy
+#: src/ui/user_info_widget.ui:372
 msgid "Copy to clipboard"
-msgstr "_Скопировать Tox ID в буфер обмена"
+msgstr "Скопировать в буфер обмена"
 
-#: src/ui/welcome_widget.ui:39
+#: src/ui/welcome_widget.ui:40
 msgid "<big>A new kind of instant messaging</big>"
-msgstr ""
+msgstr "<big>Новый вид обмена мгновенными сообщениями</big>"
 
-#: src/ui/welcome_widget.ui:52
+#: src/ui/welcome_widget.ui:56
 msgid "Chat with your friends and family without anyone else listening in."
-msgstr ""
+msgstr "Общайтесь со своими друзьями и семьей, не слушая других."
 
-#: src/ui/welcome_widget.ui:100
+#: src/ui/welcome_widget.ui:109
 msgid "Learn more"
+msgstr "Узнать больше"
+
+#: src/core/Message.vala:76 src/viewmodel/MessageViewModel.vala:87
+#: src/tox/ConferenceMessage.vala:56
+msgid "me"
+msgstr "меня"
+
+#: src/ui/user_info_widget.ui:244
+msgid "Choose an avatar"
+msgstr "Выберите аватар"
+
+#: src/ui/friend_request_widget.ui:146
+msgid "Reject request"
+msgstr "Отклонить запрос"
+
+#: src/ui/friend_request_widget.ui:170
+msgid "Accept request"
+msgstr "Принять запрос"
+
+#: src/ui/application_window.ui:55
+msgid "venom"
+msgstr "venom"
+
+#: src/core/NotificationListener.vala:76
+msgid "New file from %s"
+msgstr "Новый файл от %s"
+
+#: src/viewmodel/ContactListEntryViewModel.vala:58
+msgid "New Message!"
+msgstr "Новое сообщение!"
+
+#: src/viewmodel/ContactListEntryViewModel.vala:64
+msgid "Offline"
+msgstr "Не в сети"
+
+#: src/viewmodel/ContactListEntryViewModel.vala:72
+#: src/ui/user_status_menu.ui:11
+msgid "Away"
+msgstr "Отошел"
+
+#: src/viewmodel/ContactListEntryViewModel.vala:74
+#: src/ui/user_status_menu.ui:17
+msgid "Busy"
+msgstr "Занят"
+
+#: src/viewmodel/ContactListEntryViewModel.vala:76 src/ui/user_status_menu.ui:5
+msgid "Online"
+msgstr "В сети"
+
+#: src/viewmodel/MessageViewModel.vala:65
+msgid "Today at %s"
+msgstr "Сегодня в %s"
+
+#: src/viewmodel/MessageViewModel.vala:69
+msgid "Yesterday at %s"
+msgstr "Вчера в %s"
+
+#: src/tox/Conference.vala:43
+msgid "Unnamed conference %u"
+msgstr "Безымянная конференция %u"
+
+#: src/tox/ToxSession.vala:645
+msgid "Address must consist of 76 hexadecimal characters"
+msgstr "Адрес должен состоять из 76 шестнадцатеричных символов"
+
+#: src/view/ConversationWindow.vala:102
+msgid "%s is typing..."
+msgstr "%s печатает..."
+
+#: src/view/ConversationWindow.vala:168 src/view/FileTransferEntry.vala:76
+#, fuzzy
+msgid "_Cancel"
+msgstr "О_тмена"
+
+#: src/view/ConversationWindow.vala:169
+msgid "_Open"
+msgstr "_Открыть"
+
+#: src/view/FileTransferEntry.vala:77
+msgid "_Save"
+msgstr "_Сохранить"
+
+#: src/ui/file_transfer_widget.ui:117
+#, fuzzy
+msgid "No file transfers yet …"
+msgstr "Ещё нет передач файлов..."
+
+#: src/ui/file_transfer_entry.ui:34
+#, fuzzy
+msgid "Remove transfer"
+msgstr "Удалить передачу"
+
+#: src/ui/file_transfer_entry.ui:102
+msgid "Open file"
+msgstr "Открыть файл"
+
+#: src/ui/file_transfer_entry.ui:126
+#, fuzzy
+msgid "Start transfer"
+msgstr "Начать передачу"
+
+#: src/ui/file_transfer_entry.ui:147
+#, fuzzy
+msgid "Pause transfer"
+msgstr "Приостановить передачу"
+
+#: src/ui/file_transfer_entry.ui:168
+#, fuzzy
+msgid "Stop transfer"
+msgstr "Остановить передачу"
+
+#: src/ui/create_groupchat_widget.ui:199
+msgid "Text"
+msgstr "Текст"
+
+#: src/ui/create_groupchat_widget.ui:214
+msgid "Speech"
+msgstr "Речь"
+
+#: src/ui/peer_entry.ui:68
+msgid "That's you"
+msgstr "Это Вы"
+
+#: src/ui/welcome_widget.ui:156
+#, fuzzy
+msgid "Get involved"
+msgstr "Поучаствовать"
+
+#: src/ui/settings_widget.ui:181
+msgid "Proxy"
+msgstr "Прокси"
+
+#: src/ui/settings_widget.ui:326
+msgid "<small>Use a dark variant of the theme</small>"
+msgstr "<small>Использовать тёмный вариант темы</small>"
+
+#: src/ui/settings_widget.ui:383
+msgid "Animations"
+msgstr "Анимации"
+
+#: src/ui/settings_widget.ui:396
+msgid "<small>Enable animated transitions</small>"
+msgstr "<small>Включить анимированные переходы</small>"
+
+#: src/ui/settings_widget.ui:453
+msgid "Notifications"
+msgstr "Уведомления"
+
+#: src/ui/settings_widget.ui:466
+msgid "<small>Show notifications for unread messages</small>"
+msgstr "<small>Показывать уведомления о непрочитанных сообщениях</small>"
+
+#: src/ui/settings_widget.ui:536
+msgid "<small>Minimize app to system tray on close</small>"
+msgstr "<small>Сворачивать приложение в трей при закрытии</small>"
+
+#: src/ui/settings_widget.ui:823
+msgid "Keep forever"
+msgstr "Хранить вечно"
+
+#: src/ui/settings_widget.ui:860
+msgid "Remove older than"
+msgstr "Удалить старше чем"
+
+#: src/ui/settings_widget.ui:1017
+msgid "<b>Connection</b>"
+msgstr "<b>Соединение</b>"
+
+#: src/ui/settings_widget.ui:1060
+msgid "UDP"
+msgstr "UDP"
+
+#: src/ui/settings_widget.ui:1130
+msgid "IPv6"
+msgstr "IPv6"
+
+#: src/ui/settings_widget.ui:1143
+msgid "<small>Allow both IPv4 and IPv6 communication</small>"
+msgstr "<small>Использовать и IPv4 и IPv6</small>"
+
+#: src/ui/settings_widget.ui:1200
+msgid "Local discovery"
+msgstr "Обнаружение локальных устройств"
+
+#: src/ui/settings_widget.ui:1213
+msgid "<small>Look for peers on the local network</small>"
+msgstr "<small>Искать пиры в локальной сети</small>"
+
+#: src/ui/settings_widget.ui:1270
+msgid "Hole punching"
+msgstr "Пробитие NAT"
+
+#: src/ui/settings_widget.ui:1283
+msgid "<small>Enable UDP <a href=\"https://en.wikipedia.org/wiki/Hole_punching_(networking)\">hole punching</a></small>"
+msgstr "<small>Включить UDP <a href=\"https://en.wikipedia.org/wiki/Hole_punching_(networking)\">пробитие NAT</a></small>"
+
+#: src/ui/settings_widget.ui:1376
+msgid "<b>Bootstrap nodes</b>"
+msgstr "<b>Узлы начальной загрузки</b>"
+
+#: src/ui/settings_widget.ui:1511
+msgid "<b>Proxy</b>"
+msgstr "<b>Прокси</b>"
+
+#: src/ui/settings_widget.ui:1578
+msgid "System settings"
+msgstr "Системные настройки"
+
+#: src/ui/settings_widget.ui:1591
+msgid "<small>Use your systems proxy settings</small>"
+msgstr "<small>Использовать системные настройки прокси</small>"
+
+#: src/ui/settings_widget.ui:1645
+msgid "Manual settings"
+msgstr "Ручные настройки"
+
+#: src/ui/settings_widget.ui:1658
+#, fuzzy
+msgid "<small>Use custom proxy settings</small>"
+msgstr "<small>Пользовательские настройки прокси</small>"
+
+#: src/ui/settings_widget.ui:1699
+msgid "Host"
+msgstr "Хост"
+
+#: src/ui/settings_widget.ui:1739
+msgid "<small>Set a SOCKS5 proxy to connect to</small>"
+msgstr "<small>Указать SOCKS5 прокси для подключения</small>"
+
+#: src/ui/friend_info_widget.ui:309
+#, fuzzy
+msgid "Reset alias"
+msgstr "Сбросить псевдоним"
+
+#: src/ui/friend_info_widget.ui:428
+msgid "Auto accept conference invites"
+msgstr "Автоматически принимать приглашения в конференции"
+
+#: src/ui/friend_info_widget.ui:474
+#, fuzzy
+msgid "Auto accept file transfers"
+msgstr "Автоматически принимать передачи файлов"
+
+#: src/ui/friend_info_widget.ui:517
+msgid "Save files to"
+msgstr "Сохранять файлы в"
+
+#: src/viewmodel/ContactListViewModel.vala:102
+msgid "New conference…"
 msgstr ""
 
-#, fuzzy
-#~ msgid "contact_name"
-#~ msgstr "Добавить контакт"
+#: src/viewmodel/ContactListViewModel.vala:115
+msgid "Invite to conference"
+msgstr ""
+
+#: src/viewmodel/ContactListViewModel.vala:118
+msgid "Show details"
+msgstr ""
+
+#: src/viewmodel/ContactListViewModel.vala:140
+msgid "%u new friend request"
+msgid_plural "%u new friend requests"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/viewmodel/ContactListViewModel.vala:148
+msgid "%u new conference invite"
+msgid_plural "%u new conference invites"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/viewmodel/MessageViewModel.vala:51
+msgid "Just now"
+msgstr ""
+
+#: src/viewmodel/MessageViewModel.vala:56
+msgid "%u minute ago"
+msgid_plural "%u minutes ago"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/viewmodel/MessageViewModel.vala:61
+msgid "%u hour ago"
+msgid_plural "%u hours ago"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/create_groupchat_widget.ui:59 src/ui/contact_list_widget.ui:350
+msgid "Create a conference"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:147
+msgid "<small>Name the conference (optional)</small>"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:242
+msgid "<small>Select a conference type</small>"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:288
+msgid "New conference"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:301 src/ui/create_groupchat_widget.ui:334
+msgid "Conference invites"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:390
+msgid "No new conference invites"
+msgstr ""
+
+#: src/ui/conversation_window.ui:134
+msgid "Start a video call"
+msgstr ""
+
+#: src/ui/friend_request_widget.ui:44
+msgid "_Public key:"
+msgstr ""
+
+#: src/ui/conference_info_widget.ui:56
+msgid "Leave Conference"
+msgstr ""
+
+#: src/ui/conference_info_widget.ui:174 src/ui/friend_info_widget.ui:357
+msgid "Show notifications"
+msgstr ""
+
+#: src/ui/conference_info_widget.ui:212 src/ui/friend_info_widget.ui:395
+msgid "<small>Notifications have been globally disabled</small>"
+msgstr ""
+
+#: src/ui/conference_invite_entry.ui:43
+msgid "Invite from:"
+msgstr ""
+
+#: src/ui/conference_invite_entry.ui:87
+msgid "Accept invite"
+msgstr ""
+
+#: src/ui/conference_invite_entry.ui:111
+msgid "Reject invite"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:30
+msgid "No new friend requests"
+msgstr ""
 
-#~ msgid "Online"
-#~ msgstr "В сети"
+#: src/ui/add_contact_widget.ui:315
+msgid "Add a friend"
+msgstr ""
 
-#~ msgid "Index for %s not found."
-#~ msgstr "Индекс для %s не найден."
+#: src/ui/add_contact_widget.ui:328 src/ui/add_contact_widget.ui:361
+msgid "Friend requests"
+msgstr ""
 
-#~ msgid "Could not bind int to %s."
-#~ msgstr "Не удалось привязать int к %s."
+#: src/ui/user_info_widget.ui:158 src/ui/friend_info_widget.ui:155
+msgid "Status message:"
+msgstr ""
 
-#~ msgid "Could not bind int64 to %s."
-#~ msgstr "Не удалось привязать int64 к %s."
+#: src/ui/settings_widget.ui:1073
+msgid "<small>Use UDP communication when available</small>"
+msgstr ""
 
-#~ msgid "Could not bind text to %s"
-#~ msgstr "Не удалось привязать текст к %s."
-
-#~ msgid "Can't open database: %d: %s\n"
-#~ msgstr "Не могу открыть базу данных : %d: %s\n"
-
-#~ msgid "%R:%S"
-#~ msgstr "%R:%S"
-
-#~ msgid "<unknown>"
-#~ msgstr "<неизвестно>"
-
-#~ msgid "%i people connected"
-#~ msgstr "%i человек подключено."
-
-#~ msgid "%i person connected"
-#~ msgstr "%i человек подключен."
-
-#~ msgid "no one connected"
-#~ msgstr "никто не подключен"
-
-#~ msgid "%s <i>(%s)</i>"
-#~ msgstr "%s <i>(%s)</i>"
-
-#~ msgid "<i>%s</i>"
-#~ msgstr "<i>%s</i>"
-
-#~ msgid "Offline"
-#~ msgstr "Не в сети"
-
-#~ msgid "Error creating contacts table: %s\n"
-#~ msgstr "Ошибка при попытке создания таблицы контактов: %s\n"
-
-#~ msgid "Error creating contacts insert statement: %d: %s\n"
-#~ msgstr "Errore nel creare lo statement di inserimento contatti: %d: %s\n"
-
-#~ msgid "Error creating contacts select statement: %d: %s\n"
-#~ msgstr "Errore nel creare lo statement di selezione contatti: %d: %s\n"
-
-#~ msgid "Error creating dht nodes table: %s\n"
-#~ msgstr "Ошибка при создании таблицы DHT нод: %s\n"
-
-#~ msgid "Error creating dht nodes insert statement: %d: %s\n"
-#~ msgstr "Errore nel creare lo statement di inserimento server DHT: %d: %s\n"
-
-#~ msgid "Error creating dht nodes select statement: %d: %s\n"
-#~ msgstr "Errore nel create lo statement di selezione server DHT: %d: %s\n"
-
-#~ msgid "Away"
-#~ msgstr "Отошел"
-
-#~ msgid "Busy"
-#~ msgstr "Занят"
-
-#~ msgid "File \"%d\" does not exist."
-#~ msgstr "Файл \"%d\" не существует."
-
-#~ msgid "Error while reading from stream."
-#~ msgstr "Ошибка при чтении из потока."
-
-#~ msgid "Error while loading messenger data."
-#~ msgstr "Ошибка при загрузке данных мессенджера."
-
-#~ msgid "Error while writing to stream."
-#~ msgstr "Ошибка при записи в поток."
-
-#, fuzzy
-#~ msgid "Error creating message log table: %s\n"
-#~ msgstr "Ошибка при создании таблицы DHT нод: %s\n"
-
-#~ msgid "Toxing on Venom v.%s"
-#~ msgstr "Toxing on Venom v.%s"
-
-#~ msgid "[%s] "
-#~ msgstr "[%s] "
-
-#~ msgid "Edit user information"
-#~ msgstr "Профиль"
-
-#~ msgid "There is currently no help available"
-#~ msgstr "Функция \"Помощь\" не доступна в данный момент."
-
-#, fuzzy
-#~ msgid "_New groupchat"
-#~ msgstr "Создать групповой чат"
-
-#, fuzzy
-#~ msgid "_Invite to new groupchat"
-#~ msgstr "Создать групповой чат"
-
-#, fuzzy
-#~ msgid "Could not export data file: "
-#~ msgstr "Не удалось добавить друга: %s.\n"
-
-#~ msgid "Could not read theme from \"%s\""
-#~ msgstr "Не удалось загрузить тему из \"%s\""
-
-#~ msgid "Venom (%s)"
-#~ msgstr "Venom (%s)"
-
-#~ msgid "* %s"
-#~ msgstr "* %s"
-
-#~ msgid ""
-#~ "New friend request from '%s'.\n"
-#~ "Do you want to accept?"
-#~ msgstr ""
-#~ "'%s' хочет добавить вас в друзья.\n"
-#~ "Принять?"
-
-#~ msgid "Connected to the network"
-#~ msgstr "Подключен"
-
-#~ msgid "Disconnected from the network"
-#~ msgstr "Отключен от сети"
-
-#~ msgid "'%s' has invited you to a groupchat, do you want to accept?"
-#~ msgstr "'%s' пригласил вас в групповой чат. Принять?"
-
-#~ msgid "Are you sure you want to delete '%s' from your contact list?"
-#~ msgstr "Вы уверены что хотите удалить '%s' из друзей?"
-
-#~ msgid "groupchat #%i"
-#~ msgstr "групповой чат #%i"
-
-#~ msgid "Resolving ID failed"
-#~ msgstr "Ошибка при получении ID."
-
-#~ msgid "Could not resolve ID from DNS record\n"
-#~ msgstr ""
-#~ "Не удалось \n"
-#~ " Impossibile risolvere il Tox ID dal record DNS\n"
-
-#~ msgid "Adding Friend failed"
-#~ msgstr "При добавлении в друзья произошла ошибка."
-
-#~ msgid "Could not add friend: Invalid ID\n"
-#~ msgstr "Не удалось добавить друга: Недействительный ID.\n"
-
-#~ msgid "Could not add friend: %s.\n"
-#~ msgstr "Не удалось добавить друга: %s.\n"
-
-#~ msgid "<b>%s</b>"
-#~ msgstr "<b>%s</b>"
-
-#~ msgid ""
-#~ "Please insert PIN for \n"
-#~ "<b>%s</b>"
-#~ msgstr ""
-#~ "Пожалуйста введите Пин-код для \n"
-#~ "<b>%s</b>"
-
-#~ msgid "Please insert PIN..."
-#~ msgstr "Пожалуйста введите Пин-код..."
-
-#~ msgid "File was rejected"
-#~ msgstr "Пользователь отклонил прием файла."
-
-#~ msgid "Paused"
-#~ msgstr "Приостановлен"
-
-#~ msgid "Sending failed"
-#~ msgstr "Отправка не удалась"
-
-#~ msgid "Receiving failed"
-#~ msgstr "Ошибка при получении."
-
-#~ msgid "Canceled"
-#~ msgstr "Отменено"
-
-#~ msgid "Disconnected"
-#~ msgstr "Отключен"
-
-#~ msgid "Save file"
-#~ msgstr "Сохранить файл"
-
-#~ msgid "Save"
-#~ msgstr "Сохранить"
-
-#~ msgid "No ID given"
-#~ msgstr "ID не был предоставлен."
-
-#~ msgid "ID contains invalid characters"
-#~ msgstr "ID содержит недопустимые символы."
-
-#~ msgid "Valid ID size"
-#~ msgstr "Правильный размер Tox  ID"
-
-#~ msgid "Type your message here..."
-#~ msgstr "Сообщение..."
-
-#~ msgid "%s is typing..."
-#~ msgstr "%s пишет..."
-
-#~ msgid "Select a file to send"
-#~ msgstr "Выберите файл для отправки"
-
-#~ msgid "Select"
-#~ msgstr "Выбрано"
-
-#~ msgid "  %s\n"
-#~ msgstr "  %s\n"
-
-#~ msgid " (ipv6)"
-#~ msgstr " (IPv6)"
-
-#~ msgid "%F"
-#~ msgstr "%F"
-
-#~ msgid "%s changed his name to %s\n"
-#~ msgstr "%s сменил имя на %s\n"
-
-#~ msgid "%s changed his status to %s\n"
-#~ msgstr "%s сменил статус на %s\n"
-
-#~ msgid "%s is now %s.\n"
-#~ msgstr "%s сейчас %s.\n"
-
-#~ msgid "%s: %s\n"
-#~ msgstr "%s: %s\n"
-
-#~ msgid "%s:%u%s %s"
-#~ msgstr "%s:%u%s %s"
-
-#~ msgid "<%i>"
-#~ msgstr "<%i>"
-
-#~ msgid "<%s> %s:%s\n"
-#~ msgstr "<%s> %s:%s\n"
-
-#~ msgid "<b>Tox</b>"
-#~ msgstr "<b>Tox</b>"
-
-#~ msgid "<b>User</b>"
-#~ msgstr "<b>Пользователь</b>"
-
-#~ msgid "Added new friend #%i\n"
-#~ msgstr "Добавлен новый контакт: #%i\n"
-
-#~ msgid "Background thread started.\n"
-#~ msgstr "Запустился фоновый процесс.\n"
-
-#~ msgid "Background thread stopped.\n"
-#~ msgstr "Фоновый процесс упал.\n"
-
-#~ msgid "Bad checksum"
-#~ msgstr "Неверная контрольная сумма"
-
-#~ msgid "Call contact"
-#~ msgstr "Звонить"
-
-#~ msgid "Call contact with video"
-#~ msgstr "Звонок с видео"
-
-#~ msgid "Can't create action regex: %s.\n"
-#~ msgstr "Не удалось выполнить регулярное выражение: %s.\n"
-
-#~ msgid "Can't send to own key"
-#~ msgstr "Нельзя отправить сообщение себе самому."
-
-#~ msgid "Change _Status"
-#~ msgstr "Изменить _Статус"
-
-#~ msgid "Connecting to DHT Nodes:\n"
-#~ msgstr "Подключение к DHT нодам:\n"
-
-#~ msgid "Connection to DHT %s.\n"
-#~ msgstr "Подключение к DHT %s.\n"
-
-#~ msgid "Contact accepted file sending request\n"
-#~ msgstr "Началась передача файла контакту.\n"
-
-#~ msgid "Copied Tox ID to clipboard\n"
-#~ msgstr "Tox ID скопирован в буфер обмена.\n"
-
-#~ msgid "Could not change user name!\n"
-#~ msgstr "Не удалось изменить имя.\n"
-
-#~ msgid "Could not change user statusmessage!\n"
-#~ msgstr "Не удалось изменить статус.\n"
-
-#~ msgid "Could not create a new groupchat.\n"
-#~ msgstr "Не удалось создать групповой чай.\n"
-
-#~ msgid "Could not join groupchat.\n"
-#~ msgstr "Не удалось подключиться к групповому чату.\n"
-
-#~ msgid "Could not load session data (%s), creating new one.\n"
-#~ msgstr "Не удалось загрузить сессию (%s). Создаю новую сессию.\n"
-
-#~ msgid "Could not remove %s.\n"
-#~ msgstr "Не удалось удалить %s.\n"
-
-#~ msgid "Could not remove contact %i.\n"
-#~ msgstr "Не удалось удалить контакт %i.\n"
-
-#~ msgid "Could not remove peer [%i] from groupchat #%i (no such peer)\n"
-#~ msgstr ""
-#~ "Не удалось удалить пир [%i] из группового чата #%i (несуществующий пир)\n"
-
-#~ msgid "Default Tox DNS ID suffix:"
-#~ msgstr "Стандартный DNS ID суфикс:"
-
-#~ msgid "Ending session...\n"
-#~ msgstr "Закрываю сеанс...\n"
-
-#~ msgid "Error creating tox dns regex: %s\n"
-#~ msgstr "Не удалось создать tox DNS регулярное выражение: %s\n"
-
-#~ msgid "Error creating tox uri regex: %s\n"
-#~ msgstr "Не удалось создать tox URI регулярное выражение: %s\n"
-
-#~ msgid "Error matching uri regex: %s\n"
-#~ msgstr "Ошибка не совпадения регулярного выражения URI: %s\n"
-
-#~ msgid "Error occured while getting file size: %s"
-#~ msgstr "Ошибка при попытке получения размера файла: %s"
-
-#~ msgid "Error opening database: %s\n"
-#~ msgstr "Ошибка при попытке открытии базы данных: %s\n"
-
-#~ msgid "Error reading configs:%s\n"
-#~ msgstr "Ошибка при попытке чтения настроек: %s\n"
-
-#~ msgid "Error resolving name: %s\n"
-#~ msgstr "Ошибка извлечения имени: %s\n"
-
-#~ msgid "Error retrieving logs from sqlite database: %s\n"
-#~ msgstr "Ошибка при попытке получении логов sqlite базы данных: %s\n"
-
-#~ msgid "Error saving configs:%s\n"
-#~ msgstr "Ошибка при попытке сохранении настроек: %s\n"
-
-#~ msgid "Error when doing uri markup: %s"
-#~ msgstr "Ошибка разметки URI: %s"
-
-#~ msgid "Error when showing uri: %s\n"
-#~ msgstr "Ошибка отображения URI: %s\n"
-
-#~ msgid "Error while loading image from \"%s\":%s\n"
-#~ msgstr "Ошибка при загрузке изображения из: \"%s\": %s\n"
-
-#~ msgid "Error while trying to create file: %s\n"
-#~ msgstr "Ошибка при попытке создания файла: %s\n"
-
-#~ msgid "Error while trying to write data to file\n"
-#~ msgstr "Ошибка при попытке записи данных в файл.\n"
-
-#~ msgid "Error writing contact to sqlite database: %s\n"
-#~ msgstr "Ошибка при записи контакта в sqlite базу данных: %s\n"
-
-#~ msgid "Error writing message to sqlite database: %s\n"
-#~ msgstr "Ошибка при записи сообщения в sqlite базу данных: %s\n"
-
-#~ msgid "Error: %d: %s\n"
-#~ msgstr "Ошибка: %d: %s\n"
-
-#~ msgid "Error: %s\n"
-#~ msgstr "Ошибка %s\n"
-
-#~ msgid "File transfer finished for file number %u"
-#~ msgstr "Отправка была завершена для %u файлов."
-
-#~ msgid "File transfer was rejected for file number %u"
-#~ msgstr "%u файлов было отклонено."
-
-#~ msgid "Flash window when a new message arrives"
-#~ msgstr "Оповещать о приходе нового сообщения."
-
-#~ msgid "Friend could not be added.\n"
-#~ msgstr "Контакт не может быть добавлен.\n"
-
-#~ msgid "Friend request already sent"
-#~ msgstr "Запрос на добавление в контакта уже был отправлен."
-
-#~ msgid "Friend request successfully sent"
-#~ msgstr "Запрос на добавление в контакта отправлен."
-
-#~ msgid "Friend request successfully sent. Friend added as %i.\n"
-#~ msgstr ""
-#~ "Запрос на добавление в контакта отправлен. Контакт добавлен как %i.\n"
-
-#~ msgid "Group action from unknown contact #%i [%i]\n"
-#~ msgstr "Групповое действие от неизвестного контакта: #%i [%i]\n"
-
-#~ msgid "Group invite from %s with public key %s\n"
-#~ msgstr "Группа пригласила %s, с публичным ключом %s\n"
-
-#~ msgid "Group message from unknown contact #%i [%i]\n"
-#~ msgstr "Групповое сообщение от неизвестного контакта: #%i [%i]\n"
-
-#~ msgid "I/O error while trying to close file stream: %s\n"
-#~ msgstr "Ошибка I/O при попытке закрыть файловый поток: %s\n"
-
-#~ msgid "I/O error while trying to read file: %s\n"
-#~ msgstr "Ошибка I/O при попытке чтения файла: %s\n"
-
-#~ msgid "ID: %s\n"
-#~ msgstr "ID: %s\n"
-
-#~ msgid "Icon:"
-#~ msgstr "Иконка:"
-
-#~ msgid "Invalid record\n"
-#~ msgstr "Неверная запись DNS.\n"
-
-#~ msgid "Invalid tox uri\n"
-#~ msgstr "Неправильный URI.\n"
-
-#~ msgid "Joined Groupchat #%i\n"
-#~ msgstr "Присоединился к групповому чату #%i\n"
-
-#~ msgid "Loading add contact window failed!\n"
-#~ msgstr "Не удалось загрузить окно контактов!\n"
-
-#~ msgid "Loading conversation window failed!\n"
-#~ msgstr "Не удалось загрузить окно чатов!\n"
-
-#~ msgid "Loading message widget failed!\n"
-#~ msgstr "Не удалось загрузить виджет чата!\n"
-
-#~ msgid "Miscellaneous"
-#~ msgstr "Разное"
-
-#~ msgid "Name:"
-#~ msgstr "Имя:"
-
-#~ msgid "No message included"
-#~ msgstr "Сообщение не было предоставлено."
-
-#~ msgid "No pin privided, aborting...\n"
-#~ msgstr "Пин-код не был предоставлен, прерываю процесс...\n"
-
-#~ msgid "O_ffline"
-#~ msgstr "Не в сети"
-
-#~ msgid "Out of memory"
-#~ msgstr "Нехватка памяти"
-
-#~ msgid "Read incorrect number of bytes from file\n"
-#~ msgstr "Прочитано неправильно количество байт из файла.\n"
-
-#~ msgid "Retrieved contact %s from savefile.\n"
-#~ msgstr "Контакт %s был успешно извлечен из сохранения.\n"
-
-#~ msgid "SQLite database closed.\n"
-#~ msgstr "Удалена SQLita база данных.\n"
-
-#~ msgid "SQLite database created.\n"
-#~ msgstr "Создана SQLite база данных.\n"
-
-#~ msgid "Saving session file failed: %s\n"
-#~ msgstr "Ошибка при сохранении файла сессии: %s\n"
-
-#~ msgid "Saving to: %s\n"
-#~ msgstr "Сохраняю в: %s\n"
-
-#~ msgid "Saving tox session data\n"
-#~ msgstr "Сохраняю данные сеанса\n"
-
-#~ msgid "Send message"
-#~ msgstr "Отправить сообщение"
-
-#~ msgid "Session ended gracefully.\n"
-#~ msgstr "Сессия закончилась изящно.\n"
-
-#~ msgid "Set a custom nickname for the friend you are about to add"
-#~ msgstr "Назначить ник для пользователя которого вы собираетесь добавить."
-
-#~ msgid "Set new nospam"
-#~ msgstr "Установить новый NoSpam"
-
-#~ msgid "Settings"
-#~ msgstr "Настройки"
-
-#~ msgid "Settings saved.\n"
-#~ msgstr "Настройки успешно сохранены.\n"
-
-#~ msgid "Show filesize in"
-#~ msgstr "Показать размер файла в"
-
-#~ msgid "Show me when others are typing"
-#~ msgstr "Показывать мне когда остальные печатают."
-
-#~ msgid "Starting in offline mode\n"
-#~ msgstr "Старт в офлайн режиме.\n"
-
-#~ msgid "Theme refreshed\n"
-#~ msgstr "Тема была успешно обновлена.\n"
-
-#~ msgid "Trying to send unknown file"
-#~ msgstr "Попытка отправить неизвестный файл"
-
-#~ msgid "Unknown error"
-#~ msgstr "Неизвестная ошибка"
-
-#~ msgid "Unknown error while trying to read file: %s\n"
-#~ msgstr "Неизвестная ошибка при попытке чтения файла: %s\n"
-
-#~ msgid "Using Gtk.TextView to display messages\n"
-#~ msgstr "Использую Gtk.TextView для отображения сообщений.\n"
-
-#~ msgid "Using data file \"%s\"\n"
-#~ msgstr "Использую дата-файл: \"%s\"\n"
-
-#~ msgid "[ac] %i:%s\n"
-#~ msgstr "[ac] %i:%s\n"
-
-#~ msgid "[fr] %s:%s\n"
-#~ msgstr "[fr] %s:%s\n"
-
-#~ msgid "[ga] %s [%i]@%i: %s\n"
-#~ msgstr "[ga] %s [%i]@%i: %s\n"
-
-#~ msgid "[gm] %s [%i]@%i: %s\n"
-#~ msgstr "[gm] %s [%i]@%i: %s\n"
-
-#~ msgid "[rr] %s:%u\n"
-#~ msgstr "[rr] %s:%u\n"
-
-#~ msgid "[us] %s:%i\n"
-#~ msgstr "[us] %s:%i\n"
-
-#~ msgid "_Away"
-#~ msgstr "_Отошел"
-
-#~ msgid "_Browse..."
-#~ msgstr "_Обзор..."
-
-#~ msgid "_Busy"
-#~ msgstr "_Занят"
-
-#~ msgid "_Edit user"
-#~ msgstr "_Редактировать пользователя"
-
-#~ msgid "_Nickname (optional):"
-#~ msgstr "_Ник (необязательный):"
-
-#~ msgid "_Online"
-#~ msgstr "_В сети"
-
-#~ msgid "_Tox ID:"
-#~ msgstr "_Tox ID:"
-
-#~ msgid "established"
-#~ msgstr "создан"
-
-#~ msgid "failed to send file %s to %s"
-#~ msgstr "произошла ошибка при отправке файла от %s к %s"
-
-#~ msgid "lost"
-#~ msgstr "потерянный"
-
-#~ msgid "offline"
-#~ msgstr "не в сети"
-
-#~ msgid "online"
-#~ msgstr "в сети"
-
-#~ msgid "received file send request friend: %i filenumber: %i filename: %s \n"
-#~ msgstr "получен запрос от %i на передачу %i файлов %s \n"
-
-#~ msgid "sending file %s to %s\n"
-#~ msgstr "отправка файла %s к %s\n"
-
-#~ msgid "setting alias: %s\n"
-#~ msgstr "установка алиаса: %s\n"
-
-#~ msgid "tox 1 ID found: %s\n"
-#~ msgstr "Tox IDv1 найден: %s\n"
-
-#~ msgid "tox 2 ID found: %s %s\n"
-#~ msgstr "Tox IDv2 найден: %s %s\n"
