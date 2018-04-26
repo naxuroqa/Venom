@@ -59,8 +59,12 @@ namespace Venom {
       }
     }
 
-    public string get_sender_id() {
+    public string get_conversation_id() {
       return @"tox.conference.$conference_number";
+    }
+
+    public string get_sender_id() {
+      return peer_key;
     }
 
     public string get_message_plain() {
@@ -69,6 +73,10 @@ namespace Venom {
 
     public string get_time_plain() {
       return timestamp.format("%c");
+    }
+
+    public bool is_conference_message() {
+      return true;
     }
 
     public Gdk.Pixbuf get_sender_image() {

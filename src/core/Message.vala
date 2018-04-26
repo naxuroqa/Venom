@@ -36,8 +36,11 @@ namespace Venom {
 
     public abstract string get_sender_plain();
     public abstract string get_sender_id();
+    public abstract string get_conversation_id();
     public abstract string get_message_plain();
     public abstract string get_time_plain();
+
+    public abstract bool is_conference_message();
 
     public abstract Gdk.Pixbuf get_sender_image();
     public abstract bool equals_sender(IMessage m);
@@ -80,9 +83,11 @@ namespace Venom {
     }
 
     public string get_sender_id() {
-      if (from == null)
-        return null;
-      return from.get_id();
+      return (from == null) ? to.get_id() : from.get_id();
+    }
+
+    public string get_conversation_id() {
+      return get_sender_id();
     }
 
     public string get_message_plain() {
@@ -91,6 +96,10 @@ namespace Venom {
 
     public string get_time_plain() {
       return timestamp.format("%c");
+    }
+
+    public bool is_conference_message() {
+      return false;
     }
 
     public Gdk.Pixbuf get_sender_image() {

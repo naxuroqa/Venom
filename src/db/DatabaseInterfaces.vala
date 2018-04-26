@@ -21,6 +21,8 @@
 
 namespace Venom {
   public interface ISettingsDatabase : Object {
+    public abstract bool   enable_dark_theme           { get; set; }
+    public abstract bool   enable_animations           { get; set; }
     public abstract bool   enable_logging              { get; set; }
     public abstract bool   enable_urgency_notification { get; set; }
     public abstract bool   enable_tray                 { get; set; }

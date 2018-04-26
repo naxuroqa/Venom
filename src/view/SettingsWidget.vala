@@ -46,7 +46,6 @@ namespace Venom {
     [GtkChild] private Gtk.ListBox node_list_box;
     [GtkChild] private Gtk.Revealer proxy_revealer;
     [GtkChild] private Gtk.Switch proxy_enabled;
-    [GtkChild] private Gtk.RadioButton proxy_system;
     [GtkChild] private Gtk.RadioButton proxy_manual;
     [GtkChild] private Gtk.Revealer proxy_manual_revealer;
     [GtkChild] private Gtk.Entry custom_proxy_host;

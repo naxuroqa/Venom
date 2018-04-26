@@ -36,22 +36,16 @@ namespace Venom {
     [GtkChild] private Gtk.Revealer conference_invite_revealer;
     [GtkChild] private Gtk.Button conference_invite_button;
 
-    private unowned Gtk.ListBoxRow? selected_row;
+    private unowned Gtk.ListBoxRow ? selected_row;
 
     public ContactListWidget(ILogger logger, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListWidget created.");
       this.logger = logger;
       this.view_model = new ContactListViewModel(logger, contacts, friend_requests, conference_invites, callback, user_info);
 
-      try {
-        var builder = new Gtk.Builder.from_resource("/im/tox/venom/ui/user_status_menu.ui");
-        var menu_model = builder.get_object("menu") as GLib.MenuModel;
-        user_status_menu.set_menu_model(menu_model);
-
-      } catch (Error e) {
-        logger.f("Loading user status menu failed: " + e.message);
-        assert_not_reached();
-      }
+      var builder = new Gtk.Builder.from_resource("/im/tox/venom/ui/user_status_menu.ui");
+      var menu_model = builder.get_object("menu") as GLib.MenuModel;
+      user_status_menu.set_menu_model(menu_model);
 
       user_status_menu.set_image(image_status);
 

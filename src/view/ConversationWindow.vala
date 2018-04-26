@@ -55,6 +55,7 @@ namespace Venom {
                               ILogger logger,
                               ObservableList conversation,
                               IContact contact,
+                              ISettingsDatabase settings,
                               ConversationWidgetListener listener,
                               ConversationWidgetFiletransferListener filetransfer_listener) {
       this.app_window = app_window;
@@ -74,7 +75,7 @@ namespace Venom {
       update_widgets();
 
       var model = new ObservableListModel(conversation);
-      var creator = new MessageWidgetCreator(logger);
+      var creator = new MessageWidgetCreator(logger, settings);
       message_list.bind_model(model, creator.create_message);
 
       text_view.buffer.changed.connect(on_buffer_changed);
@@ -231,12 +232,14 @@ namespace Venom {
 
   public class MessageWidgetCreator {
     private unowned ILogger logger;
-    public MessageWidgetCreator(ILogger logger) {
+    private ISettingsDatabase settings;
+    public MessageWidgetCreator(ILogger logger, ISettingsDatabase settings) {
       this.logger = logger;
+      this.settings = settings;
     }
 
     public Gtk.Widget create_message(GLib.Object object) {
-      return new MessageWidget(logger, object as IMessage);
+      return new MessageWidget(logger, object as IMessage, settings);
     }
   }
 

@@ -28,6 +28,7 @@ namespace Venom {
     public int    unread_messages   { get; set; default = 0; }
     public bool   _show_notifications { get; set; default = true; }
     private Gee.Map<uint32, ConferencePeer> peers;
+    private static Gdk.Pixbuf default_image;
 
     public Conference(uint32 conference_number, string title) {
       this.conference_number = conference_number;
@@ -64,7 +65,14 @@ namespace Venom {
     }
 
     public Gdk.Pixbuf get_image() {
-      return Gtk.IconTheme.get_default().load_icon(R.icons.default_groupchat, 48, 0);
+      if (default_image == null) {
+        try {
+          default_image = Gtk.IconTheme.get_default().load_icon(R.icons.default_groupchat, 48, 0);
+        } catch (Error e) {
+          assert_not_reached();
+        }
+      }
+      return default_image;
     }
 
     public unowned Gee.Map<uint32, ConferencePeer> get_peers() {

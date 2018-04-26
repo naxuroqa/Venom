@@ -235,7 +235,7 @@ namespace Testing {
     }
 
     public static void main(string[] args) {
-      Unix.signal_add(Posix.SIGINT, on_sig_int, Priority.HIGH);
+      Unix.signal_add(Posix.Signal.INT, on_sig_int, Priority.HIGH);
       var bot = new GroupBot();
       bot.run("node.tox.biribiri.org", "F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67");
     }

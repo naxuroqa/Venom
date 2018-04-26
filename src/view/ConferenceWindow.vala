@@ -43,7 +43,7 @@ namespace Venom {
     private TextViewEventHandler text_view_event_handler;
     private AdjustmentAutoScroller auto_scroller;
 
-    public ConferenceWindow(ApplicationWindow app_window, ILogger logger, ObservableList conversation, IContact contact, ConferenceWidgetListener listener) {
+    public ConferenceWindow(ApplicationWindow app_window, ILogger logger, ObservableList conversation, IContact contact, ISettingsDatabase settings, ConferenceWidgetListener listener) {
       this.app_window = app_window;
       this.logger = logger;
       this.conversation = conversation;
@@ -58,11 +58,11 @@ namespace Venom {
       update_widgets();
 
       var model = new ObservableListModel(conversation);
-      var creator = new MessageWidgetCreator(logger);
+      var creator = new MessageWidgetCreator(logger, settings);
       message_list.bind_model(model, creator.create_message);
 
       app_window.add_action_entries(win_entries, this);
-      app_window.focus_in_event.connect(focus_in_event);
+      app_window.focus_in_event.connect(on_focus_in_event);
 
       auto_scroller = new AdjustmentAutoScroller(scrolled_window.vadjustment);
       auto_scroller.scroll_to_bottom();
@@ -78,7 +78,7 @@ namespace Venom {
       logger = null;
     }
 
-    private bool focus_in_event() {
+    private bool on_focus_in_event() {
       contact.clear_attention();
       contact.changed();
       return false;

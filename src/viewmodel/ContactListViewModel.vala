@@ -49,8 +49,8 @@ namespace Venom {
       this.callback = callback;
       this.user_info = user_info;
 
-      right_clicked_contact = new WeakRef(null);
-      selected_contact = new WeakRef(null);
+      right_clicked_contact = WeakRef(null);
+      selected_contact = WeakRef(null);
 
       refresh_user_info(this);
       user_info.info_changed.connect(refresh_user_info);

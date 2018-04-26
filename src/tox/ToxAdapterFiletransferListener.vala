@@ -117,6 +117,10 @@ namespace Venom {
         return;
       }
       var state = file_transfer.get_state();
+      if (state != FileTransferState.RUNNING && state != FileTransferState.PAUSED) {
+        logger.e("Received file chunk request, but filetransfer is not running/paused.");
+        return;
+      }
       if (length <= 0) {
         file_transfer.set_state(FileTransferState.FINISHED);
         unset_file_transfer(friend_number, file_number);
@@ -160,6 +164,10 @@ namespace Venom {
         return;
       }
       var state = file_transfer.get_state();
+      if (state != FileTransferState.RUNNING && state != FileTransferState.PAUSED) {
+        logger.e("Received file control packet, but filetransfer is not paused/running");
+        return;
+      }
       switch (control) {
         case ToxCore.FileControl.CANCEL:
           file_transfer.set_state(FileTransferState.CANCEL);
@@ -189,7 +197,7 @@ namespace Venom {
       var start = filename.substring(0, index);
       var end = index > 0 ? filename.substring(index) : "";
 
-      for(var i = 0;; i++) {
+      for (var i = 0;; i++) {
         var name = GLib.Path.build_filename(path, start + (i == 0 ? "" : @"_$i") + end);
         var file = File.new_for_path(name);
         if (!file.query_exists()) {
@@ -202,7 +210,6 @@ namespace Venom {
       logger.d("on_file_recv_data");
 
       var contact = friends.@get(friend_number) as Contact;
-      var name = contact.get_name_string();
       try {
         var transfer = new FileTransferImpl.File(FileTransferDirection.INCOMING, friend_number, file_number, file_size, filename);
         set_file_transfer(friend_number, file_number, transfer);
@@ -232,9 +239,6 @@ namespace Venom {
         }
         return;
       }
-      var contact = friends.@get(friend_number);
-      var name = contact.get_name_string();
-
       try {
         session.file_control(friend_number, file_number, ToxCore.FileControl.RESUME);
         var transfer = new FileTransferImpl.Avatar(FileTransferDirection.INCOMING, friend_number, file_number, file_size);
@@ -276,6 +280,14 @@ namespace Venom {
       return friend_transfers;
     }
 
+    private void cancel_transfer(uint32 friend_number, uint32 file_number) {
+      try {
+        session.file_control(friend_number, file_number, ToxCore.FileControl.CANCEL);
+      } catch (Error e) {
+        logger.e("Could not cancel transfer: " + e.message);
+      }
+    }
+
     public virtual void on_file_recv_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) {
       var friend_transfers = file_transfers.@get(friend_number);
       if (friend_transfers == null) {
@@ -288,7 +300,13 @@ namespace Venom {
         return;
       }
       if (data.length > 0) {
-        transfer.write_data(data);
+        try {
+          transfer.write_data(data);
+        } catch (Error e) {
+          logger.e("Error writing data to disk: " + e.message);
+          transfer.set_state(FileTransferState.FAILED);
+          cancel_transfer(friend_number, file_number);
+        }
       } else {
         transfer.set_state(FileTransferState.FINISHED);
         unset_file_transfer(transfer.get_friend_number(), transfer.get_file_number());

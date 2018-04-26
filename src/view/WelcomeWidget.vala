@@ -41,12 +41,20 @@ namespace Venom {
       link_get_involved.clicked.connect(on_get_involved_clicked);
     }
 
+    private void try_show_uri(string uri) {
+      try {
+        Gtk.show_uri(null, uri, Gdk.CURRENT_TIME);
+      } catch (Error e) {
+        logger.d("Could not show uri: " + e.message);
+      }
+    }
+
     private void on_learn_more_clicked() {
-      Gtk.show_uri(null, R.constants.tox_about(), Gdk.CURRENT_TIME);
+      try_show_uri(R.constants.tox_about());
     }
 
     private void on_get_involved_clicked() {
-      Gtk.show_uri(null, R.constants.tox_get_involved(), Gdk.CURRENT_TIME);
+      try_show_uri(R.constants.tox_get_involved());
     }
 
     ~WelcomeWidget() {

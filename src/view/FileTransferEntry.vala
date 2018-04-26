@@ -59,8 +59,11 @@ namespace Venom {
     private void on_open_file(string filename) {
       string[] spawn_args = { "xdg-open", filename };
       string[] spawn_env = GLib.Environ.get();
-
-      GLib.Process.spawn_async(null, spawn_args, spawn_env, GLib.SpawnFlags.SEARCH_PATH, null, null);
+      try {
+        GLib.Process.spawn_async(null, spawn_args, spawn_env, GLib.SpawnFlags.SEARCH_PATH, null, null);
+      } catch (SpawnError e) {
+        logger.e("Could not open file browser: " + e.message);
+      }
     }
 
     private void on_open_save_file_dialog(string path, string filename) {

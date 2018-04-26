@@ -33,18 +33,22 @@ namespace Venom {
     private ILogger logger;
     private MessageViewModel view_model;
     private UriTransform uri_transform;
+    private PangoTransform pango_transform;
 
-    public MessageWidget(ILogger logger, IMessage message_content) {
+    public MessageWidget(ILogger logger, IMessage message_content, ISettingsDatabase settings) {
       this.logger = logger;
-      this.view_model = new MessageViewModel(logger, message_content);
+      this.view_model = new MessageViewModel(logger, message_content, settings);
       this.uri_transform = new UriTransform(logger);
+      this.pango_transform = new PangoTransform();
 
       view_model.bind_property("additional-info-visible", additional_info, "reveal-child", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("timestamp", timestamp, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("timestamp-tooltip", timestamp, "tooltip-text", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("message", message, "label", GLib.BindingFlags.SYNC_CREATE, uri_transform.transform);
       view_model.bind_property("sender-image", sender_image, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
-      view_model.bind_property("sender", sender, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sender-color", pango_transform, "color", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sender-bold", pango_transform, "bold", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sender", sender, "label", GLib.BindingFlags.SYNC_CREATE, pango_transform.transform);
       view_model.bind_property("sender-sensitive", sender, "sensitive", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("sent-visible", sent, "visible", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("received-visible", received, "visible", GLib.BindingFlags.SYNC_CREATE);
