@@ -26,24 +26,6 @@ Author: Venom authors
   <!-- interface-license-type gplv3 -->
   <!-- interface-name Venom -->
   <!-- interface-authors Venom authors -->
-  <object class="GtkListStore" id="filesize_prefix_liststore">
-    <columns>
-      <!-- column-name description -->
-      <column type="gchararray"/>
-      <!-- column-name value -->
-      <column type="gboolean"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">KiB/MiB</col>
-        <col id="1">False</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">KB/MB</col>
-        <col id="1">True</col>
-      </row>
-    </data>
-  </object>
   <object class="GtkAdjustment" id="history_delete_adjustment">
     <property name="upper">365</property>
     <property name="value">180</property>

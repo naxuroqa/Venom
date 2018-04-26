@@ -35,7 +35,7 @@ namespace Venom {
     [GtkChild] private Gtk.Switch show_notifications;
     [GtkChild] private Gtk.Box notifications_box;
     [GtkChild] private Gtk.Revealer notifications_notice;
-    [GtkChild] private Gtk.Button remove;
+    [GtkChild] private Gtk.Button remove_button;
     [GtkChild] private Gtk.Button apply;
 
     private ILogger logger;
@@ -49,7 +49,7 @@ namespace Venom {
       this.view_model = new FriendInfoViewModel(logger, listener, contact as Contact);
 
       apply.clicked.connect(view_model.on_apply_clicked);
-      remove.clicked.connect(view_model.on_remove_clicked);
+      remove_button.clicked.connect(view_model.on_remove_clicked);
       alias.icon_press.connect(view_model.on_clear_alias_clicked);
       view_model.leave_view.connect(leave_view);
 

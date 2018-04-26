@@ -81,14 +81,14 @@ namespace Venom {
       session.friend_add_norequest(public_key);
 
       friend_requests.remove(friend_request);
-      tox_friend_requests.remove(id);
+      tox_friend_requests.unset(id);
     }
 
     public virtual void on_reject_friend_request(string id) throws Error {
       var friend_request = tox_friend_requests.@get(id);
 
       friend_requests.remove(friend_request);
-      tox_friend_requests.remove(id);
+      tox_friend_requests.unset(id);
     }
 
     public virtual void on_send_message(IContact c, string message) throws Error {
@@ -128,25 +128,16 @@ namespace Venom {
     }
 
     public virtual void on_friend_name_changed(uint32 friend_number, string name) {
-      logger.d("on_friend_name_changed");
-      try {
-        var contact = friends.@get(friend_number) as Contact;
-        contact.name = name;
-        contact.changed();
-      } catch (Error e) {
-        logger.e("Could not find contact.");
-      }
+      var contact = friends.@get(friend_number) as Contact;
+      contact.name = name;
+      contact.changed();
     }
 
     public virtual void on_friend_status_message_changed(uint32 friend_number, string message) {
       logger.d("on_friend_status_message_changed");
-      try {
-        var contact = friends.@get(friend_number) as Contact;
-        contact.status_message = message;
-        contact.changed();
-      } catch (Error e) {
-        logger.e("Could not find contact.");
-      }
+      var contact = friends.@get(friend_number) as Contact;
+      contact.status_message = message;
+      contact.changed();
     }
 
     public virtual void on_friend_request(uint8[] public_key, string message) {

@@ -34,7 +34,6 @@ namespace Venom {
     [GtkChild] private Gtk.Box friend_request_item;
 
     private ILogger logger;
-    private AddContactWidgetListener listener;
     private AddContactViewModel view_model;
     private ContainerChildBooleanBinding stack_binding;
 

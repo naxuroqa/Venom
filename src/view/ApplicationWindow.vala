@@ -217,10 +217,10 @@ namespace Venom {
       logger.d("ApplicationWindow on_contact_selected");
       if (contact is Contact) {
         var conv = conversations.@get(contact);
-        switch_content_with(() => { return new ConversationWindow(this, logger, conv, contact, friend_listener, filetransfer_listener); });
+        switch_content_with(() => { return new ConversationWindow(this, logger, conv, contact, settings_database, friend_listener, filetransfer_listener); });
       } else if (contact is Conference) {
         var conv = conversations.@get(contact);
-        switch_content_with(() => { return new ConferenceWindow(this, logger, conv, contact, conference_listener); });
+        switch_content_with(() => { return new ConferenceWindow(this, logger, conv, contact, settings_database, conference_listener); });
       }
     }
 
@@ -241,11 +241,6 @@ namespace Venom {
       content_revealer.add(current_content_widget);
       content_revealer.set_reveal_child(true);
       next_content_widget = null;
-    }
-
-    private string get_header_for_status(UserStatus status) {
-      var title = "%s".printf(status.to_string());
-      return get_urgency_hint() ? "* " + title : title;
     }
 
     public void show_settings() {

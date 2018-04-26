@@ -823,16 +823,6 @@ namespace Venom {
       }
     }
 
-    private uint32 get_friend_number(uint8[] public_key) throws ToxError {
-      var e = ErrFriendByPublicKey.OK;
-      var ret = handle.friend_by_public_key(public_key, out e);
-      if (ret == uint32.MAX) {
-        logger.e("get_friend_number failed: " + e.to_string());
-        throw new ToxError.GENERIC(e.to_string());
-      }
-      return ret;
-    }
-
     public void @lock() {
       mutex.@lock();
     }

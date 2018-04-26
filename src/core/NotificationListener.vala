@@ -55,7 +55,7 @@ namespace Venom {
       var notification = new Notification(_("New message from %s").printf(message.get_sender_plain()));
       notification.set_body(message.get_message_plain());
       notification.set_icon(message.get_sender_image());
-      notification.set_default_action_and_target_value("app.show-contact", new GLib.Variant.string(message.get_sender_id()));
+      notification.set_default_action_and_target_value("app.show-contact", new GLib.Variant.string(message.get_conversation_id()));
       app.send_notification(message_id, notification);
     }
 

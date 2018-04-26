@@ -23,7 +23,6 @@ namespace Venom {
   [GtkTemplate(ui = "/im/tox/venom/ui/create_groupchat_widget.ui")]
   public class CreateGroupchatWidget : Gtk.Box {
     [GtkChild] private Gtk.Entry title;
-    [GtkChild] private Gtk.RadioButton type_text;
     [GtkChild] private Gtk.Button create;
     [GtkChild] private Gtk.Revealer title_error_content;
     [GtkChild] private Gtk.Label title_error;
