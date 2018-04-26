@@ -99,6 +99,11 @@ namespace Venom {
       settings_database.bind_property("enable-send-typing", friend_listener, "show-typing", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-urgency-notification", notification_listener, "show-notifications", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-tray", status_icon, "visible", BindingFlags.SYNC_CREATE);
+      user_info.notify["user-status"].connect(on_user_status_changed);
+
+      init_callbacks();
+      init_window_state();
+      init_widgets();
 
       try {
         var session_io = new ToxSessionIOImpl(logger);
@@ -116,10 +121,6 @@ namespace Venom {
       focus_in_event.connect(on_focus_in_event);
       window_state_event.connect(on_window_state_event);
       size_allocate.connect(on_window_size_allocate);
-
-      init_window_state();
-      init_widgets();
-      init_callbacks();
 
       show_welcome();
 
@@ -332,6 +333,21 @@ namespace Venom {
       }
     }
 
+    private void on_user_status_changed() {
+      var action = lookup_action("change_userstatus") as SimpleAction;
+      switch (user_info.user_status) {
+        case UserStatus.NONE:
+          action.set_state("online");
+          break;
+        case UserStatus.AWAY:
+          action.set_state("away");
+          break;
+        case UserStatus.BUSY:
+          action.set_state("busy");
+          break;
+      }
+    }
+
     private void on_change_userstatus(GLib.SimpleAction action, GLib.Variant? parameter) {
       logger.d("on_change_userstatus()");
       var status = parameter.get_string();
@@ -346,7 +362,6 @@ namespace Venom {
           session_listener.self_set_user_status(UserStatus.BUSY);
           break;
       }
-      action.set_state(status);
     }
 
     private void on_add_contact() {

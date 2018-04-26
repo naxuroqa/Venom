@@ -61,6 +61,7 @@ namespace Venom {
 
     public abstract string self_get_name();
     public abstract string self_get_status_message();
+    public abstract UserStatus self_get_user_status();
 
     public abstract uint8[] self_get_address();
 
@@ -598,6 +599,10 @@ namespace Venom {
           handle.self_status = ToxCore.UserStatus.NONE;
           break;
       }
+    }
+
+    public UserStatus self_get_user_status() {
+      return from_user_status(handle.self_status);
     }
 
     public virtual uint8[] friend_get_public_key(uint32 friend_number) throws ToxError {
