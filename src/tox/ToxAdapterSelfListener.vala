@@ -49,6 +49,7 @@ namespace Venom {
     private void get_user_info() {
       user_info.name = session.self_get_name();
       user_info.status_message = session.self_get_status_message();
+      user_info.user_status = session.self_get_user_status();
     }
 
     private void on_user_info_changed(GLib.Object sender) {
