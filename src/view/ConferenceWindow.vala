@@ -27,6 +27,7 @@ namespace Venom {
     [GtkChild] private Gtk.TextView text_view;
     [GtkChild] private Gtk.ListBox message_list;
     [GtkChild] private Gtk.ScrolledWindow scrolled_window;
+    [GtkChild] private Gtk.Box placeholder;
 
     private const GLib.ActionEntry win_entries[] =
     {
@@ -60,6 +61,7 @@ namespace Venom {
       var model = new ObservableListModel(conversation);
       var creator = new MessageWidgetCreator(logger, settings);
       message_list.bind_model(model, creator.create_message);
+      message_list.set_placeholder(placeholder);
 
       app_window.add_action_entries(win_entries, this);
       app_window.focus_in_event.connect(on_focus_in_event);

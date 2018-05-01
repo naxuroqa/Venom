@@ -31,6 +31,7 @@ namespace Venom {
     [GtkChild] private Gtk.Revealer typing_revealer;
     [GtkChild] private Gtk.Label typing_label;
     [GtkChild] private Gtk.Overlay overlay;
+    [GtkChild] private Gtk.Box placeholder;
 
     private const GLib.ActionEntry win_entries[] =
     {
@@ -77,6 +78,7 @@ namespace Venom {
       var model = new ObservableListModel(conversation);
       var creator = new MessageWidgetCreator(logger, settings);
       message_list.bind_model(model, creator.create_message);
+      message_list.set_placeholder(placeholder);
 
       text_view.buffer.changed.connect(on_buffer_changed);
       app_window.add_action_entries(win_entries, this);

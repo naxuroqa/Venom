@@ -22,7 +22,7 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="spacing">12</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>
@@ -44,12 +44,15 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel" id="conference_title">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label">conference_title</property>
+                        <property name="ellipsize">end</property>
                         <property name="xalign">0</property>
                       </object>
                       <packing>
@@ -63,6 +66,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label">conference_peers</property>
+                        <property name="ellipsize">end</property>
                         <property name="xalign">0</property>
                         <style>
                           <class name="dim-label"/>
@@ -97,6 +101,7 @@
             <property name="receives_default">True</property>
             <property name="valign">center</property>
             <property name="action_name">win.show-peers</property>
+            <property name="relief">none</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
@@ -174,25 +179,14 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="border_width">6</property>
-        <property name="spacing">6</property>
         <child>
-          <object class="GtkScrolledWindow">
+          <object class="GtkTextView" id="text_view">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <child>
-              <object class="GtkTextView" id="text_view">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="left_margin">6</property>
-                <property name="right_margin">6</property>
-                <property name="top_margin">6</property>
-                <property name="bottom_margin">6</property>
-              </object>
-            </child>
-            <style>
-              <class name="frame"/>
-            </style>
+            <property name="left_margin">6</property>
+            <property name="right_margin">6</property>
+            <property name="top_margin">6</property>
+            <property name="bottom_margin">6</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -207,7 +201,9 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Insert Emoji</property>
+            <property name="valign">start</property>
             <property name="action_name">win.insert-smiley</property>
+            <property name="relief">none</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
@@ -231,4 +227,41 @@
       </packing>
     </child>
   </template>
+  <object class="GtkBox" id="placeholder">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="halign">center</property>
+    <property name="valign">center</property>
+    <property name="border_width">6</property>
+    <property name="orientation">vertical</property>
+    <property name="spacing">6</property>
+    <child>
+      <object class="GtkImage">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="icon_name">dialog-information-symbolic</property>
+        <property name="icon_size">6</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">No messages yet...</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <style>
+      <class name="dim-label"/>
+    </style>
+  </object>
 </interface>
