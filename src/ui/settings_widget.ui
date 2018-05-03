@@ -60,7 +60,7 @@ Author: Venom authors
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">6</property>
-                    <property name="spacing">12</property>
+                    <property name="spacing">6</property>
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>
@@ -103,7 +103,7 @@ Author: Venom authors
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">6</property>
-                    <property name="spacing">12</property>
+                    <property name="spacing">6</property>
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>
@@ -143,7 +143,7 @@ Author: Venom authors
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">6</property>
-                    <property name="spacing">12</property>
+                    <property name="spacing">6</property>
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>
@@ -172,6 +172,9 @@ Author: Venom authors
                 </child>
               </object>
             </child>
+            <style>
+              <class name="separated"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -554,6 +557,7 @@ Author: Venom authors
                                     </child>
                                     <style>
                                       <class name="frame"/>
+                                      <class name="separated"/>
                                     </style>
                                   </object>
                                   <packing>
@@ -694,6 +698,7 @@ Author: Venom authors
                                     </child>
                                     <style>
                                       <class name="frame"/>
+                                      <class name="separated"/>
                                     </style>
                                   </object>
                                   <packing>
@@ -752,6 +757,7 @@ Author: Venom authors
                                     <child>
                                       <object class="GtkSwitch" id="keep_history">
                                         <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
                                         <property name="can_focus">True</property>
                                         <property name="valign">center</property>
                                       </object>
@@ -886,6 +892,7 @@ Author: Venom authors
                                         </child>
                                         <style>
                                           <class name="frame"/>
+                                          <class name="separated"/>
                                         </style>
                                       </object>
                                     </child>
@@ -1301,6 +1308,7 @@ Author: Venom authors
                                 </child>
                                 <style>
                                   <class name="frame"/>
+                                  <class name="separated"/>
                                 </style>
                               </object>
                               <packing>
@@ -1381,6 +1389,7 @@ Author: Venom authors
                                 <property name="selection_mode">none</property>
                                 <style>
                                   <class name="frame"/>
+                                  <class name="separated"/>
                                 </style>
                               </object>
                               <packing>
@@ -1746,6 +1755,7 @@ Author: Venom authors
                                     </child>
                                     <style>
                                       <class name="frame"/>
+                                      <class name="separated"/>
                                     </style>
                                   </object>
                                 </child>

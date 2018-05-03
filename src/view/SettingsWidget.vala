@@ -59,11 +59,14 @@ namespace Venom {
     private ObservableList dht_nodes;
     private ObservableListModel list_model;
 
-    public SettingsWidget(ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase, ILogger logger) {
+    public SettingsWidget(ILogger logger, ApplicationWindow app_window, ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase) {
       logger.d("SettingsWidget created.");
       this.logger = logger;
       this.settingsDatabase = settingsDatabase;
       this.nodeDatabase = nodeDatabase;
+
+      app_window.reset_header_bar();
+      app_window.header_bar.title = _("Settings");
 
       sidebar.select_row(row_general);
       sidebar.row_activated.connect(on_row_activated);

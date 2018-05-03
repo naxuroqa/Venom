@@ -22,12 +22,12 @@
 namespace Venom {
   [GtkTemplate(ui = "/im/tox/venom/ui/conference_window.ui")]
   public class ConferenceWindow : Gtk.Box {
-    [GtkChild] private Gtk.Label conference_title;
-    [GtkChild] private Gtk.Label conference_peers;
     [GtkChild] private Gtk.TextView text_view;
     [GtkChild] private Gtk.ListBox message_list;
     [GtkChild] private Gtk.ScrolledWindow scrolled_window;
     [GtkChild] private Gtk.Box placeholder;
+    [GtkChild] private Gtk.Widget header_start;
+    [GtkChild] private Gtk.Widget header_end;
 
     private const GLib.ActionEntry win_entries[] =
     {
@@ -54,6 +54,10 @@ namespace Venom {
       text_view_event_handler = new TextViewEventHandler();
       text_view_event_handler.send.connect(on_send);
       text_view.key_press_event.connect(text_view_event_handler.on_key_press_event);
+
+      app_window.reset_header_bar();
+      app_window.header_start.pack_start(header_start);
+      app_window.header_end.pack_start(header_end);
 
       contact.changed.connect(update_widgets);
       update_widgets();
@@ -92,8 +96,8 @@ namespace Venom {
         contact.changed();
         return;
       }
-      conference_title.label = contact.get_name_string();
-      conference_peers.label = contact.get_status_string();
+      app_window.header_bar.title = contact.get_name_string();
+      app_window.header_bar.subtitle = contact.get_status_string();
     }
 
     private void on_send() {

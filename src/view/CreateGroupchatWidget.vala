@@ -31,16 +31,20 @@ namespace Venom {
     [GtkChild] private Gtk.Box conference_invite_item;
     [GtkChild] private Gtk.Box placeholder;
     [GtkChild] private Gtk.Stack stack;
+    [GtkChild] private Gtk.Widget custom_title;
 
     private ILogger logger;
     private CreateGroupchatViewModel view_model;
     private ContainerChildBooleanBinding stack_binding;
 
-    public CreateGroupchatWidget(ILogger logger, ObservableList conference_invites_model, CreateGroupchatWidgetListener listener, ConferenceInviteEntryListener entry_listener) {
+    public CreateGroupchatWidget(ILogger logger, ApplicationWindow app_window, ObservableList conference_invites_model, CreateGroupchatWidgetListener listener, ConferenceInviteEntryListener entry_listener) {
       logger.d("CreateGroupChatWidget created.");
       this.logger = logger;
       this.view_model = new CreateGroupchatViewModel(logger, conference_invites_model, listener);
       stack_binding = new ContainerChildBooleanBinding(stack, conference_invite_item, "needs-attention");
+
+      app_window.reset_header_bar();
+      app_window.header_bar.custom_title = custom_title;
 
       title.bind_property("text", view_model, "title", GLib.BindingFlags.SYNC_CREATE | GLib.BindingFlags.BIDIRECTIONAL);
       view_model.bind_property("title-error", title_error, "label", GLib.BindingFlags.SYNC_CREATE);

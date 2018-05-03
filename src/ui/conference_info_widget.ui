@@ -230,6 +230,7 @@
             </child>
             <style>
               <class name="frame"/>
+              <class name="separated"/>
             </style>
           </object>
           <packing>
@@ -279,6 +280,7 @@
             <property name="activate_on_single_click">False</property>
             <style>
               <class name="frame"/>
+              <class name="separated"/>
             </style>
           </object>
           <packing>

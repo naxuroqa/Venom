@@ -32,16 +32,20 @@ namespace Venom {
 
     [GtkChild] private Gtk.Stack stack;
     [GtkChild] private Gtk.Box friend_request_item;
+    [GtkChild] private Gtk.Widget custom_title;
 
     private ILogger logger;
     private AddContactViewModel view_model;
     private ContainerChildBooleanBinding stack_binding;
 
-    public AddContactWidget(ILogger logger, ObservableList friend_requests_model, AddContactWidgetListener listener, FriendRequestWidgetListener friend_request_listener) {
+    public AddContactWidget(ILogger logger, ApplicationWindow app_window, ObservableList friend_requests_model, AddContactWidgetListener listener, FriendRequestWidgetListener friend_request_listener) {
       logger.d("AddContactWidget created.");
       this.logger = logger;
       view_model = new AddContactViewModel(logger, friend_requests_model, listener);
       stack_binding = new ContainerChildBooleanBinding(stack, friend_request_item, "needs-attention");
+
+      app_window.reset_header_bar();
+      app_window.header_bar.custom_title = custom_title;
 
       contact_id.bind_property("text", view_model, "contact-id", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       contact_message.buffer.bind_property("text", view_model, "contact-message", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);

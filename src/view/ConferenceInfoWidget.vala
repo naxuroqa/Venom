@@ -42,6 +42,9 @@ namespace Venom {
       this.app_window = app_window;
       this.view_model = new ConferenceInfoViewModel(logger, listener, contact as Conference);
 
+      app_window.reset_header_bar();
+      view_model.bind_property("title", app_window.header_bar, "title", BindingFlags.SYNC_CREATE);
+
       view_model.bind_property("title", title, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       view_model.bind_property("title-error", title_error, "label", BindingFlags.SYNC_CREATE);
       view_model.bind_property("title-error-visible", title_error_content, "reveal-child", BindingFlags.SYNC_CREATE);

@@ -38,10 +38,14 @@ namespace Venom {
       set { filechooser.set_filename(value); }
     }
 
-    public UserInfoWidget(ILogger logger, UserInfo user_info) {
+    public UserInfoWidget(ILogger logger, ApplicationWindow app_window, UserInfo user_info) {
       logger.d("UserInfoWidget created.");
       this.logger = logger;
       this.view_model = new UserInfoViewModel(logger, user_info);
+
+      app_window.reset_header_bar();
+      view_model.bind_property("username", app_window.header_bar, "title", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("statusmessage", app_window.header_bar, "subtitle", GLib.BindingFlags.SYNC_CREATE);
 
       view_model.bind_property("username", entry_username, "text", GLib.BindingFlags.SYNC_CREATE | GLib.BindingFlags.BIDIRECTIONAL);
       view_model.bind_property("statusmessage", entry_statusmessage, "text", GLib.BindingFlags.SYNC_CREATE | GLib.BindingFlags.BIDIRECTIONAL);
