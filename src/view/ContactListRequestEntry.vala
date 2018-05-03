@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/im/tox/venom/ui/contact_list_request_entry.ui")]
+  [GtkTemplate(ui = "/chat/tox/venom/ui/contact_list_request_entry.ui")]
   public class ContactListRequestEntry : Gtk.ListBoxRow, IContactListEntry {
     private ILogger logger;
     private IContact contact;

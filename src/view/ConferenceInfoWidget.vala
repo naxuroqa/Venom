@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/im/tox/venom/ui/conference_info_widget.ui")]
+  [GtkTemplate(ui = "/chat/tox/venom/ui/conference_info_widget.ui")]
   public class ConferenceInfoWidget : Gtk.Box {
     [GtkChild] private Gtk.Entry title;
     [GtkChild] private Gtk.ListBox peers;

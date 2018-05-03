@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/im/tox/venom/icons">
+  <gresource prefix="/chat/tox/venom/icons">
     <file compressed="true">scalable/apps/venom-symbolic.svg</file>
     <file compressed="true">scalable/status/busy-symbolic.svg</file>
     <file compressed="true">scalable/status/idle-symbolic.svg</file>

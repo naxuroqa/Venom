@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=im.tox.venom
-Exec=@bindir@/venom --gapplication-service

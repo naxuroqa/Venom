@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/im/tox/venom/ui/welcome_widget.ui")]
+  [GtkTemplate(ui = "/chat/tox/venom/ui/welcome_widget.ui")]
   public class WelcomeWidget : Gtk.Box {
     private ILogger logger;
 

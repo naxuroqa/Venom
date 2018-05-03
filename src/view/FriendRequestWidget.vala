@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/im/tox/venom/ui/friend_request_widget.ui")]
+  [GtkTemplate(ui = "/chat/tox/venom/ui/friend_request_widget.ui")]
   public class FriendRequestWidget : Gtk.ListBoxRow {
     private ILogger logger;
     private FriendRequest friend_request;

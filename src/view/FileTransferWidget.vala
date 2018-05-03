@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/im/tox/venom/ui/file_transfer_widget.ui")]
+  [GtkTemplate(ui = "/chat/tox/venom/ui/file_transfer_widget.ui")]
   public class FileTransferWidget : Gtk.Box {
     private ILogger logger;
     private ObservableList transfers;

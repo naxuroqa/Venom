@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/im/tox/venom/ui/add_contact_widget.ui")]
+  [GtkTemplate(ui = "/chat/tox/venom/ui/add_contact_widget.ui")]
   public class AddContactWidget : Gtk.Box {
     [GtkChild] private Gtk.Entry contact_id;
     [GtkChild] private Gtk.TextView contact_message;
