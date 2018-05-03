@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/im/tox/venom/ui/message_widget.ui")]
+  [GtkTemplate(ui = "/chat/tox/venom/ui/message_widget.ui")]
   public class MessageWidget : Gtk.ListBoxRow {
     [GtkChild] private Gtk.Label sender;
     [GtkChild] private Gtk.Image sender_image;

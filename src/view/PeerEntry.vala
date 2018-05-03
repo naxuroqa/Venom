@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/im/tox/venom/ui/peer_entry.ui")]
+  [GtkTemplate(ui = "/chat/tox/venom/ui/peer_entry.ui")]
   public class PeerEntry : Gtk.ListBoxRow {
     [GtkChild]
     private Gtk.Image peer_image;

@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/im/tox/venom/ui/conference_invite_entry.ui")]
+  [GtkTemplate(ui = "/chat/tox/venom/ui/conference_invite_entry.ui")]
   public class ConferenceInviteEntry : Gtk.ListBoxRow {
     private ILogger logger;
     private ConferenceInvite invite;

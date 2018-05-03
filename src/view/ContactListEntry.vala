@@ -24,7 +24,7 @@ namespace Venom {
     public abstract IContact get_contact();
   }
 
-  [GtkTemplate(ui = "/im/tox/venom/ui/contact_list_entry.ui")]
+  [GtkTemplate(ui = "/chat/tox/venom/ui/contact_list_entry.ui")]
   public class ContactListEntry : Gtk.ListBoxRow, IContactListEntry {
     [GtkChild] private Gtk.Label contact_name;
     [GtkChild] private Gtk.Label contact_status;

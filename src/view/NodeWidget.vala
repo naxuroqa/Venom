@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/im/tox/venom/ui/node_widget.ui")]
+  [GtkTemplate(ui = "/chat/tox/venom/ui/node_widget.ui")]
   public class NodeWidget : Gtk.ListBoxRow {
     [GtkChild]
     private Gtk.Label host;

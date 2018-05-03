@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/im/tox/venom/ui/settings_widget.ui")]
+  [GtkTemplate(ui = "/chat/tox/venom/ui/settings_widget.ui")]
   public class SettingsWidget : Gtk.Box {
     private ISettingsDatabase settingsDatabase;
     private IDhtNodeDatabase nodeDatabase;

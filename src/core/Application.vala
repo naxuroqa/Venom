@@ -93,7 +93,7 @@ namespace Venom {
 
       var builder = new Gtk.Builder();
       try {
-        builder.add_from_resource("/im/tox/venom/ui/app_menu.ui");
+        builder.add_from_resource("/chat/tox/venom/ui/app_menu.ui");
       } catch (Error e) {
         logger.f("Loading app menu failed: " + e.message);
         assert_not_reached();
