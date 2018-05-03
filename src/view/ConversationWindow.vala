@@ -22,8 +22,6 @@
 namespace Venom {
   [GtkTemplate(ui = "/im/tox/venom/ui/conversation_window.ui")]
   public class ConversationWindow : Gtk.Box {
-    [GtkChild] private Gtk.Label user_name;
-    [GtkChild] private Gtk.Label user_status;
     [GtkChild] private Gtk.Image user_image;
     [GtkChild] private Gtk.TextView text_view;
     [GtkChild] private Gtk.ListBox message_list;
@@ -32,6 +30,8 @@ namespace Venom {
     [GtkChild] private Gtk.Label typing_label;
     [GtkChild] private Gtk.Overlay overlay;
     [GtkChild] private Gtk.Box placeholder;
+    [GtkChild] private Gtk.Widget header_start;
+    [GtkChild] private Gtk.Widget header_end;
 
     private const GLib.ActionEntry win_entries[] =
     {
@@ -72,6 +72,10 @@ namespace Venom {
 
       overlay.add_overlay(typing_revealer);
 
+      app_window.reset_header_bar();
+      app_window.header_start.pack_start(header_start);
+      app_window.header_end.pack_start(header_end);
+
       contact.changed.connect(update_widgets);
       update_widgets();
 
@@ -96,11 +100,11 @@ namespace Venom {
         contact.changed();
         return;
       }
-      user_name.label = contact.get_name_string();
-      user_status.label = contact.get_status_string();
+      app_window.header_bar.title = contact.get_name_string();
+      app_window.header_bar.subtitle = contact.get_status_string();
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
-        user_image.pixbuf = pixbuf.scale_simple(48, 48, Gdk.InterpType.BILINEAR);
+        user_image.pixbuf = pixbuf.scale_simple(22, 22, Gdk.InterpType.BILINEAR);
       }
       typing_label.label = _("%s is typing...").printf(contact.get_name_string());
       typing_revealer.reveal_child = contact.is_typing();

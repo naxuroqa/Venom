@@ -25,6 +25,7 @@ namespace Venom {
     private ILogger logger;
     private ContactListViewModel view_model;
 
+    [GtkChild] private Gtk.Box top_bar_box;
     [GtkChild] private Gtk.Label username;
     [GtkChild] private Gtk.Label statusmessage;
     [GtkChild] private Gtk.Image userimage;
@@ -32,16 +33,19 @@ namespace Venom {
     [GtkChild] private Gtk.Image image_status;
     [GtkChild] private Gtk.MenuButton user_status_menu;
     [GtkChild] private Gtk.Revealer friend_request_revealer;
-    [GtkChild] private Gtk.Button friend_request_button;
+    [GtkChild] private Gtk.Label friend_request_label;
     [GtkChild] private Gtk.Revealer conference_invite_revealer;
-    [GtkChild] private Gtk.Button conference_invite_button;
+    [GtkChild] private Gtk.Label conference_invite_label;
+    [GtkChild] private Gtk.Box placeholder;
 
     private unowned Gtk.ListBoxRow ? selected_row;
 
-    public ContactListWidget(ILogger logger, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info) {
+    public ContactListWidget(ILogger logger, ApplicationWindow app_window, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListWidget created.");
       this.logger = logger;
       this.view_model = new ContactListViewModel(logger, contacts, friend_requests, conference_invites, callback, user_info);
+
+      app_window.user_info_box.pack_start(top_bar_box, false);
 
       var builder = new Gtk.Builder.from_resource("/im/tox/venom/ui/user_status_menu.ui");
       var menu_model = builder.get_object("menu") as GLib.MenuModel;
@@ -54,13 +58,14 @@ namespace Venom {
       view_model.bind_property("userimage", userimage, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("image-status", image_status, "icon-name", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("friend-request-visible", friend_request_revealer, "reveal-child", GLib.BindingFlags.SYNC_CREATE);
-      view_model.bind_property("friend-request-label", friend_request_button, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("friend-request-label", friend_request_label, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("conference-invite-visible", conference_invite_revealer, "reveal-child", GLib.BindingFlags.SYNC_CREATE);
-      view_model.bind_property("conference-invite-label", conference_invite_button, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("conference-invite-label", conference_invite_label, "label", GLib.BindingFlags.SYNC_CREATE);
 
       contact_list.button_press_event.connect(on_button_pressed);
       contact_list.popup_menu.connect(on_popup_menu);
       contact_list.row_activated.connect(on_row_activated);
+      contact_list.set_placeholder(placeholder);
 
       var creator = new ContactListEntryCreator(logger);
       contact_list.bind_model(view_model.get_list_model(), creator.create_entry);

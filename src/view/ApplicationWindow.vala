@@ -38,6 +38,11 @@ namespace Venom {
     [GtkChild] private Gtk.Box contact_list_box;
     [GtkChild] private Gtk.Revealer content_revealer;
     [GtkChild] private Gtk.StatusIcon status_icon;
+    [GtkChild] private Gtk.Paned content_paned;
+    [GtkChild] public Gtk.Box user_info_box;
+    [GtkChild] public Gtk.HeaderBar header_bar;
+    [GtkChild] public Gtk.Box header_start;
+    [GtkChild] public Gtk.Box header_end;
 
     private Gtk.Widget current_content_widget;
     private WidgetProvider next_content_widget;
@@ -208,9 +213,19 @@ namespace Venom {
         logger.f("Could not set icon from theme: " + e.message);
       }
 
-      var contact_list = new ContactListWidget(logger, contacts, friend_requests, conference_invites, this, user_info);
+      var contact_list = new ContactListWidget(logger, this, contacts, friend_requests, conference_invites, this, user_info);
       contact_list_box.pack_start(contact_list, true, true);
       contact_list_view_model = contact_list.get_model();
+      content_paned.bind_property("position", user_info_box, "width-request", BindingFlags.SYNC_CREATE,
+                                  (binding, source, ref target) => { target = source.get_int() - 12; return true; });
+    }
+
+    public void reset_header_bar() {
+      header_start.@foreach((w) => { w.destroy(); });
+      header_end.@foreach((w) => { w.destroy(); });
+      header_bar.custom_title = null;
+      header_bar.title = "";
+      header_bar.subtitle = "";
     }
 
     public virtual void on_contact_selected(IContact contact) {
@@ -244,23 +259,23 @@ namespace Venom {
     }
 
     public void show_settings() {
-      switch_content_with(() => { return widget_factory.createSettingsWidget(settings_database, node_database); });
+      switch_content_with(() => { return widget_factory.createSettingsWidget(this, settings_database, node_database); });
     }
 
     public void show_welcome() {
-      switch_content_with(() => { return new WelcomeWidget(logger); });
+      switch_content_with(() => { return new WelcomeWidget(logger, this); });
     }
 
     private void on_show_user() {
-      switch_content_with(() => { return new UserInfoWidget(logger, user_info); });
+      switch_content_with(() => { return new UserInfoWidget(logger, this, user_info); });
     }
 
     private void on_create_groupchat() {
-      switch_content_with(() => { return new CreateGroupchatWidget(logger, conference_invites, conference_listener, conference_listener); });
+      switch_content_with(() => { return new CreateGroupchatWidget(logger, this, conference_invites, conference_listener, conference_listener); });
     }
 
     public void on_filetransfer() {
-      switch_content_with(() => { return new FileTransferWidget(logger, transfers, filetransfer_listener); });
+      switch_content_with(() => { return new FileTransferWidget(logger, this, transfers, filetransfer_listener); });
     }
 
     public void on_show_friend(IContact contact) {
@@ -362,7 +377,7 @@ namespace Venom {
     private void on_add_contact() {
       logger.d("on_add_contact()");
       switch_content_with(() => {
-        var widget = new AddContactWidget(logger, friend_requests, friend_listener, friend_listener);
+        var widget = new AddContactWidget(logger, this, friend_requests, friend_listener, friend_listener);
         return widget;
       });
     }

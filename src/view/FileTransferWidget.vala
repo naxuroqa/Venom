@@ -29,11 +29,14 @@ namespace Venom {
     [GtkChild] private Gtk.ListBox file_transfers;
     [GtkChild] private Gtk.Widget placeholder;
 
-    public FileTransferWidget(ILogger logger, ObservableList transfers, FileTransferEntryListener listener) {
+    public FileTransferWidget(ILogger logger, ApplicationWindow app_window, ObservableList transfers, FileTransferEntryListener listener) {
       logger.d("FileTransferWidget created.");
       this.logger = logger;
       this.transfers = transfers;
       this.listener = listener;
+
+      app_window.reset_header_bar();
+      app_window.header_bar.title = _("File transfers");
 
       file_transfers.set_placeholder(placeholder);
       var creator = new FileTransferEntryCreator(logger, listener);

@@ -7,178 +7,6 @@
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="border_width">6</property>
-        <child>
-          <object class="GtkButton">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.contact-info</property>
-            <property name="relief">none</property>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="spacing">6</property>
-                <child>
-                  <object class="GtkImage" id="user_image">
-                    <property name="width_request">48</property>
-                    <property name="height_request">48</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="pixel_size">48</property>
-                    <property name="icon_name">friend-symbolic</property>
-                    <property name="icon_size">5</property>
-                    <style>
-                      <class name="avatar"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel" id="user_name">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label">username</property>
-                        <property name="ellipsize">end</property>
-                        <property name="xalign">0</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="user_status">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label">statusmessage</property>
-                        <property name="ellipsize">end</property>
-                        <property name="xalign">0</property>
-                        <style>
-                          <class name="dim-label"/>
-                        </style>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="valign">center</property>
-            <child>
-              <object class="GtkButton">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="no_show_all">True</property>
-                <property name="tooltip_text" translatable="yes">Start a call</property>
-                <property name="action_name">win.start-call</property>
-                <property name="relief">none</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">call-start-symbolic</property>
-                  </object>
-                </child>
-                <style>
-                  <class name="image-button"/>
-                </style>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="no_show_all">True</property>
-                <property name="tooltip_text" translatable="yes">Start a video call</property>
-                <property name="action_name">win.start-video</property>
-                <property name="relief">none</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">video-x-generic-symbolic</property>
-                  </object>
-                </child>
-                <style>
-                  <class name="image-button"/>
-                </style>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkSeparator">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-    <child>
       <object class="GtkOverlay" id="overlay">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -197,6 +25,9 @@
                     <property name="can_focus">False</property>
                     <property name="selection_mode">none</property>
                     <property name="activate_on_single_click">False</property>
+                    <style>
+                      <class name="conversation"/>
+                    </style>
                   </object>
                 </child>
               </object>
@@ -229,13 +60,20 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkTextView" id="text_view">
+          <object class="GtkScrolledWindow">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="left_margin">6</property>
-            <property name="right_margin">6</property>
-            <property name="top_margin">6</property>
-            <property name="bottom_margin">6</property>
+            <property name="vscrollbar_policy">never</property>
+            <child>
+              <object class="GtkTextView" id="text_view">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="left_margin">6</property>
+                <property name="right_margin">6</property>
+                <property name="top_margin">6</property>
+                <property name="bottom_margin">6</property>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -315,6 +153,83 @@
       </packing>
     </child>
   </template>
+  <object class="GtkBox" id="header_end">
+    <property name="can_focus">False</property>
+    <property name="no_show_all">True</property>
+    <property name="spacing">6</property>
+    <child>
+      <object class="GtkButton">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="no_show_all">True</property>
+        <property name="tooltip_text" translatable="yes">Start a call</property>
+        <property name="action_name">win.start-call</property>
+        <child>
+          <object class="GtkImage">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">call-start-symbolic</property>
+          </object>
+        </child>
+        <style>
+          <class name="image-button"/>
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="no_show_all">True</property>
+        <property name="tooltip_text" translatable="yes">Start a video call</property>
+        <property name="action_name">win.start-video</property>
+        <child>
+          <object class="GtkImage">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">video-x-generic-symbolic</property>
+          </object>
+        </child>
+        <style>
+          <class name="image-button"/>
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
+  <object class="GtkButton" id="header_start">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="receives_default">True</property>
+    <property name="tooltip_text" translatable="yes">Show details</property>
+    <property name="action_name">win.contact-info</property>
+    <child>
+      <object class="GtkImage" id="user_image">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="pixel_size">22</property>
+        <property name="icon_name">friend-symbolic</property>
+        <property name="icon_size">0</property>
+        <style>
+          <class name="avatar"/>
+        </style>
+      </object>
+    </child>
+    <style>
+      <class name="image-button"/>
+    </style>
+  </object>
   <object class="GtkBox" id="placeholder">
     <property name="visible">True</property>
     <property name="can_focus">False</property>

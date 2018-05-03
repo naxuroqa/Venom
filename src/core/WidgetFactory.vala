@@ -26,7 +26,7 @@ namespace Venom.Factory {
     public abstract ILogger createLogger();
     public abstract Gtk.Dialog createAboutDialog();
     public abstract IDatabaseFactory createDatabaseFactory();
-    public abstract Gtk.Widget createSettingsWidget(ISettingsDatabase database, IDhtNodeDatabase nodeDatabase);
+    public abstract Gtk.Widget createSettingsWidget(ApplicationWindow app_window, ISettingsDatabase database, IDhtNodeDatabase nodeDatabase);
   }
 
   public class WidgetFactory : IWidgetFactory, Object {
@@ -58,8 +58,8 @@ namespace Venom.Factory {
       return about_dialog;
     }
 
-    public Gtk.Widget createSettingsWidget(ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase) {
-      return new SettingsWidget(settingsDatabase, nodeDatabase, createLogger());
+    public Gtk.Widget createSettingsWidget(ApplicationWindow app_window, ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase) {
+      return new SettingsWidget(createLogger(), app_window, settingsDatabase, nodeDatabase);
     }
   }
 

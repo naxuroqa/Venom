@@ -30,9 +30,13 @@ namespace Venom {
     [GtkChild]
     private Gtk.Button link_get_involved;
 
-    public WelcomeWidget(ILogger logger) {
+    public WelcomeWidget(ILogger logger, ApplicationWindow app_window) {
       logger.d("WelcomeWidget created.");
       this.logger = logger;
+
+      app_window.reset_header_bar();
+      app_window.header_bar.title = "Venom";
+      app_window.header_bar.subtitle = _("A new kind of instant messaging");
 
       link_learn_more.tooltip_text = R.constants.tox_about();
       link_learn_more.clicked.connect(on_learn_more_clicked);

@@ -164,7 +164,7 @@ namespace Venom {
       if (pixbuf == null) {
         return null;
       }
-      return pixbuf.scale_simple(48, 48, Gdk.InterpType.BILINEAR);
+      return pixbuf.scale_simple(22, 22, Gdk.InterpType.BILINEAR);
     }
 
     ~ContactListViewModel() {

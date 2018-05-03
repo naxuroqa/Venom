@@ -2,6 +2,49 @@
 <!-- Generated with glade 3.22.1 -->
 <interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkImage" id="image_status">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">26</property>
+    <property name="icon_name">offline</property>
+  </object>
+  <object class="GtkBox" id="placeholder">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="valign">end</property>
+    <property name="margin_left">12</property>
+    <property name="border_width">6</property>
+    <property name="spacing">6</property>
+    <child>
+      <object class="GtkImage">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="icon_name">pan-down-symbolic</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Add a friend</property>
+        <property name="ellipsize">end</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <style>
+      <class name="dim-label"/>
+      <class name="highlight"/>
+    </style>
+  </object>
   <object class="GtkPopover" id="popover1">
     <property name="can_focus">False</property>
     <property name="border_width">6</property>
@@ -24,135 +67,6 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <child>
-          <object class="GtkButton">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.show_user</property>
-            <property name="relief">none</property>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="spacing">6</property>
-                <child>
-                  <object class="GtkImage" id="userimage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="pixel_size">44</property>
-                    <property name="icon_name">friend-symbolic</property>
-                    <style>
-                      <class name="avatar"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel" id="username">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label">username</property>
-                        <property name="ellipsize">end</property>
-                        <property name="xalign">0</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="statusmessage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label">statusmessage</property>
-                        <property name="ellipsize">end</property>
-                        <property name="xalign">0</property>
-                        <style>
-                          <class name="dim-label"/>
-                        </style>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkAspectFrame">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label_xalign">0</property>
-                    <property name="shadow_type">none</property>
-                    <child>
-                      <object class="GtkImage" id="image_status">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="pixel_size">26</property>
-                        <property name="icon_name">offline</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkMenuButton" id="user_status_menu">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="relief">none</property>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkRevealer" id="friend_request_revealer">
@@ -161,11 +75,43 @@
             <property name="transition_type">slide-up</property>
             <child>
               <object class="GtkButton" id="friend_request_button">
-                <property name="label">friend_request_button</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="action_name">win.add_contact</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="icon_name">dialog-information-symbolic</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="friend_request_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label">friend_request_label</property>
+                        <property name="ellipsize">end</property>
+                        <property name="xalign">0</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
                 <style>
                   <class name="suggested-action"/>
                 </style>
@@ -185,12 +131,45 @@
             <property name="can_focus">False</property>
             <property name="transition_type">slide-up</property>
             <child>
-              <object class="GtkButton" id="conference_invite_button">
-                <property name="label">conference_invite_button</property>
+              <object class="GtkButton">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="action_name">win.groupchats</property>
+                <property name="always_show_image">True</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="icon_name">dialog-information-symbolic</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="conference_invite_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label">conference_invite_label</property>
+                        <property name="ellipsize">end</property>
+                        <property name="xalign">0</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
                 <style>
                   <class name="suggested-action"/>
                 </style>
@@ -206,8 +185,8 @@
         </child>
         <child>
           <object class="GtkBox">
-            <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
             <child>
               <object class="GtkMenuButton">
                 <property name="visible">True</property>
@@ -263,8 +242,8 @@
         </child>
         <child>
           <object class="GtkSeparator">
-            <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -285,6 +264,9 @@
                   <object class="GtkListBox" id="contact_list">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <style>
+                      <class name="separated"/>
+                    </style>
                   </object>
                 </child>
               </object>
@@ -318,8 +300,6 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="border_width">6</property>
-        <property name="spacing">6</property>
         <property name="homogeneous">True</property>
         <child>
           <object class="GtkButton">
@@ -328,6 +308,7 @@
             <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Add a contact</property>
             <property name="action_name">win.add_contact</property>
+            <property name="relief">none</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
@@ -335,6 +316,9 @@
                 <property name="icon_name">contact-new-symbolic</property>
               </object>
             </child>
+            <style>
+              <class name="image-button"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -349,6 +333,7 @@
             <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Create a conference</property>
             <property name="action_name">win.groupchats</property>
+            <property name="relief">none</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
@@ -356,6 +341,9 @@
                 <property name="icon_name">conference-symbolic</property>
               </object>
             </child>
+            <style>
+              <class name="image-button"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -370,6 +358,7 @@
             <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">View file transfers</property>
             <property name="action_name">win.filetransfer</property>
+            <property name="relief">none</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
@@ -377,6 +366,9 @@
                 <property name="icon_name">network-transmit-receive-symbolic</property>
               </object>
             </child>
+            <style>
+              <class name="image-button"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -389,8 +381,9 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
-            <property name="tooltip_text" translatable="yes">Open preferences</property>
+            <property name="tooltip_text" translatable="yes">Open settings</property>
             <property name="action_name">app.preferences</property>
+            <property name="relief">none</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
@@ -398,6 +391,9 @@
                 <property name="icon_name">preferences-system-symbolic</property>
               </object>
             </child>
+            <style>
+              <class name="image-button"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -417,6 +413,107 @@
     <property name="can_focus">False</property>
     <child>
       <placeholder/>
+    </child>
+  </object>
+  <object class="GtkBox" id="top_bar_box">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkButton">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="tooltip_text" translatable="yes">Edit your profile</property>
+        <property name="action_name">win.show_user</property>
+        <child>
+          <object class="GtkImage" id="userimage">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="pixel_size">22</property>
+            <property name="icon_name">friend-symbolic</property>
+            <style>
+              <class name="avatar"/>
+            </style>
+          </object>
+        </child>
+        <style>
+          <class name="image-button"/>
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkMenuButton" id="user_status_menu">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="tooltip_text" translatable="yes">Change your status</property>
+        <child>
+          <placeholder/>
+        </child>
+        <style>
+          <class name="image-button"/>
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="pack_type">end</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="valign">center</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="username">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label">username</property>
+            <property name="ellipsize">end</property>
+            <property name="max_width_chars">1</property>
+            <property name="xalign">0</property>
+            <style>
+              <class name="title"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="statusmessage">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label">statusmessage</property>
+            <property name="ellipsize">end</property>
+            <property name="max_width_chars">1</property>
+            <property name="xalign">0</property>
+            <style>
+              <class name="subtitle"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
+      </packing>
     </child>
   </object>
 </interface>

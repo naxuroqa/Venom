@@ -53,6 +53,10 @@ namespace Venom {
       alias.icon_press.connect(view_model.on_clear_alias_clicked);
       view_model.leave_view.connect(leave_view);
 
+      app_window.reset_header_bar();
+      view_model.bind_property("username", app_window.header_bar, "title", BindingFlags.SYNC_CREATE);
+      view_model.bind_property("statusmessage", app_window.header_bar, "subtitle", BindingFlags.SYNC_CREATE);
+
       view_model.bind_property("username", username, "label", BindingFlags.SYNC_CREATE);
       view_model.bind_property("statusmessage", statusmessage, "label", BindingFlags.SYNC_CREATE);
       view_model.bind_property("userimage", userimage, "pixbuf", BindingFlags.SYNC_CREATE);
