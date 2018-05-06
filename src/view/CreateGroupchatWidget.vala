@@ -41,15 +41,21 @@ namespace Venom {
       logger.d("CreateGroupChatWidget created.");
       this.logger = logger;
       this.view_model = new CreateGroupchatViewModel(logger, conference_invites_model, listener);
-      stack_binding = new ContainerChildBooleanBinding(stack, conference_invite_item, "needs-attention");
+      this.stack_binding = new ContainerChildBooleanBinding(stack, conference_invite_item, "needs-attention");
 
       app_window.reset_header_bar();
       app_window.header_bar.custom_title = custom_title;
+
+      var conference_type_action = new GLib.SimpleAction.stateful("conference-type", view_model.conference_type.get_type(), view_model.conference_type);
+      var action_group = new SimpleActionGroup();
+      action_group.add_action(conference_type_action);
+      insert_action_group("widget", action_group);
 
       title.bind_property("text", view_model, "title", GLib.BindingFlags.SYNC_CREATE | GLib.BindingFlags.BIDIRECTIONAL);
       view_model.bind_property("title-error", title_error, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("title-error-visible", title_error_content, "reveal-child", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("new-conference-invite", stack_binding, "active", BindingFlags.SYNC_CREATE);
+      view_model.bind_property("conference-type", conference_type_action, "state", GLib.BindingFlags.SYNC_CREATE | GLib.BindingFlags.BIDIRECTIONAL);
 
       create.clicked.connect(view_model.on_create);
 

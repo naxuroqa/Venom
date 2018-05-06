@@ -182,13 +182,14 @@
                                 <property name="can_focus">False</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <object class="GtkRadioButton" id="type_text">
-                                    <property name="label" translatable="yes">Text</property>
+                                  <object class="GtkModelButton">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="active">True</property>
-                                    <property name="draw_indicator">False</property>
+                                    <property name="action_name">widget.conference-type</property>
+                                    <property name="action_target">'text'</property>
+                                    <property name="text" translatable="yes">Text</property>
+                                    <property name="iconic">True</property>
+                                    <property name="centered">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -197,14 +198,14 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioButton" id="type_av">
-                                    <property name="label" translatable="yes">Speech</property>
+                                  <object class="GtkModelButton">
                                     <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="draw_indicator">False</property>
-                                    <property name="group">type_text</property>
+                                    <property name="action_name">widget.conference-type</property>
+                                    <property name="action_target">'speech'</property>
+                                    <property name="text" translatable="yes">Speech</property>
+                                    <property name="iconic">True</property>
+                                    <property name="centered">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>

@@ -22,7 +22,7 @@
 namespace Venom {
   public class CreateGroupchatViewModel : GLib.Object {
     public string title { get; set; }
-    public ConferenceType conference_type { get; set; }
+    public Variant conference_type { get; set; }
     public bool title_error_visible { get; set; }
     public string title_error { get; set; }
     public bool new_conference_invite { get; set; }
@@ -39,7 +39,7 @@ namespace Venom {
       this.listener = listener;
       this.conference_invites = conference_invites;
 
-      conference_type = ConferenceType.TEXT;
+      conference_type = new GLib.Variant("s", "text");
       notify["title"].connect(() => { title_error_visible = false; });
 
       conference_invites.changed.connect(update_content);
@@ -65,7 +65,10 @@ namespace Venom {
         return;
       }
       try {
-        listener.on_create_groupchat(title, conference_type);
+        var type = conference_type.get_string() == "speech"
+                   ? ConferenceType.AV
+                   : ConferenceType.TEXT;
+        listener.on_create_groupchat(title, type);
       } catch (Error e) {
         show_error("Could not create conference: " + e.message);
         return;
