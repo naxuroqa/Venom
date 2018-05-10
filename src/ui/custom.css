@@ -40,3 +40,7 @@
 .separated row {
   border-bottom: 1px solid @theme_bg_color;
 }
+
+headerbar:first-child {
+  padding-right: 0px
+}
