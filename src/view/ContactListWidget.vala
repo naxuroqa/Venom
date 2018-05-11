@@ -45,7 +45,7 @@ namespace Venom {
       this.logger = logger;
       this.view_model = new ContactListViewModel(logger, contacts, friend_requests, conference_invites, callback, user_info);
 
-      app_window.user_info_box.pack_start(top_bar_box, false);
+      app_window.user_info_box.pack_start(top_bar_box, true, true);
 
       var builder = new Gtk.Builder.from_resource("/chat/tox/venom/ui/user_status_menu.ui");
       var menu_model = builder.get_object("menu") as GLib.MenuModel;
