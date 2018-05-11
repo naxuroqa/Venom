@@ -28,7 +28,8 @@ test_glib_testing = executable('test_glib_testing', ['TestGlibTesting.vala'],
 			)
 
 test_observable_list = executable('test_observable_list', ['TestObservableList.vala',
-			join_paths(root_source_dir, 'core/ObservableList.vala')],
+			join_paths(root_source_dir, 'core/ObservableList.vala'),
+			join_paths(root_source_dir, 'core/Interfaces.vala')],
 			dependencies : [gio_dep, gee_dep]
 			)
 

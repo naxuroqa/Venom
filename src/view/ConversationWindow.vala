@@ -51,6 +51,7 @@ namespace Venom {
     private IContact contact;
     private TextViewEventHandler text_view_event_handler;
     private AdjustmentAutoScroller auto_scroller;
+    private Cancellable cancellable;
 
     public ConversationWindow(ApplicationWindow app_window,
                               ILogger logger,
@@ -65,6 +66,7 @@ namespace Venom {
       this.contact = contact;
       this.listener = listener;
       this.filetransfer_listener = filetransfer_listener;
+      this.cancellable = new Cancellable();
 
       text_view_event_handler = new TextViewEventHandler();
       text_view_event_handler.send.connect(on_send);
@@ -79,7 +81,7 @@ namespace Venom {
       contact.changed.connect(update_widgets);
       update_widgets();
 
-      var model = new ObservableListModel(conversation);
+      var model = new LazyObservableListModel(logger, conversation, cancellable);
       var creator = new MessageWidgetCreator(logger, settings);
       message_list.bind_model(model, creator.create_message);
       message_list.set_placeholder(placeholder);
@@ -118,6 +120,7 @@ namespace Venom {
 
     ~ConversationWindow() {
       logger.d("ConversationWindow destroyed.");
+      cancellable.cancel();
       foreach (var entry in win_entries) {
         app_window.remove_action(entry.name);
       }

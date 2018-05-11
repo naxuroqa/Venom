@@ -69,18 +69,18 @@ namespace Venom {
   }
 
   public class ObservableListModel : GLib.Object, GLib.ListModel {
-    private ObservableList list;
+    protected ObservableList list;
     public ObservableListModel(ObservableList list) {
       this.list = list;
       list.added.connect(on_added);
       list.removed.connect(on_removed);
     }
 
-    private void on_added(GLib.Object item, uint index) {
+    protected virtual void on_added(GLib.Object item, uint index) {
       items_changed(index, 0, 1);
     }
 
-    private void on_removed(GLib.Object item, uint index) {
+    protected virtual void on_removed(GLib.Object item, uint index) {
       items_changed(index, 1, 0);
     }
 
@@ -98,6 +98,55 @@ namespace Venom {
 
     public virtual GLib.Object ? get_object(uint index) {
       return get_item(index);
+    }
+  }
+
+  public class LazyObservableListModel : ObservableListModel {
+    private const int NUM_ENTRIES_PER_ITERATION = 10;
+    protected ILogger logger;
+    private uint num_initialized;
+    private bool initialized = false;
+    public LazyObservableListModel(ILogger logger, ObservableList list, Cancellable? cancellable = null) {
+      base(list);
+      this.logger = logger;
+      initialize.begin(cancellable);
+    }
+
+    private async void initialize(Cancellable? cancellable = null) {
+      logger.d("LazyObservableListModel init started.");
+      while (list.length() > 0 && num_initialized < list.length() - 1) {
+        if (cancellable != null && cancellable.is_cancelled()) {
+          logger.d("LazyObservableListModel init cancelled.");
+          return;
+        }
+
+        var num_entries = uint.min(list.length() - 1, num_initialized + NUM_ENTRIES_PER_ITERATION) - num_initialized;
+        var index = num_initialized;
+        num_initialized += num_entries;
+        items_changed(index, 0, num_entries);
+        logger.d(@"LazyObservableListModel init $num_entries more entries.");
+        Idle.add(initialize.callback);
+        yield;
+      }
+      initialized = true;
+      logger.d("LazyObservableListModel init finished.");
+    }
+
+    protected override void on_added(GLib.Object item, uint index) {
+      if (!initialized) {
+        // ignore while not initialized
+        return;
+      }
+      items_changed(index, 0, 1);
+    }
+
+    protected override void on_removed(GLib.Object item, uint index) {
+      // currently not supported
+      assert_not_reached();
+    }
+
+    public override uint get_n_items() {
+      return initialized ? list.length() : uint.min(num_initialized + 1, list.length());
     }
   }
 
