@@ -104,7 +104,7 @@ namespace Venom {
   public class LazyObservableListModel : ObservableListModel {
     private const int NUM_ENTRIES_PER_ITERATION = 10;
     protected ILogger logger;
-    private uint num_initialized;
+    private uint index = 0;
     private bool initialized = false;
     public LazyObservableListModel(ILogger logger, ObservableList list, Cancellable? cancellable = null) {
       base(list);
@@ -114,16 +114,15 @@ namespace Venom {
 
     private async void initialize(Cancellable? cancellable = null) {
       logger.d("LazyObservableListModel init started.");
-      while (list.length() > 0 && num_initialized < list.length() - 1) {
+      while (list.length() > 0 && index < list.length()) {
         if (cancellable != null && cancellable.is_cancelled()) {
           logger.d("LazyObservableListModel init cancelled.");
           return;
         }
 
-        var num_entries = uint.min(list.length() - 1, num_initialized + NUM_ENTRIES_PER_ITERATION) - num_initialized;
-        var index = num_initialized;
-        num_initialized += num_entries;
+        var num_entries = uint.min(list.length(), index + NUM_ENTRIES_PER_ITERATION) - index;
         items_changed(index, 0, num_entries);
+        index += num_entries;
         logger.d(@"LazyObservableListModel init $num_entries more entries.");
         Idle.add(initialize.callback);
         yield;
@@ -146,7 +145,7 @@ namespace Venom {
     }
 
     public override uint get_n_items() {
-      return initialized ? list.length() : uint.min(num_initialized + 1, list.length());
+      return initialized ? list.length() : uint.min(index, list.length());
     }
   }
 
