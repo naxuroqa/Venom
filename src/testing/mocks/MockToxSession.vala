@@ -89,6 +89,10 @@ namespace Mock {
       mock().actual_call(this, "self_get_address");
       return new uint8[0];
     }
+    public uint8[] self_get_public_key() {
+      mock().actual_call(this, "self_get_public_key");
+      return new uint8[0];
+    }
     public void self_get_friend_list_foreach(GetFriendListCallback callback) throws ToxError {
       mock().actual_call(this, "self_get_friend_list_foreach").get_throws();
     }

@@ -64,6 +64,7 @@ namespace Venom {
     public abstract UserStatus self_get_user_status();
 
     public abstract uint8[] self_get_address();
+    public abstract uint8[] self_get_public_key();
 
     public abstract void self_get_friend_list_foreach(GetFriendListCallback callback) throws ToxError;
     public abstract void friend_add(uint8[] address, string message) throws ToxError;
@@ -578,6 +579,10 @@ namespace Venom {
 
     public virtual uint8[] self_get_address() {
       return handle.self_get_address();
+    }
+
+    public virtual uint8[] self_get_public_key() {
+      return handle.self_get_public_key();
     }
 
     public virtual void self_set_status_message(string status) {
