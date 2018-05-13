@@ -267,7 +267,7 @@ namespace Venom {
     }
 
     private void on_show_user() {
-      switch_content_with(() => { return new UserInfoWidget(logger, this, user_info); });
+      switch_content_with(() => { return new UserInfoWidget(logger, this, user_info, session_listener); });
     }
 
     private void on_create_groupchat() {

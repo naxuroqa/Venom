@@ -2,44 +2,6 @@
 <!-- Generated with glade 3.22.1 -->
 <interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkSizeGroup"/>
-  <object class="GtkFileFilter" id="imagefilter">
-    <mime-types>
-      <mime-type>image/*</mime-type>
-    </mime-types>
-  </object>
-  <object class="GtkFileChooserDialog" id="imagechooser">
-    <property name="can_focus">False</property>
-    <property name="type_hint">dialog</property>
-    <property name="filter">imagefilter</property>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox">
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
-    </child>
-  </object>
   <template class="VenomUserInfoWidget" parent="GtkBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -200,35 +162,19 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Image:</property>
-                            <property name="xalign">0</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                            </attributes>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="orientation">vertical</property>
                             <property name="spacing">6</property>
                             <child>
-                              <object class="GtkImage" id="image_userimage">
+                              <object class="GtkLabel">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="pixel_size">50</property>
-                                <property name="icon_name">friend-symbolic</property>
+                                <property name="label" translatable="yes">Avatar:</property>
+                                <property name="xalign">0</property>
+                                <attributes>
+                                  <attribute name="weight" value="bold"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -237,12 +183,22 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkFileChooserButton" id="filechooser">
-                                <property name="sensitive">False</property>
-                                <property name="can_focus">False</property>
-                                <property name="no_show_all">True</property>
-                                <property name="dialog">imagechooser</property>
-                                <property name="title" translatable="yes">Choose an avatar</property>
+                              <object class="GtkButton" id="reset_avatar">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">Reset avatar</property>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="icon_name">edit-clear-all-symbolic</property>
+                                  </object>
+                                </child>
+                                <style>
+                                  <class name="image-button"/>
+                                  <class name="destructive-action"/>
+                                </style>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -254,6 +210,46 @@
                           </object>
                           <packing>
                             <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="GtkImage" id="avatar">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="icon_name">friend-symbolic</property>
+                                <property name="icon_size">0</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkFileChooserButton" id="filechooser">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="tooltip_text" translatable="yes">Choose an avatar</property>
+                                <property name="title" translatable="yes">Choose an avatar</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
                             <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
@@ -375,6 +371,9 @@
                                     <property name="icon_name">edit-copy-symbolic</property>
                                   </object>
                                 </child>
+                                <style>
+                                  <class name="image-button"/>
+                                </style>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -457,4 +456,5 @@
       </packing>
     </child>
   </template>
+  <object class="GtkSizeGroup"/>
 </interface>

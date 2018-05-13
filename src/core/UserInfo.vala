@@ -21,11 +21,12 @@
 
 namespace Venom {
   public interface UserInfo : GLib.Object {
-    public signal void info_changed(GLib.Object sender);
+    public signal void info_changed();
 
     public abstract string name { get; set; }
     public abstract string status_message { get; set; }
-    public abstract Gdk.Pixbuf image { get; set; }
+    public abstract Gdk.Pixbuf avatar { get; set; }
+    public abstract bool custom_avatar { get; set; }
     public abstract UserStatus user_status { get; set; }
     public abstract bool is_connected { get; set; }
     public abstract string tox_id { get; set; }
@@ -34,7 +35,8 @@ namespace Venom {
   public class UserInfoImpl : UserInfo, GLib.Object {
     public string name { get; set; }
     public string status_message { get; set; }
-    public Gdk.Pixbuf image { get; set; }
+    public Gdk.Pixbuf avatar { get; set; }
+    public bool custom_avatar { get; set; }
     public UserStatus user_status { get; set; }
     public bool is_connected { get; set; }
     public string tox_id { get; set; }
@@ -42,7 +44,8 @@ namespace Venom {
     construct {
       name = R.strings.default_username();
       status_message = R.strings.default_statusmessage();
-      image = pixbuf_from_resource(R.icons.default_contact);
+      avatar = pixbuf_from_resource(R.icons.default_contact, 128);
+      custom_avatar = false;
       user_status = UserStatus.NONE;
       is_connected = false;
       tox_id = "";

@@ -24,24 +24,19 @@ namespace Venom {
   public class UserInfoWidget : Gtk.Box {
     [GtkChild] private Gtk.Entry entry_username;
     [GtkChild] private Gtk.Entry entry_statusmessage;
-    [GtkChild] private Gtk.Image image_userimage;
+    [GtkChild] private Gtk.Image avatar;
     [GtkChild] private Gtk.Label label_id;
+    [GtkChild] private Gtk.Button reset_avatar;
     [GtkChild] private Gtk.FileChooserButton filechooser;
     [GtkChild] private Gtk.Button apply;
 
     private ILogger logger;
     private UserInfoViewModel view_model;
 
-    private string _filename;
-    public string filename {
-      get { return _filename = filechooser.get_filename(); }
-      set { filechooser.set_filename(value); }
-    }
-
-    public UserInfoWidget(ILogger logger, ApplicationWindow app_window, UserInfo user_info) {
+    public UserInfoWidget(ILogger logger, ApplicationWindow app_window, UserInfo user_info, UserInfoViewListener listener) {
       logger.d("UserInfoWidget created.");
       this.logger = logger;
-      this.view_model = new UserInfoViewModel(logger, user_info);
+      this.view_model = new UserInfoViewModel(logger, user_info, listener);
 
       app_window.reset_header_bar();
       view_model.bind_property("username", app_window.header_bar, "title", GLib.BindingFlags.SYNC_CREATE);
@@ -49,12 +44,26 @@ namespace Venom {
 
       view_model.bind_property("username", entry_username, "text", GLib.BindingFlags.SYNC_CREATE | GLib.BindingFlags.BIDIRECTIONAL);
       view_model.bind_property("statusmessage", entry_statusmessage, "text", GLib.BindingFlags.SYNC_CREATE | GLib.BindingFlags.BIDIRECTIONAL);
-      view_model.bind_property("userimage", image_userimage, "pixbuf", GLib.BindingFlags.SYNC_CREATE | GLib.BindingFlags.BIDIRECTIONAL);
+      view_model.bind_property("avatar", avatar, "pixbuf", GLib.BindingFlags.SYNC_CREATE | GLib.BindingFlags.BIDIRECTIONAL);
       view_model.bind_property("tox-id", label_id, "label", GLib.BindingFlags.SYNC_CREATE);
-      view_model.bind_property("filename", this, "filename", GLib.BindingFlags.SYNC_CREATE);
 
-      filechooser.file_set.connect(view_model.on_file_selected);
+      var imagefilter = new Gtk.FileFilter();
+      imagefilter.set_filter_name(_("Images"));
+      imagefilter.add_mime_type("image/*");
+      filechooser.add_filter(imagefilter);
+
+      filechooser.file_set.connect(on_file_set);
+      reset_avatar.clicked.connect(on_file_reset);
       apply.clicked.connect(view_model.on_apply_clicked);
+    }
+
+    private void on_file_set() {
+      view_model.set_file(filechooser.get_file());
+    }
+
+    private void on_file_reset() {
+      view_model.reset_file();
+      filechooser.unselect_all();
     }
 
     ~UserInfoWidget() {

@@ -20,10 +20,6 @@
  */
 
 namespace Venom {
-  public interface ConversationWidgetFiletransferListener : GLib.Object {
-    public abstract void on_start_filetransfer(IContact contact, File file) throws Error;
-  }
-
   public interface FileTransferEntryListener : GLib.Object {
     public abstract void start_transfer(FileTransfer transfer) throws Error;
     public abstract void stop_transfer(FileTransfer transfer) throws Error;

@@ -87,10 +87,10 @@ namespace Venom {
     }
   }
 
-  public static Gdk.Pixbuf ? pixbuf_from_resource(string res) {
+  public static Gdk.Pixbuf ? pixbuf_from_resource(string res, int size = 96) {
     try {
       var resource_path = GLib.Path.build_path("/", R.constants.icons_prefix(), res + R.constants.icons_suffix());
-      return new Gdk.Pixbuf.from_resource_at_scale(resource_path, 96, 96, true);
+      return new Gdk.Pixbuf.from_resource_at_scale(resource_path, size, size, true);
     } catch (Error e) {
     }
     return null;

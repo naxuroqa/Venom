@@ -77,7 +77,7 @@ namespace Venom {
     }
 
     public Gdk.Pixbuf get_image() {
-      return tox_image ?? pixbuf_from_resource(R.icons.default_contact);
+      return tox_image ?? pixbuf_from_resource(R.icons.default_contact, 128);
     }
 
     public bool get_requires_attention() {

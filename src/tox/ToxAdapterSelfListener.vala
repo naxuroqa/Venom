@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class ToxAdapterSelfListenerImpl : ToxAdapterSelfListener, GLib.Object {
+  public class ToxAdapterSelfListenerImpl : ToxAdapterSelfListener, UserInfoViewListener, GLib.Object {
     private unowned ToxSession session;
     private ILogger logger;
     private UserInfo user_info;
@@ -29,8 +29,6 @@ namespace Venom {
       logger.d("ToxAdapterSelfListenerImpl created.");
       this.logger = logger;
       this.user_info = user_info;
-
-      user_info.info_changed.connect(on_user_info_changed);
     }
 
     ~ToxAdapterSelfListenerImpl() {
@@ -43,7 +41,26 @@ namespace Venom {
 
       user_info.tox_id = Tools.bin_to_hexstring(session.self_get_address());
       get_user_info();
-      user_info.info_changed(this);
+      user_info.info_changed();
+    }
+
+    public virtual void set_self_name(string name) throws GLib.Error {
+      session.self_set_user_name(name);
+      user_info.name = name;
+      user_info.info_changed();
+    }
+
+    public virtual void set_self_status_message(string status_message) throws GLib.Error {
+      session.self_set_status_message(status_message);
+      user_info.status_message = status_message;
+      user_info.info_changed();
+    }
+
+    public virtual void set_self_avatar(Gdk.Pixbuf pixbuf) throws GLib.Error {
+      logger.d("set_self_avatar TODO set avatar");
+    }
+    public virtual void reset_self_avatar() throws GLib.Error {
+      logger.d("reset_self_avatar TODO reset avatar");
     }
 
     private void get_user_info() {
@@ -52,25 +69,15 @@ namespace Venom {
       user_info.user_status = session.self_get_user_status();
     }
 
-    private void on_user_info_changed(GLib.Object sender) {
-      if (sender == this) {
-        return;
-      }
-
-      logger.d("on_user_info_changed.");
-      session.self_set_user_name(user_info.name);
-      session.self_set_status_message(user_info.status_message);
-    }
-
     public void on_self_connection_status_changed(bool is_connected) {
       user_info.is_connected = is_connected;
-      user_info.info_changed(this);
+      user_info.info_changed();
     }
 
     public void self_set_user_status(UserStatus status) {
       session.self_set_user_status(status);
       user_info.user_status = status;
-      user_info.info_changed(this);
+      user_info.info_changed();
     }
   }
 }
