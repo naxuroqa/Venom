@@ -73,17 +73,15 @@ namespace Venom {
         return;
       }
       var window = app.get_active_window();
-      var dialog = new Gtk.FileChooserDialog(_(@"Save file $filename"),
+      var dialog = new Gtk.FileChooserNative(_(@"Save file $filename"),
                                              window,
                                              Gtk.FileChooserAction.SAVE,
-                                             _("_Cancel"), Gtk.ResponseType.CANCEL,
-                                             _("_Save"), Gtk.ResponseType.ACCEPT,
-                                             null);
+                                             _("_Save"),
+                                             _("_Cancel"));
       dialog.do_overwrite_confirmation = true;
       dialog.set_current_folder(path);
       dialog.set_current_name(filename);
       var ret = dialog.run();
-      dialog.close();
       if (ret == Gtk.ResponseType.ACCEPT) {
         view_model.on_save_file_chosen(dialog.get_file());
       }

@@ -9,12 +9,14 @@
   "finish-args": [
     "--share=network",
     "--socket=x11",
+    "--share=ipc",
     "--socket=wayland",
+    "--device=dri",
     "--socket=pulseaudio",
     "--talk-name=ca.desrt.dconf",
     "--talk-name=org.freedesktop.Notifications",
-    "--filesystem=host",
-    "--device=dri"
+    "--filesystem=xdg-data/pixmaps/faces:ro",
+    "--filesystem=xdg-download"
   ],
   "modules": [{
       "name": "libgee",
