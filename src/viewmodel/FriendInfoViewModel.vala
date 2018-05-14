@@ -65,7 +65,7 @@ namespace Venom {
       tox_id = contact.get_id();
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
-        userimage = pixbuf.scale_simple(96, 96, Gdk.InterpType.BILINEAR);
+        userimage = pixbuf.scale_simple(128, 128, Gdk.InterpType.BILINEAR);
       }
       auto_conference = contact.auto_conference;
       auto_filetransfer = contact.auto_filetransfer;

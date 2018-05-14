@@ -75,7 +75,7 @@ namespace Venom {
       public string user_config_dir { get; set; default = GLib.Environment.get_user_config_dir(); }
       public string downloads_dir { get; set; default = GLib.Environment.get_user_special_dir(GLib.UserDirectory.DOWNLOAD); }
       public string profile_name { get; set; default = "tox"; }
-      public string avatars_folder() { return GLib.Path.build_filename(user_config_dir, "avatars"); }
+      public string avatars_folder() { return GLib.Path.build_filename(user_config_dir, "tox", "avatars"); }
       public string window_state_filename() { return GLib.Path.build_filename(user_config_dir, "tox", profile_name + ".json"); }
       public string db_filename() { return GLib.Path.build_filename(user_config_dir, "tox", profile_name + ".db"); }
       public string tox_data_filename() { return GLib.Path.build_filename(user_config_dir, "tox", profile_name + ".data"); }
@@ -87,10 +87,10 @@ namespace Venom {
     }
   }
 
-  public static Gdk.Pixbuf ? pixbuf_from_resource(string res) {
+  public static Gdk.Pixbuf ? pixbuf_from_resource(string res, int size = 96) {
     try {
       var resource_path = GLib.Path.build_path("/", R.constants.icons_prefix(), res + R.constants.icons_suffix());
-      return new Gdk.Pixbuf.from_resource_at_scale(resource_path, 96, 96, true);
+      return new Gdk.Pixbuf.from_resource_at_scale(resource_path, size, size, true);
     } catch (Error e) {
     }
     return null;

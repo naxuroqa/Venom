@@ -57,7 +57,7 @@ public class TestToxAdapterFiletransferListener : UnitTest {
     Assert.assert_not_null(listener);
     listener.attach_to_session(session);
 
-    mock().verify(session, "set_file_transfer_listener", args().object(listener).create());
+    mock().verify(session, "set_filetransfer_listener", args().object(listener).create());
   }
 
   private void test_start_transfer() throws Error {

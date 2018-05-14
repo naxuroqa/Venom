@@ -50,7 +50,7 @@ namespace Venom {
 
   public interface ToxSession : GLib.Object {
     public abstract void set_session_listener(ToxAdapterSelfListener listener);
-    public abstract void set_file_transfer_listener(ToxAdapterFiletransferListener listener);
+    public abstract void set_filetransfer_listener(ToxAdapterFiletransferListener listener);
     public abstract void set_friend_listener(ToxAdapterFriendListener listener);
     public abstract void set_conference_listener(ToxAdapterConferenceListener listener);
 
@@ -64,6 +64,7 @@ namespace Venom {
     public abstract UserStatus self_get_user_status();
 
     public abstract uint8[] self_get_address();
+    public abstract uint8[] self_get_public_key();
 
     public abstract void self_get_friend_list_foreach(GetFriendListCallback callback) throws ToxError;
     public abstract void friend_add(uint8[] address, string message) throws ToxError;
@@ -86,7 +87,8 @@ namespace Venom {
     public abstract string conference_get_title(uint32 conference_number) throws ToxError;
 
     public abstract void file_control(uint32 friend_number, uint32 file_number, FileControl control) throws ToxError;
-    public abstract void file_send(uint32 friend_number, FileKind kind, GLib.File file) throws ToxError;
+    public abstract void file_send_data(uint32 friend_number, GLib.File file) throws ToxError;
+    public abstract void file_send_avatar(uint32 friend_number, uint8[] avatar_data) throws ToxError;
     public abstract void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError;
 
     public abstract unowned GLib.HashTable<uint32, IContact> get_friends();
@@ -133,7 +135,8 @@ namespace Venom {
     public abstract void on_file_recv_control(uint32 friend_number, uint32 file_number, FileControl control);
 
     public abstract void on_file_chunk_request(uint32 friend_number, uint32 file_number, uint64 position, uint64 length);
-    public abstract void on_file_send_received(uint32 friend_number, uint32 file_number, FileKind kind, uint64 file_size, string file_name, GLib.File file);
+    public abstract void on_file_send_data_received(uint32 friend_number, uint32 file_number, uint64 file_size, string file_name, GLib.File file);
+    public abstract void on_file_send_avatar_received(uint32 friend_number, uint32 file_number, uint8[] avatar_data);
   }
 
   public class ToxSessionImpl : GLib.Object, ToxSession {
@@ -151,7 +154,7 @@ namespace Venom {
     private ToxAdapterSelfListener self_listener;
     private ToxAdapterFriendListener friend_listener;
     private ToxAdapterConferenceListener conference_listener;
-    private ToxAdapterFiletransferListener file_transfer_listener;
+    private ToxAdapterFiletransferListener filetransfer_listener;
     private ToxSessionIO iohandler;
     private GLib.HashTable<uint32, IContact> friends;
 
@@ -332,8 +335,8 @@ namespace Venom {
       this.self_listener = listener;
     }
 
-    public virtual void set_file_transfer_listener(ToxAdapterFiletransferListener listener) {
-      this.file_transfer_listener = listener;
+    public virtual void set_filetransfer_listener(ToxAdapterFiletransferListener listener) {
+      this.filetransfer_listener = listener;
     }
 
     public virtual void set_friend_listener(ToxAdapterFriendListener listener) {
@@ -508,10 +511,10 @@ namespace Venom {
       session.logger.d(@"on_file_recv_cb: $friend_number:$file_number ($kind_type_str) $kiB kiB");
       switch (kind_type) {
         case FileKind.DATA:
-          Idle.add(() => { session.file_transfer_listener.on_file_recv_data(friend_number, file_number, file_size, filename_str); return false; });
+          Idle.add(() => { session.filetransfer_listener.on_file_recv_data(friend_number, file_number, file_size, filename_str); return false; });
           break;
         case FileKind.AVATAR:
-          Idle.add(() => { session.file_transfer_listener.on_file_recv_avatar(friend_number, file_number, file_size); return false; });
+          Idle.add(() => { session.filetransfer_listener.on_file_recv_avatar(friend_number, file_number, file_size); return false; });
           break;
       }
     }
@@ -520,20 +523,20 @@ namespace Venom {
       var session = (ToxSessionImpl) user_data;
       session.logger.d(@"on_file_recv_chunk_cb: $friend_number:$file_number $position");
       var data_copy = copy_data(data, data.length);
-      Idle.add(() => { session.file_transfer_listener.on_file_recv_chunk(friend_number, file_number, position, data_copy); return false; });
+      Idle.add(() => { session.filetransfer_listener.on_file_recv_chunk(friend_number, file_number, position, data_copy); return false; });
     }
 
     private static void on_file_recv_control_cb(Tox self, uint32 friend_number, uint32 file_number, FileControl control, void* user_data) {
       var session = (ToxSessionImpl) user_data;
       var control_str = control.to_string();
       session.logger.d(@"on_file_recv_control_cb: $friend_number:$file_number $control_str");
-      Idle.add(() => { session.file_transfer_listener.on_file_recv_control(friend_number, file_number, control); return false; });
+      Idle.add(() => { session.filetransfer_listener.on_file_recv_control(friend_number, file_number, control); return false; });
     }
 
     private static void on_file_chunk_request_cb(Tox self, uint32 friend_number, uint32 file_number, uint64 position, size_t length, void* user_data) {
       var session = (ToxSessionImpl) user_data;
       session.logger.d(@"on_file_chunk_request_cb: $friend_number:$file_number $position $length");
-      Idle.add(() => { session.file_transfer_listener.on_file_chunk_request(friend_number, file_number, position, length); return false; });
+      Idle.add(() => { session.filetransfer_listener.on_file_chunk_request(friend_number, file_number, position, length); return false; });
     }
 
     private static bool from_connection(Connection connection_status) {
@@ -578,6 +581,10 @@ namespace Venom {
 
     public virtual uint8[] self_get_address() {
       return handle.self_get_address();
+    }
+
+    public virtual uint8[] self_get_public_key() {
+      return handle.self_get_public_key();
     }
 
     public virtual void self_set_status_message(string status) {
@@ -705,17 +712,27 @@ namespace Venom {
       }
     }
 
-    public virtual void file_send(uint32 friend_number, FileKind kind, GLib.File file) throws ToxError {
+    public virtual void file_send_avatar(uint32 friend_number, uint8[] avatar_data) throws ToxError {
+      var e = ErrFileSend.OK;
+      var ret = handle.file_send(friend_number, FileKind.AVATAR, avatar_data.length, null, "", out e);
+      if (e != ErrFileSend.OK) {
+        logger.e("file send avatar request failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
+      filetransfer_listener.on_file_send_avatar_received(friend_number, ret, avatar_data);
+    }
+
+    public virtual void file_send_data(uint32 friend_number, GLib.File file) throws ToxError {
       uint64 file_size = Tools.get_file_size(file);
       var file_name = file.get_basename();
 
       var e = ErrFileSend.OK;
-      var ret = handle.file_send(friend_number, kind, file_size, null, file_name, out e);
+      var ret = handle.file_send(friend_number, FileKind.DATA, file_size, null, file_name, out e);
       if (e != ErrFileSend.OK) {
         logger.e("file send request failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      file_transfer_listener.on_file_send_received(friend_number, ret, kind, file_size, file_name, file);
+      filetransfer_listener.on_file_send_data_received(friend_number, ret, file_size, file_name, file);
     }
 
     public virtual void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError {

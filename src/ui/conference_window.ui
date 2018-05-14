@@ -90,6 +90,9 @@
                 <property name="icon_name">face-smile-symbolic</property>
               </object>
             </child>
+            <style>
+              <class name="image-button"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>

@@ -122,7 +122,7 @@ namespace Venom {
     private void refresh_user_info(GLib.Object sender) {
       username = user_info.name;
       statusmessage = user_info.status_message;
-      var userimage_pixbuf = scalePixbuf(user_info.image);
+      var userimage_pixbuf = scalePixbuf(user_info.avatar.pixbuf);
       if (userimage_pixbuf != null) {
         userimage = userimage_pixbuf;
       }
