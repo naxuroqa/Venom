@@ -173,13 +173,12 @@ namespace Venom {
 
     private void on_insert_file() {
       logger.d("on_insert_file");
-      var file_chooser_dialog = new Gtk.FileChooserDialog(null, app_window,
+      var file_chooser_dialog = new Gtk.FileChooserNative(_("Choose a file to send"),
+                                                          app_window,
                                                           Gtk.FileChooserAction.OPEN,
-                                                          _("_Cancel"), Gtk.ResponseType.CANCEL,
-                                                          _("_Open"), Gtk.ResponseType.ACCEPT,
-                                                          null);
+                                                          _("_Open"),
+                                                          _("_Cancel"));
       var result = file_chooser_dialog.run();
-      file_chooser_dialog.close();
       var file = file_chooser_dialog.get_file();
       if (result == Gtk.ResponseType.ACCEPT && file != null) {
         try {
