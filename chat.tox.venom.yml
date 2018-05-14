@@ -1,0 +1,59 @@
+app-id: chat.tox.venom
+runtime: org.gnome.Platform
+runtime-version: '3.28'
+sdk: org.gnome.Sdk
+command: venom
+tags: [nightly]
+desktop-file-name-prefix: (Nightly)
+finish-args:
+  - --share=network
+  - --socket=x11
+  - --share=ipc
+  - --socket=wayland
+  - --device=dri
+  - --socket=pulseaudio
+  - --talk-name=ca.desrt.dconf
+  - --talk-name=org.freedesktop.Notifications
+  - --filesystem=xdg-data/pixmaps/faces:ro
+  - --filesystem=xdg-download
+build-options:
+  cflags: -O2 -g
+  cxxflags: -O2 -g
+  env:
+    V: '1'
+modules:
+  - name: libgee
+    build-options:
+      env:
+        PKG_CONFIG_GOBJECT_INTROSPECTION_1_0_GIRDIR: /app/share/gir-1.0
+        PKG_CONFIG_GOBJECT_INTROSPECTION_1_0_TYPELIBDIR: /app/lib/girepository-1.0
+    sources:
+      - type: git
+        url: https://git.gnome.org/browse/libgee
+        tag: 0.20.1
+        commit: 57e4c8a08d61ab77bbec310a3a1621e6bf3111cb
+  - name: libsodium
+    sources:
+      - type: git
+        url: https://github.com/jedisct1/libsodium
+        tag: 1.0.16
+        commit: 675149b9b8b66ff44152553fb3ebf9858128363d
+  - name: toxcore
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_STATIC=OFF
+    sources:
+      - type: git
+        url: https://github.com/toktok/c-toxcore
+        tag: v0.2.2
+        commit: 2824daf74a6d2bd60ebaf387a30f1b7719b6b67c
+  - name: venom
+    builddir: true
+    buildsystem: meson
+    config-opts:
+      - --buildtype=debugoptimized
+    sources:
+      - type: git
+        url: https://github.com/naxuroqa/Venom
+        branch: develop
