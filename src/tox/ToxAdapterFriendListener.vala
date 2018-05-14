@@ -32,11 +32,17 @@ namespace Venom {
     private Gee.Map<string, FriendRequest> tox_friend_requests;
     private ObservableList friend_requests;
 
+    private Gee.HashMap<uint32, Bytes> friend_avatar_hashes;
+
+    private UserInfo user_info;
+    private GLib.Bytes avatar_hash;
+
     public bool show_typing { get; set; }
 
-    public ToxAdapterFriendListenerImpl(ILogger logger, ObservableList contacts, ObservableList friend_requests, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
+    public ToxAdapterFriendListenerImpl(ILogger logger, UserInfo user_info, ObservableList contacts, ObservableList friend_requests, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
       logger.d("ToxAdapterFriendListenerImpl created.");
       this.logger = logger;
+      this.user_info = user_info;
       this.contacts = contacts;
       this.friend_requests = friend_requests;
       this.conversations = conversations;
@@ -44,6 +50,29 @@ namespace Venom {
 
       messages_waiting_for_rr = new GLib.HashTable<uint32, Message>(null, null);
       tox_friend_requests = new Gee.HashMap<string, FriendRequest>();
+
+      user_info.info_changed.connect(on_info_changed);
+      avatar_hash = user_info.avatar.hash;
+    }
+
+    private void on_info_changed() {
+      if (user_info.is_connected && avatar_hash.compare(user_info.avatar.hash) != 0) {
+        avatar_hash = user_info.avatar.hash;
+        start_avatar_distribution();
+      }
+    }
+
+    private void start_avatar_distribution() {
+      logger.i("start_avatar_distribution");
+      uint8[] avatar_data;
+      user_info.avatar.pixbuf.save_to_buffer(out avatar_data, "png");
+      var contacts = friends.get_values();
+      foreach (var contact in contacts) {
+        var c = contact as Contact;
+        if (c.is_connected()) {
+          session.file_send_avatar((c as Contact).tox_friend_number, avatar_data);
+        }
+      }
     }
 
     ~ToxAdapterFriendListenerImpl() {
@@ -160,6 +189,12 @@ namespace Venom {
       var contact = friends.@get(friend_number) as Contact;
       contact.connected = is_connected;
       contact.changed();
+
+      if (is_connected) {
+        uint8[] avatar_data;
+        user_info.avatar.pixbuf.save_to_buffer(out avatar_data, "png");
+        session.file_send_avatar(contact.tox_friend_number, avatar_data);
+      }
     }
 
     public virtual void on_friend_typing_status_changed(uint32 friend_number, bool is_typing) {

@@ -97,7 +97,7 @@ namespace Venom {
       notification_listener.clear_notifications();
 
       session_listener = new ToxAdapterSelfListenerImpl(logger, user_info);
-      friend_listener = new ToxAdapterFriendListenerImpl(logger, contacts, friend_requests, conversations, notification_listener);
+      friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, contacts, friend_requests, conversations, notification_listener);
       conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conference_invites, conversations, notification_listener);
       filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, notification_listener);
 

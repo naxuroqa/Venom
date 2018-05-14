@@ -100,6 +100,12 @@ namespace Venom {
       _is_avatar = true;
     }
 
+    public FileTransferImpl.AvatarOutgoing(FileTransferDirection direction, uint32 friend_number, uint32 file_number, uint8[] buffer) {
+      this(direction, friend_number, file_number, buffer.length);
+      avatar_buffer = buffer;
+      _is_avatar = true;
+    }
+
     public void init_file(File file) throws Error {
       this.file = file;
       if (direction == INCOMING) {
@@ -154,18 +160,23 @@ namespace Venom {
         set_state(FileTransferState.FAILED);
         throw new FileTransferError.OVERFLOW("Appending too much data, discarding data");
       }
-      if (file == null) {
-        set_state(FileTransferState.FAILED);
-        throw new FileTransferError.INIT("File is not initialized");
-      }
       var buf = new uint8[length];
-      try {
-        var istream = file.read();
-        istream.seek((int64) transmitted_size, SeekType.SET);
-        istream.read(buf);
-      } catch (Error e) {
-        set_state(FileTransferState.FAILED);
-        throw new FileTransferError.WRITE("Writing to file failed: " + e.message);
+      if (_is_avatar) {
+        unowned uint8[] offset_ptr = avatar_buffer[transmitted_size : avatar_buffer.length];
+        GLib.Memory.copy(buf, offset_ptr, buf.length);
+      } else {
+        if (file == null) {
+          set_state(FileTransferState.FAILED);
+          throw new FileTransferError.INIT("File is not initialized");
+        }
+        try {
+          var istream = file.read();
+          istream.seek((int64) transmitted_size, SeekType.SET);
+          istream.read(buf);
+        } catch (Error e) {
+          set_state(FileTransferState.FAILED);
+          throw new FileTransferError.WRITE("Writing to file failed: " + e.message);
+        }
       }
 
       transmitted_size += length;

@@ -69,11 +69,10 @@ namespace Venom {
       avatar_cancellable.reset();
       uint8[] buf;
       pixbuf.save_to_buffer(out buf, "png");
-      //var hash = session.hash(buf);
       var bytes = new Bytes(buf);
       avatar_file.replace_contents_bytes_async.begin(bytes, null, false, GLib.FileCreateFlags.REPLACE_DESTINATION, avatar_cancellable);
 
-      user_info.avatar = pixbuf;
+      user_info.avatar.set_from_data(logger, buf, pixbuf);
       user_info.custom_avatar = true;
       user_info.info_changed();
     }
@@ -87,7 +86,7 @@ namespace Venom {
           avatar_file.delete_async.begin(GLib.Priority.DEFAULT, avatar_cancellable);
         }
 
-        user_info.avatar = pixbuf_from_resource(R.icons.default_contact, 128);
+        user_info.avatar.reset();
         user_info.custom_avatar = false;
         user_info.info_changed();
       }
@@ -95,8 +94,9 @@ namespace Venom {
 
     private async void load_avatar(Cancellable? cancellable = null) {
       try {
-        var stream = avatar_file.read(cancellable);
-        user_info.avatar = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 128, 128, true, cancellable);
+        uint8[] buf;
+        yield avatar_file.load_contents_async(cancellable, out buf, null);
+        user_info.avatar.set_from_data(logger, buf);
         user_info.custom_avatar = true;
         user_info.info_changed();
       } catch (GLib.Error e) {

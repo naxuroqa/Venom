@@ -31,21 +31,58 @@ namespace Venom {
     private UserInfo user_info;
     private UserInfoViewListener listener;
     private bool avatar_set;
+    private GLib.ListStore avatars;
 
     public UserInfoViewModel(ILogger logger, UserInfo user_info, UserInfoViewListener listener) {
       logger.d("UserInfoViewModel created.");
       this.logger = logger;
       this.user_info = user_info;
       this.listener = listener;
+      avatars = new GLib.ListStore(typeof(GLib.File));
+      init_liststore.begin();
 
       update_info();
+    }
+
+    public GLib.ListModel get_avatars_model() {
+      return avatars;
+    }
+
+    private async void init_liststore() {
+      var data_dirs = GLib.Environment.get_system_data_dirs();
+      foreach (var dir in data_dirs) {
+        var path_str = GLib.Path.build_filename(dir, "pixmaps", "faces");
+        var path = File.new_for_path(path_str);
+        try {
+          var enumerator = path.enumerate_children(
+            FileAttribute.STANDARD_NAME
+            + "," + FileAttribute.STANDARD_TYPE
+            + "," + FileAttribute.STANDARD_IS_SYMLINK
+            + "," + FileAttribute.STANDARD_SYMLINK_TARGET,
+            FileQueryInfoFlags.NONE,
+            null);
+          FileInfo info = null;
+          while ((info = enumerator.next_file()) != null) {
+            if (info.get_file_type() == FileType.REGULAR || info.get_file_type() == FileType.SYMBOLIC_LINK) {
+              var target = info.get_symlink_target();
+              if (target == null || !target.has_prefix("legacy")) {
+                avatars.append(path.get_child(info.get_name()));
+                Idle.add(init_liststore.callback);
+                yield;
+              }
+            }
+          }
+        } catch (Error e) {
+          logger.d(@"Can not open directory '$path_str': " + e.message);
+        }
+      }
     }
 
     private void update_info() {
       logger.d("UserInfoViewModel update_info.");
       username = user_info.name;
       statusmessage = user_info.status_message;
-      avatar = user_info.avatar;
+      avatar = user_info.avatar.pixbuf;
       tox_id = user_info.tox_id;
     }
 
@@ -71,7 +108,7 @@ namespace Venom {
         var stream = file.read();
         avatar = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 128, 128, true);
       } catch (GLib.Error e) {
-          logger.e("UserInfoViewModel can not read file: " + e.message);
+        logger.e("UserInfoViewModel can not read file: " + e.message);
       }
     }
 

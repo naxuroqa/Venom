@@ -33,11 +33,11 @@ namespace Mock {
                      .create();
       mock().actual_call(this, "set_session_listener", args);
     }
-    public void set_file_transfer_listener(ToxAdapterFiletransferListener listener) {
+    public void set_filetransfer_listener(ToxAdapterFiletransferListener listener) {
       var args = Arguments.builder()
                      .object(listener)
                      .create();
-      mock().actual_call(this, "set_file_transfer_listener", args);
+      mock().actual_call(this, "set_filetransfer_listener", args);
     }
     public void set_friend_listener(ToxAdapterFriendListener listener) {
       var args = Arguments.builder()
@@ -190,12 +190,17 @@ namespace Mock {
                      .create();
       mock().actual_call(this, "file_control", args).get_throws();
     }
-    public void file_send(uint32 friend_number, ToxCore.FileKind kind, GLib.File file) throws ToxError {
+    public void file_send_data(uint32 friend_number, GLib.File file) throws ToxError {
       var args = Arguments.builder()
                      .uint(friend_number)
-                     .int(kind)
                      .create();
-      mock().actual_call(this, "file_send", args).get_throws();
+      mock().actual_call(this, "file_send_data", args).get_throws();
+    }
+    public void file_send_avatar(uint32 friend_number, uint8[] avatar_data) throws ToxError {
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .create();
+      mock().actual_call(this, "file_send_avatar", args).get_throws();
     }
     public void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError {
       mock().actual_call(this, "file_send_chunk").get_throws();

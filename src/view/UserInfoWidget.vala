@@ -28,6 +28,7 @@ namespace Venom {
     [GtkChild] private Gtk.Label label_id;
     [GtkChild] private Gtk.Button reset_avatar;
     [GtkChild] private Gtk.FileChooserButton filechooser;
+    [GtkChild] private Gtk.FlowBox avatars;
     [GtkChild] private Gtk.Button apply;
 
     private ILogger logger;
@@ -47,6 +48,10 @@ namespace Venom {
       view_model.bind_property("avatar", avatar, "pixbuf", GLib.BindingFlags.SYNC_CREATE | GLib.BindingFlags.BIDIRECTIONAL);
       view_model.bind_property("tox-id", label_id, "label", GLib.BindingFlags.SYNC_CREATE);
 
+      var creator = new AvatarChildCreator(logger);
+      avatars.bind_model(view_model.get_avatars_model(), creator.create);
+      avatars.child_activated.connect(on_flowbox_activated);
+
       var imagefilter = new Gtk.FileFilter();
       imagefilter.set_filter_name(_("Images"));
       imagefilter.add_mime_type("image/*");
@@ -57,17 +62,52 @@ namespace Venom {
       apply.clicked.connect(view_model.on_apply_clicked);
     }
 
+    private void on_flowbox_activated(Gtk.FlowBoxChild child) {
+      view_model.set_file((child as AvatarChild).file);
+    }
+
     private void on_file_set() {
       view_model.set_file(filechooser.get_file());
+      avatars.unselect_all();
     }
 
     private void on_file_reset() {
       view_model.reset_file();
       filechooser.unselect_all();
+      avatars.unselect_all();
     }
 
     ~UserInfoWidget() {
       logger.d("UserInfoWidget destroyed.");
+    }
+
+    private class AvatarChild : Gtk.FlowBoxChild {
+      public File file { get; set; }
+
+      private ILogger logger;
+      public AvatarChild(ILogger logger, GLib.File file) {
+        this.logger = logger;
+        this.file = file;
+
+        var pixbuf = new Gdk.Pixbuf.from_file_at_scale(file.get_path(), 48, 48, true);
+        add(new Gtk.Image.from_pixbuf(pixbuf));
+        show_all();
+        logger.d("AvatarChild created.");
+      }
+
+      ~AvatarChild() {
+        logger.d("AvatarChild destroyed.");
+      }
+    }
+
+    private class AvatarChildCreator {
+      private ILogger logger;
+      public AvatarChildCreator(ILogger logger) {
+        this.logger = logger;
+      }
+      public Gtk.Widget create(GLib.Object o) {
+        return new AvatarChild(logger, o as GLib.File);
+      }
     }
   }
 }
