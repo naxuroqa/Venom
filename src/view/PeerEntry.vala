@@ -1,7 +1,7 @@
 /*
  *    PeerEntry.vala
  *
- *    Copyright (C) 2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -22,16 +22,11 @@
 namespace Venom {
   [GtkTemplate(ui = "/chat/tox/venom/ui/peer_entry.ui")]
   public class PeerEntry : Gtk.ListBoxRow {
-    [GtkChild]
-    private Gtk.Image peer_image;
-    [GtkChild]
-    private Gtk.Label peer_name;
-    [GtkChild]
-    private Gtk.Label peer_key;
-    [GtkChild]
-    private Gtk.Image peer_known;
-    [GtkChild]
-    private Gtk.Image peer_self;
+    [GtkChild] private Gtk.Image peer_image;
+    [GtkChild] private Gtk.Label peer_name;
+    [GtkChild] private Gtk.Label peer_key;
+    [GtkChild] private Gtk.Image peer_known;
+    [GtkChild] private Gtk.Image peer_self;
 
     private ILogger logger;
 
@@ -46,6 +41,26 @@ namespace Venom {
 
     ~PeerEntry() {
       logger.d("PeerEntry destroyed.");
+    }
+  }
+  [GtkTemplate(ui = "/chat/tox/venom/ui/peer_entry_compact.ui")]
+  public class PeerEntryCompact : Gtk.ListBoxRow {
+    [GtkChild] private Gtk.Label peer_name;
+    [GtkChild] private Gtk.Image peer_known;
+    [GtkChild] private Gtk.Image peer_self;
+
+    private ILogger logger;
+
+    public PeerEntryCompact(ILogger logger, ConferencePeer peer) {
+      this.logger = logger;
+      peer_name.label = peer.peer_name;
+      peer_known.visible = peer.is_known;
+      peer_self.visible = peer.is_self;
+      logger.d("PeerEntryCompact created.");
+    }
+
+    ~PeerEntryCompact() {
+      logger.d("PeerEntryCompact destroyed.");
     }
   }
 }

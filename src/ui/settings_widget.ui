@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 
+<!-- Generated with glade 3.22.1
 
-Copyright (C) 
+Copyright (C) 2013-2018 Venom authors and contributors
 
 This file is part of Venom.
 
@@ -18,14 +18,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 
-Author: Venom authors
-
 -->
 <interface domain="venom">
   <requires lib="gtk+" version="3.20"/>
   <!-- interface-license-type gplv3 -->
   <!-- interface-name Venom -->
-  <!-- interface-authors Venom authors -->
+  <!-- interface-copyright 2013-2018 Venom authors and contributors -->
   <object class="GtkAdjustment" id="history_delete_adjustment">
     <property name="upper">365</property>
     <property name="value">180</property>

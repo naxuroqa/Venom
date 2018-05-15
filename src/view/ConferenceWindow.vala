@@ -28,11 +28,12 @@ namespace Venom {
     [GtkChild] private Gtk.Box placeholder;
     [GtkChild] private Gtk.Widget header_start;
     [GtkChild] private Gtk.Widget header_end;
+    [GtkChild] private Gtk.ListBox peers;
+    [GtkChild] private Gtk.Widget peers_placeholder;
 
     private const GLib.ActionEntry win_entries[] =
     {
       { "conference-info",  on_conference_info,  null, null, null },
-      { "show-peers",  on_show_peers,  null, null, null },
       { "insert-smiley", on_insert_smiley, null, null, null }
     };
 
@@ -44,6 +45,7 @@ namespace Venom {
     private TextViewEventHandler text_view_event_handler;
     private AdjustmentAutoScroller auto_scroller;
     private Cancellable cancellable;
+    private ObservableList peers_list;
 
     public ConferenceWindow(ApplicationWindow app_window, ILogger logger, ObservableList conversation, IContact contact, ISettingsDatabase settings, ConferenceWidgetListener listener) {
       this.app_window = app_window;
@@ -68,6 +70,8 @@ namespace Venom {
       var creator = new MessageWidgetCreator(logger, settings);
       message_list.bind_model(model, creator.create_message);
       message_list.set_placeholder(placeholder);
+
+      peers.set_placeholder(peers_placeholder);
 
       app_window.add_action_entries(win_entries, this);
       app_window.focus_in_event.connect(on_focus_in_event);
@@ -99,6 +103,13 @@ namespace Venom {
         contact.changed();
         return;
       }
+
+      this.peers_list = new ObservableList();
+      peers_list.set_collection((contact as Conference).get_peers().values);
+      var peers_list_model = new ObservableListModel(peers_list);
+      var peers_list_creator = new PeersListCreator(logger);
+      peers.bind_model(peers_list_model, peers_list_creator.create);
+
       app_window.header_bar.title = contact.get_name_string();
       app_window.header_bar.subtitle = contact.get_status_string();
     }
@@ -121,14 +132,20 @@ namespace Venom {
       app_window.on_show_conference(contact);
     }
 
-    private void on_show_peers() {
-      logger.d("on_show_peers");
-    }
-
     private void on_insert_smiley() {
       logger.d("on_insert_smiley");
       text_view.grab_focus();
       text_view.insert_emoji();
+    }
+
+    private class PeersListCreator {
+      ILogger logger;
+      public PeersListCreator(ILogger logger) {
+        this.logger = logger;
+      }
+      public Gtk.Widget create(GLib.Object o) {
+        return new PeerEntryCompact(logger, o as ConferencePeer);
+      }
     }
   }
 
