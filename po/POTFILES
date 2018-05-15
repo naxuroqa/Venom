@@ -94,6 +94,7 @@ src/ui/file_transfer_widget.ui
 src/ui/application_window.ui
 src/ui/file_transfer_entry.ui
 src/ui/create_groupchat_widget.ui
+src/ui/peer_entry_compact.ui
 src/ui/conference_window.ui
 src/ui/app_menu.ui
 src/ui/contact_list_widget.ui
