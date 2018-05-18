@@ -188,6 +188,7 @@ namespace Venom {
       logger.d("on_friend_connection_status_changed");
       var contact = friends.@get(friend_number) as Contact;
       contact.connected = is_connected;
+      contact.last_seen = new DateTime.from_unix_local((int64) session.friend_get_last_online(friend_number));
       contact.changed();
 
       if (is_connected) {
