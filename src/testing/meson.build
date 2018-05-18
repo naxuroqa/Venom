@@ -140,6 +140,10 @@ test_tox_transfer = executable('test_tox_transfer', ['TestToxAdapterFiletransfer
 			dependencies : [venom_dep, mox_dep]
 			)
 
+test_undo = executable('test_undo', ['TestUndo.vala'],
+			dependencies : [venom_dep, mox_dep]
+			)
+
 test('test glib', test_glib_testing)
 test('test mocking framework', test_mock)
 test('test tox core vapi', test_tox_core)
@@ -153,3 +157,4 @@ test('test message db', test_message_db)
 test('test dht node db', test_dht_node_db)
 test('test json web dht node db', test_json_web_dht_node_db)
 test('test plugin', test_plugin)
+test('test undo', test_undo)

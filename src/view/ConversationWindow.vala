@@ -52,6 +52,7 @@ namespace Venom {
     private TextViewEventHandler text_view_event_handler;
     private AdjustmentAutoScroller auto_scroller;
     private Cancellable cancellable;
+    private Undo.TextBufferUndoBinding text_buffer_undo_binding;
 
     public ConversationWindow(ApplicationWindow app_window,
                               ILogger logger,
@@ -67,6 +68,11 @@ namespace Venom {
       this.listener = listener;
       this.filetransfer_listener = filetransfer_listener;
       this.cancellable = new Cancellable();
+
+      this.text_buffer_undo_binding = new Undo.TextBufferUndoBinding();
+      text_buffer_undo_binding.add_actions_to(app_window);
+      text_buffer_undo_binding.bind_buffer(text_view.buffer);
+      text_view.populate_popup.connect(text_buffer_undo_binding.populate_popup);
 
       text_view_event_handler = new TextViewEventHandler();
       text_view_event_handler.send.connect(on_send);
@@ -108,7 +114,7 @@ namespace Venom {
       if (pixbuf != null) {
         user_image.pixbuf = pixbuf.scale_simple(22, 22, Gdk.InterpType.BILINEAR);
       }
-      typing_label.label = _("%s is typing...").printf(contact.get_name_string());
+      typing_label.label = _("%s is typing…").printf(contact.get_name_string());
       typing_revealer.reveal_child = contact.is_typing();
     }
 
@@ -154,6 +160,7 @@ namespace Venom {
           return;
         }
         text_view.buffer.text = "";
+        text_buffer_undo_binding.clear();
         try_set_typing(false);
       }
     }
