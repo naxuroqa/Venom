@@ -1,7 +1,6 @@
 [Desktop Entry]
 Name=Venom
-GenericName=Venom
-Comment=A modern user interface for Toxyc
+Comment=A modern user interface for Tox
 Keywords=tox;instant messaging;video chat;
 Exec=venom
 Icon=chat.tox.venom-symbolic

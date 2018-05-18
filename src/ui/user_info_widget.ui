@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1
+<!-- Generated with glade 3.22.1 
 
 Copyright (C) 2013-2018 Venom authors and contributors
 
@@ -120,6 +120,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="pack_type">end</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -130,15 +131,20 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="border_width">6</property>
-    <property name="spacing">12</property>
     <child>
-      <object class="GtkImage">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">end</property>
-        <property name="valign">start</property>
-        <property name="icon_name">friend-symbolic</property>
-        <property name="icon_size">6</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
       </object>
       <packing>
         <property name="expand">True</property>
@@ -156,17 +162,25 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkMenuButton">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">User profile</property>
-                <property name="xalign">0</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="popover">popover1</property>
+                <child>
+                  <object class="GtkImage" id="avatar">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="pixel_size">128</property>
+                    <property name="icon_name">friend-symbolic</property>
+                    <property name="icon_size">0</property>
+                    <style>
+                      <class name="avatar"/>
+                    </style>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -274,70 +288,13 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                     </child>
                   </object>
                 </child>
-                <child>
-                  <object class="GtkListBoxRow">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="border_width">6</property>
-                        <property name="orientation">vertical</property>
-                        <property name="spacing">6</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Avatar:</property>
-                            <property name="xalign">0</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                            </attributes>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkMenuButton">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="halign">start</property>
-                            <property name="popover">popover1</property>
-                            <child>
-                              <object class="GtkImage" id="avatar">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="pixel_size">128</property>
-                                <property name="icon_name">friend-symbolic</property>
-                                <property name="icon_size">0</property>
-                                <style>
-                                  <class name="avatar"/>
-                                </style>
-                              </object>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
                 <style>
                   <class name="frame"/>
                   <class name="separated"/>
                 </style>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>

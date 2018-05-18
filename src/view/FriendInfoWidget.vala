@@ -61,6 +61,7 @@ namespace Venom {
       view_model.bind_property("statusmessage", statusmessage, "label", BindingFlags.SYNC_CREATE);
       view_model.bind_property("userimage", userimage, "pixbuf", BindingFlags.SYNC_CREATE);
       view_model.bind_property("last-seen", last_seen, "label", BindingFlags.SYNC_CREATE);
+      view_model.bind_property("last-seen-tooltip", last_seen, "tooltip-text", BindingFlags.SYNC_CREATE);
       view_model.bind_property("tox-id", tox_id, "label", BindingFlags.SYNC_CREATE);
 
       view_model.bind_property("alias", alias, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);

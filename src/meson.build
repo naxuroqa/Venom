@@ -39,6 +39,7 @@ venom_source = files(
 			'core/NotificationListener.vala',
 			'core/ObservableList.vala',
 			'core/R.vala',
+			'core/TimeStamp.vala',
 			'core/Tools.vala',
 			'core/WidgetFactory.vala',
 			'core/WindowState.vala',

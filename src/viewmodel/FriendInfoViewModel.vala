@@ -25,6 +25,7 @@ namespace Venom {
     public string statusmessage { get; set; }
     public Gdk.Pixbuf userimage { get; set; }
     public string last_seen { get; set; }
+    public string last_seen_tooltip { get; set; }
     public string alias { get; set; }
     public string tox_id { get; set; }
     public bool auto_conference { get; set; }
@@ -60,7 +61,15 @@ namespace Venom {
       username = contact.name;
       statusmessage = contact.status_message;
       alias = contact.alias;
-      last_seen = contact.last_seen.format("%c");
+      if (contact.is_connected()) {
+        last_seen = _("Online right now");
+      } else if (contact.last_seen.to_unix() == 0) {
+        last_seen = _("Never seen online");
+      } else {
+        last_seen = _("Last seen: %s").printf(TimeStamp.get_pretty_timestamp(contact.last_seen));
+        last_seen_tooltip = contact.last_seen.format("%c");
+      }
+
       show_notifications = contact._show_notifications;
       tox_id = contact.get_id();
       var pixbuf = contact.get_image();
