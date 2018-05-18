@@ -218,6 +218,10 @@ namespace Venom {
       contact_list_view_model = contact_list.get_model();
       content_paned.bind_property("position", user_info_box, "width-request", BindingFlags.SYNC_CREATE,
                                   (binding, source, ref target) => { target = source.get_int() - 12; return true; });
+
+      var app = GLib.Application.get_default() as Gtk.Application;
+      app.set_accels_for_action("win.undo", {"<Control>Z"});
+      app.set_accels_for_action("win.redo", {"<Control>Y"});
     }
 
     public void reset_header_bar() {

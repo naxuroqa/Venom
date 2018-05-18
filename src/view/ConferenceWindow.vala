@@ -46,6 +46,7 @@ namespace Venom {
     private AdjustmentAutoScroller auto_scroller;
     private Cancellable cancellable;
     private ObservableList peers_list;
+    private Undo.TextBufferUndoBinding text_buffer_undo_binding;
 
     public ConferenceWindow(ApplicationWindow app_window, ILogger logger, ObservableList conversation, IContact contact, ISettingsDatabase settings, ConferenceWidgetListener listener) {
       this.app_window = app_window;
@@ -54,6 +55,11 @@ namespace Venom {
       this.listener = listener;
       this.contact = contact;
       this.cancellable = new Cancellable();
+
+      this.text_buffer_undo_binding = new Undo.TextBufferUndoBinding();
+      text_buffer_undo_binding.add_actions_to(app_window);
+      text_buffer_undo_binding.bind_buffer(text_view.buffer);
+      text_view.populate_popup.connect(text_buffer_undo_binding.populate_popup);
 
       text_view_event_handler = new TextViewEventHandler();
       text_view_event_handler.send.connect(on_send);
