@@ -49,6 +49,8 @@ venom_source = files(
 			'db/SqliteWrapper.vala',
 			'plugin/Plugin.vala',
 			'plugin/Pluginregistrar.vala',
+			'portal/Request.vala',
+			'portal/Screenshot.vala',
 			'tox/Conference.vala',
 			'tox/ConferenceMessage.vala',
 			'tox/ContactDatabase.vala',
