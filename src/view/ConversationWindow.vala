@@ -29,17 +29,19 @@ namespace Venom {
     [GtkChild] private Gtk.Revealer typing_revealer;
     [GtkChild] private Gtk.Label typing_label;
     [GtkChild] private Gtk.Overlay overlay;
+    [GtkChild] private Gtk.Popover popover;
     [GtkChild] private Gtk.Box placeholder;
     [GtkChild] private Gtk.Widget header_start;
     [GtkChild] private Gtk.Widget header_end;
 
     private const GLib.ActionEntry win_entries[] =
     {
-      { "contact-info",  on_contact_info,  null, null, null },
-      { "start-call",    on_start_call,    null, null, null },
-      { "start-video",   on_start_video,   null, null, null },
-      { "insert-file",   on_insert_file,   null, null, null },
-      { "insert-smiley", on_insert_smiley, null, null, null }
+      { "contact-info",      on_contact_info,  null, null, null },
+      { "start-call",        on_start_call,    null, null, null },
+      { "start-video",       on_start_video,   null, null, null },
+      { "insert-file",       on_insert_file,   null, null, null },
+      { "insert-screenshot", on_insert_screenshot,   null, null, null },
+      { "insert-smiley",     on_insert_smiley, null, null, null }
     };
 
     private unowned ApplicationWindow app_window;
@@ -178,8 +180,45 @@ namespace Venom {
       logger.d("on_start_video");
     }
 
+    private async void insert_screenshot_async() {
+      try {
+        logger.d("insert_screenshot_async");
+        var bus = yield Bus.get(BusType.SESSION);
+        var screenshot = yield bus.get_proxy<org.freedesktop.portal.Screenshot>("org.freedesktop.portal.Desktop", "/org/freedesktop/portal/desktop");
+
+        var options = new GLib.HashTable<string, GLib.Variant>(str_hash, str_equal);
+        var handle = screenshot.screenshot("", options);
+        var request = yield bus.get_proxy<org.freedesktop.portal.Request>("org.freedesktop.portal.Desktop", handle);
+        request.response.connect((response, results) => {
+          if (response != 0) {
+            logger.d("Insert screenshot cancelled.");
+          } else {
+            var uri = results.@get("uri").get_string();
+            logger.d(@"Insert screenshot with uri $uri.");
+            var file = GLib.File.new_for_uri(uri);
+            try {
+              filetransfer_listener.on_start_filetransfer(contact, file);
+            } catch (Error e) {
+              logger.e("Can not start file transfer: " + e.message);
+            }
+          }
+          insert_screenshot_async.callback();
+        });
+        yield;
+      } catch (Error e) {
+        logger.e("Can not take screenshot: " + e.message);
+      }
+    }
+
+    private void on_insert_screenshot() {
+      logger.d("on_insert_screenshot");
+      popover.popdown();
+      insert_screenshot_async.begin();
+    }
+
     private void on_insert_file() {
       logger.d("on_insert_file");
+      popover.popdown();
       var file_chooser_dialog = new Gtk.FileChooserNative(_("Choose a file to send"),
                                                           app_window,
                                                           Gtk.FileChooserAction.OPEN,
