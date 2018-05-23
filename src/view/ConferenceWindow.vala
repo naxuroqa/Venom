@@ -73,7 +73,7 @@ namespace Venom {
       update_widgets();
 
       var model = new LazyObservableListModel(logger, conversation, cancellable);
-      var creator = new MessageWidgetCreator(logger, settings);
+      var creator = new MessageWidgetCreator(logger, settings, null);
       message_list.bind_model(model, creator.create_message);
       message_list.set_placeholder(placeholder);
 

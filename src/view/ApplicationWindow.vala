@@ -99,7 +99,7 @@ namespace Venom {
       session_listener = new ToxAdapterSelfListenerImpl(logger, user_info);
       friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, contacts, friend_requests, conversations, notification_listener);
       conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conference_invites, conversations, notification_listener);
-      filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, notification_listener);
+      filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, conversations, notification_listener);
 
       settings_database.bind_property("enable-send-typing", friend_listener, "show-typing", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-urgency-notification", notification_listener, "show-notifications", BindingFlags.SYNC_CREATE);
@@ -236,7 +236,7 @@ namespace Venom {
       logger.d("ApplicationWindow on_contact_selected");
       if (contact is Contact) {
         var conv = conversations.@get(contact);
-        switch_content_with(() => { return new ConversationWindow(this, logger, conv, contact, settings_database, friend_listener, filetransfer_listener); });
+        switch_content_with(() => { return new ConversationWindow(this, logger, conv, contact, settings_database, friend_listener, filetransfer_listener, filetransfer_listener); });
       } else if (contact is Conference) {
         var conv = conversations.@get(contact);
         switch_content_with(() => { return new ConferenceWindow(this, logger, conv, contact, settings_database, conference_listener); });

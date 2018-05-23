@@ -140,8 +140,11 @@ namespace Venom {
     }
 
     protected override void on_removed(GLib.Object item, uint index) {
-      // currently not supported
-      assert_not_reached();
+      if (!initialized) {
+        // ignore while not initialized
+        return;
+      }
+      items_changed(index, 1, 0);
     }
 
     public override uint get_n_items() {

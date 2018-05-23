@@ -85,6 +85,7 @@ venom_source = files(
 			'view/ConversationWindow.vala',
 			'view/CreateGroupchatWidget.vala',
 			'view/FileTransferEntry.vala',
+			'view/FileTransferEntryInline.vala',
 			'view/FileTransferWidget.vala',
 			'view/FriendInfoWidget.vala',
 			'view/FriendRequestWidget.vala',
