@@ -1,5 +1,5 @@
 /*
- *    FileTransferEntry.vala
+ *    FileTransferEntryInline.vala
  *
  *    Copyright (C) 2018 Venom authors and contributors
  *
@@ -20,8 +20,8 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/chat/tox/venom/ui/file_transfer_entry.ui")]
-  public class FileTransferEntry : Gtk.ListBoxRow {
+  [GtkTemplate(ui = "/chat/tox/venom/ui/file_transfer_entry_inline.ui")]
+  public class FileTransferEntryInline : Gtk.ListBoxRow {
     [GtkChild] private Gtk.Label description;
     [GtkChild] private Gtk.ProgressBar progress;
     [GtkChild] private Gtk.Button open_file;
@@ -34,8 +34,8 @@ namespace Venom {
     private FileTransferEntryViewModel view_model;
     private FileTransferExternalCommands external_commands;
 
-    public FileTransferEntry(ILogger logger, FileTransfer file_transfer, FileTransferEntryListener listener) {
-      logger.d("FileTransferEntry created.");
+    public FileTransferEntryInline(ILogger logger, FileTransfer file_transfer, FileTransferEntryListener listener) {
+      logger.d("FileTransferEntryInline created.");
 
       this.logger = logger;
       this.view_model = new FileTransferEntryViewModel(logger, file_transfer, listener);
@@ -59,48 +59,8 @@ namespace Venom {
       external_commands.save_file_chosen.connect(view_model.on_save_file_chosen);
     }
 
-    ~FileTransferEntry() {
-      logger.d("FileTransferEntry destroyed.");
-    }
-  }
-
-  public class FileTransferExternalCommands : GLib.Object {
-    private ILogger logger;
-    public FileTransferExternalCommands(ILogger logger) {
-      this.logger = logger;
-    }
-
-    public signal void save_file_chosen(GLib.File file);
-
-    public void open_save_file_dialog(string path, string filename) {
-      var app = GLib.Application.get_default() as Gtk.Application;
-      if (app == null) {
-        logger.e("Could not get default application");
-        return;
-      }
-      var window = app.get_active_window();
-      var dialog = new Gtk.FileChooserNative(_(@"Save file $filename"),
-                                             window,
-                                             Gtk.FileChooserAction.SAVE,
-                                             _("_Save"),
-                                             _("_Cancel"));
-      dialog.do_overwrite_confirmation = true;
-      dialog.set_current_folder(path);
-      dialog.set_current_name(filename);
-      var ret = dialog.run();
-      if (ret == Gtk.ResponseType.ACCEPT) {
-        save_file_chosen(dialog.get_file());
-      }
-    }
-
-    public void open_file(string filename) {
-      string[] spawn_args = { "xdg-open", filename };
-      string[] spawn_env = GLib.Environ.get();
-      try {
-        GLib.Process.spawn_async(null, spawn_args, spawn_env, GLib.SpawnFlags.SEARCH_PATH, null, null);
-      } catch (SpawnError e) {
-        logger.e("Could not open file browser: " + e.message);
-      }
+    ~FileTransferEntryInline() {
+      logger.d("FileTransferEntryInline destroyed.");
     }
   }
 }

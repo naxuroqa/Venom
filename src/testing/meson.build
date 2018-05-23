@@ -132,6 +132,7 @@ test_plugin = executable('test_plugin', ['TestPlugin.vala',
 			)
 
 test_tox_transfer = executable('test_tox_transfer', ['TestToxAdapterFiletransferListener.vala',
+			'mocks/MockContact.vala',
 			'mocks/MockLogger.vala',
 			'mocks/MockFiletransfer.vala',
 			'mocks/MockNotificationListener.vala',

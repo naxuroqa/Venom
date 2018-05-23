@@ -29,14 +29,16 @@ namespace Venom {
 
     private unowned GLib.HashTable<uint32, IContact> friends;
     private Gee.Map<uint32, Gee.Map<uint32, FileTransfer> > file_transfers;
+    private unowned GLib.HashTable<IContact, ObservableList> conversations;
 
     private ObservableList transfers;
 
-    public ToxAdapterFiletransferListenerImpl(ILogger logger, ObservableList transfers, NotificationListener notification_listener) {
+    public ToxAdapterFiletransferListenerImpl(ILogger logger, ObservableList transfers, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
       logger.d("ToxAdapterFiletransferListenerImpl created.");
       this.logger = logger;
-      this.notification_listener = notification_listener;
       this.transfers = transfers;
+      this.conversations = conversations;
+      this.notification_listener = notification_listener;
 
       file_transfers = new Gee.HashMap<uint32, Gee.Map<uint32, FileTransfer> >();
     }
@@ -71,15 +73,18 @@ namespace Venom {
     }
 
     public virtual void remove_transfer(FileTransfer transfer) throws Error {
-      logger.d("remove_transfer %u:%u".printf(transfer.get_friend_number(), transfer.get_file_number()));
+      var friend_number = transfer.get_friend_number();
+      var file_number = transfer.get_file_number();
       var state = transfer.get_state();
+      logger.d(@"remove_transfer $friend_number:$file_number/%s".printf(state.to_string()));
       try {
         if (state != FileTransferState.CANCEL && state != FileTransferState.FINISHED) {
-          session.file_control(transfer.get_friend_number(), transfer.get_file_number(), ToxCore.FileControl.CANCEL);
+          session.file_control(friend_number, file_number, ToxCore.FileControl.CANCEL);
         }
       } finally {
-        unset_file_transfer(transfer.get_friend_number(), transfer.get_file_number());
+        unset_file_transfer(friend_number, file_number);
         transfers.remove(transfer);
+        conversations.get(friends.get(friend_number)).remove(transfer);
       }
     }
 
@@ -138,6 +143,7 @@ namespace Venom {
 
         set_file_transfer(friend_number, file_number, transfer);
         transfers.append(transfer);
+        conversations.get(friends.get(friend_number)).append(transfer);
       } catch (Error e) {
         logger.e("file_control failed: " + e.message);
       }
@@ -201,6 +207,7 @@ namespace Venom {
         var transfer = new FileTransferImpl.File(FileTransferDirection.INCOMING, friend_number, file_number, file_size, filename);
         set_file_transfer(friend_number, file_number, transfer);
         transfers.append(transfer);
+        conversations.get(friends.get(friend_number)).append(transfer);
         notification_listener.on_filetransfer(transfer, contact);
 
         if (contact.auto_filetransfer) {

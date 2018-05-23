@@ -30,6 +30,8 @@ public class TestToxAdapterFiletransferListener : UnitTest {
   private ToxSession session;
   private ToxAdapterFiletransferListenerImpl listener;
   private FileTransfer transfer;
+  private GLib.HashTable<IContact, ObservableList> conversations;
+  private IContact contact;
 
   public TestToxAdapterFiletransferListener() {
     add_func("test_init", test_init);
@@ -45,8 +47,10 @@ public class TestToxAdapterFiletransferListener : UnitTest {
     notification_listener = new MockNotificationListener();
     session = new MockToxSession();
     transfer = new MockFiletransfer();
+    conversations = new GLib.HashTable<IContact, ObservableList>(null, null);
+    contact = new MockContact();
 
-    listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, notification_listener);
+    listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, conversations, notification_listener);
   }
 
   private void test_init() throws Error {
@@ -78,15 +82,29 @@ public class TestToxAdapterFiletransferListener : UnitTest {
   }
 
   private void test_remove_transfer() throws Error {
+    session.get_friends().set(1, contact);
+    var conversation = new ObservableList();
+    conversation.append(transfer);
+    conversations.set(contact, conversation);
+
     when(transfer, "get_state").then_return_int(FileTransferState.CANCEL);
+    when(transfer, "get_friend_number").then_return_int(1);
+
     transfers.append(transfer);
+
     listener.attach_to_session(session);
     listener.remove_transfer(transfer);
     Assert.assert_true(transfers.length() == 0);
   }
 
   private void test_remove_exception() throws Error {
-    mock().when(session, "file_control", args().uint(0).uint(0).int(ToxCore.FileControl.CANCEL).create())
+    session.get_friends().set(2, contact);
+    var conversation = new ObservableList();
+    conversation.append(transfer);
+    conversations.set(contact, conversation);
+    when(transfer, "get_friend_number").then_return_int(2);
+
+    mock().when(session, "file_control", args().uint(2).uint(0).int(ToxCore.FileControl.CANCEL).create())
         .then_throw(new ToxError.GENERIC("this should be caught"));
 
     transfers.append(transfer);

@@ -62,7 +62,8 @@ namespace Venom {
                               IContact contact,
                               ISettingsDatabase settings,
                               ConversationWidgetListener listener,
-                              ConversationWidgetFiletransferListener filetransfer_listener) {
+                              ConversationWidgetFiletransferListener filetransfer_listener,
+                              FileTransferEntryListener file_transfer_entry_listener) {
       this.app_window = app_window;
       this.logger = logger;
       this.conversation = conversation;
@@ -90,7 +91,7 @@ namespace Venom {
       update_widgets();
 
       var model = new LazyObservableListModel(logger, conversation, cancellable);
-      var creator = new MessageWidgetCreator(logger, settings);
+      var creator = new MessageWidgetCreator(logger, settings, file_transfer_entry_listener);
       message_list.bind_model(model, creator.create_message);
       message_list.set_placeholder(placeholder);
 
@@ -291,13 +292,21 @@ namespace Venom {
   public class MessageWidgetCreator {
     private unowned ILogger logger;
     private ISettingsDatabase settings;
-    public MessageWidgetCreator(ILogger logger, ISettingsDatabase settings) {
+    private FileTransferEntryListener? file_transfer_entry_listener;
+    public MessageWidgetCreator(ILogger logger, ISettingsDatabase settings, FileTransferEntryListener? file_transfer_entry_listener) {
       this.logger = logger;
       this.settings = settings;
+      this.file_transfer_entry_listener = file_transfer_entry_listener;
     }
 
     public Gtk.Widget create_message(GLib.Object object) {
-      return new MessageWidget(logger, object as IMessage, settings);
+      if (object is IMessage) {
+        return new MessageWidget(logger, (IMessage) object, settings);
+      } else if (file_transfer_entry_listener != null && object is FileTransfer) {
+        return new FileTransferEntryInline(logger, (FileTransfer) object, file_transfer_entry_listener);
+      } else {
+        assert_not_reached();
+      }
     }
   }
 
