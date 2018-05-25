@@ -36,8 +36,9 @@ Dependencies
 * `glib-2.0 >= 2.56`
 * `json-glib-1.0`
 * `libsoup-2.4`
+* `libgee >= 0.20`
 * `sqlite3`
-* `toxcore >= 0.2.2`
+* `toxcore >= 0.2`
 
 Build-Dependencies
 ------------------

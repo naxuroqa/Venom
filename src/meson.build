@@ -1,7 +1,7 @@
-root_source_dir = meson.current_source_dir()
+vapi_dir = join_paths(meson.current_source_dir(), 'vapi')
 
-add_project_arguments(['--vapidir', join_paths(meson.current_source_dir(), 'vapi')],
-			language: 'vala')
+add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
+add_project_arguments('-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()), language: 'c')
 
 gtk_dep = dependency('gtk+-3.0')
 gdk_dep = dependency('gdk-3.0')
@@ -14,17 +14,17 @@ json_dep = dependency('json-glib-1.0')
 soup_dep = dependency('libsoup-2.4')
 tox_dep = dependency('toxcore')
 gst_dep = dependency('gstreamer-1.0', required : false)
-posix_dep = meson.get_compiler('vala').find_library('posix', required : false)
+posix_dep = valac.find_library('posix', required : false)
 
-config_vapi = meson.get_compiler('vala').find_library('config', dirs: join_paths(meson.current_source_dir(), 'vapi'))
+config_vapi = valac.find_library('config', dirs: vapi_dir)
 config_dep = declare_dependency(dependencies: [config_vapi], include_directories : include_directories('.'))
 configure_file(output : 'config.h', configuration : conf_data)
 
-venom_ui_resources = gnome.compile_resources( 'venom_ui_resources', 'ui/venom.gresource.xml',
+venom_ui_resources = gnome.compile_resources('venom_ui_resources', 'ui/venom.gresource.xml',
 			source_dir : 'ui',
 			c_name : 'c_venom_ui_res')
 
-venom_icons_resources = gnome.compile_resources( 'venom_icons_resources', 'icons/icons.gresource.xml',
+venom_icons_resources = gnome.compile_resources('venom_icons_resources', 'icons/icons.gresource.xml',
 			source_dir : 'icons',
 			c_name : 'c_venom_icons_res')
 

@@ -1,3 +1,5 @@
+root_source_dir = join_paths(meson.current_source_dir(), '..')
+
 if posix_dep.found()
 			executable('group_bot', ['GroupBot.vala',
 						join_paths(root_source_dir, 'core/Tools.vala')],
