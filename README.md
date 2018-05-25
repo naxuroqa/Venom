@@ -1,26 +1,64 @@
-# Venom
+Venom
+=====
+
 [![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=develop)](https://travis-ci.org/naxuroqa/Venom) [![tip for next commit](http://tip4commit.com/projects/634.svg)](http://tip4commit.com/projects/634) [![codecov](https://codecov.io/gh/naxuroqa/Venom/branch/develop/graph/badge.svg)](https://codecov.io/gh/naxuroqa/Venom)
 
-a graphical user interface for [Tox](https://github.com/TokTok/c-toxcore) written in [Vala](https://wiki.gnome.org/Vala) using [GTK+](http://gtk.org).
+###### a modern [Tox](https://github.com/TokTok/c-toxcore) client for the Linux desktop
 
-## Contributing
+Features
+--------
 
-### Translations
+* Secure, private messaging
+* Read receipts
+* Contact aliases
+* Customizable avatars
+* Emojis 👍
+* File transfers
+* Screenshot sharing
+* Group chats
+* Socks5 Proxy support
 
-- Join us on [https://poeditor.com](https://poeditor.com/join/project/5weMhrvGjN)
+Roadmap
+-------
 
-### File a bug
+See [projects](https://github.com/naxuroqa/Venom/projects) for planned features.
 
-- Run Venom and [create a new Issue](https://github.com/naxuroqa/Venom/issues/new) if you think you found a bug
+Translations
+------------
 
-### Join Us on IRC
+Translations are done via the [venom project on poeditor](https://poeditor.com/join/project/5weMhrvGjN).
+Don't create pull requests for translations here. Updated translations from poeditor will be merged in this repository on every release.
 
-- Visit our IRC channel `#tox` on [freenode](https://freenode.net/) [![][button]](https://kiwiirc.com/client/irc.freenode.net/#tox)
+Dependencies
+------------
 
-[button]: https://kiwiirc.com/buttons/irc.freenode.net/tox.png
+* `gtk+-3.0 >= 3.22`
+* `glib-2.0 >= 2.56`
+* `json-glib-1.0`
+* `libsoup-2.4`
+* `sqlite3`
+* `toxcore >= 0.2.2`
 
-- Write an email to [naxuroqa@gmail.com](mailto:naxuroqa@gmail.com)
+Build-Dependencies
+------------------
+* `meson >= 0.46`
+* `vala >= 0.40`
 
-## License
+Compiling
+---------
+```bash
+meson ./build && cd build
+ninja
+ninja install
+```
 
-This project is licensed under the terms of the [GPLv3+](COPYING) license.
+Testing
+-------
+```bash
+ninja test
+```
+
+Contact
+-------
+
+Join the `#tox` IRC channel on [freenode](https://freenode.net/)
