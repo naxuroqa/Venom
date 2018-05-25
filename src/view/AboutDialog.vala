@@ -1,7 +1,7 @@
 /*
  *    AboutDialog.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -51,14 +51,14 @@ namespace Venom {
         null
       };
       add_credit_section(_("Packagers"), packagers);
-      comments = Config.SHORT_DESCRIPTION;
-      copyright = Config.COPYRIGHT_NOTICE;
+      comments = _("A modern Tox client for the Linux desktop");
+      copyright = _("Copyright © 2013-2018 Venom authors and contributors");
       license_type = Gtk.License.GPL_3_0;
       program_name = "Venom";
       translator_credits = _("translator-credits");
       version = Config.VERSION;
-      website = Config.WEBSITE;
-      website_label = _("Visit us on Github");
+      website = "https://github.com/naxuroqa/Venom";
+      website_label = "Github";
     }
 
     ~AboutDialog() {

@@ -1,3 +1,5 @@
+root_source_dir = join_paths(meson.current_source_dir(), '..')
+
 if posix_dep.found()
 			executable('group_bot', ['GroupBot.vala',
 						join_paths(root_source_dir, 'core/Tools.vala')],
@@ -39,10 +41,6 @@ test_mock = executable('test_mock', ['TestMock.vala'],
 
 test_tox_core = executable('test_tox_core', ['TestToxCore.vala'],
 			dependencies : [gio_dep, tox_dep]
-			)
-
-test_venom_config = executable('test_venom_config', ['TestVenomConfig.vala'],
-			dependencies : [gio_dep, config_dep]
 			)
 
 test_contact = executable('test_contact', ['TestContact.vala',
@@ -150,7 +148,6 @@ test('test mocking framework', test_mock)
 test('test tox core vapi', test_tox_core)
 test('test tox transfer', test_tox_transfer)
 test('test observable list', test_observable_list)
-test('test venom config', test_venom_config)
 test('test contact', test_contact)
 test('test about', test_about)
 test('test sqlite db', test_sqlite_db)

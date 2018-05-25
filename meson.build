@@ -5,29 +5,23 @@ project('venom', ['vala', 'c'],
 
 i18n = import('i18n')
 gnome = import('gnome')
+valac = meson.get_compiler('vala')
 
-gettext_package = 'venom'
-gettext_path = join_paths(get_option('prefix'), get_option('localedir'))
-add_project_arguments('-DGETTEXT_PACKAGE="' + gettext_package + '"', language: 'c')
-
-version_split = meson.project_version().split('.')
-MAJOR_VERSION = version_split[0]
-MINOR_VERSION = version_split[1]
-PATCH_VERSION = version_split[2]
+localedir = join_paths(get_option('prefix'), get_option('localedir'))
 
 conf_data = configuration_data()
-conf_data.set('VENOM_VERSION_MAJOR', MAJOR_VERSION)
-conf_data.set('VENOM_VERSION_MINOR', MINOR_VERSION)
-conf_data.set('VENOM_VERSION_PATCH', PATCH_VERSION)
-conf_data.set('VENOM_VERSION', meson.project_version())
-conf_data.set('VENOM_COPYRIGHT_NOTICE', 'Copyright © 2013-2017 Venom authors and contributors')
-conf_data.set('VENOM_SHORT_DESCRIPTION', 'GTK+-3.0 user interface for Tox')
-conf_data.set('VENOM_WEBSITE', 'https://github.com/naxuroqa/Venom')
-conf_data.set('GETTEXT_PACKAGE', gettext_package)
-conf_data.set('GETTEXT_PATH', gettext_path)
+conf_data.set_quoted('VENOM_VERSION', meson.project_version())
+conf_data.set_quoted('GETTEXT_PACKAGE', meson.project_name())
+conf_data.set_quoted('GETTEXT_PATH', localedir)
 
 subdir('scripts')
 subdir('data')
 subdir('po')
 subdir('src')
 subdir('src/testing')
+
+message('\n'.join(['',
+'  @0@-@1@'.format(meson.project_name(), meson.project_version()),
+'  prefix:    @0@'.format(get_option('prefix')),
+'  buildtype: @0@'.format(get_option('buildtype'))
+]))
