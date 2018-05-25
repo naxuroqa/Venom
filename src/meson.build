@@ -18,7 +18,7 @@ posix_dep = meson.get_compiler('vala').find_library('posix', required : false)
 
 config_vapi = meson.get_compiler('vala').find_library('config', dirs: join_paths(meson.current_source_dir(), 'vapi'))
 config_dep = declare_dependency(dependencies: [config_vapi], include_directories : include_directories('.'))
-config_file = configure_file(input : 'config.h.in', output : 'config.h', configuration : conf_data)
+configure_file(output : 'config.h', configuration : conf_data)
 
 venom_ui_resources = gnome.compile_resources( 'venom_ui_resources', 'ui/venom.gresource.xml',
 			source_dir : 'ui',

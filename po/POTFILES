@@ -22,9 +22,9 @@ src/testing/mocks/MockNotificationListener.vala
 src/testing/mocks/MockLogger.vala
 src/testing/mocks/MockDht.vala
 src/testing/mocks/MockMessageDb.vala
+src/testing/mocks/MockContact.vala
 src/testing/mocks/MockToxSession.vala
 src/testing/mocks/MockFiletransfer.vala
-src/testing/TestVenomConfig.vala
 src/testing/util/MockFramework.vala
 src/testing/util/UnitTest.vala
 src/testing/util/Assert.vala
@@ -82,6 +82,7 @@ src/view/NodeWidget.vala
 src/view/AboutDialog.vala
 src/view/ContactListRequestEntry.vala
 src/view/WelcomeWidget.vala
+src/view/FileTransferEntryInline.vala
 src/view/FileTransferWidget.vala
 src/view/FriendRequestWidget.vala
 src/view/ContactListEntry.vala
@@ -116,10 +117,13 @@ src/ui/user_status_menu.ui
 src/ui/add_contact_widget.ui
 src/ui/user_info_widget.ui
 src/ui/contact_list_entry.ui
+src/ui/file_transfer_entry_inline.ui
 src/ui/settings_widget.ui
 src/ui/contact_list_request_entry.ui
 src/ui/friend_info_widget.ui
 src/db/DatabaseInterfaces.vala
 src/db/SqliteWrapper.vala
 src/db/SqliteSettingsDatabase.vala
+src/portal/Request.vala
+src/portal/Screenshot.vala
 data/chat.tox.venom.desktop.in

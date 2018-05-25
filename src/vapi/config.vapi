@@ -1,7 +1,7 @@
 /*
  *    config.vapi
  *
- *    Copyright (C) 2013-2014  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -19,16 +19,10 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-[CCode (cheader_filename = "config.h", cprefix = "", lower_case_cprefix = "VENOM_")]
+[CCode (cheader_filename = "config.h", cprefix = "", lower_case_cprefix = "")]
 namespace Config {
-  public const int VERSION_MAJOR;
-  public const int VERSION_MINOR;
-  public const int VERSION_PATCH;
+  [CCode(cname="VENOM_VERSION")]
   public const string VERSION;
-
-  public const string COPYRIGHT_NOTICE;
-  public const string SHORT_DESCRIPTION;
-  public const string WEBSITE;
 
   public const string GETTEXT_PACKAGE;
   public const string GETTEXT_PATH;

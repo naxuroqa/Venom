@@ -50,9 +50,7 @@ public class TestAbout : UnitTest {
     var widget = new Venom.AboutDialog(logger);
     Assert.assert_not_null(widget.authors);
     Assert.assert_not_null(widget.artists);
-    Assert.assert_equals<string>(widget.comments, Config.SHORT_DESCRIPTION);
     Assert.assert_not_null(widget.translator_credits);
-    Assert.assert_equals<string>(widget.copyright, Config.COPYRIGHT_NOTICE);
     Assert.assert_equals<uint>(widget.license_type, Gtk.License.GPL_3_0);
     Assert.assert_null(widget.logo);
   }
