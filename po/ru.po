@@ -28,7 +28,7 @@ msgstr "Новое сообщение от %s"
 msgid "Tox User"
 msgstr "Пользователь Tox"
 
-#: src/tox/Conference.vala:47
+#: src/tox/Conference.vala:48
 msgid "%u Peers online"
 msgstr "%u пиров онлайн"
 
@@ -40,276 +40,239 @@ msgstr "Упаковщиков"
 msgid "translator-credits"
 msgstr "Ackermann Yuriy, Sorrow, Wrewolf"
 
-#: src/view/AboutDialog.vala:61
-msgid "Visit us on Github"
-msgstr "Посетите нас на Github"
-
-#: src/ui/add_contact_widget.ui:43
+#: src/ui/add_contact_widget.ui:65
 #, fuzzy
 msgid "Please let me add you to my contact list. 😁"
 msgstr "Пожалуйста, добавьте меня в свой список контактов. 😁"
 
-#: src/ui/add_contact_widget.ui:99
+#: src/ui/add_contact_widget.ui:108
 msgid "Send a friend request"
 msgstr "Отправить запрос другу"
 
-#: src/ui/add_contact_widget.ui:133
+#: src/ui/add_contact_widget.ui:142
 msgid "_ID:"
 msgstr "_ID:"
 
-#: src/ui/add_contact_widget.ui:150
+#: src/ui/add_contact_widget.ui:159
 msgid "Enter a Tox ID or URI here"
 msgstr "Вставьте Tox ID или URI"
 
-#: src/ui/create_groupchat_widget.ui:113 src/ui/add_contact_widget.ui:154
+#: src/ui/create_groupchat_widget.ui:122 src/ui/add_contact_widget.ui:163
 msgid "paste from clipboard"
 msgstr "вставить из буфера обмена"
 
-#: src/ui/add_contact_widget.ui:188
+#: src/ui/add_contact_widget.ui:197
 msgid "<small>Enter your friends Tox ID</small>"
 msgstr "<small>Введите Tox ID друга</small>"
 
-#: src/ui/friend_request_widget.ui:78 src/ui/add_contact_widget.ui:220
+#: src/ui/friend_request_widget.ui:100 src/ui/add_contact_widget.ui:229
 msgid "_Message:"
 msgstr "_Сообщение:"
 
-#: src/ui/add_contact_widget.ui:246
+#: src/ui/add_contact_widget.ui:255
 msgid "Send a custom message to be displayed to the friend you are adding"
 msgstr "Отправьте сообщение которое увидит друг, которого вы добавите"
 
-#: src/ui/add_contact_widget.ui:268
+#: src/ui/add_contact_widget.ui:277
 msgid "<small>Send your friend a short message</small>"
 msgstr "<small>Отправить другу короткое сообщение</small>"
 
-#: src/ui/add_contact_widget.ui:298
+#: src/ui/add_contact_widget.ui:308
 msgid "Send"
 msgstr "Отправить"
 
-#: src/ui/app_menu.ui:7
+#: src/ui/app_menu.ui:28
 #, fuzzy
 msgid "_Preferences"
 msgstr "_Настройки"
 
-#: src/ui/app_menu.ui:13
+#: src/ui/app_menu.ui:34
 msgid "About"
 msgstr "О программе"
 
-#: src/ui/app_menu.ui:17
+#: src/ui/app_menu.ui:38
 msgid "_Quit"
 msgstr "_Выход"
 
-#: src/ui/create_groupchat_widget.ui:112 src/ui/conference_info_widget.ui:39
+#: src/ui/create_groupchat_widget.ui:121 src/ui/conference_info_widget.ui:61
 msgid "Conference"
 msgstr "Конференция"
 
-#: src/ui/conference_info_widget.ui:105
+#: src/ui/conference_info_widget.ui:127
 msgid "Title:"
 msgstr "Заголовок:"
 
-#: src/ui/conference_info_widget.ui:243 src/ui/user_info_widget.ui:449
-#: src/ui/friend_info_widget.ui:666
+#: src/ui/conference_info_widget.ui:266 src/ui/user_info_widget.ui:446
+#: src/ui/friend_info_widget.ui:609
 msgid "Apply"
 msgstr "Применить"
 
-#: src/ui/conference_info_widget.ui:261
+#: src/ui/conference_info_widget.ui:284
 msgid "Peers"
 msgstr "Пиры"
 
-#: src/ui/conference_window.ui:209 src/ui/conversation_window.ui:268
-#: src/ui/user_info_widget.ui:177 src/ui/user_info_widget.ui:178
+#: src/ui/conference_window.ui:103 src/ui/conversation_window.ui:292
+#: src/ui/user_info_widget.ui:277 src/ui/user_info_widget.ui:278
 #, fuzzy
 msgid "Insert Emoji"
 msgstr "Вставить смайлик"
 
-#: src/ui/contact_list_widget.ui:216
+#: src/ui/contact_list_widget.ui:217
 msgid "Filter contacts by status"
 msgstr "Фильтровать контакты по статусу"
 
-#: src/ui/contact_list_widget.ui:222
+#: src/ui/contact_list_widget.ui:223
 msgid "All"
 msgstr "Все"
 
-#: src/ui/contact_list_widget.ui:329
+#: src/ui/contact_list_widget.ui:331
 msgid "Add a contact"
 msgstr "Добавить контакт"
 
-#: src/ui/contact_list_widget.ui:371
+#: src/ui/contact_list_widget.ui:381
 #, fuzzy
 msgid "View file transfers"
 msgstr "Смотреть передачи файлов"
 
-#: src/ui/contact_list_widget.ui:392
-msgid "Open preferences"
-msgstr "Настройки"
-
-#: src/ui/conversation_window.ui:109
+#: src/ui/conversation_window.ui:37
 msgid "Start a call"
 msgstr "Позвонить"
 
-#: src/ui/conversation_window.ui:290
+#: src/ui/conversation_window.ui:317
 #, fuzzy
 msgid "Insert attachment"
 msgstr "Вставить вложение"
 
-#: src/ui/create_groupchat_widget.ui:93
+#: src/ui/create_groupchat_widget.ui:102
 msgid "_Title:"
 msgstr "_Заголовок:"
 
-#: src/ui/create_groupchat_widget.ui:179
+#: src/ui/create_groupchat_widget.ui:188
 msgid "T_ype:"
 msgstr "_Тип:"
 
-#: src/ui/create_groupchat_widget.ui:271
+#: src/ui/create_groupchat_widget.ui:282
 msgid "Create"
 msgstr "Создать"
 
-#: src/ui/file_transfer_widget.ui:35
+#: src/view/FileTransferWidget.vala:39 src/ui/file_transfer_widget.ui:57
 #, fuzzy
 msgid "File transfers"
 msgstr "Передачи файлов"
 
-#: src/ui/friend_info_widget.ui:45
-msgid "Friend profile"
-msgstr "Профиль друга"
-
-#: src/ui/friend_info_widget.ui:62
+#: src/ui/friend_info_widget.ui:171
 msgid "Remove from your friends list"
 msgstr "Удалить из списка друзей"
 
-#: src/ui/user_info_widget.ui:113 src/ui/friend_info_widget.ui:111
+#: src/ui/user_info_widget.ui:213
 msgid "Username:"
 msgstr "Имя пользователя:"
 
-#: src/ui/user_info_widget.ui:206 src/ui/friend_info_widget.ui:200
-msgid "Image:"
-msgstr "Изображение:"
-
-#: src/ui/friend_info_widget.ui:245
-#, fuzzy
-msgid "Last seen:"
-msgstr "Был онлайн:"
-
-#: src/ui/friend_info_widget.ui:290
+#: src/ui/friend_info_widget.ui:222
 msgid "Alias:"
 msgstr "Псевдоним:"
 
-#: src/ui/friend_info_widget.ui:321
+#: src/ui/friend_info_widget.ui:254
 msgid "<small>Set a custom alias to quickly find your friends</small>"
 msgstr "<small>Установите пользовательский псевдоним, чтобы быстро найти своих друзей</small>"
 
-#: src/ui/user_info_widget.ui:291 src/ui/friend_info_widget.ui:579
+#: src/ui/user_info_widget.ui:319 src/ui/friend_info_widget.ui:520
 msgid "Tox"
 msgstr "Tox"
 
-#: src/ui/user_info_widget.ui:330 src/ui/friend_info_widget.ui:612
+#: src/ui/user_info_widget.ui:352
 msgid "ID:"
 msgstr "ID:"
 
-#: src/ui/message_widget.ui:91
+#: src/ui/message_widget.ui:110
 msgid "Message sent ✓"
 msgstr "Сообщение отправлено ✓"
 
-#: src/ui/message_widget.ui:107
+#: src/ui/message_widget.ui:126
 msgid "Message received ✓"
 msgstr "Сообщение получено ✓"
 
 #. This is shown on peers in groupchats, if you have them also added to your friends
-#: src/ui/peer_entry.ui:55
+#: src/ui/peer_entry_compact.ui:53 src/ui/peer_entry.ui:77
 msgid "This peer is also in your friends list"
 msgstr "Этот пир также находится в вашем списке друзей"
 
-#: src/ui/settings_widget.ui:38
-msgid "KiB/MiB"
-msgstr "KiB/MiB"
-
-#: src/ui/settings_widget.ui:42
-msgid "KB/MB"
-msgstr "Кбайт/Мбайт"
-
-#: src/ui/settings_widget.ui:98
+#: src/ui/settings_widget.ui:78
 msgid "General"
 msgstr "Основные"
 
-#: src/ui/settings_widget.ui:268
+#: src/ui/settings_widget.ui:251
 msgid "Appearance"
 msgstr "Внешний вид"
 
-#: src/ui/settings_widget.ui:313
+#: src/ui/settings_widget.ui:296
 msgid "Dark Theme"
 msgstr "Темная тема"
 
-#: src/ui/settings_widget.ui:523
+#: src/ui/settings_widget.ui:506
 msgid "Minimize to tray"
 msgstr "Свернуть в трей"
 
-#: src/ui/settings_widget.ui:619
+#: src/ui/settings_widget.ui:603
 msgid "Privacy"
 msgstr "Приватность"
 
-#: src/ui/settings_widget.ui:663
+#: src/ui/settings_widget.ui:647
 msgid "Send typing notifications"
 msgstr "Отправлять уведомления о наборе текста"
 
-#: src/ui/settings_widget.ui:676
+#: src/ui/settings_widget.ui:660
 msgid "<small>Show others when I am typing</small>"
 msgstr "<small>Показывать остальным когда я печатаю</small>"
 
-#: src/ui/settings_widget.ui:759
+#: src/ui/settings_widget.ui:744
 msgid "History"
 msgstr "История"
 
-#: src/ui/settings_widget.ui:893
+#: src/ui/settings_widget.ui:879
 msgid "days"
 msgstr "дни"
 
-#: src/ui/settings_widget.ui:923
+#: src/ui/settings_widget.ui:910
 msgid "Delete all previous conversations"
 msgstr "Удалить все предыдущие разговоры"
 
-#: src/ui/settings_widget.ui:1340
+#: src/ui/settings_widget.ui:1328
 msgid "Update bootstrap nodes"
 msgstr "Обновление узлов начальной загрузки"
 
-#: src/ui/user_info_widget.ui:79
-msgid "User profile"
-msgstr "Профиль пользователя"
-
-#: src/ui/user_info_widget.ui:372
+#: src/ui/user_info_widget.ui:394
 msgid "Copy to clipboard"
 msgstr "Скопировать в буфер обмена"
 
-#: src/ui/welcome_widget.ui:40
+#: src/ui/welcome_widget.ui:62
 msgid "<big>A new kind of instant messaging</big>"
 msgstr "<big>Новый вид обмена мгновенными сообщениями</big>"
 
-#: src/ui/welcome_widget.ui:56
+#: src/ui/welcome_widget.ui:78
 msgid "Chat with your friends and family without anyone else listening in."
 msgstr "Общайтесь со своими друзьями и семьей, не слушая других."
 
-#: src/ui/welcome_widget.ui:109
+#: src/ui/welcome_widget.ui:131
 msgid "Learn more"
 msgstr "Узнать больше"
 
-#: src/core/Message.vala:76 src/viewmodel/MessageViewModel.vala:87
+#: src/core/Message.vala:79 src/viewmodel/MessageViewModel.vala:86
 #: src/tox/ConferenceMessage.vala:56
 msgid "me"
 msgstr "меня"
 
-#: src/ui/user_info_widget.ui:244
+#: src/ui/user_info_widget.ui:110
 msgid "Choose an avatar"
 msgstr "Выберите аватар"
 
-#: src/ui/friend_request_widget.ui:146
+#: src/ui/friend_request_widget.ui:168
 msgid "Reject request"
 msgstr "Отклонить запрос"
 
-#: src/ui/friend_request_widget.ui:170
+#: src/ui/friend_request_widget.ui:192
 msgid "Accept request"
 msgstr "Принять запрос"
-
-#: src/ui/application_window.ui:55
-msgid "venom"
-msgstr "venom"
 
 #: src/core/NotificationListener.vala:76
 msgid "New file from %s"
@@ -324,214 +287,211 @@ msgid "Offline"
 msgstr "Не в сети"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:72
-#: src/ui/user_status_menu.ui:11
+#: src/ui/user_status_menu.ui:34
 msgid "Away"
 msgstr "Отошел"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:74
-#: src/ui/user_status_menu.ui:17
+#: src/ui/user_status_menu.ui:40
 msgid "Busy"
 msgstr "Занят"
 
-#: src/viewmodel/ContactListEntryViewModel.vala:76 src/ui/user_status_menu.ui:5
+#: src/viewmodel/ContactListEntryViewModel.vala:76
+#: src/ui/user_status_menu.ui:28
 msgid "Online"
 msgstr "В сети"
 
-#: src/viewmodel/MessageViewModel.vala:65
+#: src/core/TimeStamp.vala:40
 msgid "Today at %s"
 msgstr "Сегодня в %s"
 
-#: src/viewmodel/MessageViewModel.vala:69
+#: src/core/TimeStamp.vala:44
 msgid "Yesterday at %s"
 msgstr "Вчера в %s"
 
-#: src/tox/Conference.vala:43
+#: src/tox/Conference.vala:44
 msgid "Unnamed conference %u"
 msgstr "Безымянная конференция %u"
 
-#: src/tox/ToxSession.vala:645
+#: src/tox/ToxSession.vala:657
 msgid "Address must consist of 76 hexadecimal characters"
 msgstr "Адрес должен состоять из 76 шестнадцатеричных символов"
 
-#: src/view/ConversationWindow.vala:102
-msgid "%s is typing..."
-msgstr "%s печатает..."
-
-#: src/view/ConversationWindow.vala:168 src/view/FileTransferEntry.vala:76
+#: src/view/ConversationWindow.vala:227 src/view/FileTransferEntry.vala:86
 #, fuzzy
 msgid "_Cancel"
 msgstr "О_тмена"
 
-#: src/view/ConversationWindow.vala:169
+#: src/view/ConversationWindow.vala:226
 msgid "_Open"
 msgstr "_Открыть"
 
-#: src/view/FileTransferEntry.vala:77
+#: src/view/FileTransferEntry.vala:85
 msgid "_Save"
 msgstr "_Сохранить"
 
-#: src/ui/file_transfer_widget.ui:117
+#: src/ui/file_transfer_widget.ui:140
 #, fuzzy
 msgid "No file transfers yet …"
 msgstr "Ещё нет передач файлов..."
 
-#: src/ui/file_transfer_entry.ui:34
+#: src/ui/file_transfer_entry.ui:56 src/ui/file_transfer_entry_inline.ui:62
 #, fuzzy
 msgid "Remove transfer"
 msgstr "Удалить передачу"
 
-#: src/ui/file_transfer_entry.ui:102
+#: src/ui/file_transfer_entry.ui:124 src/ui/file_transfer_entry_inline.ui:130
 msgid "Open file"
 msgstr "Открыть файл"
 
-#: src/ui/file_transfer_entry.ui:126
+#: src/ui/file_transfer_entry.ui:148 src/ui/file_transfer_entry_inline.ui:154
 #, fuzzy
 msgid "Start transfer"
 msgstr "Начать передачу"
 
-#: src/ui/file_transfer_entry.ui:147
+#: src/ui/file_transfer_entry.ui:169 src/ui/file_transfer_entry_inline.ui:175
 #, fuzzy
 msgid "Pause transfer"
 msgstr "Приостановить передачу"
 
-#: src/ui/file_transfer_entry.ui:168
+#: src/ui/file_transfer_entry.ui:190 src/ui/file_transfer_entry_inline.ui:196
 #, fuzzy
 msgid "Stop transfer"
 msgstr "Остановить передачу"
 
-#: src/ui/create_groupchat_widget.ui:199
+#: src/ui/create_groupchat_widget.ui:212
 msgid "Text"
 msgstr "Текст"
 
-#: src/ui/create_groupchat_widget.ui:214
+#: src/ui/create_groupchat_widget.ui:228
 msgid "Speech"
 msgstr "Речь"
 
-#: src/ui/peer_entry.ui:68
+#: src/ui/peer_entry_compact.ui:39 src/ui/peer_entry.ui:90
 msgid "That's you"
 msgstr "Это Вы"
 
-#: src/ui/welcome_widget.ui:156
+#: src/ui/welcome_widget.ui:178
 #, fuzzy
 msgid "Get involved"
 msgstr "Поучаствовать"
 
-#: src/ui/settings_widget.ui:181
+#: src/ui/settings_widget.ui:161
 msgid "Proxy"
 msgstr "Прокси"
 
-#: src/ui/settings_widget.ui:326
+#: src/ui/settings_widget.ui:309
 msgid "<small>Use a dark variant of the theme</small>"
 msgstr "<small>Использовать тёмный вариант темы</small>"
 
-#: src/ui/settings_widget.ui:383
+#: src/ui/settings_widget.ui:366
 msgid "Animations"
 msgstr "Анимации"
 
-#: src/ui/settings_widget.ui:396
+#: src/ui/settings_widget.ui:379
 msgid "<small>Enable animated transitions</small>"
 msgstr "<small>Включить анимированные переходы</small>"
 
-#: src/ui/settings_widget.ui:453
+#: src/ui/settings_widget.ui:436
 msgid "Notifications"
 msgstr "Уведомления"
 
-#: src/ui/settings_widget.ui:466
+#: src/ui/settings_widget.ui:449
 msgid "<small>Show notifications for unread messages</small>"
 msgstr "<small>Показывать уведомления о непрочитанных сообщениях</small>"
 
-#: src/ui/settings_widget.ui:536
+#: src/ui/settings_widget.ui:519
 msgid "<small>Minimize app to system tray on close</small>"
 msgstr "<small>Сворачивать приложение в трей при закрытии</small>"
 
-#: src/ui/settings_widget.ui:823
+#: src/ui/settings_widget.ui:809
 msgid "Keep forever"
 msgstr "Хранить вечно"
 
-#: src/ui/settings_widget.ui:860
+#: src/ui/settings_widget.ui:846
 msgid "Remove older than"
 msgstr "Удалить старше чем"
 
-#: src/ui/settings_widget.ui:1017
+#: src/ui/settings_widget.ui:1004
 msgid "<b>Connection</b>"
 msgstr "<b>Соединение</b>"
 
-#: src/ui/settings_widget.ui:1060
+#: src/ui/settings_widget.ui:1047
 msgid "UDP"
 msgstr "UDP"
 
-#: src/ui/settings_widget.ui:1130
+#: src/ui/settings_widget.ui:1117
 msgid "IPv6"
 msgstr "IPv6"
 
-#: src/ui/settings_widget.ui:1143
+#: src/ui/settings_widget.ui:1130
 msgid "<small>Allow both IPv4 and IPv6 communication</small>"
 msgstr "<small>Использовать и IPv4 и IPv6</small>"
 
-#: src/ui/settings_widget.ui:1200
+#: src/ui/settings_widget.ui:1187
 msgid "Local discovery"
 msgstr "Обнаружение локальных устройств"
 
-#: src/ui/settings_widget.ui:1213
+#: src/ui/settings_widget.ui:1200
 msgid "<small>Look for peers on the local network</small>"
 msgstr "<small>Искать пиры в локальной сети</small>"
 
-#: src/ui/settings_widget.ui:1270
+#: src/ui/settings_widget.ui:1257
 msgid "Hole punching"
 msgstr "Пробитие NAT"
 
-#: src/ui/settings_widget.ui:1283
+#: src/ui/settings_widget.ui:1270
 msgid "<small>Enable UDP <a href=\"https://en.wikipedia.org/wiki/Hole_punching_(networking)\">hole punching</a></small>"
 msgstr "<small>Включить UDP <a href=\"https://en.wikipedia.org/wiki/Hole_punching_(networking)\">пробитие NAT</a></small>"
 
-#: src/ui/settings_widget.ui:1376
+#: src/ui/settings_widget.ui:1364
 msgid "<b>Bootstrap nodes</b>"
 msgstr "<b>Узлы начальной загрузки</b>"
 
-#: src/ui/settings_widget.ui:1511
+#: src/ui/settings_widget.ui:1500
 msgid "<b>Proxy</b>"
 msgstr "<b>Прокси</b>"
 
-#: src/ui/settings_widget.ui:1578
+#: src/ui/settings_widget.ui:1567
 msgid "System settings"
 msgstr "Системные настройки"
 
-#: src/ui/settings_widget.ui:1591
+#: src/ui/settings_widget.ui:1580
 msgid "<small>Use your systems proxy settings</small>"
 msgstr "<small>Использовать системные настройки прокси</small>"
 
-#: src/ui/settings_widget.ui:1645
+#: src/ui/settings_widget.ui:1634
 msgid "Manual settings"
 msgstr "Ручные настройки"
 
-#: src/ui/settings_widget.ui:1658
+#: src/ui/settings_widget.ui:1647
 #, fuzzy
 msgid "<small>Use custom proxy settings</small>"
 msgstr "<small>Пользовательские настройки прокси</small>"
 
-#: src/ui/settings_widget.ui:1699
+#: src/ui/settings_widget.ui:1688
 msgid "Host"
 msgstr "Хост"
 
-#: src/ui/settings_widget.ui:1739
+#: src/ui/settings_widget.ui:1728
 msgid "<small>Set a SOCKS5 proxy to connect to</small>"
 msgstr "<small>Указать SOCKS5 прокси для подключения</small>"
 
-#: src/ui/friend_info_widget.ui:309
+#: src/ui/friend_info_widget.ui:242
 #, fuzzy
 msgid "Reset alias"
 msgstr "Сбросить псевдоним"
 
-#: src/ui/friend_info_widget.ui:428
+#: src/ui/friend_info_widget.ui:364
 msgid "Auto accept conference invites"
 msgstr "Автоматически принимать приглашения в конференции"
 
-#: src/ui/friend_info_widget.ui:474
+#: src/ui/friend_info_widget.ui:411
 #, fuzzy
 msgid "Auto accept file transfers"
 msgstr "Автоматически принимать передачи файлов"
 
-#: src/ui/friend_info_widget.ui:517
+#: src/ui/friend_info_widget.ui:455
 msgid "Save files to"
 msgstr "Сохранять файлы в"
 
@@ -543,7 +503,8 @@ msgstr ""
 msgid "Invite to conference"
 msgstr ""
 
-#: src/viewmodel/ContactListViewModel.vala:118
+#: src/viewmodel/ContactListViewModel.vala:118 src/ui/conference_window.ui:137
+#: src/ui/conversation_window.ui:86
 msgid "Show details"
 msgstr ""
 
@@ -563,11 +524,11 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/viewmodel/MessageViewModel.vala:51
+#: src/core/TimeStamp.vala:26
 msgid "Just now"
 msgstr ""
 
-#: src/viewmodel/MessageViewModel.vala:56
+#: src/core/TimeStamp.vala:31
 msgid "%u minute ago"
 msgid_plural "%u minutes ago"
 msgstr[0] ""
@@ -575,7 +536,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/viewmodel/MessageViewModel.vala:61
+#: src/core/TimeStamp.vala:36
 msgid "%u hour ago"
 msgid_plural "%u hours ago"
 msgstr[0] ""
@@ -583,79 +544,187 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/ui/create_groupchat_widget.ui:59 src/ui/contact_list_widget.ui:350
+#: src/ui/create_groupchat_widget.ui:68 src/ui/contact_list_widget.ui:356
 msgid "Create a conference"
 msgstr ""
 
-#: src/ui/create_groupchat_widget.ui:147
+#: src/ui/create_groupchat_widget.ui:156
 msgid "<small>Name the conference (optional)</small>"
 msgstr ""
 
-#: src/ui/create_groupchat_widget.ui:242
+#: src/ui/create_groupchat_widget.ui:252
 msgid "<small>Select a conference type</small>"
 msgstr ""
 
-#: src/ui/create_groupchat_widget.ui:288
+#: src/ui/create_groupchat_widget.ui:299
 msgid "New conference"
 msgstr ""
 
-#: src/ui/create_groupchat_widget.ui:301 src/ui/create_groupchat_widget.ui:334
+#: src/ui/create_groupchat_widget.ui:312 src/ui/create_groupchat_widget.ui:346
 msgid "Conference invites"
 msgstr ""
 
-#: src/ui/create_groupchat_widget.ui:390
+#: src/ui/create_groupchat_widget.ui:408
 msgid "No new conference invites"
 msgstr ""
 
-#: src/ui/conversation_window.ui:134
+#: src/ui/conversation_window.ui:62
 msgid "Start a video call"
 msgstr ""
 
-#: src/ui/friend_request_widget.ui:44
+#: src/ui/friend_request_widget.ui:66
 msgid "_Public key:"
 msgstr ""
 
-#: src/ui/conference_info_widget.ui:56
+#: src/ui/conference_info_widget.ui:78
 msgid "Leave Conference"
 msgstr ""
 
-#: src/ui/conference_info_widget.ui:174 src/ui/friend_info_widget.ui:357
+#: src/ui/conference_info_widget.ui:196 src/ui/friend_info_widget.ui:291
 msgid "Show notifications"
 msgstr ""
 
-#: src/ui/conference_info_widget.ui:212 src/ui/friend_info_widget.ui:395
+#: src/ui/conference_info_widget.ui:234 src/ui/friend_info_widget.ui:330
 msgid "<small>Notifications have been globally disabled</small>"
 msgstr ""
 
-#: src/ui/conference_invite_entry.ui:43
+#: src/ui/conference_invite_entry.ui:65
 msgid "Invite from:"
 msgstr ""
 
-#: src/ui/conference_invite_entry.ui:87
+#: src/ui/conference_invite_entry.ui:109
 msgid "Accept invite"
 msgstr ""
 
-#: src/ui/conference_invite_entry.ui:111
+#: src/ui/conference_invite_entry.ui:133
 msgid "Reject invite"
 msgstr ""
 
-#: src/ui/add_contact_widget.ui:30
+#: src/ui/add_contact_widget.ui:52
 msgid "No new friend requests"
 msgstr ""
 
-#: src/ui/add_contact_widget.ui:315
+#: src/ui/contact_list_widget.ui:56 src/ui/add_contact_widget.ui:325
 msgid "Add a friend"
 msgstr ""
 
-#: src/ui/add_contact_widget.ui:328 src/ui/add_contact_widget.ui:361
+#: src/ui/add_contact_widget.ui:338 src/ui/add_contact_widget.ui:372
 msgid "Friend requests"
 msgstr ""
 
-#: src/ui/user_info_widget.ui:158 src/ui/friend_info_widget.ui:155
+#: src/ui/user_info_widget.ui:258
 msgid "Status message:"
 msgstr ""
 
-#: src/ui/settings_widget.ui:1073
+#: src/ui/settings_widget.ui:1060
 msgid "<small>Use UDP communication when available</small>"
+msgstr ""
+
+#: src/view/WelcomeWidget.vala:39
+msgid "A new kind of instant messaging"
+msgstr ""
+
+#: src/view/SettingsWidget.vala:69
+msgid "Settings"
+msgstr ""
+
+#: src/ui/conference_window.ui:216 src/ui/conversation_window.ui:129
+msgid "No messages yet..."
+msgstr ""
+
+#: src/ui/contact_list_widget.ui:406
+msgid "Open settings"
+msgstr ""
+
+#: src/ui/contact_list_widget.ui:448
+msgid "Edit your profile"
+msgstr ""
+
+#: src/ui/contact_list_widget.ui:476
+msgid "Change your status"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:554
+msgid "Public key:"
+msgstr ""
+
+#: src/view/ConversationWindow.vala:223
+msgid "Choose a file to send"
+msgstr ""
+
+#: src/view/UserInfoWidget.vala:56
+msgid "Images"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:62
+msgid "Reset"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:87
+msgid "Take a picture"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:109
+msgid "Choose a file"
+msgstr ""
+
+#: src/ui/conference_window.ui:179
+msgid "No one here..."
+msgstr ""
+
+#: src/ui/conference_window.ui:280
+msgid "Show peers"
+msgstr ""
+
+#: src/undo/TextBufferUndoBinding.vala:169
+msgid "_Redo"
+msgstr ""
+
+#: src/undo/TextBufferUndoBinding.vala:174
+msgid "_Undo"
+msgstr ""
+
+#: src/viewmodel/FriendInfoViewModel.vala:65
+msgid "Online right now"
+msgstr ""
+
+#: src/viewmodel/FriendInfoViewModel.vala:67
+msgid "Never seen online"
+msgstr ""
+
+#: src/viewmodel/FriendInfoViewModel.vala:69
+msgid "Last seen: %s"
+msgstr ""
+
+#: src/view/ConversationWindow.vala:120
+msgid "%s is typing…"
+msgstr ""
+
+#: src/ui/conversation_window.ui:155
+msgid "Attach screenshot…"
+msgstr ""
+
+#: src/ui/conversation_window.ui:180
+msgid "Attach file…"
+msgstr ""
+
+#: src/view/AboutDialog.vala:54 data/chat.tox.venom.desktop.in:4
+msgid "A modern Tox client for the Linux desktop"
+msgstr ""
+
+#: src/view/AboutDialog.vala:55
+msgid "Copyright © 2013-2018 Venom authors and contributors"
+msgstr ""
+
+#: data/chat.tox.venom.desktop.in:3
+msgid "Venom"
+msgstr ""
+
+#: data/chat.tox.venom.desktop.in:5
+msgid "tox;instant messaging;video chat;"
+msgstr ""
+
+#: data/chat.tox.venom.desktop.in:7
+msgid "chat.tox.venom-symbolic"
 msgstr ""
 
