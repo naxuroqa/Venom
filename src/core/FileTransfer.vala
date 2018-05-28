@@ -1,7 +1,7 @@
 /*
  *    FileTransfer.vala
  *
- *    Copyright (C) 2013-2014  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -20,92 +20,204 @@
  */
 
 namespace Venom {
-  public enum FileTransferDirection {
-    OUTGOING,
-    INCOMING
-  }
-  public enum FileTransferStatus {
-    PENDING,
-    SENDING_FAILED,
-    RECEIVING_FAILED,
-    SENDING_BROKEN,
-    RECEIVING_BROKEN,
-    REJECTED,
-    IN_PROGRESS,
+  public enum FileTransferState {
+    INIT,
     PAUSED,
-    CANCELED,
-    DONE
+    RUNNING,
+    CANCEL,
+    FINISHED,
+    FAILED
   }
 
-  public class FileTransfer : GLib.Object {
-    public signal void status_changed(FileTransferStatus status, FileTransferDirection direction);
-    public signal void progress_update(uint64 processed, uint64 filesize);
+  public enum FileTransferDirection {
+    INCOMING,
+    OUTGOING
+  }
 
-    public Contact friend {get; set; }
-    public uint8 filenumber {get; set; }
-    private FileTransferStatus _status;
-    public FileTransferStatus status {
-      get { return _status; }
-      set {
-        _status = value;
-        status_changed(_status, direction);
+  public errordomain FileTransferError {
+    READ,
+    WRITE,
+    INIT,
+    OVERFLOW
+  }
+
+  public interface FileTransfer : GLib.Object {
+    public signal void state_changed();
+    public signal void progress_changed();
+
+    public abstract FileTransferDirection get_direction();
+    public abstract uint32 get_friend_number();
+    public abstract uint32 get_file_number();
+    public abstract uint64 get_file_size();
+    public abstract uint64 get_transmitted_size();
+    public abstract FileTransferState get_state();
+    public abstract bool is_avatar();
+    public abstract unowned uint8[] ? get_avatar_buffer();
+
+    public abstract void init_file(File file) throws Error;
+
+    public abstract void write_data(uint8[] data) throws Error;
+    public abstract uint8[] read_data(uint64 length) throws Error;
+
+    public abstract string? get_file_name();
+    public abstract string? get_file_path();
+    public abstract void set_state(FileTransferState state);
+  }
+
+  public class FileTransferImpl : FileTransfer, GLib.Object {
+    private FileTransferDirection direction;
+    private uint32 friend_number;
+    private uint32 file_number;
+    private uint64 file_size;
+    private uint64 transmitted_size;
+    private FileTransferState state;
+
+    private bool _is_avatar;
+    private uint8[] avatar_buffer;
+
+    private string file_name;
+    private File file;
+
+    private FileTransferImpl(FileTransferDirection direction, uint32 friend_number, uint32 file_number, uint64 file_size) {
+      this.friend_number = friend_number;
+      this.file_number = file_number;
+      this.direction = direction;
+      this.file_size = file_size;
+
+      state = FileTransferState.INIT;
+      transmitted_size = 0;
+    }
+
+    public FileTransferImpl.File(FileTransferDirection direction, uint32 friend_number, uint32 file_number, uint64 file_size, string file_name) {
+      this(direction, friend_number, file_number, file_size);
+      this.file_name = file_name;
+      _is_avatar = false;
+    }
+
+    public FileTransferImpl.Avatar(FileTransferDirection direction, uint32 friend_number, uint32 file_number, uint64 file_size) {
+      this(direction, friend_number, file_number, file_size);
+      avatar_buffer = new uint8[file_size];
+      _is_avatar = true;
+    }
+
+    public FileTransferImpl.AvatarOutgoing(FileTransferDirection direction, uint32 friend_number, uint32 file_number, uint8[] buffer) {
+      this(direction, friend_number, file_number, buffer.length);
+      avatar_buffer = buffer;
+      _is_avatar = true;
+    }
+
+    public void init_file(File file) throws Error {
+      this.file = file;
+      if (direction == INCOMING) {
+        file.replace(null, false, GLib.FileCreateFlags.NONE);
       }
     }
 
-    public uint8 send_receive { get; set; }
-    public FileTransferDirection direction {get; set;}
-    public uint64 file_size { get; set; }
-    /* amount of bytes sent or received during transfer */
-    public uint64 _bytes_processed;
-    public uint64 bytes_processed {
-      get { return _bytes_processed; }
-      set {
-        progress_update(value,file_size);
-        _bytes_processed = value;
+    private static void copy_with_offset(uint8[] dest, uint8[] src, uint64 offset) {
+      unowned uint8[] dest_ptr = dest[offset : dest.length];
+      GLib.Memory.copy(dest_ptr, src, src.length);
+    }
+
+    public bool is_avatar() {
+      return _is_avatar;
+    }
+
+    public uint64 get_transmitted_size() {
+      return transmitted_size;
+    }
+
+    public uint64 get_file_size() {
+      return file_size;
+    }
+
+    public void write_data(uint8[] data) throws Error {
+      if (data.length + transmitted_size > file_size) {
+        set_state(FileTransferState.FAILED);
+        throw new FileTransferError.OVERFLOW("Appending too much data, discarding data");
       }
-    }
-    public bool isfile { get; set; }
-    public uint8[] data { get; set; }
-    public string name { get; set; }
-    public string path { get; set; }
-    public DateTime time_sent { get; set; }
-    public FileTransfer(Contact friend, FileTransferDirection send_receive, uint64 file_size, string name, string? path) {
-      this.friend = friend;
-      this.direction = send_receive;
-      this.send_receive = send_receive;
-      this.file_size = file_size;
-      this.name = name;
-      this.isfile = true;
-      this.path = path;
-      this.time_sent = new DateTime.now_local();
-      this.status = FileTransferStatus.PENDING;
-      this.bytes_processed = 0;
+
+      if (_is_avatar) {
+        copy_with_offset(avatar_buffer, data, transmitted_size);
+      } else {
+        if (file == null) {
+          set_state(FileTransferState.FAILED);
+          throw new FileTransferError.INIT("File is not initialized");
+        }
+        try {
+          file.append_to(GLib.FileCreateFlags.NONE).write(data);
+        } catch (Error e) {
+          set_state(FileTransferState.FAILED);
+          throw new FileTransferError.WRITE("Writing to file failed: " + e.message);
+        }
+      }
+
+      transmitted_size += data.length;
+      progress_changed();
     }
 
-    public FileTransfer.senddata(Contact friend, string name, uint8[] data) {
-      this.friend = friend;
-      this.direction = FileTransferDirection.OUTGOING;
-      this.send_receive = 0;
-      this.file_size = data.length;
-      this.name = name;
-      this.isfile = false;
-      this.data = data;
-      this.time_sent = new DateTime.now_local();
-      this.status = FileTransferStatus.PENDING;
-      this.bytes_processed = 0;
+    public uint8[] read_data(uint64 length) throws Error {
+      if (length + transmitted_size > file_size) {
+        set_state(FileTransferState.FAILED);
+        throw new FileTransferError.OVERFLOW("Appending too much data, discarding data");
+      }
+      var buf = new uint8[length];
+      if (_is_avatar) {
+        unowned uint8[] offset_ptr = avatar_buffer[transmitted_size : avatar_buffer.length];
+        GLib.Memory.copy(buf, offset_ptr, buf.length);
+      } else {
+        if (file == null) {
+          set_state(FileTransferState.FAILED);
+          throw new FileTransferError.INIT("File is not initialized");
+        }
+        try {
+          var istream = file.read();
+          istream.seek((int64) transmitted_size, SeekType.SET);
+          istream.read(buf);
+        } catch (Error e) {
+          set_state(FileTransferState.FAILED);
+          throw new FileTransferError.WRITE("Writing to file failed: " + e.message);
+        }
+      }
+
+      transmitted_size += length;
+      progress_changed();
+      return buf;
     }
 
-    public FileTransfer.recvdata(Contact friend, string name, uint64 file_size) {
-      this.friend = friend;
-      this.direction = FileTransferDirection.INCOMING;
-      this.send_receive = 1;
-      this.file_size = file_size;
-      this.name = name;
-      this.isfile = false;
-      this.data = {};
-      this.time_sent = new DateTime.now_local();
-      this.status = FileTransferStatus.PENDING;
-      this.bytes_processed = 0;
+    public unowned uint8[] ? get_avatar_buffer() {
+      return avatar_buffer;
+    }
+
+    public FileTransferState get_state() {
+      return state;
+    }
+
+    public void set_state(FileTransferState state) {
+      this.state = state;
+      state_changed();
+    }
+
+    public uint32 get_friend_number() {
+      return friend_number;
+    }
+
+    public uint32 get_file_number() {
+      return file_number;
+    }
+
+    public FileTransferDirection get_direction() {
+      return direction;
+    }
+
+    public string? get_file_name() {
+      return file_name;
+    }
+
+    public string? get_file_path() {
+      if (file == null) {
+        return null;
+      }
+      return file.get_path();
     }
   }
 }

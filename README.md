@@ -1,27 +1,65 @@
-Venom [![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=master)](https://travis-ci.org/naxuroqa/Venom) [![tip for next commit](http://tip4commit.com/projects/634.svg)](http://tip4commit.com/projects/634)
+Venom
 =====
 
-a cross-platform graphical user interface for [Tox](https://github.com/irungentoo/ProjectTox-Core) written in [Vala](https://wiki.gnome.org/Vala) using [GTK+](http://gtk.org).
+[![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=develop)](https://travis-ci.org/naxuroqa/Venom) [![tip for next commit](http://tip4commit.com/projects/634.svg)](http://tip4commit.com/projects/634) [![codecov](https://codecov.io/gh/naxuroqa/Venom/branch/develop/graph/badge.svg)](https://codecov.io/gh/naxuroqa/Venom)
 
-Installing
-----------
+###### a modern [Tox](https://github.com/TokTok/c-toxcore) client for the Linux desktop
 
-- Grab a [stable](https://github.com/naxuroqa/Venom/releases) or [nightly](https://wiki.tox.im/Binaries)
+Features
+--------
 
-Contributing
+* Secure, private messaging
+* Read receipts
+* Contact aliases
+* Customizable avatars
+* Emojis 👍
+* File transfers
+* Screenshot sharing
+* Group chats
+* Socks5 Proxy support
+
+Roadmap
+-------
+
+See [projects](https://github.com/naxuroqa/Venom/projects) for planned features.
+
+Translations
 ------------
 
-- Implement something from the [TODO](TODO) file
-- Suggest new features
-- Run Venom on your platform and [create a new Issue](https://github.com/naxuroqa/Venom/issues/new) for found errors
+Translations are done via the [venom project on poeditor](https://poeditor.com/join/project/5weMhrvGjN).
+Don't create pull requests for translations here. Updated translations from poeditor will be merged in this repository on every release.
+
+Dependencies
+------------
+
+* `gtk+-3.0 >= 3.22`
+* `glib-2.0 >= 2.56`
+* `json-glib-1.0`
+* `libsoup-2.4`
+* `libgee >= 0.20`
+* `sqlite3`
+* `toxcore >= 0.2`
+
+Build-Dependencies
+------------------
+* `meson >= 0.46`
+* `vala >= 0.40`
+
+Compiling
+---------
+```bash
+meson ./build && cd build
+ninja
+ninja install
+```
+
+Testing
+-------
+```bash
+ninja test
+```
 
 Contact
 -------
-- Visit our IRC channel `#tox` on [freenode](https://freenode.net/)  
-[![Visit our IRC channel](https://kiwiirc.com/buttons/irc.freenode.net/tox.png)](https://kiwiirc.com/client/irc.freenode.net/?theme=basic#tox)
-- write an email to [naxuroqa@gmail.com](mailto:naxuroqa@gmail.com)
 
-License
--------
-
-Venom is licensed under [GPLv3](COPYING).
+Join the `#tox` IRC channel on [freenode](https://freenode.net/)

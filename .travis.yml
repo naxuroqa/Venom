@@ -1,60 +1,15 @@
-language: c
-compiler:
-  - gcc
+sudo: required
+language: generic
+services: [docker]
 
-before_install:
-  - sudo apt-add-repository -y ppa:vala-team/ppa
-  - sudo apt-get update -qq > /dev/null
-  - sudo apt-get install -qq valac cmake libgtk-3-dev check libjson-glib-dev libsqlite3-dev yasm libqrencode-dev libnotify-dev > /dev/null
-
-before_script:
-  #installing libsodium, needed for Core
-  - _libsodium_ver=0.7.0
-  - git clone git://github.com/jedisct1/libsodium.git > /dev/null
-  - pushd libsodium
-  - git checkout tags/${_libsodium_ver} > /dev/null
-  - ./autogen.sh > /dev/null
-  - ./configure --prefix=/usr > /dev/null
-  - make -j3 > /dev/null
-  - sudo make install > /dev/null
-  - popd
-  #installing libopus, needed for audio encoding/decoding
-  - _opus_ver=1.0.3
-  - wget http://downloads.xiph.org/releases/opus/opus-${_opus_ver}.tar.gz > /dev/null
-  - tar xzf opus-${_opus_ver}.tar.gz > /dev/null
-  - pushd opus-${_opus_ver}
-  - ./configure --prefix=/usr > /dev/null
-  - make -j3 > /dev/null
-  - sudo make install > /dev/null
-  - popd
-  #installing vpx
-  - git clone http://git.chromium.org/webm/libvpx.git > /dev/null
-  - pushd libvpx
-  - ./configure --prefix=/usr --enable-shared > /dev/null
-  - make -j3 > /dev/null
-  - sudo make install > /dev/null
-  - popd
-  #installing toxcore
-  - git clone http://github.com/irungentoo/ProjectTox-Core.git > /dev/null
-  - pushd ProjectTox-Core
-  - autoreconf -i > /dev/null
-  - ./configure --prefix=/usr --disable-ntox --disable-daemon > /dev/null
-  - make -j3 > /dev/null
-  - sudo make install > /dev/null
-  - popd
-  #compiling djbdns needed for glib < 2.34
-  - wget http://cr.yp.to/djbdns/djbdns-1.05.tar.gz
-  - tar -xzf djbdns-1.05.tar.gz
-  - pushd djbdns-1.05
-  - echo gcc -O2 -include /usr/include/errno.h > conf-cc
-  - make
-  - popd
-  #creating libraries links and updating cache
-  - sudo ldconfig > /dev/null
+install:
+  - docker build --tag test-image .
+  - docker run --detach --interactive --name test-image-container --volume "$(pwd)":/tmp/venom --workdir /tmp/venom test-image
 
 script:
-  - mkdir build
-  - cd build
-  - cmake -DDJBDNS_DIRECTORY="../djbdns-1.05" -DENABLE_QR_ENCODE=ON -DENABLE_LIBNOTIFY=ON ..
-  - make -j3
-  - sudo make install
+  - docker exec test-image-container meson -D b_coverage=true build
+  - docker exec test-image-container ninja -C build
+  - docker exec test-image-container ninja -C build test
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1
+
+Copyright (C) 2013-2018 Venom authors and contributors
+
+This file is part of Venom.
+
+Venom is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Venom is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Venom.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<interface domain="venom">
+  <requires lib="gtk+" version="3.20"/>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name Venom -->
+  <!-- interface-copyright 2013-2018 Venom authors and contributors -->
+  <template class="VenomMessageWidget" parent="GtkListBoxRow">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkImage" id="sender_image">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="valign">start</property>
+            <property name="pixel_size">44</property>
+            <property name="icon_name">user-info-symbolic</property>
+            <property name="icon_size">6</property>
+            <style>
+              <class name="avatar"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel" id="sender">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label">sender</property>
+                    <property name="use_markup">True</property>
+                    <property name="ellipsize">end</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="additional_info">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">6</property>
+                    <property name="transition_type">slide-right</property>
+                    <property name="transition_duration">125</property>
+                    <child>
+                      <object class="GtkLabel" id="timestamp">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label">timestamp</property>
+                        <style>
+                          <class name="dim-label"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">6</property>
+                    <child>
+                      <object class="GtkImage" id="sent">
+                        <property name="can_focus">False</property>
+                        <property name="no_show_all">True</property>
+                        <property name="tooltip_text" translatable="yes">Message sent ✓</property>
+                        <property name="icon_name">object-select-symbolic</property>
+                        <style>
+                          <class name="dim-label"/>
+                        </style>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkImage" id="received">
+                        <property name="can_focus">False</property>
+                        <property name="no_show_all">True</property>
+                        <property name="tooltip_text" translatable="yes">Message received ✓</property>
+                        <property name="icon_name">object-select-symbolic</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="message">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label">message</property>
+                <property name="use_markup">True</property>
+                <property name="wrap">True</property>
+                <property name="wrap_mode">word-char</property>
+                <property name="selectable">True</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

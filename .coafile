@@ -1,0 +1,21 @@
+[all]
+ignore = **/build/**
+
+[all.vala]
+bears = SpaceConsistencyBear, FilenameBear
+files = **.vala
+use_spaces = True
+file_naming_convention = pascal
+
+[all.xml]
+bears = XMLBear
+files = **.(ui|xml)
+
+[all.git]
+bears = GitCommitBear
+shortlog_length = 79
+shortlog_regex = ^VENOM-\d+: .*
+
+[all.po]
+bears = DennisBear
+files = **.(po|pot)

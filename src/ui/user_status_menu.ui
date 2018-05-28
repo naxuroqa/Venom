@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2013-2018 Venom authors and contributors
+
+This file is part of Venom.
+
+Venom is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Venom is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Venom.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<interface domain="venom">
+  <requires lib="gtk+" version="3.20"/>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name Venom -->
+  <!-- interface-copyright 2013-2018 Venom authors and contributors -->
+  <menu id="menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Online</attribute>
+        <attribute name="action">win.change_userstatus</attribute>
+        <attribute name="target">online</attribute>
+        <attribute name="icon">online-symbolic</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Away</attribute>
+        <attribute name="action">win.change_userstatus</attribute>
+        <attribute name="target">away</attribute>
+        <attribute name="icon">idle-symbolic</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Busy</attribute>
+        <attribute name="action">win.change_userstatus</attribute>
+        <attribute name="target">busy</attribute>
+        <attribute name="icon">busy-symbolic</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

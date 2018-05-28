@@ -1,8 +1,6 @@
 *~
-icons/CMakeFiles
-icons/Makefile
-icons/cmake_install.cmake
-theme/CMakeFiles
-theme/Makefile
-theme/cmake_install.cmake
 build
+
+# GNOME Builder
+.buildconfig
+.flatpak-builder

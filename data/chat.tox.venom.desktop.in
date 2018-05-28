@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Venom
+Comment=A modern Tox client for the Linux desktop
+Keywords=tox;instant messaging;video chat;
+Exec=venom
+Icon=chat.tox.venom-symbolic
+Terminal=false
+Type=Application
+Categories=InstantMessaging;Network;
+DBusActivatable=true
+StartupNotify=true
+X-GNOME-UsesNotifications=true

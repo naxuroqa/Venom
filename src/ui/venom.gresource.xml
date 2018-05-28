@@ -1,11 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2013-2018 Venom authors and contributors
+
+This file is part of Venom.
+
+Venom is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Venom is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Venom.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
 <gresources>
-  <gresource prefix="/org/gtk/venom">
-    <file preprocess="xml-stripblanks">add_contact_dialog.ui</file>
-    <file preprocess="xml-stripblanks">contact_list.ui</file>
-    <file preprocess="xml-stripblanks">conversation_window.ui</file>
-    <file preprocess="xml-stripblanks">chat_filetransfer.ui</file>
-    <file preprocess="xml-stripblanks">user_info_window.ui</file>
-    <file preprocess="xml-stripblanks">settings_window.ui</file>
+  <gresource prefix="/chat/tox/venom/ui">
+    <file compressed="true" preprocess="xml-stripblanks">add_contact_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">app_menu.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">application_window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">conference_info_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">conference_invite_entry.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">conference_window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">contact_list_entry.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">contact_list_request_entry.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">contact_list_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">conversation_window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">create_groupchat_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">file_transfer_entry.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">file_transfer_entry_inline.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">file_transfer_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">friend_info_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">friend_request_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">message_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">node_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">peer_entry.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">peer_entry_compact.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">settings_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">user_info_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">user_status_menu.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">welcome_widget.ui</file>
+  </gresource>
+  <gresource prefix="/chat/tox/venom/css">
+    <file compressed="true">custom.css</file>
   </gresource>
 </gresources>

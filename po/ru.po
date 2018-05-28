@@ -1,1024 +1,730 @@
-# Russian translation for PACKAGE package.
-# Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# herrniemand, 2014.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: Venom\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-17 21:05+0200\n"
-"PO-Revision-Date: 2014-07-03 12:46+1200\n"
-"Last-Translator: Ackermann Yuriy <ackermann.yuriy@gmail.com>\n"
-"Language-Team: Russian\n"
-"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Venom\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: core/ToxSession.vala:725
-#, c-format
-msgid "  %s\n"
-msgstr "  %s\n"
+#: src/core/Application.vala:32
+msgid "Set level of messages to log"
+msgstr "Установить уровень логирования"
 
-#: core/DhtNode.vala:47
-msgid " (ipv6)"
-msgstr " (IPv6)"
+#: src/core/Application.vala:32
+msgid "<loglevel>"
+msgstr "<loglevel>"
 
-#: ui/ContactListWindow.vala:627
-#, c-format
-msgid "%F"
-msgstr "%F"
+#: src/core/Application.vala:33
+msgid "Display version number"
+msgstr "Показывать номер версии"
 
-#: core/Message.vala:47
-msgid "%R:%S"
-msgstr "%R:%S"
+#: src/core/NotificationListener.vala:55
+msgid "New message from %s"
+msgstr "Новое сообщение от %s"
 
-#: core/GroupChat.vala:52
-#, c-format
-msgid "%i people connected"
-msgstr "%i человек подключено."
+#: src/core/R.vala:70
+msgid "Tox User"
+msgstr "Пользователь Tox"
 
-#: core/GroupChat.vala:54
-#, c-format
-msgid "%i person connected"
-msgstr "%i человек подключен."
+#: src/tox/Conference.vala:48
+msgid "%u Peers online"
+msgstr "%u пиров онлайн"
 
-#: core/Contact.vala:69 core/Contact.vala:83
-#, c-format
-msgid "%s <i>(%s)</i>"
-msgstr "%s <i>(%s)</i>"
+#: src/view/AboutDialog.vala:53
+msgid "Packagers"
+msgstr "Упаковщиков"
 
-#: ui/ContactListWindow.vala:648
-#, c-format
-msgid "%s changed his name to %s\n"
-msgstr "%s сменил имя на %s\n"
+#: src/view/AboutDialog.vala:58
+msgid "translator-credits"
+msgstr "Ackermann Yuriy, Sorrow, Wrewolf"
 
-#: ui/ContactListWindow.vala:652
-#, c-format
-msgid "%s changed his status to %s\n"
-msgstr "%s сменил статус на %s\n"
+#: src/ui/add_contact_widget.ui:65
+#, fuzzy
+msgid "Please let me add you to my contact list. 😁"
+msgstr "Пожалуйста, добавьте меня в свой список контактов. 😁"
 
-#: ui/ContactListWindow.vala:663
-#, c-format
-msgid "%s is now %s.\n"
-msgstr "%s сейчас %s.\n"
+#: src/ui/add_contact_widget.ui:108
+msgid "Send a friend request"
+msgstr "Отправить запрос другу"
 
-#: ui/ConversationWidget.vala:60
-#, c-format
-msgid "%s is typing..."
-msgstr "%s пишет..."
+#: src/ui/add_contact_widget.ui:142
+msgid "_ID:"
+msgstr "_ID:"
 
-#: ui/ContactListWindow.vala:131
-#, c-format
-msgid "%s: %s\n"
-msgstr "%s: %s\n"
+#: src/ui/add_contact_widget.ui:159
+msgid "Enter a Tox ID or URI here"
+msgstr "Вставьте Tox ID или URI"
 
-#: core/DhtNode.vala:47
-#, c-format
-msgid "%s:%u%s %s"
-msgstr "%s:%u%s %s"
+#: src/ui/create_groupchat_widget.ui:122 src/ui/add_contact_widget.ui:163
+msgid "paste from clipboard"
+msgstr "вставить из буфера обмена"
 
-#: ui/ContactListWindow.vala:714
-#, c-format
-msgid "'%s' has invited you to a groupchat, do you want to accept?"
-msgstr "'%s' пригласил вас в групповой чат. Принять?"
+#: src/ui/add_contact_widget.ui:197
+msgid "<small>Enter your friends Tox ID</small>"
+msgstr "<small>Введите Tox ID друга</small>"
 
-#: ui/ContactListWindow.vala:577
-#, c-format
-msgid "* %s"
-msgstr "* %s"
+#: src/ui/friend_request_widget.ui:100 src/ui/add_contact_widget.ui:229
+msgid "_Message:"
+msgstr "_Сообщение:"
 
-#: ui/ContactListWindow.vala:627
-#, c-format
-msgid "<%i>"
-msgstr "<%i>"
+#: src/ui/add_contact_widget.ui:255
+msgid "Send a custom message to be displayed to the friend you are adding"
+msgstr "Отправьте сообщение которое увидит друг, которого вы добавите"
 
-#: ui/ContactListWindow.vala:627
-#, c-format
-msgid "<%s> %s:%s\n"
-msgstr "<%s> %s:%s\n"
+#: src/ui/add_contact_widget.ui:277
+msgid "<small>Send your friend a short message</small>"
+msgstr "<small>Отправить другу короткое сообщение</small>"
 
-#: ui/ConversationWidget.vala:51 ui/GroupConversationWidget.vala:47
-#, c-format
-msgid "<b>%s</b>"
-msgstr "<b>%s</b>"
+#: src/ui/add_contact_widget.ui:308
+msgid "Send"
+msgstr "Отправить"
 
-#: ui/user_info_window.ui:119
-msgid "<b>Tox</b>"
-msgstr "<b>Tox</b>"
+#: src/ui/app_menu.ui:28
+#, fuzzy
+msgid "_Preferences"
+msgstr "_Настройки"
 
-#: ui/user_info_window.ui:282
-msgid "<b>User</b>"
-msgstr "<b>Пользователь</b>"
+#: src/ui/app_menu.ui:34
+msgid "About"
+msgstr "О программе"
 
-#: core/Contact.vala:72 core/Contact.vala:86 ui/ConversationView.vala:55
-#, c-format
-msgid "<i>%s</i>"
-msgstr "<i>%s</i>"
+#: src/ui/app_menu.ui:38
+msgid "_Quit"
+msgstr "_Выход"
 
-#: core/Message.vala:152 core/Message.vala:191
-msgid "<unknown>"
-msgstr "<неизвестно>"
+#: src/ui/create_groupchat_widget.ui:121 src/ui/conference_info_widget.ui:61
+msgid "Conference"
+msgstr "Конференция"
 
-#: ui/AddContactDialog.vala:76
-msgid "Add contact"
-msgstr "Добавить контакт"
+#: src/ui/conference_info_widget.ui:127
+msgid "Title:"
+msgstr "Заголовок:"
 
-#: ui/ContactListWindow.vala:617
-#, c-format
-msgid "Added new friend #%i\n"
-msgstr "Добавлен новый контакт: #%i\n"
+#: src/ui/conference_info_widget.ui:266 src/ui/user_info_widget.ui:446
+#: src/ui/friend_info_widget.ui:609
+msgid "Apply"
+msgstr "Применить"
 
-#: ui/ContactListWindow.vala:1125 ui/ContactListWindow.vala:1137
-msgid "Adding Friend failed"
-msgstr "При добавлении в друзья произошла ошибка."
+#: src/ui/conference_info_widget.ui:284
+msgid "Peers"
+msgstr "Пиры"
 
-#: ui/ContactListWindow.vala:210
+#: src/ui/conference_window.ui:103 src/ui/conversation_window.ui:292
+#: src/ui/user_info_widget.ui:277 src/ui/user_info_widget.ui:278
+#, fuzzy
+msgid "Insert Emoji"
+msgstr "Вставить смайлик"
+
+#: src/ui/contact_list_widget.ui:217
+msgid "Filter contacts by status"
+msgstr "Фильтровать контакты по статусу"
+
+#: src/ui/contact_list_widget.ui:223
 msgid "All"
 msgstr "Все"
 
-#: ui/ContactListWindow.vala:1060 ui/ContactListWindow.vala:1082
-#, c-format
-msgid "Are you sure you want to delete '%s' from your contact list?"
-msgstr "Вы уверены что хотите удалить '%s' из друзей?"
-
-#: core/ToxSession.vala:33
-msgid "Away"
-msgstr "Отошел"
-
-#: core/ToxSession.vala:717
-#, c-format
-msgid "Background thread started.\n"
-msgstr "Запустился фоновый процесс.\n"
-
-#: core/ToxSession.vala:756
-#, c-format
-msgid "Background thread stopped.\n"
-msgstr "Фоновый процесс упал.\n"
-
-#: core/Tools.vala:142
-msgid "Bad checksum"
-msgstr "Неверная контрольная сумма"
-
-#: core/ToxSession.vala:35
-msgid "Busy"
-msgstr "Занят"
-
-#: ui/conversation_window.ui:156
-msgid "Call contact"
-msgstr "Звонить"
-
-#: ui/conversation_window.ui:174
-msgid "Call contact with video"
-msgstr "Звонок с видео"
-
-#: core/Tools.vala:158 core/Tools.vala:171
-#, c-format
-msgid "Can't create action regex: %s.\n"
-msgstr "Не удалось выполнить регулярное выражение: %s.\n"
-
-#: core/SqliteTools.vala:75
-#, c-format
-msgid "Can't open database: %d: %s\n"
-msgstr "Не могу открыть базу данных : %d: %s\n"
-
-#: core/Tools.vala:136
-msgid "Can't send to own key"
-msgstr "Нельзя отправить сообщение себе самому."
-
-#: ui/FileTransferChatEntry.vala:119
-msgid "Canceled"
-msgstr "Отменено"
-
-#: ui/contact_list.ui:72
-msgid "Change _Status"
-msgstr "Изменить _Статус"
-
-#: ui/ContactListWindow.vala:670
-msgid "Connected to the network"
-msgstr "Подключен"
-
-#: core/ToxSession.vala:720
-#, c-format
-msgid "Connecting to DHT Nodes:\n"
-msgstr "Подключение к DHT нодам:\n"
-
-#: ui/ContactListWindow.vala:668
-#, c-format
-msgid "Connection to DHT %s.\n"
-msgstr "Подключение к DHT %s.\n"
-
-#: ui/ContactListWindow.vala:907
-#, c-format
-msgid "Contact accepted file sending request\n"
-msgstr "Началась передача файла контакту.\n"
-
-#: ui/ContactListWindow.vala:508
-#, c-format
-msgid "Copied Tox ID to clipboard\n"
-msgstr "Tox ID скопирован в буфер обмена.\n"
-
-#: ui/ContactListWindow.vala:1135
-#, c-format
-msgid "Could not add friend: %s.\n"
-msgstr "Не удалось добавить друга: %s.\n"
-
-#: ui/ContactListWindow.vala:1123
-msgid "Could not add friend: Invalid ID\n"
-msgstr "Не удалось добавить друга: Недействительный ID.\n"
-
-#: core/SqliteTools.vala:40
-#, c-format
-msgid "Could not bind int to %s."
-msgstr "Не удалось привязать int к %s."
-
-#: core/SqliteTools.vala:50
-#, c-format
-msgid "Could not bind int64 to %s."
-msgstr "Не удалось привязать int64 к %s."
-
-#: core/SqliteTools.vala:60
-#, c-format
-msgid "Could not bind text to %s"
-msgstr "Не удалось привязать текст к %s."
-
-#: ui/ContactListWindow.vala:447
-#, c-format
-msgid "Could not change user name!\n"
-msgstr "Не удалось изменить имя.\n"
-
-#: ui/ContactListWindow.vala:455
-#, c-format
-msgid "Could not change user statusmessage!\n"
-msgstr "Не удалось изменить статус.\n"
-
-#: ui/ContactListWindow.vala:1189
-#, c-format
-msgid "Could not create a new groupchat.\n"
-msgstr "Не удалось создать групповой чай.\n"
-
-#: ui/ContactListWindow.vala:725
-#, c-format
-msgid "Could not join groupchat.\n"
-msgstr "Не удалось подключиться к групповому чату.\n"
-
-#: ui/ContactListWindow.vala:146
-#, c-format
-msgid "Could not load session data (%s), creating new one.\n"
-msgstr "Не удалось загрузить сессию (%s). Создаю новую сессию.\n"
-
-#: ui/ContactListWindow.vala:130
-#, c-format
-msgid "Could not read theme from \"%s\""
-msgstr "Не удалось загрузить тему из \"%s\""
-
-#: ui/ContactListWindow.vala:1090
-#, c-format
-msgid "Could not remove %s.\n"
-msgstr "Не удалось удалить %s.\n"
-
-#: ui/ContactListWindow.vala:1068
-#, c-format
-msgid "Could not remove contact %i.\n"
-msgstr "Не удалось удалить контакт %i.\n"
-
-#: core/ToxSession.vala:352
-#, c-format
-msgid "Could not remove peer [%i] from groupchat #%i (no such peer)\n"
-msgstr ""
-"Не удалось удалить пир [%i] из группового чата #%i (несуществующий пир)\n"
-
-#: ui/ContactListWindow.vala:1112
-msgid "Could not resolve ID from DNS record\n"
-msgstr ""
-"Не удалось \n"
-" Impossibile risolvere il Tox ID dal record DNS\n"
-
-#: ui/contact_list.ui:416
-msgid "Create groupchat"
-msgstr "Создать групповой чат"
-
-#: ui/settings_window.ui:301
-msgid "Default Tox DNS ID suffix:"
-msgstr "Стандартный DNS ID суфикс:"
-
-#: ui/FileTransferChatEntry.vala:125 ui/FileTransferChatEntry.vala:129
-msgid "Disconnected"
-msgstr "Отключен"
-
-#: ui/ContactListWindow.vala:673
-msgid "Disconnected from the network"
-msgstr "Отключен от сети"
-
-#: ui/UserInfoWindow.vala:86
-msgid "Edit user information"
-msgstr "Профиль"
-
-#: ui/ContactListWindow.vala:899
-#, c-format
-msgid "Ended file transfer for %s to %s\n"
-msgstr "Законченна передача файла от %s к %s\n"
-
-#: ui/ContactListWindow.vala:102
-#, c-format
-msgid "Ending session...\n"
-msgstr "Закрываю сеанс...\n"
-
-#: ui/add_contact_dialog.ui:40
-msgid "Enter a Tox ID here or a Tox URI"
-msgstr "Вставьте Tox ID или Tox URI"
-
-#: core/ContactStorage.vala:108
-#, c-format
-msgid "Error creating contacts insert statement: %d: %s\n"
-msgstr "Errore nel creare lo statement di inserimento contatti: %d: %s\n"
-
-#: core/ContactStorage.vala:113
-#, c-format
-msgid "Error creating contacts select statement: %d: %s\n"
-msgstr "Errore nel creare lo statement di selezione contatti: %d: %s\n"
-
-#: core/ContactStorage.vala:103
-#, c-format
-msgid "Error creating contacts table: %s\n"
-msgstr "Ошибка при попытке создания таблицы контактов: %s\n"
-
-#: core/DhtNodeStorage.vala:177
-#, c-format
-msgid "Error creating dht nodes insert statement: %d: %s\n"
-msgstr "Errore nel creare lo statement di inserimento server DHT: %d: %s\n"
-
-#: core/DhtNodeStorage.vala:182
-#, c-format
-msgid "Error creating dht nodes select statement: %d: %s\n"
-msgstr "Errore nel create lo statement di selezione server DHT: %d: %s\n"
-
-#: core/DhtNodeStorage.vala:172
-#, c-format
-msgid "Error creating dht nodes table: %s\n"
-msgstr "Ошибка при создании таблицы DHT нод: %s\n"
-
-#: core/ToxDns.vala:36
-#, c-format
-msgid "Error creating tox dns regex: %s\n"
-msgstr "Не удалось создать tox DNS регулярное выражение: %s\n"
-
-#: core/ToxDns.vala:51
-#, c-format
-msgid "Error creating tox uri regex: %s\n"
-msgstr "Не удалось создать tox URI регулярное выражение: %s\n"
-
-#: ui/ConversationTextView.vala:184
-#, c-format
-msgid "Error matching uri regex: %s\n"
-msgstr "Ошибка не совпадения регулярного выражения URI: %s\n"
-
-#: ui/ConversationWidget.vala:308
-#, c-format
-msgid "Error occured while getting file size: %s"
-msgstr "Ошибка при попытке получения размера файла: %s"
-
-#: core/ToxSession.vala:111
-#, c-format
-msgid "Error opening database: %s\n"
-msgstr "Ошибка при попытке открытии базы данных: %s\n"
-
-#: core/Settings.vala:112
-#, c-format
-msgid "Error reading configs:%s\n"
-msgstr "Ошибка при попытке чтения настроек: %s\n"
-
-#: core/ToxDns.vala:81
-#, c-format
-msgid "Error resolving name: %s\n"
-msgstr "Ошибка извлечения имени: %s\n"
-
-#: core/MessageLog.vala:135
-#, c-format
-msgid "Error retrieving logs from sqlite database: %s\n"
-msgstr "Ошибка при попытке получении логов sqlite базы данных: %s\n"
-
-#: core/Settings.vala:99
-#, c-format
-msgid "Error saving configs:%s\n"
-msgstr "Ошибка при попытке сохранении настроек: %s\n"
-
-#: core/Tools.vala:123
-#, c-format
-msgid "Error when doing uri markup: %s"
-msgstr "Ошибка разметки URI: %s"
-
-#: ui/ConversationTextView.vala:245
-#, c-format
-msgid "Error when showing uri: %s\n"
-msgstr "Ошибка отображения URI: %s\n"
-
-#: ui/ContactListWindow.vala:168
-#, c-format
-msgid "Error while loading icon: %s\n"
-msgstr "Ошибка при загрузке иконки: %s\n"
-
-#: core/ResourceFactory.vala:126
-#, c-format
-msgid "Error while loading image from \"%s\":%s\n"
-msgstr "Ошибка при загрузке изображения из: \"%s\": %s\n"
-
-#: core/ToxSession.vala:801
-msgid "Error while loading messenger data."
-msgstr "Ошибка при загрузке данных мессенджера."
-
-#: core/ToxSession.vala:795
-msgid "Error while reading from stream."
-msgstr "Ошибка при чтении из потока."
-
-#: ui/FileTransferChatEntry.vala:171
-#, c-format
-msgid "Error while trying to create file: %s\n"
-msgstr "Ошибка при попытке создания файла: %s\n"
-
-#: ui/ContactListWindow.vala:961
-#, c-format
-msgid "Error while trying to write data to file\n"
-msgstr "Ошибка при попытке записи данных в файл.\n"
-
-#: core/ToxSession.vala:828
-msgid "Error while writing to stream."
-msgstr "Ошибка при записи в поток."
-
-#: core/ContactStorage.vala:88
-#, c-format
-msgid "Error writing contact to sqlite database: %s\n"
-msgstr "Ошибка при записи контакта в sqlite базу данных: %s\n"
-
-#: core/MessageLog.vala:118
-#, c-format
-msgid "Error writing message to sqlite database: %s\n"
-msgstr "Ошибка при записи сообщения в sqlite базу данных: %s\n"
-
-#: core/MessageLog.vala:186 core/MessageLog.vala:193
-#, c-format
-msgid "Error: %d: %s\n"
-msgstr "Ошибка: %d: %s\n"
-
-#: core/MessageLog.vala:169 core/MessageLog.vala:179
-#: ui/ConversationView.vala:78
-#, c-format
-msgid "Error: %s\n"
-msgstr "Ошибка %s\n"
-
-#: core/ToxSession.vala:788
-#, c-format
-msgid "File \"%d\" does not exist."
-msgstr "Файл \"%d\" не существует."
-
-#: ui/ContactListWindow.vala:929
-#, c-format
-msgid "File transfer finished for file number %u"
-msgstr "Отправка была завершена для %u файлов."
-
-#: ui/ContactListWindow.vala:925
-#, c-format
-msgid "File transfer was rejected for file number %u"
-msgstr "%u файлов было отклонено."
-
-#: ui/FileTransferChatEntry.vala:94
-msgid "File was rejected"
-msgstr "Пользователь отклонил прием файла."
-
-#: ui/settings_window.ui:236
-msgid "Flash window when a new message arrives"
-msgstr "Оповещать о приходе нового сообщения."
-
-#: ui/ContactListWindow.vala:614
-#, c-format
-msgid "Friend could not be added.\n"
-msgstr "Контакт не может быть добавлен.\n"
-
-#: core/Tools.vala:138
-msgid "Friend request already sent"
-msgstr "Запрос на добавление в контакта уже был отправлен."
-
-#: core/Tools.vala:148
-msgid "Friend request successfully sent"
-msgstr "Запрос на добавление в контакта отправлен."
-
-#: ui/ContactListWindow.vala:1142
-#, c-format
-msgid "Friend request successfully sent. Friend added as %i.\n"
-msgstr "Запрос на добавление в контакта отправлен. Контакт добавлен как %i.\n"
-
-#: ui/ContactListWindow.vala:771
-#, c-format
-msgid "Group action from unknown contact #%i [%i]\n"
-msgstr "Групповое действие от неизвестного контакта: #%i [%i]\n"
-
-#: ui/ContactListWindow.vala:708
-#, c-format
-msgid "Group invite from %s with public key %s\n"
-msgstr "Группа пригласила %s, с публичным ключом %s\n"
-
-#: ui/ContactListWindow.vala:742
-#, c-format
-msgid "Group message from unknown contact #%i [%i]\n"
-msgstr "Групповое сообщение от неизвестного контакта: #%i [%i]\n"
-
-#: core/GroupChat.vala:45
-#, c-format
-msgid "Groupchat #%i"
-msgstr "Групповой чат #%i"
-
-#: ui/ContactListWindow.vala:896
-#, c-format
-msgid "I/O error while trying to close file stream: %s\n"
-msgstr "Ошибка I/O при попытке закрыть файловый поток: %s\n"
-
-#: ui/ContactListWindow.vala:888
-#, c-format
-msgid "I/O error while trying to read file: %s\n"
-msgstr "Ошибка I/O при попытке чтения файла: %s\n"
-
-#: ui/AddContactDialog.vala:96
-msgid "ID contains invalid characters"
-msgstr "ID содержит недопустимые символы."
-
-#: ui/user_info_window.ui:40
+#: src/ui/contact_list_widget.ui:331
+msgid "Add a contact"
+msgstr "Добавить контакт"
+
+#: src/ui/contact_list_widget.ui:381
+#, fuzzy
+msgid "View file transfers"
+msgstr "Смотреть передачи файлов"
+
+#: src/ui/conversation_window.ui:37
+msgid "Start a call"
+msgstr "Позвонить"
+
+#: src/ui/conversation_window.ui:317
+#, fuzzy
+msgid "Insert attachment"
+msgstr "Вставить вложение"
+
+#: src/ui/create_groupchat_widget.ui:102
+msgid "_Title:"
+msgstr "_Заголовок:"
+
+#: src/ui/create_groupchat_widget.ui:188
+msgid "T_ype:"
+msgstr "_Тип:"
+
+#: src/ui/create_groupchat_widget.ui:282
+msgid "Create"
+msgstr "Создать"
+
+#: src/view/FileTransferWidget.vala:39 src/ui/file_transfer_widget.ui:57
+#, fuzzy
+msgid "File transfers"
+msgstr "Передачи файлов"
+
+#: src/ui/friend_info_widget.ui:171
+msgid "Remove from your friends list"
+msgstr "Удалить из списка друзей"
+
+#: src/ui/user_info_widget.ui:213
+msgid "Username:"
+msgstr "Имя пользователя:"
+
+#: src/ui/friend_info_widget.ui:222
+msgid "Alias:"
+msgstr "Псевдоним:"
+
+#: src/ui/friend_info_widget.ui:254
+msgid "<small>Set a custom alias to quickly find your friends</small>"
+msgstr "<small>Установите пользовательский псевдоним, чтобы быстро найти своих друзей</small>"
+
+#: src/ui/user_info_widget.ui:319 src/ui/friend_info_widget.ui:520
+msgid "Tox"
+msgstr "Tox"
+
+#: src/ui/user_info_widget.ui:352
 msgid "ID:"
 msgstr "ID:"
 
-#: ui/ContactListWindow.vala:86
-#, c-format
-msgid "ID: %s\n"
-msgstr "ID: %s\n"
+#: src/ui/message_widget.ui:110
+msgid "Message sent ✓"
+msgstr "Сообщение отправлено ✓"
 
-#: ui/user_info_window.ui:222
-msgid "Icon:"
-msgstr "Иконка:"
+#: src/ui/message_widget.ui:126
+msgid "Message received ✓"
+msgstr "Сообщение получено ✓"
 
-#: core/SqliteTools.vala:37 core/SqliteTools.vala:47 core/SqliteTools.vala:57
-#, c-format
-msgid "Index for %s not found."
-msgstr "Индекс для %s не найден."
+#. This is shown on peers in groupchats, if you have them also added to your friends
+#: src/ui/peer_entry_compact.ui:53 src/ui/peer_entry.ui:77
+msgid "This peer is also in your friends list"
+msgstr "Этот пир также находится в вашем списке друзей"
 
-#: ui/conversation_window.ui:290
-msgid "Insert Smiley"
-msgstr "Вставить смайлик"
+#: src/ui/settings_widget.ui:78
+msgid "General"
+msgstr "Основные"
 
-#: core/ToxDns.vala:113
-#, c-format
-msgid "Invalid record\n"
-msgstr "Неверная запись DNS.\n"
+#: src/ui/settings_widget.ui:251
+msgid "Appearance"
+msgstr "Внешний вид"
 
-#: core/ToxDns.vala:64
-#, c-format
-msgid "Invalid tox uri\n"
-msgstr "Неправильный URI.\n"
+#: src/ui/settings_widget.ui:296
+msgid "Dark Theme"
+msgstr "Темная тема"
 
-#: ui/ContactListWindow.vala:728
-#, c-format
-msgid "Joined Groupchat #%i\n"
-msgstr "Присоединился к групповому чату #%i\n"
+#: src/ui/settings_widget.ui:506
+msgid "Minimize to tray"
+msgstr "Свернуть в трей"
 
-#: ui/settings_window.ui:18
-msgid "KB/MB"
-msgstr "Кбайт/Мбайт"
-
-#: ui/settings_window.ui:78
-msgid "Keep history"
-msgstr "Сохранять историю"
-
-#: ui/settings_window.ui:14
-msgid "KiB/MiB"
-msgstr "KiB/MiB"
-
-#: core/Contact.vala:117
-#, c-format
-msgid "Last seen: %s"
-msgstr "Был онлайн: %s"
-
-#: ui/AddContactDialog.vala:53
-#, c-format
-msgid "Loading add contact window failed!\n"
-msgstr "Не удалось загрузить окно контактов!\n"
-
-#: ui/ConversationWidget.vala:71 ui/SettingsWindow.vala:32
-#, c-format
-msgid "Loading conversation window failed!\n"
-msgstr "Не удалось загрузить окно чатов!\n"
-
-#: ui/FileTransferChatEntry.vala:40
-#, c-format
-msgid "Loading message widget failed!\n"
-msgstr "Не удалось загрузить виджет чата!\n"
-
-#: core/Tools.vala:132
-msgid "Message too long"
-msgstr "Размер сообщения превышает максимально допустимый размер."
-
-#: ui/settings_window.ui:337
-msgid "Miscellaneous"
-msgstr "Разное"
-
-#: ui/user_info_window.ui:192
-msgid "Name:"
-msgstr "Имя:"
-
-#: ui/ContactListWindow.vala:604
-#, c-format
-msgid ""
-"New friend request from '%s'.\n"
-"Do you want to accept?"
-msgstr ""
-"'%s' хочет добавить вас в друзья.\n"
-"Принять?"
-
-#: ui/AddContactDialog.vala:90
-msgid "No ID given"
-msgstr "ID не был предоставлен."
-
-#: core/Tools.vala:134
-msgid "No message included"
-msgstr "Сообщение не было предоставлено."
-
-#: core/ToxDns.vala:103
-#, c-format
-msgid "No pin privided, aborting...\n"
-msgstr "Пин-код не был предоставлен, прерываю процесс...\n"
-
-#: ui/contact_list.ui:118
-msgid "O_ffline"
-msgstr "Не в сети"
-
-#: core/Contact.vala:98 core/Contact.vala:108 core/ToxSession.vala:37
-msgid "Offline"
-msgstr "Не в сети"
-
-#: core/GroupChatContact.vala:32 core/ToxSession.vala:31
-#: ui/ContactListWindow.vala:208
-msgid "Online"
-msgstr "В сети"
-
-#: ui/contact_list.ui:449
-msgid "Open preferences"
-msgstr "Настройки"
-
-#: core/Tools.vala:146
-msgid "Out of memory"
-msgstr "Нехватка памяти"
-
-#: ui/FileTransferChatEntry.vala:104
-msgid "Paused"
-msgstr "Приостановлен"
-
-#: ui/PinDialog.vala:37
-#, c-format
-msgid ""
-"Please insert PIN for \n"
-"<b>%s</b>"
-msgstr ""
-"Пожалуйста введите Пин-код для \n"
-"<b>%s</b>"
-
-#: ui/PinDialog.vala:49
-msgid "Please insert PIN..."
-msgstr "Пожалуйста введите Пин-код..."
-
-#: ui/add_contact_dialog.ui:6
-msgid "Please let me add you to my contact list."
-msgstr "Пожалуйста, добавьте меня в свой список контактов."
-
-#: ui/settings_window.ui:221
+#: src/ui/settings_widget.ui:603
 msgid "Privacy"
 msgstr "Приватность"
 
-#: ui/ContactListWindow.vala:869
-#, c-format
-msgid "Read incorrect number of bytes from file\n"
-msgstr "Прочитано неправильно количество байт из файла.\n"
+#: src/ui/settings_widget.ui:647
+msgid "Send typing notifications"
+msgstr "Отправлять уведомления о наборе текста"
 
-#: ui/FileTransferChatEntry.vala:113
-msgid "Receiving failed"
-msgstr "Ошибка при получении."
+#: src/ui/settings_widget.ui:660
+msgid "<small>Show others when I am typing</small>"
+msgstr "<small>Показывать остальным когда я печатаю</small>"
 
-#: ui/ContactListWindow.vala:1114
-msgid "Resolving ID failed"
-msgstr "Ошибка при получении ID."
+#: src/ui/settings_widget.ui:744
+msgid "History"
+msgstr "История"
 
-#: ui/ContactListWindow.vala:427
-#, c-format
-msgid "Retrieved contact %s from savefile.\n"
-msgstr "Контакт %s был успешно извлечен из сохранения.\n"
-
-#: Main.vala:50
-#, c-format
-msgid "Run '%s --help' to see a full list of available command line options.\n"
-msgstr ""
-"Используйте '%s --help' чтобы увидеть полный список доступных параметров "
-"командной строки.\n"
-
-#: core/MessageLog.vala:86
-#, c-format
-msgid "SQLite database closed.\n"
-msgstr "Удалена SQLita база данных.\n"
-
-#: core/MessageLog.vala:82
-#, c-format
-msgid "SQLite database created.\n"
-msgstr "Создана SQLite база данных.\n"
-
-#: ui/FileTransferChatEntry.vala:158
-msgid "Save"
-msgstr "Сохранить"
-
-#: ui/FileTransferChatEntry.vala:155
-msgid "Save file"
-msgstr "Сохранить файл"
-
-#: ui/ContactListWindow.vala:120
-#, c-format
-msgid "Saving session file failed: %s\n"
-msgstr "Ошибка при сохранении файла сессии: %s\n"
-
-#: ui/FileTransferChatEntry.vala:165
-#, c-format
-msgid "Saving to: %s\n"
-msgstr "Сохраняю в: %s\n"
-
-#: ui/ContactListWindow.vala:116
-#, c-format
-msgid "Saving tox session data\n"
-msgstr "Сохраняю данные сеанса\n"
-
-#: ui/ConversationWidget.vala:282
-msgid "Select"
-msgstr "Выбрано"
-
-#: ui/ConversationWidget.vala:279
-msgid "Select a file to send"
-msgstr "Выберите файл для отправки"
-
-#: ui/add_contact_dialog.ui:113
-msgid "Send a custom message to be displayed to the friend you are adding"
-msgstr "Отправьте сообщение которое уви"
-
-#: ui/conversation_window.ui:308
-msgid "Send file"
-msgstr "Отправить файл"
-
-#: ui/conversation_window.ui:341
-msgid "Send message"
-msgstr "Отправить сообщение"
-
-#: ui/FileTransferChatEntry.vala:107
-msgid "Sending failed"
-msgstr "Отправка не удалась"
-
-#: ui/ContactListWindow.vala:111
-#, c-format
-msgid "Session ended gracefully.\n"
-msgstr "Сессия закончилась изящно.\n"
-
-#: ui/add_contact_dialog.ui:67
-msgid "Set a custom nickname for the friend you are about to add"
-msgstr "Назначить ник для пользователя которого вы собираетесь добавить."
-
-#: core/Tools.vala:144
-msgid "Set new nospam"
-msgstr "Установить новый NoSpam"
-
-#: ui/settings_window.ui:30
-msgid "Settings"
-msgstr "Настройки"
-
-#: core/Settings.vala:102
-#, c-format
-msgid "Settings saved.\n"
-msgstr "Настройки успешно сохранены.\n"
-
-#: ui/settings_window.ui:186
-msgid "Show _others when I am typing"
-msgstr "Показывать остальным когда я печатаю."
-
-#: ui/settings_window.ui:258
-msgid "Show filesize in"
-msgstr "Показать размер файла в"
-
-#: ui/settings_window.ui:202
-msgid "Show me when others are typing"
-msgstr "Показывать мне когда остальные печатают."
-
-#: Main.vala:70
-#, c-format
-msgid "Starting in offline mode\n"
-msgstr "Старт в офлайн режиме.\n"
-
-#: ui/user_info_window.ui:178
-msgid "Status message:"
-msgstr "Статус:"
-
-#: ui/ContactListWindow.vala:408
-#, c-format
-msgid "Theme refreshed\n"
-msgstr "Тема была успешно обновлена.\n"
-
-#: ui/Client.vala:116
-msgid "There is currently no help available"
-msgstr "Функция \"Помощь\" не доступна в данный момент."
-
-#: core/ResourceFactory.vala:77
-msgid "Tox User"
-msgstr "Tox пользователь"
-
-#: core/ResourceFactory.vala:78
-#, c-format
-msgid "Toxing on Venom v.%s"
-msgstr "Toxing on Venom v.%s"
-
-#: ui/ContactListWindow.vala:826
-#, c-format
-msgid "Trying to send unknown file"
-msgstr "Попытка отправить неизвестный файл"
-
-#: ui/MessageTextView.vala:27
-msgid "Type your message here..."
-msgstr "Сообщение..."
-
-#: core/Tools.vala:140
-msgid "Unknown error"
-msgstr "Неизвестная ошибка"
-
-#: ui/ContactListWindow.vala:890
-#, c-format
-msgid "Unknown error while trying to read file: %s\n"
-msgstr "Неизвестная ошибка при попытке чтения файла: %s\n"
-
-#: Main.vala:65
-#, c-format
-msgid "Using Gtk.TextView to display messages\n"
-msgstr "Использую Gtk.TextView для отображения сообщений.\n"
-
-#: Main.vala:60
-#, c-format
-msgid "Using data file \"%s\"\n"
-msgstr "Использую дата-файл: \"%s\"\n"
-
-#: ui/AddContactDialog.vala:100
-msgid "Valid ID size"
-msgstr "Правильный размер Tox  ID"
-
-#: ui/ContactListWindow.vala:461
-#, c-format
-msgid "Venom (%s)"
-msgstr "Venom (%s)"
-
-#: ui/ConversationTextView.vala:139
-#, c-format
-msgid "[%s] "
-msgstr "[%s] "
-
-#: ui/ContactListWindow.vala:638
-#, c-format
-msgid "[ac] %i:%s\n"
-msgstr "[ac] %i:%s\n"
-
-#: ui/ContactListWindow.vala:598
-#, c-format
-msgid "[fr] %s:%s\n"
-msgstr "[fr] %s:%s\n"
-
-#: ui/ContactListWindow.vala:763
-#, c-format
-msgid "[ga] %s [%i]@%i: %s\n"
-msgstr "[ga] %s [%i]@%i: %s\n"
-
-#: ui/ContactListWindow.vala:734
-#, c-format
-msgid "[gm] %s [%i]@%i: %s\n"
-msgstr "[gm] %s [%i]@%i: %s\n"
-
-#: ui/ContactListWindow.vala:660
-#, c-format
-msgid "[rr] %s:%u\n"
-msgstr "[rr] %s:%u\n"
-
-#: ui/ContactListWindow.vala:656
-#, c-format
-msgid "[us] %s:%i\n"
-msgstr "[us] %s:%i\n"
-
-#: ui/contact_list.ui:96
-msgid "_Away"
-msgstr "_Отошел"
-
-#: ui/user_info_window.ui:254
-msgid "_Browse..."
-msgstr "_Обзор..."
-
-#: ui/contact_list.ui:107
-msgid "_Busy"
-msgstr "_Занят"
-
-#: ui/contact_list.ui:61
-msgid "_Copy ID to clipboard"
-msgstr "_Скопировать Tox ID в буфер обмена"
-
-#: ui/contact_list.ui:50
-msgid "_Edit user"
-msgstr "_Редактировать пользователя"
-
-#: ui/add_contact_dialog.ui:94
-msgid "_Message (optional):"
-msgstr "_Статус (необязательный):"
-
-#: ui/add_contact_dialog.ui:54
-msgid "_Nickname (optional):"
-msgstr "_Ник (необязательный):"
-
-#: ui/contact_list.ui:85
-msgid "_Online"
-msgstr "_В сети"
-
-#: ui/add_contact_dialog.ui:27
-msgid "_Tox ID:"
-msgstr "_Tox ID:"
-
-#: ui/contact_list.ui:278
-msgid "connecting..."
-msgstr "подключение..."
-
-#: ui/settings_window.ui:160
+#: src/ui/settings_widget.ui:879
 msgid "days"
 msgstr "дни"
 
-#: ui/settings_window.ui:127
-msgid "delete after"
-msgstr "удалить после"
+#: src/ui/settings_widget.ui:910
+msgid "Delete all previous conversations"
+msgstr "Удалить все предыдущие разговоры"
 
-#: Main.vala:49
-#, c-format
-msgid "error: %s\n"
-msgstr "ошибка: %s\n"
+#: src/ui/settings_widget.ui:1328
+msgid "Update bootstrap nodes"
+msgstr "Обновление узлов начальной загрузки"
 
-#: ui/ContactListWindow.vala:668
-msgid "established"
-msgstr "создан"
+#: src/ui/user_info_widget.ui:394
+msgid "Copy to clipboard"
+msgstr "Скопировать в буфер обмена"
 
-#: ui/ContactListWindow.vala:569
-#, c-format
-msgid "failed to send file %s to %s"
-msgstr "произошла ошибка при отправке файла от %s к %s"
+#: src/ui/welcome_widget.ui:62
+msgid "<big>A new kind of instant messaging</big>"
+msgstr "<big>Новый вид обмена мгновенными сообщениями</big>"
 
-#: ui/ContactListWindow.vala:1077
-#, c-format
-msgid "groupchat #%i"
-msgstr "групповой чат #%i"
+#: src/ui/welcome_widget.ui:78
+msgid "Chat with your friends and family without anyone else listening in."
+msgstr "Общайтесь со своими друзьями и семьей, не слушая других."
 
-#: ui/settings_window.ui:104
-msgid "indefinitely"
-msgstr "неопределенный срок"
+#: src/ui/welcome_widget.ui:131
+msgid "Learn more"
+msgstr "Узнать больше"
 
-#: ui/ContactListWindow.vala:668
-msgid "lost"
-msgstr "потерянный"
+#: src/core/Message.vala:79 src/viewmodel/MessageViewModel.vala:86
+#: src/tox/ConferenceMessage.vala:56
+msgid "me"
+msgstr "меня"
 
-#: core/GroupChat.vala:56
-msgid "no one connected"
-msgstr "никто не подключен"
+#: src/ui/user_info_widget.ui:110
+msgid "Choose an avatar"
+msgstr "Выберите аватар"
 
-#: ui/ContactListWindow.vala:663
-msgid "offline"
-msgstr "не в сети"
+#: src/ui/friend_request_widget.ui:168
+msgid "Reject request"
+msgstr "Отклонить запрос"
 
-#: ui/ContactListWindow.vala:663
-msgid "online"
-msgstr "в сети"
+#: src/ui/friend_request_widget.ui:192
+msgid "Accept request"
+msgstr "Принять запрос"
 
-#: ui/ContactListWindow.vala:798
-#, c-format
-msgid "received file send request friend: %i filenumber: %i filename: %s \n"
-msgstr "получен запрос от %i на передачу %i файлов %s \n"
+#: src/core/NotificationListener.vala:76
+msgid "New file from %s"
+msgstr "Новый файл от %s"
 
-#: ui/ContactListWindow.vala:562
-#, c-format
-msgid "sending file %s to %s\n"
-msgstr "отправка файла %s к %s\n"
+#: src/viewmodel/ContactListEntryViewModel.vala:58
+msgid "New Message!"
+msgstr "Новое сообщение!"
 
-#: ui/ContactListWindow.vala:1129
-#, c-format
-msgid "setting alias: %s\n"
-msgstr "установка алиаса: %s\n"
+#: src/viewmodel/ContactListEntryViewModel.vala:64
+msgid "Offline"
+msgstr "Не в сети"
 
-#: core/ToxDns.vala:95
-#, c-format
-msgid "tox 1 ID found: %s\n"
-msgstr "Tox IDv1 найден: %s\n"
+#: src/viewmodel/ContactListEntryViewModel.vala:72
+#: src/ui/user_status_menu.ui:34
+msgid "Away"
+msgstr "Отошел"
 
-#: core/ToxDns.vala:100
-#, c-format
-msgid "tox 2 ID found: %s %s\n"
-msgstr "Tox IDv2 найден: %s %s\n"
+#: src/viewmodel/ContactListEntryViewModel.vala:74
+#: src/ui/user_status_menu.ui:40
+msgid "Busy"
+msgstr "Занят"
 
-#: ui/AboutDialog.vala:46
-msgid "translator-credits"
-msgstr "Ackermann Yuriy"
+#: src/viewmodel/ContactListEntryViewModel.vala:76
+#: src/ui/user_status_menu.ui:28
+msgid "Online"
+msgstr "В сети"
+
+#: src/core/TimeStamp.vala:40
+msgid "Today at %s"
+msgstr "Сегодня в %s"
+
+#: src/core/TimeStamp.vala:44
+msgid "Yesterday at %s"
+msgstr "Вчера в %s"
+
+#: src/tox/Conference.vala:44
+msgid "Unnamed conference %u"
+msgstr "Безымянная конференция %u"
+
+#: src/tox/ToxSession.vala:657
+msgid "Address must consist of 76 hexadecimal characters"
+msgstr "Адрес должен состоять из 76 шестнадцатеричных символов"
+
+#: src/view/ConversationWindow.vala:227 src/view/FileTransferEntry.vala:86
+#, fuzzy
+msgid "_Cancel"
+msgstr "О_тмена"
+
+#: src/view/ConversationWindow.vala:226
+msgid "_Open"
+msgstr "_Открыть"
+
+#: src/view/FileTransferEntry.vala:85
+msgid "_Save"
+msgstr "_Сохранить"
+
+#: src/ui/file_transfer_widget.ui:140
+#, fuzzy
+msgid "No file transfers yet …"
+msgstr "Ещё нет передач файлов..."
+
+#: src/ui/file_transfer_entry.ui:56 src/ui/file_transfer_entry_inline.ui:62
+#, fuzzy
+msgid "Remove transfer"
+msgstr "Удалить передачу"
+
+#: src/ui/file_transfer_entry.ui:124 src/ui/file_transfer_entry_inline.ui:130
+msgid "Open file"
+msgstr "Открыть файл"
+
+#: src/ui/file_transfer_entry.ui:148 src/ui/file_transfer_entry_inline.ui:154
+#, fuzzy
+msgid "Start transfer"
+msgstr "Начать передачу"
+
+#: src/ui/file_transfer_entry.ui:169 src/ui/file_transfer_entry_inline.ui:175
+#, fuzzy
+msgid "Pause transfer"
+msgstr "Приостановить передачу"
+
+#: src/ui/file_transfer_entry.ui:190 src/ui/file_transfer_entry_inline.ui:196
+#, fuzzy
+msgid "Stop transfer"
+msgstr "Остановить передачу"
+
+#: src/ui/create_groupchat_widget.ui:212
+msgid "Text"
+msgstr "Текст"
+
+#: src/ui/create_groupchat_widget.ui:228
+msgid "Speech"
+msgstr "Речь"
+
+#: src/ui/peer_entry_compact.ui:39 src/ui/peer_entry.ui:90
+msgid "That's you"
+msgstr "Это Вы"
+
+#: src/ui/welcome_widget.ui:178
+#, fuzzy
+msgid "Get involved"
+msgstr "Поучаствовать"
+
+#: src/ui/settings_widget.ui:161
+msgid "Proxy"
+msgstr "Прокси"
+
+#: src/ui/settings_widget.ui:309
+msgid "<small>Use a dark variant of the theme</small>"
+msgstr "<small>Использовать тёмный вариант темы</small>"
+
+#: src/ui/settings_widget.ui:366
+msgid "Animations"
+msgstr "Анимации"
+
+#: src/ui/settings_widget.ui:379
+msgid "<small>Enable animated transitions</small>"
+msgstr "<small>Включить анимированные переходы</small>"
+
+#: src/ui/settings_widget.ui:436
+msgid "Notifications"
+msgstr "Уведомления"
+
+#: src/ui/settings_widget.ui:449
+msgid "<small>Show notifications for unread messages</small>"
+msgstr "<small>Показывать уведомления о непрочитанных сообщениях</small>"
+
+#: src/ui/settings_widget.ui:519
+msgid "<small>Minimize app to system tray on close</small>"
+msgstr "<small>Сворачивать приложение в трей при закрытии</small>"
+
+#: src/ui/settings_widget.ui:809
+msgid "Keep forever"
+msgstr "Хранить вечно"
+
+#: src/ui/settings_widget.ui:846
+msgid "Remove older than"
+msgstr "Удалить старше чем"
+
+#: src/ui/settings_widget.ui:1004
+msgid "<b>Connection</b>"
+msgstr "<b>Соединение</b>"
+
+#: src/ui/settings_widget.ui:1047
+msgid "UDP"
+msgstr "UDP"
+
+#: src/ui/settings_widget.ui:1117
+msgid "IPv6"
+msgstr "IPv6"
+
+#: src/ui/settings_widget.ui:1130
+msgid "<small>Allow both IPv4 and IPv6 communication</small>"
+msgstr "<small>Использовать и IPv4 и IPv6</small>"
+
+#: src/ui/settings_widget.ui:1187
+msgid "Local discovery"
+msgstr "Обнаружение локальных устройств"
+
+#: src/ui/settings_widget.ui:1200
+msgid "<small>Look for peers on the local network</small>"
+msgstr "<small>Искать пиры в локальной сети</small>"
+
+#: src/ui/settings_widget.ui:1257
+msgid "Hole punching"
+msgstr "Пробитие NAT"
+
+#: src/ui/settings_widget.ui:1270
+msgid "<small>Enable UDP <a href=\"https://en.wikipedia.org/wiki/Hole_punching_(networking)\">hole punching</a></small>"
+msgstr "<small>Включить UDP <a href=\"https://en.wikipedia.org/wiki/Hole_punching_(networking)\">пробитие NAT</a></small>"
+
+#: src/ui/settings_widget.ui:1364
+msgid "<b>Bootstrap nodes</b>"
+msgstr "<b>Узлы начальной загрузки</b>"
+
+#: src/ui/settings_widget.ui:1500
+msgid "<b>Proxy</b>"
+msgstr "<b>Прокси</b>"
+
+#: src/ui/settings_widget.ui:1567
+msgid "System settings"
+msgstr "Системные настройки"
+
+#: src/ui/settings_widget.ui:1580
+msgid "<small>Use your systems proxy settings</small>"
+msgstr "<small>Использовать системные настройки прокси</small>"
+
+#: src/ui/settings_widget.ui:1634
+msgid "Manual settings"
+msgstr "Ручные настройки"
+
+#: src/ui/settings_widget.ui:1647
+#, fuzzy
+msgid "<small>Use custom proxy settings</small>"
+msgstr "<small>Пользовательские настройки прокси</small>"
+
+#: src/ui/settings_widget.ui:1688
+msgid "Host"
+msgstr "Хост"
+
+#: src/ui/settings_widget.ui:1728
+msgid "<small>Set a SOCKS5 proxy to connect to</small>"
+msgstr "<small>Указать SOCKS5 прокси для подключения</small>"
+
+#: src/ui/friend_info_widget.ui:242
+#, fuzzy
+msgid "Reset alias"
+msgstr "Сбросить псевдоним"
+
+#: src/ui/friend_info_widget.ui:364
+msgid "Auto accept conference invites"
+msgstr "Автоматически принимать приглашения в конференции"
+
+#: src/ui/friend_info_widget.ui:411
+#, fuzzy
+msgid "Auto accept file transfers"
+msgstr "Автоматически принимать передачи файлов"
+
+#: src/ui/friend_info_widget.ui:455
+msgid "Save files to"
+msgstr "Сохранять файлы в"
+
+#: src/viewmodel/ContactListViewModel.vala:102
+msgid "New conference…"
+msgstr ""
+
+#: src/viewmodel/ContactListViewModel.vala:115
+msgid "Invite to conference"
+msgstr ""
+
+#: src/viewmodel/ContactListViewModel.vala:118 src/ui/conference_window.ui:137
+#: src/ui/conversation_window.ui:86
+msgid "Show details"
+msgstr ""
+
+#: src/viewmodel/ContactListViewModel.vala:140
+msgid "%u new friend request"
+msgid_plural "%u new friend requests"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/viewmodel/ContactListViewModel.vala:148
+msgid "%u new conference invite"
+msgid_plural "%u new conference invites"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/core/TimeStamp.vala:26
+msgid "Just now"
+msgstr ""
+
+#: src/core/TimeStamp.vala:31
+msgid "%u minute ago"
+msgid_plural "%u minutes ago"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/core/TimeStamp.vala:36
+msgid "%u hour ago"
+msgid_plural "%u hours ago"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/ui/create_groupchat_widget.ui:68 src/ui/contact_list_widget.ui:356
+msgid "Create a conference"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:156
+msgid "<small>Name the conference (optional)</small>"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:252
+msgid "<small>Select a conference type</small>"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:299
+msgid "New conference"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:312 src/ui/create_groupchat_widget.ui:346
+msgid "Conference invites"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:408
+msgid "No new conference invites"
+msgstr ""
+
+#: src/ui/conversation_window.ui:62
+msgid "Start a video call"
+msgstr ""
+
+#: src/ui/friend_request_widget.ui:66
+msgid "_Public key:"
+msgstr ""
+
+#: src/ui/conference_info_widget.ui:78
+msgid "Leave Conference"
+msgstr ""
+
+#: src/ui/conference_info_widget.ui:196 src/ui/friend_info_widget.ui:291
+msgid "Show notifications"
+msgstr ""
+
+#: src/ui/conference_info_widget.ui:234 src/ui/friend_info_widget.ui:330
+msgid "<small>Notifications have been globally disabled</small>"
+msgstr ""
+
+#: src/ui/conference_invite_entry.ui:65
+msgid "Invite from:"
+msgstr ""
+
+#: src/ui/conference_invite_entry.ui:109
+msgid "Accept invite"
+msgstr ""
+
+#: src/ui/conference_invite_entry.ui:133
+msgid "Reject invite"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:52
+msgid "No new friend requests"
+msgstr ""
+
+#: src/ui/contact_list_widget.ui:56 src/ui/add_contact_widget.ui:325
+msgid "Add a friend"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:338 src/ui/add_contact_widget.ui:372
+msgid "Friend requests"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:258
+msgid "Status message:"
+msgstr ""
+
+#: src/ui/settings_widget.ui:1060
+msgid "<small>Use UDP communication when available</small>"
+msgstr ""
+
+#: src/view/WelcomeWidget.vala:39
+msgid "A new kind of instant messaging"
+msgstr ""
+
+#: src/view/SettingsWidget.vala:69
+msgid "Settings"
+msgstr ""
+
+#: src/ui/conference_window.ui:216 src/ui/conversation_window.ui:129
+msgid "No messages yet..."
+msgstr ""
+
+#: src/ui/contact_list_widget.ui:406
+msgid "Open settings"
+msgstr ""
+
+#: src/ui/contact_list_widget.ui:448
+msgid "Edit your profile"
+msgstr ""
+
+#: src/ui/contact_list_widget.ui:476
+msgid "Change your status"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:554
+msgid "Public key:"
+msgstr ""
+
+#: src/view/ConversationWindow.vala:223
+msgid "Choose a file to send"
+msgstr ""
+
+#: src/view/UserInfoWidget.vala:56
+msgid "Images"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:62
+msgid "Reset"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:87
+msgid "Take a picture"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:109
+msgid "Choose a file"
+msgstr ""
+
+#: src/ui/conference_window.ui:179
+msgid "No one here..."
+msgstr ""
+
+#: src/ui/conference_window.ui:280
+msgid "Show peers"
+msgstr ""
+
+#: src/undo/TextBufferUndoBinding.vala:169
+msgid "_Redo"
+msgstr ""
+
+#: src/undo/TextBufferUndoBinding.vala:174
+msgid "_Undo"
+msgstr ""
+
+#: src/viewmodel/FriendInfoViewModel.vala:65
+msgid "Online right now"
+msgstr ""
+
+#: src/viewmodel/FriendInfoViewModel.vala:67
+msgid "Never seen online"
+msgstr ""
+
+#: src/viewmodel/FriendInfoViewModel.vala:69
+msgid "Last seen: %s"
+msgstr ""
+
+#: src/view/ConversationWindow.vala:120
+msgid "%s is typing…"
+msgstr ""
+
+#: src/ui/conversation_window.ui:155
+msgid "Attach screenshot…"
+msgstr ""
+
+#: src/ui/conversation_window.ui:180
+msgid "Attach file…"
+msgstr ""
+
+#: src/view/AboutDialog.vala:54 data/chat.tox.venom.desktop.in:4
+msgid "A modern Tox client for the Linux desktop"
+msgstr ""
+
+#: src/view/AboutDialog.vala:55
+msgid "Copyright © 2013-2018 Venom authors and contributors"
+msgstr ""
+
+#: data/chat.tox.venom.desktop.in:3
+msgid "Venom"
+msgstr ""
+
+#: data/chat.tox.venom.desktop.in:5
+msgid "tox;instant messaging;video chat;"
+msgstr ""
+
+#: data/chat.tox.venom.desktop.in:7
+msgid "chat.tox.venom-symbolic"
+msgstr ""
+
