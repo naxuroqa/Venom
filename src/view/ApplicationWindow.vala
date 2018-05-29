@@ -36,16 +36,13 @@ namespace Venom {
     };
 
     [GtkChild] private Gtk.Box contact_list_box;
-    [GtkChild] private Gtk.Revealer content_revealer;
+    [GtkChild] private Gtk.Bin content_bin;
     [GtkChild] private Gtk.StatusIcon status_icon;
     [GtkChild] private Gtk.Paned content_paned;
     [GtkChild] public Gtk.Box user_info_box;
     [GtkChild] public Gtk.HeaderBar header_bar;
     [GtkChild] public Gtk.Box header_start;
     [GtkChild] public Gtk.Box header_end;
-
-    private Gtk.Widget current_content_widget;
-    private WidgetProvider next_content_widget;
 
     private Factory.IWidgetFactory widget_factory;
     private ILogger logger;
@@ -245,22 +242,7 @@ namespace Venom {
     }
 
     private void init_callbacks() {
-      content_revealer.notify["child-revealed"].connect(on_revealer_child_revealed);
       add_action_entries(win_entries, this);
-    }
-
-    private void on_revealer_child_revealed() {
-      if (content_revealer.child_revealed || current_content_widget == null || next_content_widget == null) {
-        return;
-      }
-      content_revealer.remove(content_revealer.get_child());
-      current_content_widget = null;
-
-      current_content_widget = next_content_widget();
-      current_content_widget.show_all();
-      content_revealer.add(current_content_widget);
-      content_revealer.set_reveal_child(true);
-      next_content_widget = null;
     }
 
     public void show_settings() {
@@ -395,17 +377,16 @@ namespace Venom {
     }
 
     private void switch_content_with(owned WidgetProvider widget_provider) {
-      bool is_first_widget = current_content_widget == null;
-
-      if (!is_first_widget) {
-        next_content_widget = (owned) widget_provider;
-        content_revealer.set_reveal_child(false);
-      } else {
-        current_content_widget = widget_provider();
-        current_content_widget.show_all();
-        content_revealer.add(current_content_widget);
-        content_revealer.set_reveal_child(true);
+      {
+        var previous = content_bin.get_child();
+        if (previous != null) {
+          previous.destroy();
+        }
       }
+
+      var current = widget_provider();
+      current.show_all();
+      content_bin.add(current);
     }
 
     public delegate Gtk.Widget WidgetProvider();
