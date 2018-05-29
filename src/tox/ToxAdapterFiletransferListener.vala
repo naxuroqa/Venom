@@ -208,6 +208,8 @@ namespace Venom {
         set_file_transfer(friend_number, file_number, transfer);
         transfers.append(transfer);
         conversations.get(friends.get(friend_number)).append(transfer);
+        contact.unread_messages++;
+        contact.changed();
         notification_listener.on_filetransfer(transfer, contact);
 
         if (contact.auto_filetransfer) {
