@@ -1,7 +1,7 @@
 /*
  *    ContactListRequestEntry.vala
  *
- *    Copyright (C) 2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -21,27 +21,18 @@
 
 namespace Venom {
   [GtkTemplate(ui = "/chat/tox/venom/ui/contact_list_request_entry.ui")]
-  public class ContactListRequestEntry : Gtk.ListBoxRow, IContactListEntry {
+  public class ContactListRequestEntry : Gtk.ListBoxRow {
     private ILogger logger;
     private IContact contact;
 
-    [GtkChild]
-    private Gtk.Label contact_name;
-    [GtkChild]
-    private Gtk.Label contact_status;
+    [GtkChild] private Gtk.Label contact_name;
+    [GtkChild] private Gtk.Label contact_status;
 
     public ContactListRequestEntry(ILogger logger, IContact contact) {
       logger.d("ContactListRequestEntry created.");
       this.logger = logger;
       this.contact = contact;
-      init_widgets();
-    }
 
-    public IContact get_contact() {
-      return contact;
-    }
-
-    private void init_widgets() {
       contact_name.label = contact.get_name_string();
       contact_status.label = contact.get_status_string();
     }

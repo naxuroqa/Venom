@@ -126,6 +126,7 @@ namespace Venom {
       focus_in_event.connect(on_focus_in_event);
       window_state_event.connect(on_window_state_event);
       size_allocate.connect(on_window_size_allocate);
+      content_paned.bind_property("position", window_state, "paned_position", BindingFlags.SYNC_CREATE);
 
       show_welcome();
 
@@ -142,27 +143,26 @@ namespace Venom {
       return false;
     }
 
-    private bool on_window_state_event(Gdk.EventWindowState event) {
-      window_state.is_maximized = (event.new_window_state & Gdk.WindowState.MAXIMIZED) != 0;
-      window_state.is_fullscreen = (event.new_window_state & Gdk.WindowState.FULLSCREEN) != 0;
-      return Gdk.EVENT_PROPAGATE;
-    }
-
-    private void on_window_size_allocate(Gtk.Allocation allocation) {
-      if (!window_state.is_maximized && !window_state.is_fullscreen) {
-        var width = 0;
-        var height = 0;
-        get_size(out width, out height);
-        window_state.width = width;
-        window_state.height = height;
-      }
-    }
-
     private bool on_delete_event() {
       if (!settings_database.enable_tray) {
         return false;
       }
       return hide_on_delete();
+    }
+
+    private bool on_window_state_event(Gdk.EventWindowState event) {
+      window_state.is_maximized = Gdk.WindowState.MAXIMIZED in event.new_window_state;
+      window_state.is_fullscreen = Gdk.WindowState.FULLSCREEN in event.new_window_state;
+      return Gdk.EVENT_PROPAGATE;
+    }
+
+    private void on_window_size_allocate(Gtk.Allocation allocation) {
+      if (!window_state.is_maximized && !window_state.is_fullscreen) {
+        int width, height;
+        get_size(out width, out height);
+        window_state.width = width;
+        window_state.height = height;
+      }
     }
 
     private void init_window_state() {
@@ -184,6 +184,7 @@ namespace Venom {
       if (window_state.is_fullscreen) {
         fullscreen();
       }
+      content_paned.position = window_state.paned_position;
     }
 
     private void save_window_state() {
@@ -220,8 +221,8 @@ namespace Venom {
                                   (binding, source, ref target) => { target = source.get_int() - 12; return true; });
 
       var app = GLib.Application.get_default() as Gtk.Application;
-      app.set_accels_for_action("win.undo", {"<Control>Z"});
-      app.set_accels_for_action("win.redo", {"<Control>Y"});
+      app.set_accels_for_action("win.undo", { "<Control>Z" });
+      app.set_accels_for_action("win.redo", { "<Control>Y" });
     }
 
     public void reset_header_bar() {

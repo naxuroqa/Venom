@@ -20,12 +20,8 @@
  */
 
 namespace Venom {
-  public interface IContactListEntry : GLib.Object {
-    public abstract IContact get_contact();
-  }
-
   [GtkTemplate(ui = "/chat/tox/venom/ui/contact_list_entry.ui")]
-  public class ContactListEntry : Gtk.ListBoxRow, IContactListEntry {
+  public class ContactListEntry : Gtk.ListBoxRow {
     [GtkChild] private Gtk.Label contact_name;
     [GtkChild] private Gtk.Label contact_status;
     [GtkChild] private Gtk.Image contact_image;
@@ -47,10 +43,6 @@ namespace Venom {
       view_model.bind_property("contact-status-image", status_image, "icon-name", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("contact-status-tooltip", status_image, "tooltip-text", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("contact-requires-attention", attention_binding, "enable", GLib.BindingFlags.SYNC_CREATE);
-    }
-
-    public IContact get_contact() {
-      return view_model.get_contact();
     }
 
     ~ContactListEntry() {

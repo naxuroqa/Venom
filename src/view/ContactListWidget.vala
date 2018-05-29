@@ -39,6 +39,7 @@ namespace Venom {
     [GtkChild] private Gtk.Box placeholder;
 
     private unowned Gtk.ListBoxRow ? selected_row;
+    private ListModel contact_list_model;
 
     public ContactListWidget(ILogger logger, ApplicationWindow app_window, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListWidget created.");
@@ -68,7 +69,8 @@ namespace Venom {
       contact_list.set_placeholder(placeholder);
 
       var creator = new ContactListEntryCreator(logger);
-      contact_list.bind_model(view_model.get_list_model(), creator.create_entry);
+      contact_list_model = view_model.get_list_model();
+      contact_list.bind_model(contact_list_model, creator.create_entry);
     }
 
     public unowned ContactListViewModel get_model() {
@@ -81,8 +83,8 @@ namespace Venom {
       if (row == null) {
         view_model.on_contact_selected(null);
       } else {
-        var entry = row as IContactListEntry;
-        view_model.on_contact_selected(entry.get_contact());
+        var contact = contact_list_model.get_object(row.get_index()) as IContact;
+        view_model.on_contact_selected(contact);
       }
     }
 
@@ -103,8 +105,8 @@ namespace Venom {
       if (ev.type == Gdk.EventType.BUTTON_PRESS && ev.button == 3) {
         logger.d("right mouse clicked");
         var row = contact_list.get_row_at_y((int) ev.y);
-        var entry = row as IContactListEntry;
-        var menu = view_model.popup_menu(entry.get_contact());
+        var contact = contact_list_model.get_object(row.get_index()) as IContact;
+        var menu = view_model.popup_menu(contact);
         var popover = new Gtk.Popover.from_model(row, menu);
         popover.popup();
         return true;
