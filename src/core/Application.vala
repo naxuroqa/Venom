@@ -1,7 +1,7 @@
 /*
  *    Application.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -70,6 +70,11 @@ namespace Venom {
 
     protected override void startup() {
       base.startup();
+
+#if ENABLE_POSIX
+      Posix.signal(Posix.Signal.INT, on_sig_int);
+      Posix.signal(Posix.Signal.TERM, on_sig_int);
+#endif
 
       Logger.displayed_level = loglevel;
       widget_factory = new Factory.WidgetFactory();
@@ -147,6 +152,11 @@ namespace Venom {
       logger.i("on_show_filetransfers");
       activate();
       getApplicationWindow().on_filetransfer();
+    }
+
+    private static void on_sig_int(int sig) {
+      var app = GLib.Application.get_default() as Application;
+      Idle.add(() => { app.on_quit(); return false; });
     }
 
     private void on_quit() {
