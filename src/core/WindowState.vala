@@ -23,6 +23,7 @@ namespace Venom {
   public class WindowState : GLib.Object {
     public int width { get; set; default = 800; }
     public int height { get; set; default = 600; }
+    public int paned_position { get; set; default = 100; }
     public bool is_maximized { get; set; default = false; }
     public bool is_fullscreen { get; set; default = false; }
 
