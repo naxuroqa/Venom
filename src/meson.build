@@ -16,6 +16,10 @@ tox_dep = dependency('toxcore')
 gst_dep = dependency('gstreamer-1.0', required : false)
 posix_dep = valac.find_library('posix', required : false)
 
+if (posix_dep.found())
+			add_project_arguments(['-D', 'ENABLE_POSIX'], language: 'vala')
+endif
+
 config_vapi = valac.find_library('config', dirs: vapi_dir)
 config_dep = declare_dependency(dependencies: [config_vapi], include_directories : include_directories('.'))
 configure_file(output : 'config.h', configuration : conf_data)
@@ -106,7 +110,7 @@ venom_source = files(
 			'viewmodel/UserInfoViewModel.vala'
 			)
 
-venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, config_dep, soup_dep]
+venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, config_dep, soup_dep, posix_dep]
 
 venom_lib = static_library('venom', [venom_source, venom_ui_resources, venom_icons_resources],
 			dependencies : venom_deps
