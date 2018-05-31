@@ -17,6 +17,7 @@ Features
 * Screenshot sharing
 * Group chats
 * Socks5 Proxy support
+* Spell checking
 
 Roadmap
 -------
@@ -37,6 +38,7 @@ Dependencies
 * `json-glib-1.0`
 * `libsoup-2.4`
 * `libgee >= 0.20`
+* `gspell >= 1.8`
 * `sqlite3`
 * `toxcore >= 0.2`
 

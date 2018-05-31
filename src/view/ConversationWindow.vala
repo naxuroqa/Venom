@@ -76,6 +76,8 @@ namespace Venom {
       text_buffer_undo_binding.add_actions_to(app_window);
       text_buffer_undo_binding.bind_buffer(text_view.buffer);
       text_view.populate_popup.connect(text_buffer_undo_binding.populate_popup);
+      
+      Gspell.TextView.get_from_gtk_text_view(text_view).basic_setup();
 
       text_view_event_handler = new TextViewEventHandler();
       text_view_event_handler.send.connect(on_send);
