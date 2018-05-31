@@ -8,6 +8,7 @@ gdk_dep = dependency('gdk-3.0')
 gio_dep = dependency('gio-2.0')
 glib_dep = dependency('glib-2.0')
 gee_dep = dependency('gee-0.8')
+gspell_dep = dependency('gspell-1')
 gmodule_dep = dependency('gmodule-2.0')
 sqlite_dep = dependency('sqlite3')
 json_dep = dependency('json-glib-1.0')
@@ -110,7 +111,7 @@ venom_source = files(
 			'viewmodel/UserInfoViewModel.vala'
 			)
 
-venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, config_dep, soup_dep, posix_dep]
+venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, config_dep, soup_dep, posix_dep, gspell_dep]
 
 venom_lib = static_library('venom', [venom_source, venom_ui_resources, venom_icons_resources],
 			dependencies : venom_deps

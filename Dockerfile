@@ -14,6 +14,7 @@ RUN \
     libsqlite3-dev \
     libvpx-dev \
     libgee-0.8-dev \
+    libgspell-1-dev \
     meson \
     valac \
     wget
