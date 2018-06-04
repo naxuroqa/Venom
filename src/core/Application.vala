@@ -76,6 +76,8 @@ namespace Venom {
       Posix.signal(Posix.Signal.TERM, on_sig_int);
 #endif
 
+      Gtk.AccelMap.load(R.constants.accels_filename());
+
       Logger.displayed_level = loglevel;
       widget_factory = new Factory.WidgetFactory();
       logger = widget_factory.createLogger();
@@ -107,6 +109,11 @@ namespace Venom {
       var app_menu = builder.get_object("app_menu") as MenuModel;
       assert(app_menu != null);
       set_app_menu(app_menu);
+    }
+
+    protected override void shutdown() {
+      Gtk.AccelMap.save(R.constants.accels_filename());
+      base.shutdown();
     }
 
     protected override void activate() {
