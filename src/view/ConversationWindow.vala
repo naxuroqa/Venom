@@ -76,7 +76,7 @@ namespace Venom {
       text_buffer_undo_binding.add_actions_to(app_window);
       text_buffer_undo_binding.bind_buffer(text_view.buffer);
       text_view.populate_popup.connect(text_buffer_undo_binding.populate_popup);
-      
+
       Gspell.TextView.get_from_gtk_text_view(text_view).basic_setup();
 
       text_view_event_handler = new TextViewEventHandler();
@@ -276,14 +276,21 @@ namespace Venom {
   }
 
   public class TextViewEventHandler {
+    Gtk.AccelKey key;
+
+    public TextViewEventHandler() {
+      var accel_path = "<Venom>/Message/Send";
+      if (!Gtk.AccelMap.lookup_entry(accel_path, out key)) {
+        key.accel_mods = ~Gdk.ModifierType.MODIFIER_MASK;
+        key.accel_key = Gdk.Key.Return;
+        Gtk.AccelMap.add_entry(accel_path, key.accel_key, key.accel_mods);
+      }
+    }
+
     public signal void send();
 
     public bool on_key_press_event(Gdk.EventKey event) {
-      if (Gdk.ModifierType.SHIFT_MASK in event.state) {
-        return false;
-      }
-
-      if (event.keyval == Gdk.Key.Return) {
+      if (event.keyval == key.accel_key && event.state == key.accel_mods) {
         send();
         return true;
       }
