@@ -28,6 +28,8 @@ namespace Venom {
 
     [GtkChild] private Gtk.Label contact_id;
     [GtkChild] private Gtk.Label contact_message;
+    [GtkChild] private Gtk.Label contact_time;
+    [GtkChild] private Gtk.Image contact_image;
 
     [GtkChild] private Gtk.Button accept;
     [GtkChild] private Gtk.Button reject;
@@ -40,6 +42,10 @@ namespace Venom {
 
       contact_id.label = friend_request.id;
       contact_message.label = friend_request.message;
+      contact_time.label = TimeStamp.get_pretty_timestamp(friend_request.timestamp);
+      var pub_key = Tools.hexstring_to_bin(friend_request.id);
+      contact_image.pixbuf = round_corners(Identicon.generate_pixbuf(pub_key).scale_simple(44, 44, Gdk.InterpType.BILINEAR));
+
       accept.clicked.connect(on_accept_clicked);
       reject.clicked.connect(on_reject_clicked);
     }

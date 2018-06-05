@@ -33,17 +33,28 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
         <property name="can_focus">False</property>
         <property name="spacing">6</property>
         <child>
-          <object class="GtkImage" id="peer_self">
+          <object class="GtkImage" id="peer_image">
+            <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="no_show_all">True</property>
-            <property name="tooltip_text" translatable="yes">That's you</property>
-            <property name="icon_name">avatar-default-symbolic</property>
+            <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="pack_type">end</property>
             <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="peer_name">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label">peer_name</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
@@ -57,20 +68,21 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="pack_type">end</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="peer_name">
-            <property name="visible">True</property>
+          <object class="GtkImage" id="peer_self">
             <property name="can_focus">False</property>
-            <property name="label">peer_name</property>
-            <property name="xalign">0</property>
+            <property name="no_show_all">True</property>
+            <property name="tooltip_text" translatable="yes">That's you</property>
+            <property name="icon_name">avatar-default-symbolic</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="pack_type">end</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>

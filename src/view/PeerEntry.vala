@@ -36,6 +36,10 @@ namespace Venom {
       peer_key.label = peer.peer_key;
       peer_known.visible = peer.is_known;
       peer_self.visible = peer.is_self;
+
+      var pub_key = Tools.hexstring_to_bin(peer.peer_key);
+      var pixbuf = Identicon.generate_pixbuf(pub_key);
+      peer_image.pixbuf = round_corners(pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR));
       logger.d("PeerEntry created.");
     }
 
@@ -45,6 +49,7 @@ namespace Venom {
   }
   [GtkTemplate(ui = "/chat/tox/venom/ui/peer_entry_compact.ui")]
   public class PeerEntryCompact : Gtk.ListBoxRow {
+    [GtkChild] private Gtk.Image peer_image;
     [GtkChild] private Gtk.Label peer_name;
     [GtkChild] private Gtk.Image peer_known;
     [GtkChild] private Gtk.Image peer_self;
@@ -56,6 +61,10 @@ namespace Venom {
       peer_name.label = peer.peer_name;
       peer_known.visible = peer.is_known;
       peer_self.visible = peer.is_self;
+
+      var pub_key = Tools.hexstring_to_bin(peer.peer_key);
+      var pixbuf = Identicon.generate_pixbuf(pub_key);
+      peer_image.pixbuf = round_corners(pixbuf.scale_simple(22, 22, Gdk.InterpType.BILINEAR));
       logger.d("PeerEntryCompact created.");
     }
 

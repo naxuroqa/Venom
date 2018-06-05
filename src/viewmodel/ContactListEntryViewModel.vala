@@ -51,7 +51,7 @@ namespace Venom {
 
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
-        contact_image = pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR);
+        contact_image = round_corners(pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR));
       }
 
       if (contact_requires_attention) {
@@ -67,7 +67,7 @@ namespace Venom {
     }
 
     private string tooltip_from_status(UserStatus status) {
-      switch(status) {
+      switch (status) {
         case UserStatus.AWAY:
           return _("Away");
         case UserStatus.BUSY:
@@ -91,5 +91,26 @@ namespace Venom {
     ~ContactListEntryViewModel() {
       logger.d("ContactListEntryViewModel destroyed.");
     }
+  }
+
+  public static Gdk.Pixbuf round_corners(Gdk.Pixbuf source) {
+    var width = source.width;
+    var height = source.height;
+    var radius = width * 0.1f;
+    var surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, width, height);
+    var context = new Cairo.Context(surface);
+    var deg = Math.PI / 180.0;
+
+    context.new_sub_path();
+    context.arc(width - radius, radius, radius, -90 * deg, 0);
+    context.arc(width - radius, height - radius, radius, 0, 90 * deg);
+    context.arc(radius, height - radius, radius, 90 * deg, 180 * deg);
+    context.arc(radius, radius, radius, 180 * deg, 270 * deg);
+    context.close_path();
+
+    Gdk.cairo_set_source_pixbuf(context, source, 0, 0);
+    context.fill();
+
+    return Gdk.pixbuf_get_from_surface(surface, 0, 0, width, height);
   }
 }
