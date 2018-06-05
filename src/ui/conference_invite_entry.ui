@@ -38,7 +38,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
-            <property name="pixel_size">24</property>
+            <property name="pixel_size">44</property>
             <property name="icon_name">friend-symbolic</property>
           </object>
           <packing>
@@ -59,15 +59,11 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkLabel" id="contact_description">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Invite from:</property>
-                    <property name="use_underline">True</property>
+                    <property name="label">contact_description</property>
                     <property name="xalign">0</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -76,11 +72,14 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="contact_name">
+                  <object class="GtkLabel" id="contact_time">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label">contact_name</property>
+                    <property name="label">contact_time</property>
                     <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>

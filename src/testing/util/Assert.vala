@@ -55,6 +55,12 @@ namespace Testing {
       if (o == null) { fail("Object is null"); }
     }
 
+    public static void assert_array_equals(uint8[] expected, uint8[] actual) throws AssertionError {
+      if (expected.length != actual.length || Memory.cmp(expected, actual, expected.length) != 0) {
+        fail("expected != actual");
+      }
+    }
+
     public static void assert_equals<T>(T expected, T actual) throws AssertionError {
       var f = Gee.Functions.get_equal_func_for(typeof(T));
       if (!f(expected, actual)) { fail("expected != actual"); }

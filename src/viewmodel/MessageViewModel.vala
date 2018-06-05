@@ -91,7 +91,7 @@ namespace Venom {
       message = message_content.get_message_plain();
       var pixbuf = message_content.get_sender_image();
       if (pixbuf != null) {
-        sender_image = pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR);
+        sender_image = round_corners(pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR));
       }
       timestamp = TimeStamp.get_pretty_timestamp(message_content.timestamp);
       timestamp_tooltip = message_content.timestamp.format("%c");

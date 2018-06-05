@@ -38,6 +38,7 @@ venom_source = files(
 			'core/Contact.vala',
 			'core/FileIO.vala',
 			'core/FileTransfer.vala',
+			'core/Identicon.vala',
 			'core/Interfaces.vala',
 			'core/Logger.vala',
 			'core/Message.vala',

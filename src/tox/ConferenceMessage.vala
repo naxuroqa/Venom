@@ -1,7 +1,7 @@
 /*
  *    ConferenceMessage.vala
  *
- *    Copyright (C) 2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -80,7 +80,11 @@ namespace Venom {
     }
 
     public Gdk.Pixbuf get_sender_image() {
-      return pixbuf_from_resource(R.icons.default_contact);
+      if (message_direction == MessageDirection.OUTGOING) {
+        return pixbuf_from_resource(R.icons.default_contact);
+      }
+      var pub_key = Tools.hexstring_to_bin(peer_key);
+      return Identicon.generate_pixbuf(pub_key);
     }
 
     public bool equals_sender(IMessage m) {

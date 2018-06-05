@@ -23,16 +23,19 @@ namespace Venom {
   public class FriendRequest : GLib.Object {
     public string id { get; set; }
     public string message { get; set; }
+    public DateTime timestamp { get; set; }
 
     public FriendRequest(string id, string message) {
       this.id = id;
       this.message = message;
+      this.timestamp = new DateTime.now_local();
     }
   }
 
   public class ConferenceInvite : GLib.Object {
     public IContact sender { get; set; }
     public ConferenceType conference_type { get; set; }
+    public DateTime timestamp { get; set; }
     public uint8[] get_cookie() {
       return cookie;
     }
@@ -41,6 +44,7 @@ namespace Venom {
       this.sender = sender;
       this.conference_type = conference_type;
       this.cookie = cookie;
+      this.timestamp = new DateTime.now_local();
     }
   }
 }

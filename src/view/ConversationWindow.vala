@@ -117,7 +117,7 @@ namespace Venom {
       app_window.header_bar.subtitle = contact.get_status_string();
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
-        user_image.pixbuf = pixbuf.scale_simple(22, 22, Gdk.InterpType.BILINEAR);
+        user_image.pixbuf = round_corners(pixbuf.scale_simple(22, 22, Gdk.InterpType.BILINEAR));
       }
       typing_label.label = _("%s is typing…").printf(contact.get_name_string());
       typing_revealer.reveal_child = contact.is_typing();

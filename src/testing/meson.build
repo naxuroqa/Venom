@@ -29,6 +29,12 @@ test_glib_testing = executable('test_glib_testing', ['TestGlibTesting.vala'],
 			dependencies : [gio_dep]
 			)
 
+test_identicon = executable('test_identicon', ['TestIdenticon.vala',
+			'mocks/MockLogger.vala'
+			],
+			dependencies : [venom_dep, mox_dep]
+			)
+
 test_observable_list = executable('test_observable_list', ['TestObservableList.vala',
 			join_paths(root_source_dir, 'core/ObservableList.vala'),
 			join_paths(root_source_dir, 'core/Interfaces.vala')],
@@ -144,6 +150,7 @@ test_undo = executable('test_undo', ['TestUndo.vala'],
 			)
 
 test('test glib', test_glib_testing)
+test('test identicon', test_identicon)
 test('test mocking framework', test_mock)
 test('test tox core vapi', test_tox_core)
 test('test tox transfer', test_tox_transfer)
