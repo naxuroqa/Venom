@@ -112,6 +112,7 @@ namespace Venom {
     }
 
     protected override void shutdown() {
+      settingsDatabase.save();
       Gtk.AccelMap.save(R.constants.accels_filename());
       base.shutdown();
     }
