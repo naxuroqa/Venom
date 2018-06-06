@@ -38,6 +38,7 @@ namespace Venom {
     public abstract bool   enable_ipv6                 { get; set; }
     public abstract bool   enable_local_discovery      { get; set; }
     public abstract bool   enable_hole_punching        { get; set; }
+    public abstract bool   enable_compact_contacts     { get; set; }
 
     public abstract void load();
     public abstract void save();

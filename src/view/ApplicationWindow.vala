@@ -211,7 +211,7 @@ namespace Venom {
         logger.f("Could not set icon from theme: " + e.message);
       }
 
-      var contact_list = new ContactListWidget(logger, this, contacts, friend_requests, conference_invites, this, user_info);
+      var contact_list = new ContactListWidget(logger, this, contacts, friend_requests, conference_invites, this, user_info, settings_database);
       contact_list_box.pack_start(contact_list, true, true);
       contact_list_view_model = contact_list.get_model();
       content_paned.bind_property("position", user_info_box, "width-request", BindingFlags.SYNC_CREATE,

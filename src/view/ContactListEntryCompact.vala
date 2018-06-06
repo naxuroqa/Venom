@@ -1,5 +1,5 @@
 /*
- *    ContactListEntry.vala
+ *    ContactListEntryCompact.vala
  *
  *    Copyright (C) 2018 Venom authors and contributors
  *
@@ -20,8 +20,8 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/chat/tox/venom/ui/contact_list_entry.ui")]
-  public class ContactListEntry : Gtk.ListBoxRow {
+  [GtkTemplate(ui = "/chat/tox/venom/ui/contact_list_entry_compact.ui")]
+  public class ContactListEntryCompact : Gtk.ListBoxRow {
     [GtkChild] private Gtk.Label contact_name;
     [GtkChild] private Gtk.Label contact_status;
     [GtkChild] private Gtk.Image contact_image;
@@ -31,10 +31,10 @@ namespace Venom {
     private ContactListEntryViewModel view_model;
     private ContextStyleBinding attention_binding;
 
-    public ContactListEntry(ILogger logger, IContact contact) {
-      logger.d("ContactListEntry created.");
+    public ContactListEntryCompact(ILogger logger, IContact contact) {
+      logger.d("ContactListEntryCompact created.");
       this.logger = logger;
-      this.view_model = new ContactListEntryViewModel(logger, contact, false);
+      this.view_model = new ContactListEntryViewModel(logger, contact, true);
       this.attention_binding = new ContextStyleBinding(status_image, "highlight");
 
       view_model.bind_property("contact-name", contact_name, "label", GLib.BindingFlags.SYNC_CREATE);
@@ -45,8 +45,8 @@ namespace Venom {
       view_model.bind_property("contact-requires-attention", attention_binding, "enable", GLib.BindingFlags.SYNC_CREATE);
     }
 
-    ~ContactListEntry() {
-      logger.d("ContactListEntry destroyed.");
+    ~ContactListEntryCompact() {
+      logger.d("ContactListEntryCompact destroyed.");
     }
   }
 }

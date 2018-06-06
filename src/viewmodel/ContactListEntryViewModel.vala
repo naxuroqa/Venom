@@ -23,6 +23,7 @@ namespace Venom {
   public class ContactListEntryViewModel : GLib.Object {
     private ILogger logger;
     private IContact contact;
+    private bool compact;
 
     public string contact_name { get; set; }
     public string contact_status { get; set; }
@@ -31,10 +32,11 @@ namespace Venom {
     public string contact_status_tooltip { get; set; }
     public bool contact_requires_attention { get; set; }
 
-    public ContactListEntryViewModel(ILogger logger, IContact contact) {
+    public ContactListEntryViewModel(ILogger logger, IContact contact, bool compact) {
       logger.d("ContactListEntryViewModel created.");
       this.logger = logger;
       this.contact = contact;
+      this.compact = compact;
 
       contact.changed.connect(update_contact);
       update_contact();
@@ -51,7 +53,8 @@ namespace Venom {
 
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
-        contact_image = round_corners(pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR));
+        var size = compact ? 22 : 44;
+        contact_image = round_corners(pixbuf.scale_simple(size, size, Gdk.InterpType.BILINEAR));
       }
 
       if (contact_requires_attention) {

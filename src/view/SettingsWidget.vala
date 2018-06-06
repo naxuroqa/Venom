@@ -55,6 +55,7 @@ namespace Venom {
     [GtkChild] private Gtk.Switch enable_ipv6;
     [GtkChild] private Gtk.Switch enable_local_discovery;
     [GtkChild] private Gtk.Switch enable_hole_punching;
+    [GtkChild] private Gtk.Switch enable_compact_contacts;
 
     private ObservableList dht_nodes;
     private ObservableListModel list_model;
@@ -90,6 +91,7 @@ namespace Venom {
       settingsDatabase.bind_property("enable-ipv6",         enable_ipv6,               "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-local-discovery", enable_local_discovery, "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-hole-punching", enable_hole_punching,     "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("enable-compact-contacts", enable_compact_contacts, "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
       var dhtNodeFactory = new DhtNodeFactory();
       dht_nodes = new ObservableList();

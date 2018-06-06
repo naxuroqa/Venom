@@ -85,6 +85,7 @@ venom_source = files(
 			'view/ConferenceInviteEntry.vala',
 			'view/ConferenceWindow.vala',
 			'view/ContactListEntry.vala',
+			'view/ContactListEntryCompact.vala',
 			'view/ContactListRequestEntry.vala',
 			'view/ContactListWidget.vala',
 			'view/ContextStyleBinding.vala',
