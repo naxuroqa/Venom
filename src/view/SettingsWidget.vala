@@ -28,16 +28,11 @@ namespace Venom {
 
     [GtkChild] private Gtk.Stack stack;
     [GtkChild] private Gtk.ListBox sidebar;
-    [GtkChild] private Gtk.ListBoxRow row_general;
-    [GtkChild] private Gtk.ListBoxRow row_connection;
-    [GtkChild] private Gtk.ListBoxRow row_proxy;
-    [GtkChild] private Gtk.Widget content_general;
-    [GtkChild] private Gtk.Widget content_connection;
-    [GtkChild] private Gtk.Widget content_proxy;
     [GtkChild] private Gtk.Switch enable_dark_theme;
     [GtkChild] private Gtk.Switch enable_animations;
     [GtkChild] private Gtk.Switch enable_notify_switch;
     [GtkChild] private Gtk.Switch enable_tray_switch;
+    [GtkChild] private Gtk.Switch enable_compact_contacts;
     [GtkChild] private Gtk.Switch enable_show_typing;
     [GtkChild] private Gtk.Switch keep_history;
     [GtkChild] private Gtk.Revealer history_revealer;
@@ -55,10 +50,10 @@ namespace Venom {
     [GtkChild] private Gtk.Switch enable_ipv6;
     [GtkChild] private Gtk.Switch enable_local_discovery;
     [GtkChild] private Gtk.Switch enable_hole_punching;
-    [GtkChild] private Gtk.Switch enable_compact_contacts;
 
     private ObservableList dht_nodes;
     private ObservableListModel list_model;
+    private StackIndexTransform stack_transform;
 
     public SettingsWidget(ILogger logger, ApplicationWindow app_window, ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase) {
       logger.d("SettingsWidget created.");
@@ -69,8 +64,9 @@ namespace Venom {
       app_window.reset_header_bar();
       app_window.header_bar.title = _("Settings");
 
-      sidebar.select_row(row_general);
-      sidebar.row_activated.connect(on_row_activated);
+      stack_transform = new StackIndexTransform(stack);
+      sidebar.select_row(sidebar.get_row_at_index(0));
+      sidebar.row_selected.connect(stack_transform.transform_list_box_row);
 
       settingsDatabase.bind_property("enable-dark-theme",   enable_dark_theme,         "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-animations",   enable_animations,         "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
@@ -81,6 +77,7 @@ namespace Venom {
       settingsDatabase.bind_property("enable-send-typing",  enable_show_typing,        "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-urgency-notification", enable_notify_switch, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-tray",         enable_tray_switch,        "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("enable-compact-contacts", enable_compact_contacts, "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-proxy",        proxy_enabled,             "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-proxy",        proxy_revealer,            "reveal-child", BindingFlags.SYNC_CREATE);
       settingsDatabase.bind_property("enable-custom-proxy", proxy_manual,              "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
@@ -91,7 +88,6 @@ namespace Venom {
       settingsDatabase.bind_property("enable-ipv6",         enable_ipv6,               "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-local-discovery", enable_local_discovery, "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-hole-punching", enable_hole_punching,     "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-      settingsDatabase.bind_property("enable-compact-contacts", enable_compact_contacts, "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
       var dhtNodeFactory = new DhtNodeFactory();
       dht_nodes = new ObservableList();
@@ -103,16 +99,6 @@ namespace Venom {
 
     ~SettingsWidget() {
       logger.d("SettingsWidget destroyed.");
-    }
-
-    private void on_row_activated(Gtk.ListBoxRow row) {
-      if (row == row_general) {
-        stack.set_visible_child(content_general);
-      } else if (row == row_connection) {
-        stack.set_visible_child(content_connection);
-      } else if (row == row_proxy) {
-        stack.set_visible_child(content_proxy);
-      }
     }
 
     public void on_node_changed(IDhtNode node) {

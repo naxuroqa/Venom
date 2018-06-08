@@ -70,13 +70,37 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
     <property name="border_width">6</property>
     <property name="spacing">12</property>
     <child>
-      <object class="GtkImage">
+      <object class="GtkStack" id="contact_image_stack">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">end</property>
         <property name="valign">start</property>
-        <property name="icon_name">contact-new-symbolic</property>
-        <property name="icon_size">6</property>
+        <property name="border_width">6</property>
+        <property name="transition_type">crossfade</property>
+        <child>
+          <object class="GtkImage">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="pixel_size">44</property>
+            <property name="icon_name">contact-new-symbolic</property>
+          </object>
+          <packing>
+            <property name="name">page0</property>
+            <property name="title">page0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage" id="contact_image">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="stock">gtk-missing-image</property>
+          </object>
+          <packing>
+            <property name="name">page1</property>
+            <property name="title">page1</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="expand">True</property>
