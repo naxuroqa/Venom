@@ -42,13 +42,22 @@ namespace Venom {
       this.session = session;
       session.set_session_listener(this);
 
-      user_info.tox_id = Tools.bin_to_hexstring(session.self_get_address());
-
-      var public_key = Tools.bin_to_hexstring(session.self_get_public_key());
-      var avatar_file_path = GLib.Path.build_filename(R.constants.avatars_folder(), public_key + ".png");
+      var public_key = session.self_get_public_key();
+      var avatar_filename = Tools.bin_to_hexstring(public_key) + ".png";
+      var avatar_file_path = GLib.Path.build_filename(R.constants.avatars_folder(), avatar_filename);
       avatar_file = GLib.File.new_for_path(avatar_file_path);
 
-      get_user_info();
+      user_info.tox_id = Tools.bin_to_hexstring(session.self_get_address());
+      user_info.name = session.self_get_name();
+      user_info.status_message = session.self_get_status_message();
+      user_info.user_status = session.self_get_user_status();
+      if (avatar_file.query_exists()) {
+        load_avatar.begin(avatar_cancellable);
+      } else {
+        var identicon = Identicon.generate_pixbuf(public_key);
+        user_info.avatar.set_from_pixbuf(logger, identicon);
+        user_info.info_changed();
+      }
     }
 
     public virtual void set_self_name(string name) throws GLib.Error {
@@ -86,7 +95,9 @@ namespace Venom {
           avatar_file.delete_async.begin(GLib.Priority.DEFAULT, avatar_cancellable);
         }
 
-        user_info.avatar.reset();
+        var public_key = session.self_get_public_key();
+        var identicon = Identicon.generate_pixbuf(public_key);
+        user_info.avatar.set_from_pixbuf(logger, identicon);
         user_info.custom_avatar = false;
         user_info.info_changed();
       }
@@ -101,17 +112,6 @@ namespace Venom {
         user_info.info_changed();
       } catch (GLib.Error e) {
         logger.e("Can not load avatar: " + e.message);
-      }
-    }
-
-    private void get_user_info() {
-      user_info.name = session.self_get_name();
-      user_info.status_message = session.self_get_status_message();
-      user_info.user_status = session.self_get_user_status();
-      if (avatar_file.query_exists()) {
-        load_avatar.begin(avatar_cancellable);
-      } else {
-        user_info.info_changed();
       }
     }
 
