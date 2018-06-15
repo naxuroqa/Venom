@@ -295,7 +295,7 @@ namespace Venom {
     public signal void insert_new_line();
     
     public bool on_key_press_event(Gdk.EventKey event) {
-      if (event.keyval in new uint[]{Gdk.Key.Return, Gdk.Key.KP_Enter}) {
+      if (event.keyval == key.accel_key) {
         if ((event.state & Gdk.ModifierType.SHIFT_MASK) > 0) {
           insert_new_line();
         } else {
