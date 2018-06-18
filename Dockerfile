@@ -15,6 +15,7 @@ RUN \
     libvpx-dev \
     libgee-0.8-dev \
     libgspell-1-dev \
+    libcanberra-dev \
     meson \
     valac \
     wget

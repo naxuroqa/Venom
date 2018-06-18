@@ -26,6 +26,7 @@ namespace Venom {
     public bool   enable_logging              { get; set; default = false; }
     public bool   enable_urgency_notification { get; set; default = true; }
     public bool   enable_tray                 { get; set; default = false; }
+    public bool   enable_tray_minimize        { get; set; default = false; }
     public bool   enable_notify               { get; set; default = false; }
     public bool   enable_infinite_log         { get; set; default = true; }
     public bool   enable_send_typing          { get; set; default = false; }
@@ -39,6 +40,9 @@ namespace Venom {
     public bool   enable_local_discovery      { get; set; default = true; }
     public bool   enable_hole_punching        { get; set; default = true; }
     public bool   enable_compact_contacts     { get; set; default = false; }
+    public bool   enable_notification_sounds  { get; set; default = true; }
+    public bool   enable_notification_busy    { get; set; default = false; }
+    public bool   enable_spelling             { get; set; default = true; }
 
     private const string CREATE_TABLE_SETTINGS = """
       CREATE TABLE IF NOT EXISTS Settings (
@@ -95,7 +99,7 @@ namespace Venom {
           var type = p.value_type;
           selectStatement.bind_int(TABLE_ID, (int) p.name.hash());
           if (selectStatement.step() == DatabaseResult.ROW) {
-            var val = new Value(type);
+            var val = Value(type);
             if (type == Type.BOOLEAN) {
               val.set_boolean(selectStatement.column_bool(SettingsColumn.VALUE));
             } else if (type == Type.INT) {
@@ -127,7 +131,7 @@ namespace Venom {
           var type = p.value_type;
           insertStatement.bind_int(TABLE_ID, (int) p.name.hash());
           insertStatement.bind_text(TABLE_KEY, p.name);
-          var val = new Value(type);
+          var val = Value(type);
           get_property(p.name, ref val);
           if (type == Type.BOOLEAN) {
             insertStatement.bind_bool(TABLE_VALUE, val.get_boolean());

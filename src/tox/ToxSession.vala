@@ -141,7 +141,6 @@ namespace Venom {
 
   public class ToxSessionImpl : GLib.Object, ToxSession {
     public Tox handle;
-    public ToxAV.ToxAV handle_av;
     private Mutex mutex;
 
     private IDhtNodeDatabase dht_node_database;
@@ -191,19 +190,11 @@ namespace Venom {
       handle = new ToxCore.Tox(options, out error);
       if (error == ErrNew.PROXY_BAD_HOST || error == ErrNew.PROXY_BAD_PORT || error == ErrNew.PROXY_NOT_FOUND) {
         var message = "Proxy could not be used: " + error.to_string();
-        logger.f(message);
+        logger.e(message);
         throw new ToxError.GENERIC(message);
       } else if (error != ToxCore.ErrNew.OK) {
         var message = "Could not create tox instance: " + error.to_string();
-        logger.f(message);
-        throw new ToxError.GENERIC(message);
-      }
-
-      var error_av = ToxAV.ErrNew.OK;
-      handle_av = new ToxAV.ToxAV(handle, out error_av);
-      if (error_av != ToxAV.ErrNew.OK) {
-        var message = "Could not create toxav instance: " + error_av.to_string();
-        logger.f(message);
+        logger.e(message);
         throw new ToxError.GENERIC(message);
       }
 
@@ -234,14 +225,16 @@ namespace Venom {
       logger.d("ToxSession created.");
     }
 
-    // destructor
     ~ToxSessionImpl() {
-      logger.i("ToxSession stopping background thread.");
-      sessionThread.stop();
-      logger.i("ToxSession saving session data.");
-      iohandler.save_sessiondata(handle.get_savedata());
-      handle = null;
-      handle_av = null;
+      if (sessionThread != null) {
+        logger.i("ToxSession stopping background thread.");
+        sessionThread.stop();
+      }
+      if (handle != null) {
+        logger.i("ToxSession saving session data.");
+        iohandler.save_sessiondata(handle.get_savedata());
+        handle = null;
+      }
       logger.d("ToxSession destroyed.");
     }
 

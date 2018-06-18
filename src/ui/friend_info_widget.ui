@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1
+<!-- Generated with glade 3.22.1 
 
 Copyright (C) 2013-2018 Venom authors and contributors
 
@@ -288,7 +288,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                               <object class="GtkLabel">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Show notifications</property>
+                                <property name="label" translatable="yes">Notifications</property>
                                 <property name="use_underline">True</property>
                                 <property name="ellipsize">end</property>
                                 <property name="xalign">0</property>

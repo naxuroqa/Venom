@@ -26,6 +26,7 @@ namespace Venom {
     public abstract bool   enable_logging              { get; set; }
     public abstract bool   enable_urgency_notification { get; set; }
     public abstract bool   enable_tray                 { get; set; }
+    public abstract bool   enable_tray_minimize        { get; set; }
     public abstract bool   enable_notify               { get; set; }
     public abstract bool   enable_infinite_log         { get; set; }
     public abstract bool   enable_send_typing          { get; set; }
@@ -39,6 +40,9 @@ namespace Venom {
     public abstract bool   enable_local_discovery      { get; set; }
     public abstract bool   enable_hole_punching        { get; set; }
     public abstract bool   enable_compact_contacts     { get; set; }
+    public abstract bool   enable_notification_sounds  { get; set; }
+    public abstract bool   enable_notification_busy    { get; set; }
+    public abstract bool   enable_spelling             { get; set; }
 
     public abstract void load();
     public abstract void save();

@@ -18,6 +18,7 @@ Features
 * Group chats
 * Socks5 Proxy support
 * Spell checking
+* Sound notifications
 
 Roadmap
 -------
@@ -36,8 +37,9 @@ Dependencies
 * `gtk+-3.0 >= 3.22`
 * `glib-2.0 >= 2.56`
 * `json-glib-1.0`
-* `libsoup-2.4`
+* `libcanberra >= 0.30`
 * `libgee >= 0.20`
+* `libsoup-2.4`
 * `gspell >= 1.8`
 * `sqlite3`
 * `toxcore >= 0.2`

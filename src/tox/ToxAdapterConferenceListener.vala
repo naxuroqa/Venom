@@ -127,6 +127,8 @@ namespace Venom {
         } else {
           var invite = new ConferenceInvite(contact, type, cookie);
           conference_invites.append(invite);
+
+          notification_listener.on_conference_invite(invite);
         }
       }
     }

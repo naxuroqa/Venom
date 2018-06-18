@@ -22,23 +22,21 @@
 namespace Venom {
   public class Identicon : GLib.Object {
     private uint8[] hash;
-    private int width;
-    private int height;
+    private int size;
 
     private Cairo.Context ctx;
     private Cairo.Surface surface;
 
-    public static Gdk.Pixbuf generate_pixbuf(uint8[] public_key) {
+    public static Gdk.Pixbuf generate_pixbuf(uint8[] public_key, int size = 120) {
       var identicon = new Identicon(public_key);
       identicon.draw();
       return identicon.get_pixbuf();
     }
 
-    public Identicon(uint8[] public_key) {
+    public Identicon(uint8[] public_key, int size = 120) {
       this.hash = generate_hash(public_key);
-      this.width = 120;
-      this.height = 120;
-      this.surface = new Cairo.ImageSurface(Cairo.Format.RGB24, width, height);
+      this.size = size;
+      this.surface = new Cairo.ImageSurface(Cairo.Format.RGB24, size, size);
       this.ctx = new Cairo.Context(surface);
     }
 
@@ -46,7 +44,7 @@ namespace Venom {
       var rgb1 = hsl_to_rgb(hue_color(hue_uint(hash, 26)));
       var rgb2 = hsl_to_rgb(hue_color(hue_uint(hash, 20)), 0.5f, 0.8f);
 
-      ctx.scale(width / 5f, height / 5f);
+      ctx.scale(size / 5f, size / 5f);
 
       for (var row = 0; row < 5; row++) {
         for (var col = 0; col < 5; col++) {
@@ -68,7 +66,7 @@ namespace Venom {
     }
 
     public Gdk.Pixbuf get_pixbuf() {
-      return Gdk.pixbuf_get_from_surface(surface, 0, 0, width, height);
+      return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size);
     }
 
     public uint8[] generate_hash(uint8[] public_key) {
