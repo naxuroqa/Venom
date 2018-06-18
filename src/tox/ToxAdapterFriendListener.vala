@@ -175,6 +175,7 @@ namespace Venom {
       var request = new FriendRequest(id, message);
       friend_requests.append(request);
       tox_friend_requests.@set(id, request);
+      notification_listener.on_friend_request(request);
     }
 
     public virtual void on_friend_status_changed(uint32 friend_number, UserStatus status) {

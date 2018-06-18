@@ -24,6 +24,7 @@ using Venom;
 namespace Mock {
   public class MockNotificationListener : NotificationListener, GLib.Object {
     public bool show_notifications { get; set; }
+    public bool play_sound_notifications { get; set; }
     public void on_unread_message(IMessage message, IContact c) {
       var args = Arguments.builder()
                      .object(message)
@@ -32,12 +33,26 @@ namespace Mock {
       mock().actual_call(this, "on_unread_message", args);
     }
 
+    public void on_friend_request(FriendRequest friend_request) {
+      var args = Arguments.builder()
+                     .object(friend_request)
+                     .create();
+      mock().actual_call(this, "on_friend_request", args);
+    }
+
     public void on_filetransfer(FileTransfer transfer, IContact contact) {
       var args = Arguments.builder()
                      .object(transfer)
                      .object(contact)
                      .create();
       mock().actual_call(this, "on_filetransfer", args);
+    }
+
+    public void on_conference_invite(ConferenceInvite invite) {
+      var args = Arguments.builder()
+                     .object(invite)
+                     .create();
+      mock().actual_call(this, "on_conference_invite", args);
     }
 
     public void clear_notifications() {

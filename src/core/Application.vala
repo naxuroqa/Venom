@@ -25,6 +25,8 @@ namespace Venom {
       { "about", on_show_about, null, null, null },
       { "quit", on_quit, null, null, null },
       { "show-filetransfers", on_show_filetransfers, null, null, null },
+      { "show-conferences", on_show_conferences, null, null, null },
+      { "show-add-contact", on_show_add_contact, null, null, null },
       { "show-contact", on_show_contact, "s", null, null }
     };
 
@@ -113,6 +115,13 @@ namespace Venom {
 
     protected override void shutdown() {
       settingsDatabase.save();
+
+      applicationWindow = null;
+      settingsDatabase = null;
+      contact_database = null;
+      nodeDatabase = null;
+      database = null;
+
       Gtk.AccelMap.save(R.constants.accels_filename());
       base.shutdown();
     }
@@ -157,19 +166,44 @@ namespace Venom {
     }
 
     public void on_show_filetransfers() {
-      logger.i("on_show_filetransfers");
+      logger.d("on_show_filetransfers");
       activate();
-      getApplicationWindow().on_filetransfer();
+      var activate_window = get_active_window() as ApplicationWindow;
+      if (activate_window != null) {
+        activate_window.on_filetransfer();
+      }
+    }
+
+    public void on_show_conferences() {
+      logger.d("on_show_conferences");
+      activate();
+      var activate_window = get_active_window() as ApplicationWindow;
+      if (activate_window != null) {
+        activate_window.on_create_groupchat();
+      }
+    }
+
+    public void on_show_add_contact() {
+      logger.d("on_show_add_contact");
+      activate();
+      var activate_window = get_active_window() as ApplicationWindow;
+      if (activate_window != null) {
+        activate_window.on_add_contact();
+      }
     }
 
     private static void on_sig_int(int sig) {
-      var app = GLib.Application.get_default() as Application;
-      Idle.add(() => { app.on_quit(); return false; });
+      Idle.add(() => {
+        var application = GLib.Application.get_default();
+        application.quit();
+        return false;
+      });
     }
 
     private void on_quit() {
-      if (applicationWindow != null) {
-        applicationWindow.destroy();
+      var active_window = get_active_window();
+      if (active_window != null) {
+        active_window.destroy();
       }
     }
   }

@@ -99,8 +99,14 @@ namespace Venom {
       filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, conversations, notification_listener);
 
       settings_database.bind_property("enable-send-typing", friend_listener, "show-typing", BindingFlags.SYNC_CREATE);
-      settings_database.bind_property("enable-urgency-notification", notification_listener, "show-notifications", BindingFlags.SYNC_CREATE);
+      settings_database.bind_property("enable-notification-sounds", notification_listener, "play-sound-notifications", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-tray", status_icon, "visible", BindingFlags.SYNC_CREATE);
+
+      update_notifications();
+      user_info.notify["user-status"].connect(update_notifications);
+      settings_database.notify["enable-urgency-notification"].connect(update_notifications);
+      settings_database.notify["enable-notification-busy"].connect(update_notifications);
+
       user_info.notify["user-status"].connect(on_user_status_changed);
 
       init_callbacks();
@@ -118,7 +124,7 @@ namespace Venom {
         logger.e("Could not create tox instance: " + e.message);
       }
 
-      status_icon.activate.connect(present);
+      status_icon.activate.connect(on_status_icon_activate);
       delete_event.connect(on_delete_event);
       focus_in_event.connect(on_focus_in_event);
       window_state_event.connect(on_window_state_event);
@@ -135,16 +141,24 @@ namespace Venom {
       save_window_state();
     }
 
+    private void on_status_icon_activate() {
+      if (is_active) {
+        hide();
+      } else {
+        present();
+      }
+    }
+
     private bool on_focus_in_event() {
       notification_listener.clear_notifications();
       return false;
     }
 
     private bool on_delete_event() {
-      if (!settings_database.enable_tray) {
-        return false;
+      if (settings_database.enable_tray && settings_database.enable_tray_minimize) {
+        return hide_on_delete();
       }
-      return hide_on_delete();
+      return false;
     }
 
     private bool on_window_state_event(Gdk.EventWindowState event) {
@@ -257,7 +271,7 @@ namespace Venom {
       switch_content_with(() => { return new UserInfoWidget(logger, this, user_info, session_listener); });
     }
 
-    private void on_create_groupchat() {
+    public void on_create_groupchat() {
       switch_content_with(() => { return new CreateGroupchatWidget(logger, this, conference_invites, conference_listener, conference_listener); });
     }
 
@@ -330,6 +344,11 @@ namespace Venom {
       }
     }
 
+    private void update_notifications() {
+      notification_listener.show_notifications = settings_database.enable_urgency_notification &&
+        (settings_database.enable_notification_busy || user_info.user_status != UserStatus.BUSY);
+    }
+
     private void on_user_status_changed() {
       var action = lookup_action("change_userstatus") as SimpleAction;
       switch (user_info.user_status) {
@@ -361,7 +380,7 @@ namespace Venom {
       }
     }
 
-    private void on_add_contact() {
+    public void on_add_contact() {
       logger.d("on_add_contact()");
       switch_content_with(() => {
         var widget = new AddContactWidget(logger, this, friend_requests, friend_listener, friend_listener);

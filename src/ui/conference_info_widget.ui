@@ -193,7 +193,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Show notifications</property>
+                            <property name="label" translatable="yes">Notifications</property>
                             <property name="use_underline">True</property>
                             <property name="xalign">0</property>
                           </object>
