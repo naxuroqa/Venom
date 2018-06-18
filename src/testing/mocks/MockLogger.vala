@@ -30,5 +30,6 @@ namespace Mock {
     public void e(string message) { mock().actual_call(this, "e", args().string(message).create()); }
     public void f(string message) { mock().actual_call(this, "f", args().string(message).create()); }
     public void attach_to_glib() { mock().actual_call(this, "attach_to_glib"); }
+    public string get_log() { return mock().actual_call(this, "get_log").get_string();}
   }
 }

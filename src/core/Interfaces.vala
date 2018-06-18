@@ -39,6 +39,7 @@ namespace Venom {
     public abstract void w(string message);
     public abstract void e(string message);
     public abstract void f(string message);
+    public abstract string get_log();
     public abstract void attach_to_glib();
   }
 

@@ -65,8 +65,13 @@ namespace Venom {
 
   public class Logger : ILogger, Object {
     public static LogLevel displayed_level { get; set; default = LogLevel.WARNING; }
+    private StringBuilder log_builder;
+    public string get_log() {
+      return log_builder.str;
+    }
 
     public Logger() {
+      log_builder = new StringBuilder();
       d("Logger created.");
     }
 
@@ -130,10 +135,13 @@ namespace Venom {
       GLib.Log.set_handler("Json", LogLevelFlags.LEVEL_MASK, glib_log_function);
     }
 
-    public static void log(LogLevel level, string message) {
+    public void log(LogLevel level, string message) {
+      log_builder.append("%s\n".printf(message));
+
       if (level < displayed_level) {
         return;
       }
+
       unowned FileStream s = level < LogLevel.ERROR ? stdout : stderr;
       s.printf("[%s] %s\n", level.to_string(), message);
     }
