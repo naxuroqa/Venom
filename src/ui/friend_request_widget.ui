@@ -80,7 +80,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                   <object class="GtkLabel" id="contact_time">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">contact_time</property>
+                    <property name="label">contact_time</property>
                     <property name="ellipsize">end</property>
                     <property name="xalign">0</property>
                     <style>

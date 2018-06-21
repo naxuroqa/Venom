@@ -55,6 +55,7 @@ src/view/ConferenceWindow.vala
 src/view/NodeWidget.vala
 src/view/AboutDialog.vala
 src/view/ContactListEntryCompact.vala
+src/view/ErrorWidget.vala
 src/view/WelcomeWidget.vala
 src/view/FileTransferEntryInline.vala
 src/view/FileTransferWidget.vala
@@ -95,6 +96,7 @@ src/ui/contact_list_entry.ui
 src/ui/file_transfer_entry_inline.ui
 src/ui/settings_widget.ui
 src/ui/friend_info_widget.ui
+src/ui/error_widget.ui
 src/db/DatabaseInterfaces.vala
 src/db/SqliteWrapper.vala
 src/db/SqliteSettingsDatabase.vala

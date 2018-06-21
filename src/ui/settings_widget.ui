@@ -1233,7 +1233,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                                         <property name="visible">True</property>
                                                         <property name="can_focus">True</property>
                                                         <property name="width_chars">5</property>
-                                                        <property name="text" translatable="yes">180</property>
+                                                        <property name="text">180</property>
                                                         <property name="input_purpose">digits</property>
                                                         <property name="adjustment">history_delete_adjustment</property>
                                                         <property name="snap_to_ticks">True</property>
