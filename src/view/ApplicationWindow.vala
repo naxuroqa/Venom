@@ -44,7 +44,7 @@ namespace Venom {
     [GtkChild] public Gtk.Box header_start;
     [GtkChild] public Gtk.Box header_end;
 
-    private Factory.IWidgetFactory widget_factory;
+    private unowned Factory.IWidgetFactory widget_factory;
     private ILogger logger;
     private ISettingsDatabase settings_database;
     private IContactDatabase contact_database;
@@ -66,8 +66,8 @@ namespace Venom {
     private GLib.HashTable<IContact, ObservableList> conversations;
     private UserInfo user_info;
 
-    public ApplicationWindow(Gtk.Application application, Factory.IWidgetFactory widget_factory, IDhtNodeDatabase node_database,
-                             ISettingsDatabase settings_database, IContactDatabase contact_database) {
+    public ApplicationWindow(Gtk.Application application, Factory.IWidgetFactory widget_factory, ToxSession session,
+                             IDhtNodeDatabase node_database, ISettingsDatabase settings_database, IContactDatabase contact_database) {
       Object(application: application);
 
       conversations = new GLib.HashTable<IContact, ObservableList>(null, null);
@@ -113,16 +113,10 @@ namespace Venom {
       init_window_state();
       init_widgets();
 
-      try {
-        var session_io = new ToxSessionIOImpl(logger);
-        session = new ToxSessionImpl(session_io, node_database, settings_database, logger);
-        session_listener.attach_to_session(session);
-        friend_listener.attach_to_session(session);
-        conference_listener.attach_to_session(session);
-        filetransfer_listener.attach_to_session(session);
-      } catch (Error e) {
-        logger.e("Could not create tox instance: " + e.message);
-      }
+      session_listener.attach_to_session(session);
+      friend_listener.attach_to_session(session);
+      conference_listener.attach_to_session(session);
+      filetransfer_listener.attach_to_session(session);
 
       status_icon.activate.connect(on_status_icon_activate);
       delete_event.connect(on_delete_event);
