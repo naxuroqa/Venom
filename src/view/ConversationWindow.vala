@@ -171,6 +171,10 @@ namespace Venom {
         try_set_typing(false);
       }
     }
+    
+    private void on_insert_new_line() {
+      text_view.buffer.insert_at_cursor("\n", 1);
+    }
 
     private void on_contact_info() {
       logger.d("on_contact_info");
@@ -290,10 +294,15 @@ namespace Venom {
     }
 
     public signal void send();
-
+    public signal void insert_new_line();
+    
     public bool on_key_press_event(Gdk.EventKey event) {
-      if (event.keyval == key.accel_key && event.state == key.accel_mods) {
-        send();
+      if (event.keyval == key.accel_key) {
+        if ((event.state & Gdk.ModifierType.SHIFT_MASK) > 0) {
+          insert_new_line();
+        } else {
+          send();
+        }
         return true;
       }
       return false;
