@@ -292,7 +292,8 @@ namespace Venom {
     public signal void send();
 
     public bool on_key_press_event(Gdk.EventKey event) {
-      if (event.keyval == key.accel_key && event.state == key.accel_mods) {
+      uint modifiers = event.state & (Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK);
+      if (event.keyval == key.accel_key && modifiers == key.accel_mods) {
         send();
         return true;
       }
