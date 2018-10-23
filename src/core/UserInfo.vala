@@ -35,13 +35,14 @@ namespace Venom {
   public class Avatar : GLib.Object {
     public Gdk.Pixbuf pixbuf { get; set; }
     public GLib.Bytes hash { get; set; }
-    public Avatar() {
-      reset();
+
+    construct {
+      hash = new GLib.Bytes(new uint8[] {});
     }
 
-    public void reset() {
-      pixbuf = pixbuf_from_resource(R.icons.default_contact, 128);
-      hash = new GLib.Bytes(new uint8[] {});
+    public void set_from_pixbuf(ILogger logger, Gdk.Pixbuf pixbuf) {
+      this.hash = new GLib.Bytes(new uint8[] {});
+      this.pixbuf = pixbuf;
     }
 
     public void set_from_data(ILogger logger, uint8[] data, Gdk.Pixbuf? pixbuf = null) throws Error {
@@ -58,7 +59,7 @@ namespace Venom {
         }
         unowned Gdk.Pixbuf tmp = loader.get_pixbuf();
         if (tmp != null) {
-          this.pixbuf = tmp.scale_simple(128, 128, Gdk.InterpType.BILINEAR);
+          this.pixbuf = tmp.scale_simple(120, 120, Gdk.InterpType.BILINEAR);
         }
       }
     }

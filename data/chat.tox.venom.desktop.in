@@ -10,3 +10,8 @@ Categories=InstantMessaging;Network;
 DBusActivatable=true
 StartupNotify=true
 X-GNOME-UsesNotifications=true
+Actions=preferences;
+
+[Desktop Action preferences]
+Name=Preferences
+Exec=venom --preferences

@@ -1,7 +1,7 @@
 /*
  *    WidgetFactory.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -21,21 +21,23 @@
 
 namespace Venom.Factory {
   public interface IWidgetFactory : Object {
-    public abstract ApplicationWindow createApplicationWindow(Gtk.Application application,
-                                                              IDhtNodeDatabase node_database, ISettingsDatabase settings_database, IContactDatabase contact_database);
+    public abstract ApplicationWindow createApplicationWindow(Gtk.Application application, ToxSession session, IDhtNodeDatabase node_database, ISettingsDatabase settings_database, IContactDatabase contact_database);
     public abstract ILogger createLogger();
     public abstract Gtk.Dialog createAboutDialog();
     public abstract IDatabaseFactory createDatabaseFactory();
-    public abstract Gtk.Widget createSettingsWidget(ApplicationWindow app_window, ISettingsDatabase database, IDhtNodeDatabase nodeDatabase);
+    public abstract SettingsWidget createSettingsWidget(ApplicationWindow? app_window, ISettingsDatabase database, IDhtNodeDatabase nodeDatabase);
   }
 
   public class WidgetFactory : IWidgetFactory, Object {
     private ILogger logger;
     private Gtk.Dialog about_dialog;
+    private ApplicationWindow app_window;
 
-    public ApplicationWindow createApplicationWindow(Gtk.Application application,
-                                                     IDhtNodeDatabase node_database, ISettingsDatabase settings_database, IContactDatabase contact_database) {
-      return new ApplicationWindow(application, this, node_database, settings_database, contact_database);
+    public ApplicationWindow createApplicationWindow(Gtk.Application application, ToxSession session, IDhtNodeDatabase node_database, ISettingsDatabase settings_database, IContactDatabase contact_database) {
+      if (app_window == null) {
+        app_window = new ApplicationWindow(application, this, session, node_database, settings_database, contact_database);
+      }
+      return app_window;
     }
 
     public ILogger createLogger() {
@@ -53,12 +55,12 @@ namespace Venom.Factory {
       if (about_dialog == null) {
         about_dialog = new AboutDialog(logger);
         about_dialog.modal = true;
-        about_dialog.unmap.connect(() => { about_dialog = null; });
+        about_dialog.destroy.connect(() => { about_dialog = null; });
       }
       return about_dialog;
     }
 
-    public Gtk.Widget createSettingsWidget(ApplicationWindow app_window, ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase) {
+    public SettingsWidget createSettingsWidget(ApplicationWindow? app_window, ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase) {
       return new SettingsWidget(createLogger(), app_window, settingsDatabase, nodeDatabase);
     }
   }

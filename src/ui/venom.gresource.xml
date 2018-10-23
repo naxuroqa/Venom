@@ -26,10 +26,11 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
     <file compressed="true" preprocess="xml-stripblanks">conference_invite_entry.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">conference_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">contact_list_entry.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">contact_list_request_entry.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">contact_list_entry_compact.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">contact_list_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">conversation_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">create_groupchat_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">error_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">file_transfer_entry.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">file_transfer_entry_inline.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">file_transfer_widget.ui</file>

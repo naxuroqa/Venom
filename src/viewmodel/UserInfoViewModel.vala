@@ -30,7 +30,7 @@ namespace Venom {
     private ILogger logger;
     private UserInfo user_info;
     private UserInfoViewListener listener;
-    private bool avatar_set;
+    private AvatarChange avatar_change;
     private GLib.ListStore avatars;
 
     public UserInfoViewModel(ILogger logger, UserInfo user_info, UserInfoViewListener listener) {
@@ -84,6 +84,8 @@ namespace Venom {
       statusmessage = user_info.status_message;
       avatar = user_info.avatar.pixbuf;
       tox_id = user_info.tox_id;
+
+      avatar_change = AvatarChange.NONE;
     }
 
     public void on_apply_clicked() {
@@ -91,10 +93,13 @@ namespace Venom {
       try {
         listener.set_self_name(username);
         listener.set_self_status_message(statusmessage);
-        if (avatar_set) {
-          listener.set_self_avatar(avatar);
-        } else {
-          listener.reset_self_avatar();
+        switch (avatar_change) {
+          case AvatarChange.NEW:
+            listener.set_self_avatar(avatar);
+            break;
+          case AvatarChange.RESET:
+            listener.reset_self_avatar();
+            break;
         }
       } catch (GLib.Error e) {
         logger.e("UserInfoViewModel cannot set user info: " + e.message);
@@ -106,7 +111,7 @@ namespace Venom {
     private async void set_file_async(GLib.File file) {
       try {
         var stream = file.read();
-        avatar = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 128, 128, true);
+        avatar = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 120, 120, true);
       } catch (GLib.Error e) {
         logger.e("UserInfoViewModel can not read file: " + e.message);
       }
@@ -114,18 +119,26 @@ namespace Venom {
 
     public void set_file(GLib.File file) {
       logger.d("UserInfoViewModel set_file.");
-      avatar_set = true;
+      avatar_change = AvatarChange.NEW;
       set_file_async.begin(file);
     }
 
     public void reset_file() {
-      avatar_set = false;
-      avatar = pixbuf_from_resource(R.icons.default_contact, 128);
+      logger.d("UserInfoViewModel reset_file.");
+      avatar_change = AvatarChange.RESET;
+      var id = Tools.hexstring_to_bin(tox_id)[0 : ToxCore.public_key_size()];
+      avatar = Identicon.generate_pixbuf(id);
     }
 
     ~UserInfoViewModel() {
       logger.d("UserInfoViewModel destroyed.");
     }
+  }
+
+  public enum AvatarChange {
+    NONE,
+    NEW,
+    RESET
   }
 
   public interface UserInfoViewListener : GLib.Object {

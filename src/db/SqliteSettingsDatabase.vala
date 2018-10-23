@@ -1,7 +1,7 @@
 /*
  *    SqliteSettingsDatabase.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -26,6 +26,7 @@ namespace Venom {
     public bool   enable_logging              { get; set; default = false; }
     public bool   enable_urgency_notification { get; set; default = true; }
     public bool   enable_tray                 { get; set; default = false; }
+    public bool   enable_tray_minimize        { get; set; default = false; }
     public bool   enable_notify               { get; set; default = false; }
     public bool   enable_infinite_log         { get; set; default = true; }
     public bool   enable_send_typing          { get; set; default = false; }
@@ -38,100 +39,39 @@ namespace Venom {
     public bool   enable_ipv6                 { get; set; default = true; }
     public bool   enable_local_discovery      { get; set; default = true; }
     public bool   enable_hole_punching        { get; set; default = true; }
+    public bool   enable_compact_contacts     { get; set; default = false; }
+    public bool   enable_notification_sounds  { get; set; default = true; }
+    public bool   enable_notification_busy    { get; set; default = false; }
+    public bool   enable_spelling             { get; set; default = true; }
 
     private const string CREATE_TABLE_SETTINGS = """
       CREATE TABLE IF NOT EXISTS Settings (
-        id                   INTEGER PRIMARY KEY NOT NULL DEFAULT 0,
-        darktheme            INTEGER             NOT NULL,
-        animations           INTEGER             NOT NULL,
-        logging              INTEGER             NOT NULL,
-        urgencynotification  INTEGER             NOT NULL,
-        tray                 INTEGER             NOT NULL,
-        notify               INTEGER             NOT NULL,
-        infinitelog          INTEGER             NOT NULL,
-        sendtyping           INTEGER             NOT NULL,
-        daystolog            INTEGER             NOT NULL,
-        enableproxy          INTEGER             NOT NULL,
-        enablecustomproxy    INTEGER             NOT NULL,
-        customproxyhost      STRING              NOT NULL,
-        customproxyport      INTEGER             NOT NULL,
-        enableudp            INTEGER             NOT NULL,
-        enableipv6           INTEGER             NOT NULL,
-        enablelocaldiscovery INTEGER             NOT NULL,
-        enableholepunching   INTEGER             NOT NULL
+        id                   INTEGER PRIMARY KEY NOT NULL,
+        key                  TEXT                NOT NULL,
+        value                                    NOT NULL
       );
     """;
 
     private enum SettingsColumn {
       ID,
-      DARKTHEME,
-      ANIMATIONS,
-      LOGGING,
-      URGENCYNOTIFICATIONS,
-      TRAY,
-      NOTIFY,
-      INFINITELOG,
-      SENDTYPING,
-      DAYSTOLOG,
-      ENABLE_PROXY,
-      ENABLE_CUSTOM_PROXY,
-      CUSTOM_PROXY_HOST,
-      CUSTOM_PROXY_PORT,
-      ENABLE_UDP,
-      ENABLE_IPV6,
-      ENABLE_LOCAL_DISCOVERY,
-      ENABLE_HOLE_PUNCHING
+      KEY,
+      VALUE
     }
 
     private const string TABLE_ID = "$ID";
-    private const string TABLE_DARKTHEME = "$DARKTHEME";
-    private const string TABLE_ANIMATIONS = "$ANIMATIONS";
-    private const string TABLE_LOGGING = "$LOGGING";
-    private const string TABLE_URGENCYNOTIFICATIONS = "$URGENCYNOTIFICATIONS";
-    private const string TABLE_TRAY = "$TRAY";
-    private const string TABLE_NOTIFY = "$NOTIFY";
-    private const string TABLE_INFINITELOG = "$INFINITELOG";
-    private const string TABLE_SENDTYPING = "$SENDTYPING";
-    private const string TABLE_DAYSTOLOG = "$DAYSTOLOG";
-    private const string TABLE_ENABLE_PROXY = "$PROXY";
-    private const string TABLE_ENABLE_CUSTOM_PROXY = "$CUSTOMPROXY";
-    private const string TABLE_CUSTOM_PROXY_HOST = "$CUSTOMPROXYHOST";
-    private const string TABLE_CUSTOM_PROXY_PORT = "$CUSTOMPROXYPORT";
-    private const string TABLE_UDP = "$UDP";
-    private const string TABLE_IPV6 = "$IPV6";
-    private const string TABLE_LOCAL_DISCOVERY = "$LOCALDISCOVERY";
-    private const string TABLE_HOLE_PUNCHING = "$HOLEPUNCHING";
+    private const string TABLE_KEY = "$KEY";
+    private const string TABLE_VALUE = "$VALUE";
 
     private static string STATEMENT_INSERT_SETTINGS =
-      "INSERT OR REPLACE INTO Settings (id, darktheme, animations, logging, urgencynotification, tray, notify, infinitelog, sendtyping, daystolog, enableproxy, enablecustomproxy, customproxyhost, customproxyport, enableudp, enableipv6, enablelocaldiscovery, enableholepunching)"
-      + " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-          .printf(TABLE_ID,
-                  TABLE_DARKTHEME,
-                  TABLE_ANIMATIONS,
-                  TABLE_LOGGING,
-                  TABLE_URGENCYNOTIFICATIONS,
-                  TABLE_TRAY,
-                  TABLE_NOTIFY,
-                  TABLE_INFINITELOG,
-                  TABLE_SENDTYPING,
-                  TABLE_DAYSTOLOG,
-                  TABLE_ENABLE_PROXY,
-                  TABLE_ENABLE_CUSTOM_PROXY,
-                  TABLE_CUSTOM_PROXY_HOST,
-                  TABLE_CUSTOM_PROXY_PORT,
-                  TABLE_UDP,
-                  TABLE_IPV6,
-                  TABLE_LOCAL_DISCOVERY,
-                  TABLE_HOLE_PUNCHING);
+      "INSERT OR REPLACE INTO Settings (id, key, value)"
+      + " VALUES (%s, %s, %s);".printf(TABLE_ID, TABLE_KEY, TABLE_VALUE);
 
-    private static string STATEMENT_SELECT_SETTINGS = "SELECT * FROM Settings WHERE id = 0";
+    private static string STATEMENT_SELECT_SETTINGS = "SELECT * FROM Settings WHERE id = (%s)".printf(TABLE_ID);
 
     private IDatabaseStatement insertStatement;
     private IDatabaseStatement selectStatement;
 
     private ILogger logger;
-
-    private bool initialized = false;
 
     public SqliteSettingsDatabase(IDatabaseStatementFactory statementFactory, ILogger logger) throws DatabaseStatementError {
 
@@ -147,70 +87,68 @@ namespace Venom {
     }
 
     ~SqliteSettingsDatabase() {
-      save();
       logger.d("SqliteSettingsDatabase destroyed.");
     }
 
     public void load() {
-      if (initialized) {
-        save();
-      }
-      initialized = true;
-
+      logger.d("SqliteSettingsDatabase load.");
+      var props = get_class().list_properties();
+      selectStatement.reset();
       try {
-        if (selectStatement.step() == DatabaseResult.ROW) {
-          enable_dark_theme = selectStatement.column_bool(SettingsColumn.DARKTHEME);
-          enable_animations = selectStatement.column_bool(SettingsColumn.ANIMATIONS);
-          enable_logging = selectStatement.column_bool(SettingsColumn.LOGGING);
-          enable_urgency_notification = selectStatement.column_bool(SettingsColumn.URGENCYNOTIFICATIONS);
-          enable_tray = selectStatement.column_bool(SettingsColumn.TRAY);
-          enable_notify = selectStatement.column_bool(SettingsColumn.NOTIFY);
-          enable_infinite_log = selectStatement.column_bool(SettingsColumn.INFINITELOG);
-          enable_send_typing = selectStatement.column_bool(SettingsColumn.SENDTYPING);
-          days_to_log = selectStatement.column_int(SettingsColumn.DAYSTOLOG);
-          enable_proxy = selectStatement.column_bool(SettingsColumn.ENABLE_PROXY);
-          enable_custom_proxy = selectStatement.column_bool(SettingsColumn.ENABLE_CUSTOM_PROXY);
-          custom_proxy_host = selectStatement.column_text(SettingsColumn.CUSTOM_PROXY_HOST);
-          custom_proxy_port = selectStatement.column_int(SettingsColumn.CUSTOM_PROXY_PORT);
-          enable_udp = selectStatement.column_bool(SettingsColumn.ENABLE_UDP);
-          enable_ipv6 = selectStatement.column_bool(SettingsColumn.ENABLE_IPV6);
-          enable_local_discovery = selectStatement.column_bool(SettingsColumn.ENABLE_LOCAL_DISCOVERY);
-          enable_hole_punching = selectStatement.column_bool(SettingsColumn.ENABLE_HOLE_PUNCHING);
-        } else {
-          logger.i("No settings entry found.");
+        foreach (var p in props) {
+          var type = p.value_type;
+          selectStatement.bind_int(TABLE_ID, (int) p.name.hash());
+          if (selectStatement.step() == DatabaseResult.ROW) {
+            var val = Value(type);
+            if (type == Type.BOOLEAN) {
+              val.set_boolean(selectStatement.column_bool(SettingsColumn.VALUE));
+            } else if (type == Type.INT) {
+              val.set_int(selectStatement.column_int(SettingsColumn.VALUE));
+            } else if (type == Type.STRING) {
+              val.set_string(selectStatement.column_text(SettingsColumn.VALUE));
+            } else {
+              logger.e(@"Unsupported type $(type.name()) for property $(p.name).");
+              selectStatement.reset();
+              continue;
+            }
+            set_property(p.name, val);
+          } else {
+            logger.i(@"No settings entry for property $(p.name) found.");
+          }
+          selectStatement.reset();
         }
       } catch (DatabaseStatementError e) {
         logger.e("Could not retrieve settings from database: " + e.message);
-      } finally {
-        selectStatement.reset();
       }
     }
 
     public void save() {
+      logger.d("SqliteSettingsDatabase save.");
+      var props = get_class().list_properties();
       try {
-        insertStatement.builder()
-            .bind_int( TABLE_ID, 0)
-            .bind_bool(TABLE_DARKTHEME, enable_dark_theme)
-            .bind_bool(TABLE_ANIMATIONS, enable_animations)
-            .bind_bool(TABLE_LOGGING, enable_logging)
-            .bind_bool(TABLE_URGENCYNOTIFICATIONS, enable_urgency_notification)
-            .bind_bool(TABLE_TRAY, enable_tray)
-            .bind_bool(TABLE_NOTIFY, enable_notify)
-            .bind_bool(TABLE_INFINITELOG, enable_infinite_log)
-            .bind_bool(TABLE_SENDTYPING, enable_send_typing)
-            .bind_int( TABLE_DAYSTOLOG, days_to_log)
-            .bind_bool(TABLE_ENABLE_PROXY, enable_proxy)
-            .bind_bool(TABLE_ENABLE_CUSTOM_PROXY, enable_custom_proxy)
-            .bind_text(TABLE_CUSTOM_PROXY_HOST, custom_proxy_host)
-            .bind_int(TABLE_CUSTOM_PROXY_PORT, custom_proxy_port)
-            .bind_bool(TABLE_UDP, enable_udp)
-            .bind_bool(TABLE_IPV6, enable_ipv6)
-            .bind_bool(TABLE_LOCAL_DISCOVERY, enable_local_discovery)
-            .bind_bool(TABLE_HOLE_PUNCHING, enable_hole_punching)
-            .step();
+        insertStatement.reset();
+        foreach (var p in props) {
+          var type = p.value_type;
+          insertStatement.bind_int(TABLE_ID, (int) p.name.hash());
+          insertStatement.bind_text(TABLE_KEY, p.name);
+          var val = Value(type);
+          get_property(p.name, ref val);
+          if (type == Type.BOOLEAN) {
+            insertStatement.bind_bool(TABLE_VALUE, val.get_boolean());
+          } else if (type == Type.INT) {
+            insertStatement.bind_int(TABLE_VALUE, val.get_int());
+          } else if (type == Type.STRING) {
+            insertStatement.bind_text(TABLE_VALUE, val.get_string());
+          } else {
+            logger.e(@"Unsupported type $(type.name()) for property $(p.name).");
+            insertStatement.reset();
+            continue;
+          }
+          insertStatement.step();
+          insertStatement.reset();
+        }
       } catch (DatabaseStatementError e) {
-        logger.e("Could not insert settings into database: " + e.message);
-      } finally {
+        logger.e("Could not retrieve settings from database: " + e.message);
         insertStatement.reset();
       }
     }

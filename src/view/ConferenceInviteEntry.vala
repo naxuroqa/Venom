@@ -27,7 +27,8 @@ namespace Venom {
     private ConferenceInviteEntryListener listener;
 
     [GtkChild] private Gtk.Image contact_image;
-    [GtkChild] private Gtk.Label contact_name;
+    [GtkChild] private Gtk.Label contact_description;
+    [GtkChild] private Gtk.Label contact_time;
 
     [GtkChild] private Gtk.Button accept;
     [GtkChild] private Gtk.Button reject;
@@ -42,9 +43,10 @@ namespace Venom {
 
       var pixbuf = sender.get_image();
       if (pixbuf != null) {
-        contact_image.pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
+        contact_image.pixbuf = round_corners(pixbuf.scale_simple(40, 40, Gdk.InterpType.BILINEAR));
       }
-      contact_name.label = sender.get_name_string();
+      contact_description.label = _("Invite from %s").printf(sender.get_name_string());
+      contact_time.label = TimeStamp.get_pretty_timestamp(invite.timestamp);
 
       accept.clicked.connect(on_accept_clicked);
       reject.clicked.connect(on_reject_clicked);

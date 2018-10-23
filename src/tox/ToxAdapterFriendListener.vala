@@ -175,6 +175,7 @@ namespace Venom {
       var request = new FriendRequest(id, message);
       friend_requests.append(request);
       tox_friend_requests.@set(id, request);
+      notification_listener.on_friend_request(request);
     }
 
     public virtual void on_friend_status_changed(uint32 friend_number, UserStatus status) {
@@ -225,7 +226,9 @@ namespace Venom {
 
       var filepath = GLib.Path.build_filename(R.constants.avatars_folder(), @"$str_id.png");
       var file = File.new_for_path(filepath);
-      if (file.query_exists()) {
+      if (!file.query_exists()) {
+        contact.tox_image = Identicon.generate_pixbuf(public_key);
+      } else {
         uint8[] buf;
         try {
           file.load_contents(null, out buf, null);

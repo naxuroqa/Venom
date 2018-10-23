@@ -35,6 +35,7 @@ namespace Venom {
     public abstract bool received                      { get; set; }
 
     public abstract string get_sender_plain();
+    public abstract string get_sender_full();
     public abstract string get_sender_id();
     public abstract string get_conversation_id();
     public abstract string get_message_plain();
@@ -80,6 +81,10 @@ namespace Venom {
       } else {
         return from.get_name_string();
       }
+    }
+
+    public string get_sender_full() {
+      return get_sender_plain();
     }
 
     public string get_sender_id() {

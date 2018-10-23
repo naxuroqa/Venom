@@ -1,7 +1,7 @@
 /*
  *    AddContactWidget.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -27,6 +27,8 @@ namespace Venom {
     [GtkChild] private Gtk.Button send;
     [GtkChild] private Gtk.Label contact_id_error;
     [GtkChild] private Gtk.Revealer contact_id_error_content;
+    [GtkChild] private Gtk.Stack contact_image_stack;
+    [GtkChild] private Gtk.Image contact_image;
     [GtkChild] private Gtk.Box placeholder;
     [GtkChild] private Gtk.ListBox friend_requests;
 
@@ -37,12 +39,14 @@ namespace Venom {
     private ILogger logger;
     private AddContactViewModel view_model;
     private ContainerChildBooleanBinding stack_binding;
+    private StackIndexTransform contact_image_stack_transform;
 
     public AddContactWidget(ILogger logger, ApplicationWindow app_window, ObservableList friend_requests_model, AddContactWidgetListener listener, FriendRequestWidgetListener friend_request_listener) {
       logger.d("AddContactWidget created.");
       this.logger = logger;
       view_model = new AddContactViewModel(logger, friend_requests_model, listener);
       stack_binding = new ContainerChildBooleanBinding(stack, friend_request_item, "needs-attention");
+      contact_image_stack_transform = new StackIndexTransform(contact_image_stack);
 
       app_window.reset_header_bar();
       app_window.header_bar.custom_title = custom_title;
@@ -51,6 +55,9 @@ namespace Venom {
       contact_message.buffer.bind_property("text", view_model, "contact-message", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       view_model.bind_property("contact-id-error-message", contact_id_error, "label", BindingFlags.SYNC_CREATE);
       view_model.bind_property("contact-id-error-visible", contact_id_error_content, "reveal-child", BindingFlags.SYNC_CREATE);
+      view_model.bind_property("contact-image-visible", contact_image_stack, "visible-child-name", BindingFlags.SYNC_CREATE,
+                               contact_image_stack_transform.transform_boolean);
+      view_model.bind_property("contact-image", contact_image, "pixbuf", BindingFlags.SYNC_CREATE);
       view_model.bind_property("new-friend-request", stack_binding, "active", BindingFlags.SYNC_CREATE);
 
       friend_requests.set_placeholder(placeholder);
@@ -59,6 +66,10 @@ namespace Venom {
 
       contact_id.icon_release.connect(view_model.on_paste_clipboard);
       send.clicked.connect(view_model.on_send);
+
+      if (view_model.new_friend_request) {
+        stack.set_visible_child(friend_request_item);
+      }
     }
 
     ~AddContactWidget() {

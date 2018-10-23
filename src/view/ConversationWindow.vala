@@ -77,6 +77,10 @@ namespace Venom {
       text_buffer_undo_binding.bind_buffer(text_view.buffer);
       text_view.populate_popup.connect(text_buffer_undo_binding.populate_popup);
 
+      if (settings.enable_spelling) {
+        Gspell.TextView.get_from_gtk_text_view(text_view).basic_setup();
+      }
+
       text_view_event_handler = new TextViewEventHandler();
       text_view_event_handler.send.connect(on_send);
       text_view.key_press_event.connect(text_view_event_handler.on_key_press_event);
@@ -115,7 +119,7 @@ namespace Venom {
       app_window.header_bar.subtitle = contact.get_status_string();
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
-        user_image.pixbuf = pixbuf.scale_simple(22, 22, Gdk.InterpType.BILINEAR);
+        user_image.pixbuf = round_corners(pixbuf.scale_simple(22, 22, Gdk.InterpType.BILINEAR));
       }
       typing_label.label = _("%s is typing…").printf(contact.get_name_string());
       typing_revealer.reveal_child = contact.is_typing();
@@ -274,14 +278,22 @@ namespace Venom {
   }
 
   public class TextViewEventHandler {
+    Gtk.AccelKey key;
+
+    public TextViewEventHandler() {
+      var accel_path = "<Venom>/Message/Send";
+      if (!Gtk.AccelMap.lookup_entry(accel_path, out key)) {
+        key.accel_mods = ~Gdk.ModifierType.MODIFIER_MASK;
+        key.accel_key = Gdk.Key.Return;
+        Gtk.AccelMap.add_entry(accel_path, key.accel_key, key.accel_mods);
+      }
+    }
+
     public signal void send();
 
     public bool on_key_press_event(Gdk.EventKey event) {
-      if (Gdk.ModifierType.SHIFT_MASK in event.state) {
-        return false;
-      }
-
-      if (event.keyval == Gdk.Key.Return) {
+      uint modifiers = event.state & (Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK);
+      if (event.keyval == key.accel_key && modifiers == key.accel_mods) {
         send();
         return true;
       }

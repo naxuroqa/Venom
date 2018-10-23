@@ -3,7 +3,7 @@ Venom
 
 [![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=develop)](https://travis-ci.org/naxuroqa/Venom) [![tip for next commit](http://tip4commit.com/projects/634.svg)](http://tip4commit.com/projects/634) [![codecov](https://codecov.io/gh/naxuroqa/Venom/branch/develop/graph/badge.svg)](https://codecov.io/gh/naxuroqa/Venom)
 
-###### a modern [Tox](https://github.com/TokTok/c-toxcore) client for the Linux desktop
+###### a modern [Tox](https://github.com/TokTok/c-toxcore) client for the GNU/Linux desktop
 
 Features
 --------
@@ -17,6 +17,8 @@ Features
 * Screenshot sharing
 * Group chats
 * Socks5 Proxy support
+* Spell checking
+* Sound notifications
 
 Roadmap
 -------
@@ -35,8 +37,10 @@ Dependencies
 * `gtk+-3.0 >= 3.22`
 * `glib-2.0 >= 2.56`
 * `json-glib-1.0`
-* `libsoup-2.4`
+* `libcanberra >= 0.30`
 * `libgee >= 0.20`
+* `libsoup-2.4`
+* `gspell >= 1.8`
 * `sqlite3`
 * `toxcore >= 0.2`
 

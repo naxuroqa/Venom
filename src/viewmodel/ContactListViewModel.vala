@@ -112,10 +112,14 @@ namespace Venom {
             conference_menu.append(conference.get_name_string(), @"win.invite-to-conference('$conference_id')");
           }
         }
-        menu.append_submenu(_("Invite to conference"), conference_menu);
+        menu.append_submenu(_("Invite to conference…"), conference_menu);
       }
 
       menu.append(_("Show details"), @"win.show-contact-details('$id')");
+
+      var remove_section = new GLib.Menu();
+      remove_section.append(contact.is_conference() ? _("Leave conference") : _("Remove friend"), @"win.remove-contact('$id')");
+      menu.append_section(null, remove_section);
       return menu;
     }
 
@@ -164,7 +168,7 @@ namespace Venom {
       if (pixbuf == null) {
         return null;
       }
-      return pixbuf.scale_simple(22, 22, Gdk.InterpType.BILINEAR);
+      return round_corners(pixbuf.scale_simple(20, 20, Gdk.InterpType.BILINEAR));
     }
 
     ~ContactListViewModel() {

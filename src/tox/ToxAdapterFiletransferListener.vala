@@ -208,6 +208,8 @@ namespace Venom {
         set_file_transfer(friend_number, file_number, transfer);
         transfers.append(transfer);
         conversations.get(friends.get(friend_number)).append(transfer);
+        contact.unread_messages++;
+        contact.changed();
         notification_listener.on_filetransfer(transfer, contact);
 
         if (contact.auto_filetransfer) {
@@ -324,16 +326,16 @@ namespace Venom {
             if (file.query_exists()) {
               file.@delete();
             }
-            contact.tox_image = null;
-            contact.changed();
+            var pub_key = Tools.hexstring_to_bin(contact.tox_id);
+            contact.tox_image = Identicon.generate_pixbuf(pub_key);
           } else {
             file.replace_contents(buf, null, false, FileCreateFlags.NONE, null);
             var pixbuf_loader = new Gdk.PixbufLoader();
             pixbuf_loader.write(buf);
             pixbuf_loader.close();
             contact.tox_image = pixbuf_loader.get_pixbuf();
-            contact.changed();
           }
+          contact.changed();
         } catch (Error e) {
           logger.e("set image failed: " + e.message);
         }

@@ -1,5 +1,5 @@
 /*
- *    WindowState.vala
+ *    ErrorWidget.vala
  *
  *    Copyright (C) 2018 Venom authors and contributors
  *
@@ -20,19 +20,24 @@
  */
 
 namespace Venom {
-  public class WindowState : GLib.Object {
-    public int width { get; set; default = 800; }
-    public int height { get; set; default = 600; }
-    public int paned_position { get; set; default = 100; }
-    public bool is_maximized { get; set; default = false; }
-    public bool is_fullscreen { get; set; default = false; }
+  [GtkTemplate(ui = "/chat/tox/venom/ui/error_widget.ui")]
+  public class ErrorWidget : Gtk.Box {
+    [GtkChild] private Gtk.Stack stack;
+    [GtkChild] private Gtk.Label message;
+    [GtkChild] private Gtk.Button retry;
 
-    public static string serialize(WindowState state) throws Error {
-      return Json.gobject_to_data(state, null);
+    public signal void on_retry();
+
+    public ErrorWidget(Gtk.ApplicationWindow application_window, string error_message) {
+      message.label = error_message;
+      retry.clicked.connect(() => { on_retry(); });
     }
 
-    public static WindowState deserialize(string data) throws Error {
-      return Json.gobject_from_data(typeof(WindowState), data) as WindowState;
+    public void add_page(Gtk.Widget widget, string name, string title) {
+      var scrolled_window = new Gtk.ScrolledWindow(null, null);
+      scrolled_window.get_style_context().add_class("frame");
+      scrolled_window.add(widget);
+      stack.add_titled(scrolled_window, name, title);
     }
   }
 }

@@ -8,6 +8,8 @@ gdk_dep = dependency('gdk-3.0')
 gio_dep = dependency('gio-2.0')
 glib_dep = dependency('glib-2.0')
 gee_dep = dependency('gee-0.8')
+gspell_dep = dependency('gspell-1')
+canberra_dep = dependency('libcanberra')
 gmodule_dep = dependency('gmodule-2.0')
 sqlite_dep = dependency('sqlite3')
 json_dep = dependency('json-glib-1.0')
@@ -15,6 +17,10 @@ soup_dep = dependency('libsoup-2.4')
 tox_dep = dependency('toxcore')
 gst_dep = dependency('gstreamer-1.0', required : false)
 posix_dep = valac.find_library('posix', required : false)
+
+if (posix_dep.found())
+			add_project_arguments(['-D', 'ENABLE_POSIX'], language: 'vala')
+endif
 
 config_vapi = valac.find_library('config', dirs: vapi_dir)
 config_dep = declare_dependency(dependencies: [config_vapi], include_directories : include_directories('.'))
@@ -33,6 +39,7 @@ venom_source = files(
 			'core/Contact.vala',
 			'core/FileIO.vala',
 			'core/FileTransfer.vala',
+			'core/Identicon.vala',
 			'core/Interfaces.vala',
 			'core/Logger.vala',
 			'core/Message.vala',
@@ -79,11 +86,12 @@ venom_source = files(
 			'view/ConferenceInviteEntry.vala',
 			'view/ConferenceWindow.vala',
 			'view/ContactListEntry.vala',
-			'view/ContactListRequestEntry.vala',
+			'view/ContactListEntryCompact.vala',
 			'view/ContactListWidget.vala',
 			'view/ContextStyleBinding.vala',
 			'view/ConversationWindow.vala',
 			'view/CreateGroupchatWidget.vala',
+			'view/ErrorWidget.vala',
 			'view/FileTransferEntry.vala',
 			'view/FileTransferEntryInline.vala',
 			'view/FileTransferWidget.vala',
@@ -106,7 +114,7 @@ venom_source = files(
 			'viewmodel/UserInfoViewModel.vala'
 			)
 
-venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, config_dep, soup_dep]
+venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, config_dep, soup_dep, posix_dep, gspell_dep, canberra_dep]
 
 venom_lib = static_library('venom', [venom_source, venom_ui_resources, venom_icons_resources],
 			dependencies : venom_deps

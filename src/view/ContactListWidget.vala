@@ -39,8 +39,9 @@ namespace Venom {
     [GtkChild] private Gtk.Box placeholder;
 
     private unowned Gtk.ListBoxRow ? selected_row;
+    private ListModel contact_list_model;
 
-    public ContactListWidget(ILogger logger, ApplicationWindow app_window, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info) {
+    public ContactListWidget(ILogger logger, ApplicationWindow app_window, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info, ISettingsDatabase settings_database) {
       logger.d("ContactListWidget created.");
       this.logger = logger;
       this.view_model = new ContactListViewModel(logger, contacts, friend_requests, conference_invites, callback, user_info);
@@ -67,8 +68,16 @@ namespace Venom {
       contact_list.row_activated.connect(on_row_activated);
       contact_list.set_placeholder(placeholder);
 
-      var creator = new ContactListEntryCreator(logger);
-      contact_list.bind_model(view_model.get_list_model(), creator.create_entry);
+      settings_database.notify["enable-compact-contacts"].connect(refresh_contacts);
+
+      var creator = new ContactListEntryCreator(logger, settings_database);
+      contact_list_model = view_model.get_list_model();
+      contact_list.bind_model(contact_list_model, creator.create_entry);
+    }
+
+    private void refresh_contacts() {
+      var items = contact_list_model.get_n_items();
+      contact_list_model.items_changed(0, items, items);
     }
 
     public unowned ContactListViewModel get_model() {
@@ -81,8 +90,8 @@ namespace Venom {
       if (row == null) {
         view_model.on_contact_selected(null);
       } else {
-        var entry = row as IContactListEntry;
-        view_model.on_contact_selected(entry.get_contact());
+        var contact = contact_list_model.get_object(row.get_index()) as IContact;
+        view_model.on_contact_selected(contact);
       }
     }
 
@@ -103,8 +112,8 @@ namespace Venom {
       if (ev.type == Gdk.EventType.BUTTON_PRESS && ev.button == 3) {
         logger.d("right mouse clicked");
         var row = contact_list.get_row_at_y((int) ev.y);
-        var entry = row as IContactListEntry;
-        var menu = view_model.popup_menu(entry.get_contact());
+        var contact = contact_list_model.get_object(row.get_index()) as IContact;
+        var menu = view_model.popup_menu(contact);
         var popover = new Gtk.Popover.from_model(row, menu);
         popover.popup();
         return true;
@@ -118,16 +127,18 @@ namespace Venom {
 
     private class ContactListEntryCreator {
       private unowned ILogger logger;
-      public ContactListEntryCreator(ILogger logger) {
+      private ISettingsDatabase settings_database;
+      public ContactListEntryCreator(ILogger logger, ISettingsDatabase settings_database) {
         this.logger = logger;
+        this.settings_database = settings_database;
       }
 
       public Gtk.Widget create_entry(GLib.Object object) {
-        var c = object as IContact;
-        if (c is Contact || c is Conference) {
-          return new ContactListEntry(logger, c);
+        if (settings_database.enable_compact_contacts) {
+          return new ContactListEntryCompact(logger, object as IContact);
+        } else {
+          return new ContactListEntry(logger, object as IContact);
         }
-        return new ContactListRequestEntry(logger, c);
       }
     }
   }
