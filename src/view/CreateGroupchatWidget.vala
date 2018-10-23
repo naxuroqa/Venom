@@ -33,6 +33,9 @@ namespace Venom {
     [GtkChild] private Gtk.Stack stack;
     [GtkChild] private Gtk.Widget custom_title;
 
+    [GtkChild] private Gtk.Button accept_all;
+    [GtkChild] private Gtk.Button reject_all;
+
     private ILogger logger;
     private CreateGroupchatViewModel view_model;
     private ContainerChildBooleanBinding stack_binding;
@@ -40,7 +43,7 @@ namespace Venom {
     public CreateGroupchatWidget(ILogger logger, ApplicationWindow app_window, ObservableList conference_invites_model, CreateGroupchatWidgetListener listener, ConferenceInviteEntryListener entry_listener) {
       logger.d("CreateGroupChatWidget created.");
       this.logger = logger;
-      this.view_model = new CreateGroupchatViewModel(logger, conference_invites_model, listener);
+      this.view_model = new CreateGroupchatViewModel(logger, conference_invites_model, listener, entry_listener);
       this.stack_binding = new ContainerChildBooleanBinding(stack, conference_invite_item, "needs-attention");
 
       app_window.reset_header_bar();
@@ -56,8 +59,16 @@ namespace Venom {
       view_model.bind_property("title-error-visible", title_error_content, "reveal-child", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("new-conference-invite", stack_binding, "active", BindingFlags.SYNC_CREATE);
       view_model.bind_property("conference-type", conference_type_action, "state", GLib.BindingFlags.SYNC_CREATE | GLib.BindingFlags.BIDIRECTIONAL);
+      view_model.bind_property("accept-all-sensitive", reject_all, "sensitive", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("reject-all-sensitive", accept_all, "sensitive", GLib.BindingFlags.SYNC_CREATE);
 
       create.clicked.connect(view_model.on_create);
+      accept_all.clicked.connect(view_model.on_accept_all);
+      reject_all.clicked.connect(view_model.on_reject_all);
+
+      if (view_model.new_conference_invite) {
+        stack.set_visible_child(conference_invite_item);
+      }
 
       var creator = new ConferenceInviteEntryCreator(logger, entry_listener);
       conference_invites.bind_model(view_model.get_list_model(), creator.create);

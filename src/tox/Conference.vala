@@ -64,7 +64,7 @@ namespace Venom {
       return true;
     }
 
-    public Gdk.Pixbuf get_image() {
+    private Gdk.Pixbuf get_default_image() {
       if (default_image == null) {
         try {
           default_image = Gtk.IconTheme.get_default().load_icon(R.icons.default_groupchat, 48, 0);
@@ -73,6 +73,49 @@ namespace Venom {
         }
       }
       return default_image;
+    }
+
+    public Gdk.Pixbuf get_image() {
+      if (peers.size < 1) {
+        return get_default_image();
+      }
+
+      var size = 120;
+      var surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, size, size);
+      var ctx = new Cairo.Context(surface);
+      var count = uint.min(peers.size, 5);
+      var offset = 90.0 / count;
+      var radius = size * 0.1f;
+      var deg = Math.PI / 180.0;
+
+      for(var i = 0; i < count; i++) {
+        var peer = peers.get(i);
+
+        var identicon = round_corners(Identicon.generate_pixbuf(Tools.hexstring_to_bin(peer.peer_key)));
+        var identicon_surf = Gdk.cairo_surface_create_from_pixbuf(identicon, 1, null);
+
+        ctx.save();
+        ctx.translate(offset * i, 0);
+        ctx.set_source_surface(identicon_surf, 0, 0);
+        ctx.paint();
+
+        if (i > 0) {
+          ctx.new_sub_path();
+          ctx.arc(size - radius, radius, radius, -90 * deg, 0);
+          ctx.arc(size - radius, size - radius, radius, 0, 90 * deg);
+          ctx.arc(radius, size - radius, radius, 90 * deg, 180 * deg);
+          ctx.arc(radius, radius, radius, 180 * deg, 270 * deg);
+          ctx.close_path();
+
+          ctx.set_source_rgba(0, 0, 0, 0.25);
+          ctx.set_line_width(5);
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size);
     }
 
     public unowned Gee.Map<uint32, ConferencePeer> get_peers() {

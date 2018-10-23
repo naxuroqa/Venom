@@ -26,17 +26,21 @@ namespace Venom {
     public bool title_error_visible { get; set; }
     public string title_error { get; set; }
     public bool new_conference_invite { get; set; }
+    public bool accept_all_sensitive { get; set; }
+    public bool reject_all_sensitive { get; set; }
 
     public signal void leave_view();
 
     private ILogger logger;
     private ObservableList conference_invites;
     private CreateGroupchatWidgetListener listener;
+    ConferenceInviteEntryListener entry_listener;
 
-    public CreateGroupchatViewModel(ILogger logger, ObservableList conference_invites, CreateGroupchatWidgetListener listener) {
+    public CreateGroupchatViewModel(ILogger logger, ObservableList conference_invites, CreateGroupchatWidgetListener listener, ConferenceInviteEntryListener entry_listener) {
       logger.d("CreateGroupchatViewModel created.");
       this.logger = logger;
       this.listener = listener;
+      this.entry_listener = entry_listener;
       this.conference_invites = conference_invites;
 
       conference_type = new GLib.Variant("s", "text");
@@ -51,12 +55,37 @@ namespace Venom {
     }
 
     private void update_content() {
-      new_conference_invite = conference_invites.length() > 0;
+      var invite_available = conference_invites.length() > 0;
+      new_conference_invite = invite_available;
+      accept_all_sensitive = invite_available;
+      reject_all_sensitive = invite_available;
     }
 
     private void show_error(string message) {
       title_error_visible = true;
       title_error = message;
+    }
+
+    public void on_accept_all() {
+      for (var i = conference_invites.length(); i > 0; i--) {
+        var invite = conference_invites.nth_data(i - 1) as ConferenceInvite;
+        try {
+          entry_listener.on_accept_conference_invite(invite);
+        } catch (Error e) {
+          logger.i("Could not accept conference invite: " + e.message);
+        }
+      }
+    }
+
+    public void on_reject_all() {
+      for (var i = conference_invites.length(); i > 0; i--) {
+        var invite = conference_invites.nth_data(i - 1) as ConferenceInvite;
+        try {
+          entry_listener.on_reject_conference_invite(invite);
+        } catch (Error e) {
+          logger.i("Could not accept conference invite: " + e.message);
+        }
+      }
     }
 
     public void on_create() {

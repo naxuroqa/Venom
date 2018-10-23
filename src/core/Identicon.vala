@@ -28,7 +28,7 @@ namespace Venom {
     private Cairo.Surface surface;
 
     public static Gdk.Pixbuf generate_pixbuf(uint8[] public_key, int size = 120) {
-      var identicon = new Identicon(public_key);
+      var identicon = new Identicon(public_key, size);
       identicon.draw();
       return identicon.get_pixbuf();
     }

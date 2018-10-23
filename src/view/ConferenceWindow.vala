@@ -22,6 +22,7 @@
 namespace Venom {
   [GtkTemplate(ui = "/chat/tox/venom/ui/conference_window.ui")]
   public class ConferenceWindow : Gtk.Box {
+    [GtkChild] private Gtk.Image user_image;
     [GtkChild] private Gtk.TextView text_view;
     [GtkChild] private Gtk.ListBox message_list;
     [GtkChild] private Gtk.ScrolledWindow scrolled_window;
@@ -33,7 +34,7 @@ namespace Venom {
 
     private const GLib.ActionEntry win_entries[] =
     {
-      { "conference-info",  on_conference_info,  null, null, null },
+      { "conference-info", on_conference_info,  null, null, null },
       { "insert-smiley", on_insert_smiley, null, null, null }
     };
 
@@ -112,6 +113,11 @@ namespace Venom {
         contact.clear_attention();
         contact.changed();
         return;
+      }
+
+      var pixbuf = contact.get_image();
+      if (pixbuf != null) {
+        user_image.pixbuf = round_corners(pixbuf.scale_simple(22, 22, Gdk.InterpType.BILINEAR));
       }
 
       this.peers_list = new ObservableList();

@@ -21,7 +21,6 @@
 
 namespace Venom {
   public class MessageViewModel : GLib.Object {
-    public bool   additional_info_visible { get; set; }
     public string sender { get; set; }
     public bool   sender_sensitive { get; set; }
     public Gdk.Pixbuf sender_image { get; set; }
@@ -29,7 +28,8 @@ namespace Venom {
     public string timestamp_tooltip { get; set; }
     public string message { get; set; }
     public bool   sent_visible { get; set; }
-    public bool   received_visible { get; set; }
+    public bool   sent_dim { get; set; }
+    public string sent_tooltip { get; set; }
     public string sender_color { get; set; default = ""; }
     public bool   sender_bold { get; set; default = true; }
 
@@ -70,19 +70,13 @@ namespace Venom {
       }
     }
 
-    public void on_state_flags_changed(Gtk.StateFlags flag) {
-      additional_info_visible = Gtk.StateFlags.PRELIGHT in flag || Gtk.StateFlags.SELECTED in flag;
-      if (additional_info_visible) {
-        timestamp = TimeStamp.get_pretty_timestamp(message_content.timestamp);
-      }
-    }
-
     private void on_message_changed() {
       var outoing = message_content.message_direction == MessageDirection.OUTGOING;
       sender_sensitive = !outoing;
       if (outoing) {
-        received_visible = message_content.received;
-        sent_visible = !message_content.received;
+        sent_visible = true;
+        sent_dim = !message_content.received;
+        sent_tooltip = !message_content.received ? _("Message sent ✓") : _("Message received ✓");
         sender = _("me");
       } else {
         sender = message_content.get_sender_plain();
@@ -91,9 +85,9 @@ namespace Venom {
       message = message_content.get_message_plain();
       var pixbuf = message_content.get_sender_image();
       if (pixbuf != null) {
-        sender_image = round_corners(pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR));
+        sender_image = round_corners(pixbuf.scale_simple(20, 20, Gdk.InterpType.BILINEAR));
       }
-      timestamp = TimeStamp.get_pretty_timestamp(message_content.timestamp);
+      timestamp = message_content.timestamp.format("%X");
       timestamp_tooltip = message_content.timestamp.format("%c");
     }
 

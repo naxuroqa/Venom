@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1
+<!-- Generated with glade 3.22.1 
 
 Copyright (C) 2013-2018 Venom authors and contributors
 
@@ -46,7 +46,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="icon_size">6</property>
             <style>
               <class name="welcome-highlight"/>
-              <class name="dim-label"/>
             </style>
           </object>
           <packing>
@@ -56,14 +55,11 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
           </packing>
         </child>
         <child>
-          <object class="GtkLabel">
+          <object class="GtkLabel" id="title">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">&lt;big&gt;A new kind of instant messaging&lt;/big&gt;</property>
+            <property name="label">&lt;big&gt;Some title&lt;/big&gt;</property>
             <property name="use_markup">True</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -72,15 +68,13 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
           </packing>
         </child>
         <child>
-          <object class="GtkLabel">
+          <object class="GtkLabel" id="content">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Chat with your friends and family without anyone else listening in.</property>
+            <property name="label">Some content</property>
+            <property name="use_markup">True</property>
             <property name="justify">center</property>
             <property name="wrap">True</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -88,6 +82,9 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="position">2</property>
           </packing>
         </child>
+        <style>
+          <class name="dim-label"/>
+        </style>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -106,7 +103,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="halign">center</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -153,7 +149,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="halign">center</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>

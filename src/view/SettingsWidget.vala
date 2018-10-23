@@ -75,7 +75,7 @@ namespace Venom {
 
       if (app_window != null) {
         app_window.reset_header_bar();
-        app_window.header_bar.title = _("Settings");
+        app_window.header_bar.title = _("Preferences");
       }
 
       stack_transform = new StackIndexTransform(stack);

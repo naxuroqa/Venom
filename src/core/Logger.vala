@@ -38,6 +38,12 @@ namespace Venom {
     public const string FATAL = TermColor.MAGENTA;
   }
 
+  namespace PangoHelper {
+    public static string insert_span(string attributes, string content) {
+      return @"<span $attributes>$content</span>";
+    }
+  }
+
   public enum LogLevel {
     DEBUG,
     INFO,
@@ -57,6 +63,23 @@ namespace Venom {
           return TermColor.ERROR + "ERROR" + TermColor.RESET;
         case FATAL:
           return TermColor.FATAL + "FATAL" + TermColor.RESET;
+        default:
+          assert_not_reached();
+      }
+    }
+
+    public string to_markup() {
+      switch(this) {
+        case DEBUG:
+          return "DEBUG";
+        case INFO:
+          return PangoHelper.insert_span("foreground=\"green\"", "INFO ");
+        case WARNING:
+          return PangoHelper.insert_span("foreground=\"yellow\"", "WARN ");
+        case ERROR:
+          return PangoHelper.insert_span("foreground=\"red\"", "ERROR");
+        case FATAL:
+          return PangoHelper.insert_span("foreground=\"magenta\"", "FATAL");
         default:
           assert_not_reached();
       }
@@ -136,7 +159,7 @@ namespace Venom {
     }
 
     public void log(LogLevel level, string message) {
-      log_builder.append("%s\n".printf(message));
+      log_builder.append("[%s] %s\n".printf(level.to_markup(), message));
 
       if (level < displayed_level) {
         return;

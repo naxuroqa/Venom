@@ -28,6 +28,7 @@ namespace Venom {
     public string last_seen_tooltip { get; set; }
     public string alias { get; set; }
     public string tox_id { get; set; }
+    public Gdk.Pixbuf tox_identicon { get; set; }
     public bool auto_conference { get; set; }
     public bool auto_filetransfer { get; set; }
     public string location { get; set; }
@@ -45,8 +46,8 @@ namespace Venom {
       this.contact = contact;
       this.listener = listener;
 
-      set_info();
-      contact.changed.connect(set_info);
+      update_info();
+      contact.changed.connect(update_info);
     }
 
     private bool file_exists(string file) {
@@ -57,7 +58,7 @@ namespace Venom {
       return GLib.File.new_for_path(file).equal(File.new_for_path(R.constants.downloads_dir));
     }
 
-    private void set_info() {
+    private void update_info() {
       username = contact.name;
       statusmessage = contact.status_message;
       alias = contact.alias;
@@ -72,9 +73,10 @@ namespace Venom {
 
       show_notifications = contact._show_notifications;
       tox_id = contact.get_id();
+      tox_identicon = Identicon.generate_pixbuf(Tools.hexstring_to_bin(tox_id), 40);
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
-        userimage = pixbuf.scale_simple(128, 128, Gdk.InterpType.BILINEAR);
+        userimage = pixbuf.scale_simple(120, 120, Gdk.InterpType.BILINEAR);
       }
       auto_conference = contact.auto_conference;
       auto_filetransfer = contact.auto_filetransfer;
