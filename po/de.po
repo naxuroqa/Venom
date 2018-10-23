@@ -8,19 +8,19 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/core/Application.vala:32
+#: src/core/Application.vala:36
 msgid "Set level of messages to log"
 msgstr "Setze das Niveau für Protokollmeldungen"
 
-#: src/core/Application.vala:32
+#: src/core/Application.vala:36
 msgid "<loglevel>"
 msgstr "<Protokollniveau>"
 
-#: src/core/Application.vala:33
+#: src/core/Application.vala:37
 msgid "Display version number"
 msgstr "Zeige Versionsnummer"
 
-#: src/core/NotificationListener.vala:55
+#: src/core/NotificationListener.vala:86
 msgid "New message from %s"
 msgstr "Neue Nachricht von %s"
 
@@ -44,39 +44,39 @@ msgstr "Spixi <spxmar@gmail.com>, naxuroqa <naxuroqa@gmail.com>"
 msgid "Please let me add you to my contact list. 😁"
 msgstr "Bitte lass mich dich meiner Kontaktliste hinzufügen. 😁"
 
-#: src/ui/add_contact_widget.ui:108
+#: src/ui/add_contact_widget.ui:132
 msgid "Send a friend request"
 msgstr "Sende eine Freundschaftsanfrage"
 
-#: src/ui/add_contact_widget.ui:142
+#: src/ui/add_contact_widget.ui:166
 msgid "_ID:"
 msgstr "_ID:"
 
-#: src/ui/add_contact_widget.ui:159
+#: src/ui/add_contact_widget.ui:183
 msgid "Enter a Tox ID or URI here"
 msgstr "Gib eine Tox-ID oder eine Tox-URI ein"
 
-#: src/ui/create_groupchat_widget.ui:122 src/ui/add_contact_widget.ui:163
+#: src/ui/create_groupchat_widget.ui:122 src/ui/add_contact_widget.ui:187
 msgid "paste from clipboard"
 msgstr "Zwischenablage einfügen"
 
-#: src/ui/add_contact_widget.ui:197
+#: src/ui/add_contact_widget.ui:221
 msgid "<small>Enter your friends Tox ID</small>"
 msgstr "<small>Gib die Tox ID deines Freunds / deiner Freundin ein</small>"
 
-#: src/ui/friend_request_widget.ui:100 src/ui/add_contact_widget.ui:229
+#: src/ui/add_contact_widget.ui:253
 msgid "_Message:"
 msgstr "_Nachricht:"
 
-#: src/ui/add_contact_widget.ui:255
+#: src/ui/add_contact_widget.ui:279
 msgid "Send a custom message to be displayed to the friend you are adding"
 msgstr "Sende eine benutzerdefinierte Mitteilung, die dem Freund / der Freundin, den / die du hinzufügen möchtest, angezeigt wird"
 
-#: src/ui/add_contact_widget.ui:277
+#: src/ui/add_contact_widget.ui:301
 msgid "<small>Send your friend a short message</small>"
 msgstr "<small>Sende deinem Freund / deiner Freundin eine kurze Nachricht</small>"
 
-#: src/ui/add_contact_widget.ui:308
+#: src/ui/add_contact_widget.ui:332
 msgid "Send"
 msgstr "Abschicken"
 
@@ -86,7 +86,7 @@ msgstr "_Einstellungen"
 
 #: src/ui/app_menu.ui:34
 msgid "About"
-msgstr "_Über"
+msgstr "Info"
 
 #: src/ui/app_menu.ui:38
 msgid "_Quit"
@@ -100,8 +100,8 @@ msgstr "Konferenz"
 msgid "Title:"
 msgstr "Titel:"
 
-#: src/ui/conference_info_widget.ui:266 src/ui/user_info_widget.ui:446
-#: src/ui/friend_info_widget.ui:609
+#: src/ui/conference_info_widget.ui:266 src/ui/user_info_widget.ui:443
+#: src/ui/friend_info_widget.ui:634
 msgid "Apply"
 msgstr "Anwenden"
 
@@ -110,7 +110,7 @@ msgid "Peers"
 msgstr "Mitglieder"
 
 #: src/ui/conference_window.ui:103 src/ui/conversation_window.ui:292
-#: src/ui/user_info_widget.ui:277 src/ui/user_info_widget.ui:278
+#: src/ui/user_info_widget.ui:274 src/ui/user_info_widget.ui:275
 msgid "Insert Emoji"
 msgstr "Emoji einfügen"
 
@@ -158,7 +158,7 @@ msgstr "Dateiübertragungen"
 msgid "Remove from your friends list"
 msgstr "Entferne von deiner Kontaktliste"
 
-#: src/ui/user_info_widget.ui:213
+#: src/ui/user_info_widget.ui:210
 msgid "Username:"
 msgstr "Benutzername:"
 
@@ -170,23 +170,23 @@ msgstr "Alias:"
 msgid "<small>Set a custom alias to quickly find your friends</small>"
 msgstr "<small>Setze einen Alias um deine Freunde schnell zu finden</small>"
 
-#: src/ui/user_info_widget.ui:319 src/ui/friend_info_widget.ui:520
+#: src/ui/user_info_widget.ui:316 src/ui/friend_info_widget.ui:520
 msgid "Tox"
 msgstr "Tox"
 
-#: src/ui/user_info_widget.ui:352
+#: src/ui/user_info_widget.ui:349
 msgid "ID:"
 msgstr "ID:"
 
-#: src/ui/message_widget.ui:110
+#: src/viewmodel/MessageViewModel.vala:79
 msgid "Message sent ✓"
 msgstr "Nachricht gesendet ✓"
 
-#: src/ui/message_widget.ui:126
+#: src/viewmodel/MessageViewModel.vala:79
 msgid "Message received ✓"
 msgstr "Nachricht empfangen ✓"
 
-#: src/ui/peer_entry_compact.ui:53 src/ui/peer_entry.ui:77
+#: src/ui/peer_entry_compact.ui:64 src/ui/peer_entry.ui:76
 msgid "This peer is also in your friends list"
 msgstr "Dieses Mitglied ist auch in deiner Kontaktliste"
 
@@ -198,60 +198,44 @@ msgstr "Generell"
 msgid "Appearance"
 msgstr "Erscheinungsbild"
 
-#: src/ui/settings_widget.ui:296
+#: src/ui/settings_widget.ui:295
 msgid "Dark Theme"
 msgstr "Dunkles Thema"
 
-#: src/ui/settings_widget.ui:506
-msgid "Minimize to tray"
-msgstr "Minimiere in Tray"
-
-#: src/ui/settings_widget.ui:603
+#: src/ui/settings_widget.ui:983
 msgid "Privacy"
 msgstr "Privatsphäre"
 
-#: src/ui/settings_widget.ui:647
-msgid "Send typing notifications"
-msgstr "Sende Schreibbenachrichtigungen"
-
-#: src/ui/settings_widget.ui:660
-msgid "<small>Show others when I am typing</small>"
-msgstr "<small>Zeige anderen wenn du tippst</small>"
-
-#: src/ui/settings_widget.ui:744
+#: src/ui/settings_widget.ui:1122
 msgid "History"
 msgstr "Verlauf"
 
-#: src/ui/settings_widget.ui:879
+#: src/ui/settings_widget.ui:1254
 msgid "days"
 msgstr "Tagen"
 
-#: src/ui/settings_widget.ui:910
+#: src/ui/settings_widget.ui:1285
 msgid "Delete all previous conversations"
 msgstr "Lösche alle bisherigen Konversationen"
 
-#: src/ui/settings_widget.ui:1328
+#: src/ui/settings_widget.ui:1706
 msgid "Update bootstrap nodes"
 msgstr "Erneuere bootstrap Knoten"
 
-#: src/ui/user_info_widget.ui:394
+#: src/ui/user_info_widget.ui:391
 msgid "Copy to clipboard"
 msgstr "Kopiere in die Zwischenablage"
 
-#: src/ui/welcome_widget.ui:62
-msgid "<big>A new kind of instant messaging</big>"
-msgstr "<big>Eine neue Art des Instant Messagings</big>"
-
-#: src/ui/welcome_widget.ui:78
+#: src/view/WelcomeWidget.vala:39
 msgid "Chat with your friends and family without anyone else listening in."
 msgstr "Plaudere mit deinen Freunden und Familie ohne dass jemand mithört."
 
-#: src/ui/welcome_widget.ui:131
+#: src/ui/welcome_widget.ui:127
 msgid "Learn more"
 msgstr "Erfahre mehr"
 
-#: src/core/Message.vala:79 src/viewmodel/MessageViewModel.vala:86
-#: src/tox/ConferenceMessage.vala:56
+#: src/core/Message.vala:80 src/viewmodel/MessageViewModel.vala:80
+#: src/tox/ConferenceMessage.vala:60
 msgid "me"
 msgstr "Ich"
 
@@ -259,37 +243,37 @@ msgstr "Ich"
 msgid "Choose an avatar"
 msgstr "Wähle einen Avatar aus"
 
-#: src/ui/friend_request_widget.ui:168
+#: src/ui/friend_request_widget.ui:156
 msgid "Reject request"
 msgstr "Anfrage ablehnen"
 
-#: src/ui/friend_request_widget.ui:192
+#: src/ui/friend_request_widget.ui:132
 msgid "Accept request"
 msgstr "Anfrage annehmen"
 
-#: src/core/NotificationListener.vala:76
+#: src/core/NotificationListener.vala:139
 msgid "New file from %s"
 msgstr "Neue Datei von %s"
 
-#: src/viewmodel/ContactListEntryViewModel.vala:58
+#: src/viewmodel/ContactListEntryViewModel.vala:61
 msgid "New Message!"
 msgstr "Neue Nachricht!"
 
-#: src/viewmodel/ContactListEntryViewModel.vala:64
+#: src/viewmodel/ContactListEntryViewModel.vala:67
 msgid "Offline"
 msgstr "Offline"
 
-#: src/viewmodel/ContactListEntryViewModel.vala:72
+#: src/viewmodel/ContactListEntryViewModel.vala:75
 #: src/ui/user_status_menu.ui:34
 msgid "Away"
 msgstr "Abwesend"
 
-#: src/viewmodel/ContactListEntryViewModel.vala:74
+#: src/viewmodel/ContactListEntryViewModel.vala:77
 #: src/ui/user_status_menu.ui:40
 msgid "Busy"
 msgstr "Beschäftigt"
 
-#: src/viewmodel/ContactListEntryViewModel.vala:76
+#: src/viewmodel/ContactListEntryViewModel.vala:79
 #: src/ui/user_status_menu.ui:28
 msgid "Online"
 msgstr "Online"
@@ -306,15 +290,15 @@ msgstr "Gestern um %s"
 msgid "Unnamed conference %u"
 msgstr "Unbenannte Konferenz %u"
 
-#: src/tox/ToxSession.vala:657
+#: src/tox/ToxSession.vala:650
 msgid "Address must consist of 76 hexadecimal characters"
 msgstr "Addresse muss aus 76 hexadezimalen Zeichen bestehen"
 
-#: src/view/ConversationWindow.vala:227 src/view/FileTransferEntry.vala:86
+#: src/view/ConversationWindow.vala:231 src/view/FileTransferEntry.vala:86
 msgid "_Cancel"
 msgstr "Abbre_chen"
 
-#: src/view/ConversationWindow.vala:226
+#: src/view/ConversationWindow.vala:230
 msgid "_Open"
 msgstr "Öffnen"
 
@@ -354,111 +338,100 @@ msgstr "Text"
 msgid "Speech"
 msgstr "Sprache"
 
-#: src/ui/peer_entry_compact.ui:39 src/ui/peer_entry.ui:90
+#: src/ui/peer_entry_compact.ui:78 src/ui/peer_entry.ui:89
 msgid "That's you"
 msgstr "Das bist du"
 
-#: src/ui/welcome_widget.ui:178
+#: src/ui/welcome_widget.ui:173
 msgid "Get involved"
 msgstr "Mitmachen"
 
-#: src/ui/settings_widget.ui:161
+#: src/ui/settings_widget.ui:158
 msgid "Proxy"
 msgstr "Proxy"
 
-#: src/ui/settings_widget.ui:309
+#: src/ui/settings_widget.ui:308
 msgid "<small>Use a dark variant of the theme</small>"
 msgstr "<small>Benutze eine dunkle Variante des Themas</small>"
 
-#: src/ui/settings_widget.ui:366
+#: src/ui/settings_widget.ui:364
 msgid "Animations"
 msgstr "Animationen"
 
-#: src/ui/settings_widget.ui:379
-msgid "<small>Enable animated transitions</small>"
-msgstr "<small>Aktiviere animierte Übergänge</small>"
-
-#: src/ui/settings_widget.ui:436
+#: src/ui/conference_info_widget.ui:196 src/ui/settings_widget.ui:598
+#: src/ui/friend_info_widget.ui:291
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
-#: src/ui/settings_widget.ui:449
-msgid "<small>Show notifications for unread messages</small>"
-msgstr "<small>Zeige Benachrichtigungen für ungelesene Nachrichten</small>"
-
-#: src/ui/settings_widget.ui:519
-msgid "<small>Minimize app to system tray on close</small>"
-msgstr "<small>Minimiere app in das Systemtray anstatt zu schließen</small>"
-
-#: src/ui/settings_widget.ui:809
+#: src/ui/settings_widget.ui:1184
 msgid "Keep forever"
 msgstr "Behalte für immer"
 
-#: src/ui/settings_widget.ui:846
+#: src/ui/settings_widget.ui:1220
 msgid "Remove older than"
 msgstr "Lösche älter als"
 
-#: src/ui/settings_widget.ui:1004
+#: src/ui/settings_widget.ui:1386
 msgid "<b>Connection</b>"
 msgstr "<b>Verbindung</b>"
 
-#: src/ui/settings_widget.ui:1047
+#: src/ui/settings_widget.ui:1428
 msgid "UDP"
 msgstr "UDP"
 
-#: src/ui/settings_widget.ui:1117
+#: src/ui/settings_widget.ui:1497
 msgid "IPv6"
 msgstr "IPv6"
 
-#: src/ui/settings_widget.ui:1130
+#: src/ui/settings_widget.ui:1510
 msgid "<small>Allow both IPv4 and IPv6 communication</small>"
 msgstr "<small>Erlaube IPv4 und IPv6 Verbindungen</small>"
 
-#: src/ui/settings_widget.ui:1187
+#: src/ui/settings_widget.ui:1566
 msgid "Local discovery"
 msgstr "Lokale Erkennung"
 
-#: src/ui/settings_widget.ui:1200
+#: src/ui/settings_widget.ui:1579
 msgid "<small>Look for peers on the local network</small>"
 msgstr "<small>Suche nach Mitgliedern im lokalen Netzwerk</small>"
 
-#: src/ui/settings_widget.ui:1257
+#: src/ui/settings_widget.ui:1635
 msgid "Hole punching"
 msgstr "Hole punching"
 
-#: src/ui/settings_widget.ui:1270
+#: src/ui/settings_widget.ui:1648
 msgid "<small>Enable UDP <a href=\"https://en.wikipedia.org/wiki/Hole_punching_(networking)\">hole punching</a></small>"
 msgstr "<small>Aktiviere UDP <a href=\"https://de.wikipedia.org/wiki/Hole_Punching\">hole punching</a></small>"
 
-#: src/ui/settings_widget.ui:1364
+#: src/ui/settings_widget.ui:1742
 msgid "<b>Bootstrap nodes</b>"
 msgstr "<b>Bootstrap Knoten</b>"
 
-#: src/ui/settings_widget.ui:1500
+#: src/ui/settings_widget.ui:1878
 msgid "<b>Proxy</b>"
 msgstr "<b>Proxy</b>"
 
-#: src/ui/settings_widget.ui:1567
+#: src/ui/settings_widget.ui:1945
 msgid "System settings"
 msgstr "Systemeinstellungen"
 
-#: src/ui/settings_widget.ui:1580
+#: src/ui/settings_widget.ui:1958
 msgid "<small>Use your systems proxy settings</small>"
 msgstr "<small>Benutze die Proxy Einstellungen deines Systems</small>"
 
-#: src/ui/settings_widget.ui:1634
+#: src/ui/settings_widget.ui:2012
 msgid "Manual settings"
 msgstr "Manuelle Einstellung"
 
-#: src/ui/settings_widget.ui:1647
+#: src/ui/settings_widget.ui:2025
 msgid "<small>Use custom proxy settings</small>"
 msgstr "<small>Setze Benutzerdefinierte Proxy Einstellungen</small>"
 
-#: src/ui/settings_widget.ui:1688
+#: src/ui/settings_widget.ui:2066
 msgid "Host"
 msgstr "Host"
 
-#: src/ui/settings_widget.ui:1728
+#: src/ui/settings_widget.ui:2106
 msgid "<small>Set a SOCKS5 proxy to connect to</small>"
 msgstr "<small>Setze einen SOCKS5 Proxyserver</small>"
 
@@ -482,22 +455,19 @@ msgstr "Speichere Dateien nach"
 msgid "New conference…"
 msgstr "Neue Konferenz…"
 
-#: src/viewmodel/ContactListViewModel.vala:115
-msgid "Invite to conference"
-msgstr "Lade in Konferenz ein"
-
+#: src/core/NotificationListener.vala:93
 #: src/viewmodel/ContactListViewModel.vala:118 src/ui/conference_window.ui:137
 #: src/ui/conversation_window.ui:86
 msgid "Show details"
 msgstr "Zeige Details"
 
-#: src/viewmodel/ContactListViewModel.vala:140
+#: src/viewmodel/ContactListViewModel.vala:144
 msgid "%u new friend request"
 msgid_plural "%u new friend requests"
 msgstr[0] "%u neue Freundschaftsanfrage"
 msgstr[1] "%u neue Freundschaftsanfragen"
 
-#: src/viewmodel/ContactListViewModel.vala:148
+#: src/viewmodel/ContactListViewModel.vala:152
 msgid "%u new conference invite"
 msgid_plural "%u new conference invites"
 msgstr[0] "%u neue Konferenzeinladung"
@@ -535,11 +505,11 @@ msgstr "<small>Wähle die Art der Konferenz</small>"
 msgid "New conference"
 msgstr "Neue Konferenz"
 
-#: src/ui/create_groupchat_widget.ui:312 src/ui/create_groupchat_widget.ui:346
+#: src/ui/create_groupchat_widget.ui:312 src/ui/create_groupchat_widget.ui:451
 msgid "Conference invites"
 msgstr "Konferenzeinladungen"
 
-#: src/ui/create_groupchat_widget.ui:408
+#: src/ui/create_groupchat_widget.ui:513
 msgid "No new conference invites"
 msgstr "Keine neuen Konferenzeinladungen"
 
@@ -547,31 +517,19 @@ msgstr "Keine neuen Konferenzeinladungen"
 msgid "Start a video call"
 msgstr "Starte einen Videoanruf"
 
-#: src/ui/friend_request_widget.ui:66
-msgid "_Public key:"
-msgstr "Öffentlicher Schlüssel:"
-
 #: src/ui/conference_info_widget.ui:78
 msgid "Leave Conference"
 msgstr "Verlasse Konferenz"
-
-#: src/ui/conference_info_widget.ui:196 src/ui/friend_info_widget.ui:291
-msgid "Show notifications"
-msgstr "Zeige Benachrichtigungen"
 
 #: src/ui/conference_info_widget.ui:234 src/ui/friend_info_widget.ui:330
 msgid "<small>Notifications have been globally disabled</small>"
 msgstr "<small>Benachrichtigungen sind global deaktiviert</small>"
 
-#: src/ui/conference_invite_entry.ui:65
-msgid "Invite from:"
-msgstr "Einladung von:"
-
-#: src/ui/conference_invite_entry.ui:109
+#: src/ui/conference_invite_entry.ui:108
 msgid "Accept invite"
 msgstr "Einladung annehmen"
 
-#: src/ui/conference_invite_entry.ui:133
+#: src/ui/conference_invite_entry.ui:132
 msgid "Reject invite"
 msgstr "Einladung ablehnen"
 
@@ -579,37 +537,33 @@ msgstr "Einladung ablehnen"
 msgid "No new friend requests"
 msgstr "Keine neuen Freundschaftsanfragen"
 
-#: src/ui/contact_list_widget.ui:56 src/ui/add_contact_widget.ui:325
+#: src/ui/contact_list_widget.ui:56 src/ui/add_contact_widget.ui:349
 msgid "Add a friend"
 msgstr "Füge einen Freund hinzu"
 
-#: src/ui/add_contact_widget.ui:338 src/ui/add_contact_widget.ui:372
+#: src/ui/add_contact_widget.ui:362 src/ui/add_contact_widget.ui:396
 msgid "Friend requests"
 msgstr "Freundschaftsanfragen"
 
-#: src/ui/user_info_widget.ui:258
+#: src/ui/user_info_widget.ui:255
 msgid "Status message:"
 msgstr "Statusmeldung:"
 
-#: src/ui/settings_widget.ui:1060
+#: src/ui/settings_widget.ui:1441
 msgid "<small>Use UDP communication when available</small>"
 msgstr "<small>Benutze wenn möglich UDP-Verbindungen</small>"
 
-#: src/view/WelcomeWidget.vala:39
+#: src/view/WelcomeWidget.vala:35
 msgid "A new kind of instant messaging"
 msgstr "Eine neue Art des Instant Messagings"
 
-#: src/view/SettingsWidget.vala:69
+#: src/core/Application.vala:70
 msgid "Settings"
 msgstr "Einstellungen"
 
 #: src/ui/conference_window.ui:216 src/ui/conversation_window.ui:129
 msgid "No messages yet..."
 msgstr "Keine Nachrichten bisher..."
-
-#: src/ui/contact_list_widget.ui:406
-msgid "Open settings"
-msgstr "Öffne Einstellungen"
 
 #: src/ui/contact_list_widget.ui:448
 msgid "Edit your profile"
@@ -619,11 +573,11 @@ msgstr "Bearbeite dein Profil"
 msgid "Change your status"
 msgstr "Ändere deinen Status"
 
-#: src/ui/friend_info_widget.ui:554
+#: src/ui/friend_info_widget.ui:559
 msgid "Public key:"
 msgstr "Öffentlicher Schlüssel:"
 
-#: src/view/ConversationWindow.vala:223
+#: src/view/ConversationWindow.vala:227
 msgid "Choose a file to send"
 msgstr "Wähle eine Datei zum Senden aus"
 
@@ -659,19 +613,19 @@ msgstr "Wiede_rholen"
 msgid "_Undo"
 msgstr "R_ückgängig"
 
-#: src/viewmodel/FriendInfoViewModel.vala:65
+#: src/viewmodel/FriendInfoViewModel.vala:66
 msgid "Online right now"
 msgstr "Ist gerade online"
 
-#: src/viewmodel/FriendInfoViewModel.vala:67
+#: src/viewmodel/FriendInfoViewModel.vala:68
 msgid "Never seen online"
 msgstr "War noch nie online"
 
-#: src/viewmodel/FriendInfoViewModel.vala:69
+#: src/viewmodel/FriendInfoViewModel.vala:70
 msgid "Last seen: %s"
 msgstr "Zuletzt gesehen: %s"
 
-#: src/view/ConversationWindow.vala:120
+#: src/view/ConversationWindow.vala:124
 msgid "%s is typing…"
 msgstr "%s tippt gerade …"
 
@@ -702,4 +656,164 @@ msgstr "tox;instant messaging;video chat;"
 #: data/chat.tox.venom.desktop.in:7
 msgid "chat.tox.venom-symbolic"
 msgstr "chat.tox.venom-symbolic"
+
+#: src/view/ConferenceInviteEntry.vala:48
+msgid "Invite from %s"
+msgstr "Einladung von %s"
+
+#: src/ui/settings_widget.ui:433
+msgid "Small contacts"
+msgstr "Kleine Kontakte"
+
+#: src/core/NotificationListener.vala:116
+msgid "Friend request"
+msgstr "Freundschaftsanfrage"
+
+#: src/core/NotificationListener.vala:164
+msgid "Conference invite"
+msgstr "Konferenzeinladung"
+
+#: src/core/NotificationListener.vala:165
+msgid "%s invites you to a conference"
+msgstr "%s lädt dich zu einer Konferenz ein"
+
+#: src/core/Application.vala:77
+msgid "Log"
+msgstr "Protokoll"
+
+#: src/ui/settings_widget.ui:377
+msgid "<small>Turn on animated transitions</small>"
+msgstr "<small>Schalte animierte Übergänge ein</small>"
+
+#: src/ui/settings_widget.ui:446
+msgid "<small>Show contacts in a compact format</small>"
+msgstr "<small>Zeige Kontakte in einem kompaten Format</small>"
+
+#: src/ui/settings_widget.ui:502
+msgid "Spellcheck"
+msgstr "Rechtschreibprüfung"
+
+#: src/ui/settings_widget.ui:515
+msgid "<small>Check your spelling while you type</small>"
+msgstr "<small>Prüfe deine Rechtschreibung während du tippst</small>"
+
+#: src/ui/settings_widget.ui:658
+msgid "Sounds"
+msgstr "Töne"
+
+#: src/ui/settings_widget.ui:671
+msgid "<small>Play sounds on new notifications</small>"
+msgstr "<small>Spiele einen Ton bei neuen Benachrichtigungen</small>"
+
+#: src/ui/settings_widget.ui:727
+msgid "While Busy"
+msgstr "Wenn beschäftigt"
+
+#: src/ui/settings_widget.ui:740
+msgid "<small>Receive notifications even while you are busy</small>"
+msgstr "<small>Erhalte Benachrichtigungen auch während du beschäftigt bist</small>"
+
+#: src/ui/settings_widget.ui:825
+msgid "Tray icon"
+msgstr "Taskleistensymbol"
+
+#: src/ui/settings_widget.ui:885
+msgid "Minimize"
+msgstr "Minimiere"
+
+#: src/ui/settings_widget.ui:898
+msgid "<small>Minimize to tray instead of close</small>"
+msgstr "<small>Minimiere in die Taskleiste anstatt zu schließen</small>"
+
+#: src/ui/settings_widget.ui:1026
+msgid "Send typing status"
+msgstr "Sende Tippstatus"
+
+#: src/ui/settings_widget.ui:1039
+msgid "<small>Show others when you are typing</small>"
+msgstr "<small>Zeige anderen wenn du tippst</small>"
+
+#: src/ui/error_widget.ui:97
+msgid "Oh no! Something broke!"
+msgstr "Oh nein! Da lief etwas schief!"
+
+#: src/ui/error_widget.ui:112
+msgid "Please check your settings and retry"
+msgstr "Bitte prüfe deine Einstellungen und versuche es erneut"
+
+#: src/ui/error_widget.ui:133
+msgid "Info"
+msgstr "Info"
+
+#: src/ui/error_widget.ui:170
+msgid "Retry"
+msgstr "Erneut versuchen"
+
+#: src/core/NotificationListener.vala:94
+msgid "Mute conversation"
+msgstr "Stummschalten"
+
+#: src/core/Application.vala:38
+msgid "Show preferences"
+msgstr "Öffne Einstellungen"
+
+#: src/viewmodel/ContactListViewModel.vala:115
+msgid "Invite to conference…"
+msgstr "Lade zu Konferenz ein…"
+
+#: src/viewmodel/ContactListViewModel.vala:121
+msgid "Leave conference"
+msgstr "Verlasse Konferenz"
+
+#: src/viewmodel/ContactListViewModel.vala:121
+msgid "Remove friend"
+msgstr "Entferne Freund"
+
+#: src/tox/ConferenceMessage.vala:67
+msgid "%s in %s"
+msgstr "%s in %s"
+
+#: src/view/WelcomeWidget.vala:40
+msgid "Now with 50% less bugs."
+msgstr "Jetzt mit 50% weniger bugs."
+
+#: src/view/WelcomeWidget.vala:41
+msgid "Generating witty dialog…"
+msgstr "Generiere lustige Nachrichten…"
+
+#: src/view/WelcomeWidget.vala:42
+msgid "Thank you for using Venom."
+msgstr "Danke, dass du Venom verwendest."
+
+#: src/view/WelcomeWidget.vala:43
+msgid "Always think positive."
+msgstr "Denke immer positiv."
+
+#: src/view/WelcomeWidget.vala:44
+msgid "Have a good day and stay safe."
+msgstr "Hab einen guten Tag und bleib auf der sicheren Seite."
+
+#: src/view/WelcomeWidget.vala:45
+msgid "You can do it. ― Coffee"
+msgstr "Du kannst das. ― Kaffee"
+
+#: src/view/WelcomeWidget.vala:46
+msgid "Life moves pretty fast. If you don’t stop and look around once in a while, you could miss it. ― Ferris Bueller"
+msgstr "Das Leben bewegt sich sehr, sehr schnell. Wenn du nicht gelegentlich anhältst und dich umschaust, könntest du es verpassen. ― Ferris Bueller"
+
+#: src/view/SettingsWidget.vala:78 data/chat.tox.venom.desktop.in:17
+msgid "Preferences"
+msgstr "Einstellungen"
+
+#: src/ui/create_groupchat_widget.ui:375
+msgid "Accept all"
+msgstr "Alle annehmen"
+
+#: src/ui/create_groupchat_widget.ui:421
+msgid "Reject all"
+msgstr "Alle ablehnen"
+
+#: src/ui/contact_list_widget.ui:406
+msgid "Open preferences"
+msgstr "Öffne Einstellungen"
 
