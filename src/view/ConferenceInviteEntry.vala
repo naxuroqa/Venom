@@ -43,7 +43,7 @@ namespace Venom {
 
       var pixbuf = sender.get_image();
       if (pixbuf != null) {
-        contact_image.pixbuf = round_corners(pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR));
+        contact_image.pixbuf = round_corners(pixbuf.scale_simple(40, 40, Gdk.InterpType.BILINEAR));
       }
       contact_description.label = _("Invite from %s").printf(sender.get_name_string());
       contact_time.label = TimeStamp.get_pretty_timestamp(invite.timestamp);

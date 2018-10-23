@@ -545,19 +545,49 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <child>
-                          <object class="GtkLabel">
+                          <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Public key:</property>
-                            <property name="use_underline">True</property>
-                            <property name="ellipsize">end</property>
-                            <property name="xalign">0</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                            </attributes>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Public key:</property>
+                                <property name="use_underline">True</property>
+                                <property name="ellipsize">end</property>
+                                <property name="xalign">0</property>
+                                <attributes>
+                                  <attribute name="weight" value="bold"/>
+                                </attributes>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="tox_id">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label">##################</property>
+                                <property name="selectable">True</property>
+                                <property name="ellipsize">end</property>
+                                <property name="xalign">0</property>
+                                <style>
+                                  <class name="monospace"/>
+                                </style>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -566,20 +596,15 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="tox_id">
+                          <object class="GtkImage" id="tox_identicon">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label">##################</property>
-                            <property name="selectable">True</property>
-                            <property name="ellipsize">end</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="monospace"/>
-                            </style>
+                            <property name="stock">gtk-missing-image</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
+                            <property name="pack_type">end</property>
                             <property name="position">1</property>
                           </packing>
                         </child>

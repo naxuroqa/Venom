@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1
+<!-- Generated with glade 3.22.1 
 
 Copyright (C) 2013-2018 Venom authors and contributors
 
@@ -37,7 +37,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="valign">start</property>
-            <property name="pixel_size">44</property>
+            <property name="pixel_size">20</property>
             <property name="icon_name">user-info-symbolic</property>
             <property name="icon_size">6</property>
             <style>
@@ -59,6 +59,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="sender">
                     <property name="visible">True</property>
@@ -75,67 +76,32 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkRevealer" id="additional_info">
+                  <object class="GtkLabel" id="timestamp">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">6</property>
-                    <property name="transition_type">slide-right</property>
-                    <property name="transition_duration">125</property>
-                    <child>
-                      <object class="GtkLabel" id="timestamp">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label">timestamp</property>
-                        <style>
-                          <class name="dim-label"/>
-                        </style>
-                      </object>
-                    </child>
+                    <property name="label">timestamp</property>
+                    <property name="ellipsize">start</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
+                    <property name="pack_type">end</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
+                  <object class="GtkImage" id="sent">
                     <property name="can_focus">False</property>
-                    <property name="margin_left">6</property>
-                    <child>
-                      <object class="GtkImage" id="sent">
-                        <property name="can_focus">False</property>
-                        <property name="no_show_all">True</property>
-                        <property name="tooltip_text" translatable="yes">Message sent ✓</property>
-                        <property name="icon_name">object-select-symbolic</property>
-                        <style>
-                          <class name="dim-label"/>
-                        </style>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkImage" id="received">
-                        <property name="can_focus">False</property>
-                        <property name="no_show_all">True</property>
-                        <property name="tooltip_text" translatable="yes">Message received ✓</property>
-                        <property name="icon_name">object-select-symbolic</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
+                    <property name="no_show_all">True</property>
+                    <property name="icon_name">emblem-ok-symbolic</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
+                    <property name="pack_type">end</property>
                     <property name="position">2</property>
                   </packing>
                 </child>

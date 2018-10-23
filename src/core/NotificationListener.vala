@@ -83,10 +83,15 @@ namespace Venom {
         return;
       }
 
-      var notification = new Notification(_("New message from %s").printf(message.get_sender_plain()));
+      var title = _("New message from %s").printf(message.get_sender_full());
+      var contact_id = new GLib.Variant.string(message.get_conversation_id());
+
+      var notification = new Notification(title);
       notification.set_body(message.get_message_plain());
       notification.set_icon(scale_icon(message.get_sender_image()));
-      notification.set_default_action_and_target_value("app.show-contact", new GLib.Variant.string(message.get_conversation_id()));
+      notification.set_default_action_and_target_value("app.show-contact", contact_id);
+      notification.add_button_with_target_value(_("Show details"), "app.show-contact-info", contact_id);
+      notification.add_button_with_target_value(_("Mute conversation"), "app.mute-contact", contact_id);
       app.send_notification(message_id, notification);
 
       play_sound("message-new-instant");

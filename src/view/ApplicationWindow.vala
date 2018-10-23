@@ -32,7 +32,8 @@ namespace Venom {
       { "show_user",    on_show_user },
       { "change_userstatus", on_change_userstatus, "s", "'online'" },
       { "show-contact-details", on_show_contact_details, "s", null, null },
-      { "invite-to-conference", on_invite_to_conference, "s", null, null }
+      { "invite-to-conference", on_invite_to_conference, "s", null, null },
+      { "remove-contact", on_remove_contact, "s", null, null }
     };
 
     [GtkChild] private Gtk.Box contact_list_box;
@@ -297,7 +298,33 @@ namespace Venom {
       if (c != null) {
         on_contact_selected(c);
       } else {
-        logger.i(@"Friend with id $contact_id not found.");
+        logger.e(@"Friend with id $contact_id not found.");
+      }
+    }
+
+    public void on_mute_contact(string contact_id) {
+      logger.d(@"on_mute_contact($contact_id)");
+      var c = find_contact(contact_id);
+      if (c != null && c is Contact) {
+        (c as Contact)._show_notifications = false;
+      } else if (c != null && c is Conference) {
+        (c as Conference)._show_notifications = false;
+      } else {
+        logger.e(@"Friend with id $contact_id not found.");
+      }
+    }
+
+    public void on_show_contact_info(string contact_id) {
+      logger.d(@"on_show_contact_info($contact_id)");
+      var c = find_contact(contact_id);
+      if (c == null) {
+        logger.e(@"Friend with id $contact_id not found.");
+        return;
+      }
+      if (c is Contact) {
+        on_show_friend(c);
+      } else if (c is Conference) {
+        on_show_conference(c);
       }
     }
 
@@ -306,18 +333,27 @@ namespace Venom {
         return;
       }
 
+      on_show_contact_info(parameter.get_string());
+    }
+
+    public void on_remove_contact(GLib.SimpleAction action, GLib.Variant? parameter) {
+      if (parameter == null) {
+        return;
+      }
       var contact_id = parameter.get_string();
-      logger.d(@"on_show_contact_details($contact_id)");
+      logger.d(@"on_remove_contact($contact_id)");
+
       var c = find_contact(contact_id);
       if (c == null) {
-        logger.i(@"Friend with id $contact_id not found.");
+        logger.e(@"Friend with id $contact_id not found.");
         return;
       }
       if (c is Contact) {
-        on_show_friend(c);
+        friend_listener.on_remove_friend(c);
       } else if (c is Conference) {
-        on_show_conference(c);
+        conference_listener.on_remove_conference(c);
       }
+
     }
 
     public void on_invite_to_conference(GLib.SimpleAction action, GLib.Variant? parameter) {

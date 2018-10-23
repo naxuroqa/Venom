@@ -28,6 +28,7 @@ namespace Venom {
     [GtkChild] private Gtk.Label last_seen;
     [GtkChild] private Gtk.Entry alias;
     [GtkChild] private Gtk.Label tox_id;
+    [GtkChild] private Gtk.Image tox_identicon;
     [GtkChild] private Gtk.Switch auto_conference;
     [GtkChild] private Gtk.Switch auto_filetransfer;
     [GtkChild] private Gtk.Revealer location_revealer;
@@ -63,6 +64,7 @@ namespace Venom {
       view_model.bind_property("last-seen", last_seen, "label", BindingFlags.SYNC_CREATE);
       view_model.bind_property("last-seen-tooltip", last_seen, "tooltip-text", BindingFlags.SYNC_CREATE);
       view_model.bind_property("tox-id", tox_id, "label", BindingFlags.SYNC_CREATE);
+      view_model.bind_property("tox-identicon", tox_identicon, "pixbuf", BindingFlags.SYNC_CREATE);
 
       view_model.bind_property("alias", alias, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       view_model.bind_property("auto-conference", auto_conference, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);

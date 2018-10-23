@@ -53,7 +53,7 @@ namespace Venom {
 
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
-        var size = compact ? 22 : 44;
+        var size = compact ? 20 : 40;
         contact_image = round_corners(pixbuf.scale_simple(size, size, Gdk.InterpType.BILINEAR));
       }
 

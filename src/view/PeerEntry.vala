@@ -38,8 +38,7 @@ namespace Venom {
       peer_self.visible = peer.is_self;
 
       var pub_key = Tools.hexstring_to_bin(peer.peer_key);
-      var pixbuf = Identicon.generate_pixbuf(pub_key);
-      peer_image.pixbuf = round_corners(pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR));
+      peer_image.pixbuf = round_corners(Identicon.generate_pixbuf(pub_key, 40));
       logger.d("PeerEntry created.");
     }
 
@@ -63,8 +62,7 @@ namespace Venom {
       peer_self.visible = peer.is_self;
 
       var pub_key = Tools.hexstring_to_bin(peer.peer_key);
-      var pixbuf = Identicon.generate_pixbuf(pub_key);
-      peer_image.pixbuf = round_corners(pixbuf.scale_simple(22, 22, Gdk.InterpType.BILINEAR));
+      peer_image.pixbuf = round_corners(Identicon.generate_pixbuf(pub_key, 20));
       logger.d("PeerEntryCompact created.");
     }
 

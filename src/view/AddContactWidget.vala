@@ -66,6 +66,10 @@ namespace Venom {
 
       contact_id.icon_release.connect(view_model.on_paste_clipboard);
       send.clicked.connect(view_model.on_send);
+
+      if (view_model.new_friend_request) {
+        stack.set_visible_child(friend_request_item);
+      }
     }
 
     ~AddContactWidget() {

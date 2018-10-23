@@ -137,7 +137,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
     <property name="tooltip_text" translatable="yes">Show details</property>
     <property name="action_name">win.conference-info</property>
     <child>
-      <object class="GtkImage">
+      <object class="GtkImage" id="user_image">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="pixel_size">22</property>

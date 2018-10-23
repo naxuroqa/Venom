@@ -23,12 +23,28 @@ namespace Venom {
   [GtkTemplate(ui = "/chat/tox/venom/ui/welcome_widget.ui")]
   public class WelcomeWidget : Gtk.Box {
     private ILogger logger;
+    private GLib.Rand rand = new GLib.Rand();
 
-    [GtkChild]
-    private Gtk.Button link_learn_more;
+    [GtkChild] private Gtk.Button link_learn_more;
+    [GtkChild] private Gtk.Button link_get_involved;
+    [GtkChild] private Gtk.Image image;
+    [GtkChild] private Gtk.Label title;
+    [GtkChild] private Gtk.Label content;
 
-    [GtkChild]
-    private Gtk.Button link_get_involved;
+    private string[] titles = {
+      _("A new kind of instant messaging")
+    };
+
+    private string[] contents = {
+      _("Chat with your friends and family without anyone else listening in."),
+      _("Now with 50% less bugs."),
+      _("Generating witty dialog…"),
+      _("Thank you for using Venom."),
+      _("Always think positive."),
+      _("Have a good day and stay safe."),
+      _("You can do it. ― Coffee"),
+      _("Life moves pretty fast. If you don’t stop and look around once in a while, you could miss it. ― Ferris Bueller")
+    };
 
     public WelcomeWidget(ILogger logger, ApplicationWindow app_window) {
       logger.d("WelcomeWidget created.");
@@ -36,12 +52,15 @@ namespace Venom {
 
       app_window.reset_header_bar();
       app_window.header_bar.title = "Venom";
-      app_window.header_bar.subtitle = _("A new kind of instant messaging");
+      app_window.header_bar.subtitle = titles[rand.int_range(0, titles.length)];
+
+      title.set_markup(pango_big(titles[rand.int_range(0, titles.length)]));
+      content.set_markup(pango_small(contents[rand.int_range(0, contents.length)]));
 
       link_learn_more.tooltip_text = R.constants.tox_about();
-      link_learn_more.clicked.connect(on_learn_more_clicked);
-
       link_get_involved.tooltip_text = R.constants.tox_get_involved();
+
+      link_learn_more.clicked.connect(on_learn_more_clicked);
       link_get_involved.clicked.connect(on_get_involved_clicked);
     }
 
@@ -59,6 +78,14 @@ namespace Venom {
 
     private void on_get_involved_clicked() {
       try_show_uri(R.constants.tox_get_involved());
+    }
+
+    private string pango_big(string text) {
+      return @"<big>$text</big>";
+    }
+
+    private string pango_small(string text) {
+      return @"<small>$text</small>";
     }
 
     ~WelcomeWidget() {

@@ -27,21 +27,20 @@ namespace Venom {
     [GtkChild] private Gtk.Label timestamp;
     [GtkChild] private Gtk.Label message;
     [GtkChild] private Gtk.Image sent;
-    [GtkChild] private Gtk.Image received;
-    [GtkChild] private Gtk.Revealer additional_info;
 
     private ILogger logger;
     private MessageViewModel view_model;
     private UriTransform uri_transform;
     private PangoTransform pango_transform;
+    private ContextStyleBinding dim_binding;
 
     public MessageWidget(ILogger logger, IMessage message_content, ISettingsDatabase settings) {
       this.logger = logger;
       this.view_model = new MessageViewModel(logger, message_content, settings);
       this.uri_transform = new UriTransform(logger);
       this.pango_transform = new PangoTransform();
+      this.dim_binding = new ContextStyleBinding(sent, "dim-label");
 
-      view_model.bind_property("additional-info-visible", additional_info, "reveal-child", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("timestamp", timestamp, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("timestamp-tooltip", timestamp, "tooltip-text", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("message", message, "label", GLib.BindingFlags.SYNC_CREATE, uri_transform.transform);
@@ -51,9 +50,8 @@ namespace Venom {
       view_model.bind_property("sender", sender, "label", GLib.BindingFlags.SYNC_CREATE, pango_transform.transform);
       view_model.bind_property("sender-sensitive", sender, "sensitive", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("sent-visible", sent, "visible", GLib.BindingFlags.SYNC_CREATE);
-      view_model.bind_property("received-visible", received, "visible", GLib.BindingFlags.SYNC_CREATE);
-
-      state_flags_changed.connect(() => { view_model.on_state_flags_changed(get_state_flags()); });
+      view_model.bind_property("sent-tooltip", sent, "tooltip-text", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sent-dim", dim_binding, "enable", GLib.BindingFlags.SYNC_CREATE);
 
       logger.d("MessageWidget created.");
     }

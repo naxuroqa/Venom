@@ -27,12 +27,15 @@ namespace Venom {
       { "show-filetransfers", on_show_filetransfers, null, null, null },
       { "show-conferences", on_show_conferences, null, null, null },
       { "show-add-contact", on_show_add_contact, null, null, null },
-      { "show-contact", on_show_contact, "s", null, null }
+      { "show-contact", on_show_contact, "s", null, null },
+      { "show-contact-info", on_show_contact_info, "s", null, null },
+      { "mute-contact", on_mute_contact, "s", null, null }
     };
 
     private const OptionEntry[] option_entries = {
       { "loglevel", 'l', 0, OptionArg.INT, ref loglevel, N_("Set level of messages to log"), N_("<loglevel>") },
       { "version", 'V', 0, OptionArg.NONE, null, N_("Display version number"), null },
+      { "preferences", 'p', 0, OptionArg.NONE, null, N_("Show preferences"), null },
       { null }
     };
 
@@ -50,7 +53,7 @@ namespace Venom {
     public Application() {
       Object(
         application_id: R.constants.app_id(),
-        flags: ApplicationFlags.HANDLES_OPEN
+        flags: ApplicationFlags.HANDLES_OPEN | ApplicationFlags.HANDLES_COMMAND_LINE
         );
       add_main_option_entries(option_entries);
       add_action_entries(app_entries, this);
@@ -67,7 +70,10 @@ namespace Venom {
       err_widget.add_page(widget_factory.createSettingsWidget(null, settings_database, node_database), "settings", _("Settings"));
       var log_view = new Gtk.TextView();
       log_view.editable = false;
-      log_view.buffer.set_text(logger.get_log());
+      log_view.monospace = true;
+      Gtk.TextIter iter;
+      log_view.buffer.get_start_iter(out iter);
+      log_view.buffer.insert_markup(ref iter, logger.get_log(), -1);
       err_widget.add_page(log_view, "log", _("Log"));
       err_widget.on_retry.connect(() => {
         window.destroy();
@@ -164,6 +170,16 @@ namespace Venom {
       release();
     }
 
+    public override int command_line(GLib.ApplicationCommandLine command_line) {
+      if (command_line.get_options_dict().contains("preferences")) {
+        on_show_preferences();
+        return 0;
+      }
+
+      activate();
+      return 0;
+    }
+
     protected override int handle_local_options(GLib.VariantDict options) {
       if (options.contains("version")) {
         stdout.printf("%s %s\n", Environment.get_application_name(), Config.VERSION);
@@ -205,6 +221,23 @@ namespace Venom {
         return;
       }
       on_active_window((win) => win.on_show_contact(parameter.get_string()));
+    }
+
+    public void on_mute_contact(GLib.SimpleAction action, GLib.Variant? parameter) {
+      logger.d("on_mute_contact");
+      if (parameter == null || parameter.get_string() == "") {
+        return;
+      }
+      on_active_window((win) => win.on_mute_contact(parameter.get_string()));
+    }
+
+    public void on_show_contact_info(GLib.SimpleAction action, GLib.Variant? parameter) {
+      logger.d("on_show_contact_info");
+      activate();
+      if (parameter == null || parameter.get_string() == "") {
+        return;
+      }
+      on_active_window((win) => win.on_show_contact_info(parameter.get_string()));
     }
 
     public void on_show_filetransfers() {

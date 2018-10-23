@@ -35,6 +35,7 @@ namespace Venom {
 
     public void add_page(Gtk.Widget widget, string name, string title) {
       var scrolled_window = new Gtk.ScrolledWindow(null, null);
+      scrolled_window.get_style_context().add_class("frame");
       scrolled_window.add(widget);
       stack.add_titled(scrolled_window, name, title);
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1
+<!-- Generated with glade 3.22.1 
 
 Copyright (C) 2013-2018 Venom authors and contributors
 
@@ -38,7 +38,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="icon_name">friend-symbolic</property>
-            <property name="icon_size">5</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -62,7 +61,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label">peer_name</property>
-                    <property name="xalign">0</property>
+                    <property name="selectable">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -108,6 +107,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label">peer_key</property>
+                <property name="selectable">True</property>
                 <property name="xalign">0</property>
                 <style>
                   <class name="monospace"/>
