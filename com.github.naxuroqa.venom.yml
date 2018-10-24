@@ -52,9 +52,10 @@ modules:
         sha256: 086f37cdecd42eacd0e1dc291f5410d9ca2c5ed2cd9cd9367729e3d2d18a8550
   - name: gspell
     sources:
-      - type: archive
-        url: https://download.gnome.org/sources/gspell/1.8/gspell-1.8.1.tar.xz
-        sha256: 819a1d23c7603000e73f5e738bdd284342e0cd345fb0c7650999c31ec741bbe5
+      - type: git
+        url: https://gitlab.gnome.org/GNOME/gspell
+        tag: 1.8.1
+        commit: ba03499234037861e01ce1e83075e8a32b9790f3
   - name: venom
     builddir: true
     buildsystem: meson

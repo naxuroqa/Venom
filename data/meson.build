@@ -19,5 +19,5 @@ configure_file(
 
 install_data(
 			'icons/symbolic/com.github.naxuroqa.venom-symbolic.svg',
-			install_dir: join_paths(get_option('datadir'), 'icons', 'hicolor', 'symbolic', 'apps'),
+			install_dir: join_paths(get_option('datadir'), 'icons', 'hicolor', 'symbolic', 'apps')
 )
