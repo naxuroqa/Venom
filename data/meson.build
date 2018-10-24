@@ -1,6 +1,6 @@
 i18n.merge_file(
-			input: 'chat.tox.venom.desktop.in',
-			output: 'chat.tox.venom.desktop',
+			input: 'com.github.naxuroqa.venom.desktop.in',
+			output: 'com.github.naxuroqa.venom.desktop',
 			type: 'desktop',
 			po_dir: '../po',
 			install: true,
@@ -10,14 +10,14 @@ i18n.merge_file(
 service_conf = configuration_data()
 service_conf.set('bindir', join_paths(get_option('prefix'), get_option('bindir')))
 configure_file(
-			input: 'chat.tox.venom.service.in',
-			output: 'chat.tox.venom.service',
+			input: 'com.github.naxuroqa.venom.service.in',
+			output: 'com.github.naxuroqa.venom.service',
 			configuration: service_conf,
 			install: true,
 			install_dir: join_paths(get_option('datadir'), 'dbus-1', 'services')
 )
 
 install_data(
-			'icons/symbolic/chat.tox.venom-symbolic.svg',
+			'icons/symbolic/com.github.naxuroqa.venom-symbolic.svg',
 			install_dir: join_paths(get_option('datadir'), 'icons', 'hicolor', 'symbolic', 'apps'),
 )

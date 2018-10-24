@@ -18,7 +18,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
 
 -->
 <gresources>
-  <gresource prefix="/chat/tox/venom/ui">
+  <gresource prefix="/com/github/naxuroqa/venom/ui">
     <file compressed="true" preprocess="xml-stripblanks">add_contact_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">app_menu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">application_window.ui</file>
@@ -45,7 +45,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
     <file compressed="true" preprocess="xml-stripblanks">user_status_menu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">welcome_widget.ui</file>
   </gresource>
-  <gresource prefix="/chat/tox/venom/css">
+  <gresource prefix="/com/github/naxuroqa/venom/css">
     <file compressed="true">custom.css</file>
   </gresource>
 </gresources>

@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/chat/tox/venom/ui/error_widget.ui")]
+  [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/error_widget.ui")]
   public class ErrorWidget : Gtk.Box {
     [GtkChild] private Gtk.Stack stack;
     [GtkChild] private Gtk.Label message;

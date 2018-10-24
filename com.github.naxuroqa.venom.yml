@@ -1,10 +1,9 @@
-app-id: chat.tox.venom
+app-id: com.github.naxuroqa.venom
 runtime: org.gnome.Platform
 runtime-version: '3.28'
 sdk: org.gnome.Sdk
 command: venom
-tags: [nightly]
-desktop-file-name-prefix: (Nightly)
+copy-icon: true
 finish-args:
   - --share=network
   - --socket=x11
@@ -17,10 +16,8 @@ finish-args:
   - --filesystem=xdg-data/pixmaps/faces:ro
   - --filesystem=xdg-download
 build-options:
-  cflags: -O2 -g
-  cxxflags: -O2 -g
-  env:
-    V: '1'
+  cflags: -O3
+  cxxflags: -O3
 modules:
   - name: libgee
     build-options:
@@ -46,8 +43,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/toktok/c-toxcore
-        tag: v0.2.2
-        commit: 2824daf74a6d2bd60ebaf387a30f1b7719b6b67c
+        tag: v0.2.8
+        commit: 3f35a84968f100e1e6d3c9df467fd3c82a9ebb13
   - name: enchant
     sources:
       - type: archive
@@ -56,14 +53,13 @@ modules:
   - name: gspell
     sources:
       - type: archive
-        url: https://download.gnome.org/sources/gspell/1.8/gspell-1.8.0.tar.xz
-        sha256: 1b7fc2c5b84ede43bc52d513f0601238af92b572a42b19363da6d067fb529345
+        url: https://download.gnome.org/sources/gspell/1.8/gspell-1.8.1.tar.xz
+        sha256: 819a1d23c7603000e73f5e738bdd284342e0cd345fb0c7650999c31ec741bbe5
   - name: venom
     builddir: true
     buildsystem: meson
     config-opts:
-      - --buildtype=debugoptimized
+      - --buildtype=release
     sources:
       - type: git
         url: https://github.com/naxuroqa/Venom
-        branch: develop

@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/chat/tox/venom/ui/contact_list_widget.ui")]
+  [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/contact_list_widget.ui")]
   public class ContactListWidget : Gtk.Box {
     private ILogger logger;
     private ContactListViewModel view_model;
@@ -48,7 +48,7 @@ namespace Venom {
 
       app_window.user_info_box.pack_start(top_bar_box, true, true);
 
-      var builder = new Gtk.Builder.from_resource("/chat/tox/venom/ui/user_status_menu.ui");
+      var builder = new Gtk.Builder.from_resource("/com/github/naxuroqa/venom/ui/user_status_menu.ui");
       var menu_model = builder.get_object("menu") as GLib.MenuModel;
       user_status_menu.set_menu_model(menu_model);
 

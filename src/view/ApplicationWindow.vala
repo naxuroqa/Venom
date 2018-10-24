@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/chat/tox/venom/ui/application_window.ui")]
+  [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/application_window.ui")]
   public class ApplicationWindow : Gtk.ApplicationWindow, ContactListWidgetCallback {
 
     private const GLib.ActionEntry win_entries[] =
@@ -205,7 +205,7 @@ namespace Venom {
     private void init_widgets() {
       var screen = Gdk.Screen.get_default();
       var css_provider = new Gtk.CssProvider();
-      css_provider.load_from_resource("/chat/tox/venom/css/custom.css");
+      css_provider.load_from_resource("/com/github/naxuroqa/venom/css/custom.css");
       Gtk.StyleContext.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
       var gtk_settings = Gtk.Settings.get_default();
