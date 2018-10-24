@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/chat/tox/venom/ui/peer_entry.ui")]
+  [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/peer_entry.ui")]
   public class PeerEntry : Gtk.ListBoxRow {
     [GtkChild] private Gtk.Image peer_image;
     [GtkChild] private Gtk.Label peer_name;
@@ -46,7 +46,7 @@ namespace Venom {
       logger.d("PeerEntry destroyed.");
     }
   }
-  [GtkTemplate(ui = "/chat/tox/venom/ui/peer_entry_compact.ui")]
+  [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/peer_entry_compact.ui")]
   public class PeerEntryCompact : Gtk.ListBoxRow {
     [GtkChild] private Gtk.Image peer_image;
     [GtkChild] private Gtk.Label peer_name;

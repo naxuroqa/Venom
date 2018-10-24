@@ -80,9 +80,9 @@ namespace Venom {
       public string db_filename() { return GLib.Path.build_filename(user_config_dir, "tox", profile_name + ".db"); }
       public string tox_data_filename() { return GLib.Path.build_filename(user_config_dir, "tox", profile_name + ".data"); }
       public string accels_filename() { return GLib.Path.build_filename(user_config_dir, "tox", profile_name + ".accels"); }
-      public string icons_prefix() { return "/chat/tox/venom/icons/scalable/status/"; }
+      public string icons_prefix() { return "/com/github/naxuroqa/venom/icons/scalable/status/"; }
       public string icons_suffix() { return ".svg"; }
-      public string app_id() { return "chat.tox.venom"; }
+      public string app_id() { return "com.github.naxuroqa.venom"; }
       public string tox_about() { return "https://tox.chat/about.html"; }
       public string tox_get_involved() { return "https://wiki.tox.chat/users/contributing"; }
     }
