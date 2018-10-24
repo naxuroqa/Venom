@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/chat/tox/venom/ui/file_transfer_entry.ui")]
+  [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/file_transfer_entry.ui")]
   public class FileTransferEntry : Gtk.ListBoxRow {
     [GtkChild] private Gtk.Label description;
     [GtkChild] private Gtk.ProgressBar progress;

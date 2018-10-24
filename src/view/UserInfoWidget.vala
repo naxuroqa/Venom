@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/chat/tox/venom/ui/user_info_widget.ui")]
+  [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/user_info_widget.ui")]
   public class UserInfoWidget : Gtk.Box {
     [GtkChild] private Gtk.Entry entry_username;
     [GtkChild] private Gtk.Entry entry_statusmessage;

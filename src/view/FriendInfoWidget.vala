@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/chat/tox/venom/ui/friend_info_widget.ui")]
+  [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/friend_info_widget.ui")]
   public class FriendInfoWidget : Gtk.Box {
     [GtkChild] private Gtk.Label username;
     [GtkChild] private Gtk.Label statusmessage;

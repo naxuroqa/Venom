@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  [GtkTemplate(ui = "/chat/tox/venom/ui/contact_list_entry.ui")]
+  [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/contact_list_entry.ui")]
   public class ContactListEntry : Gtk.ListBoxRow {
     [GtkChild] private Gtk.Label contact_name;
     [GtkChild] private Gtk.Label contact_status;
