@@ -2,6 +2,7 @@
 <gresources>
   <gresource prefix="/com/github/naxuroqa/venom/icons">
     <file compressed="true">scalable/apps/venom-symbolic.svg</file>
+    <file compressed="true">scalable/apps/pumpkin.svg</file>
     <file compressed="true">scalable/status/busy-symbolic.svg</file>
     <file compressed="true">scalable/status/idle-symbolic.svg</file>
     <file compressed="true">scalable/status/offline-symbolic.svg</file>
