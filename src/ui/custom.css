@@ -34,6 +34,31 @@
   animation: welcome-highlight 4s infinite ease-in;
 }
 
+@keyframes welcome-drop-in {
+  0%   { -gtk-icon-transform: translateY(-150px); }
+  100% { -gtk-icon-transform: translateY(0px); }
+}
+
+.welcome-drop-in {
+  animation: welcome-drop-in 1s ease-in, welcome-highlight 4s infinite ease-in;
+}
+
+@keyframes welcome-hover {
+	0% {
+		-gtk-icon-transform: translateY(0px);
+    -gtk-icon-shadow: 0 0px 10px rgba(0,0,0,0.8);
+	}
+
+	100% {
+		-gtk-icon-transform: translateY(-20px);
+    -gtk-icon-shadow: 0 20px 10px rgba(0,0,0,0.6);
+	}
+}
+
+.welcome-hover {
+  animation: welcome-hover 4s infinite ease-in-out alternate;
+}
+
 @keyframes pulse {
   0% {
     opacity: 0.2;

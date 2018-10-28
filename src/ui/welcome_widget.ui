@@ -43,10 +43,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="can_focus">False</property>
             <property name="pixel_size">144</property>
             <property name="icon_name">venom-symbolic</property>
-            <property name="icon_size">6</property>
-            <style>
-              <class name="welcome-highlight"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
