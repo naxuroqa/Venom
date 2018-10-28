@@ -102,4 +102,4 @@ src/db/SqliteWrapper.vala
 src/db/SqliteSettingsDatabase.vala
 src/portal/Request.vala
 src/portal/Screenshot.vala
-data/chat.tox.venom.desktop.in
+data/com.github.naxuroqa.venom.desktop.in
