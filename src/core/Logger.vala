@@ -42,6 +42,9 @@ namespace Venom {
     public static string insert_span(string attributes, string content) {
       return @"<span $attributes>$content</span>";
     }
+    public static string bold(string text) {
+      return @"<b>$text</b>";
+    }
   }
 
   public enum LogLevel {

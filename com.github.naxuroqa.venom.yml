@@ -15,6 +15,12 @@ finish-args:
   - --talk-name=org.freedesktop.Notifications
   - --filesystem=xdg-data/pixmaps/faces:ro
   - --filesystem=xdg-download
+cleanup-commands:
+  - rm -rf /app/bin/{DHT_bootstrap,gspell-app1,enchant*}
+  - rm -rf /app/include
+  - rm -rf /app/lib/{*.a,*.la,girepository-1.0,pkgconfig}
+  - rm -rf /app/lib/enchant-2/{*.a,*.la}
+  - rm -rf /app/share/{vala,man,gir-1.0}
 build-options:
   cflags: -O3
   cxxflags: -O3

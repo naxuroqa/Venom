@@ -23,7 +23,7 @@ namespace Venom {
   [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/settings_widget.ui")]
   public class SettingsWidget : Gtk.Box {
     private ISettingsDatabase settingsDatabase;
-    private IDhtNodeDatabase nodeDatabase;
+    private IDhtNodeRepository node_repository;
     private ILogger logger;
 
     [GtkChild] private Gtk.Stack stack;
@@ -63,15 +63,17 @@ namespace Venom {
     [GtkChild] private Gtk.Entry custom_proxy_host;
     [GtkChild] private Gtk.SpinButton custom_proxy_port;
 
+    [GtkChild] private Gtk.Button update_nodes;
+
     private ObservableList dht_nodes;
     private ObservableListModel list_model;
     private StackIndexTransform stack_transform;
 
-    public SettingsWidget(ILogger logger, ApplicationWindow? app_window, ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase) {
+    public SettingsWidget(ILogger logger, ApplicationWindow? app_window, ISettingsDatabase settingsDatabase, IDhtNodeRepository node_repository) {
       logger.d("SettingsWidget created.");
       this.logger = logger;
       this.settingsDatabase = settingsDatabase;
-      this.nodeDatabase = nodeDatabase;
+      this.node_repository = node_repository;
 
       if (app_window != null) {
         app_window.reset_header_bar();
@@ -115,21 +117,37 @@ namespace Venom {
       settingsDatabase.bind_property("custom-proxy-host",   custom_proxy_host,     "text",   BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("custom-proxy-port",   custom_proxy_port,     "value",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
-      var dhtNodeFactory = new DhtNodeFactory();
+      update_nodes.clicked.connect(update_nodes_from_web);
+
       dht_nodes = new ObservableList();
-      dht_nodes.set_list(nodeDatabase.getDhtNodes(dhtNodeFactory));
-      list_model = new ObservableListModel(dht_nodes);
-      var creator = new SettingsDhtNodeCreator(logger, this);
-      node_list_box.bind_model(list_model, creator.create_dht_node);
+      reset_node_list();
     }
 
     ~SettingsWidget() {
       logger.d("SettingsWidget destroyed.");
     }
 
+    private void update_nodes_from_web() {
+      logger.d("update_nodes_from_web");
+      var updater = new JsonWebDhtNodeUpdater(logger);
+      foreach (var node in updater.get_dht_nodes()) {
+        node_repository.create(node);
+      }
+      reset_node_list();
+    }
+
+    private void reset_node_list() {
+      dht_nodes.set_collection(node_repository.query_all().order_by((a, b) => {
+          return strcmp(a.location, b.location);
+        }));
+      list_model = new ObservableListModel(dht_nodes);
+      var creator = new SettingsDhtNodeCreator(logger, this);
+      node_list_box.bind_model(list_model, creator.create_dht_node);
+    }
+
     public void on_node_changed(IDhtNode node) {
       logger.d("on_node_changed");
-      nodeDatabase.insertDhtNode(node.pub_key, node.host, node.port, node.is_blocked, node.maintainer, node.location);
+      node_repository.update(node);
     }
 
     private class SettingsDhtNodeCreator {

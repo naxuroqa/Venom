@@ -38,6 +38,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
     <file compressed="true" preprocess="xml-stripblanks">friend_request_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">message_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">node_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">nospam_entry.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">peer_entry.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">peer_entry_compact.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">settings_widget.ui</file>

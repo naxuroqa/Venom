@@ -1,7 +1,7 @@
 /*
  *    NodeWidget.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -22,16 +22,11 @@
 namespace Venom {
   [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/node_widget.ui")]
   public class NodeWidget : Gtk.ListBoxRow {
-    [GtkChild]
-    private Gtk.Label host;
-    [GtkChild]
-    private Gtk.Label public_key;
-    [GtkChild]
-    private Gtk.Label maintainer;
-    [GtkChild]
-    private Gtk.Label location;
-    [GtkChild]
-    private Gtk.Switch enabled;
+    [GtkChild] private Gtk.Label host;
+    [GtkChild] private Gtk.Label public_key;
+    [GtkChild] private Gtk.Label maintainer;
+    [GtkChild] private Gtk.Label location;
+    [GtkChild] private Gtk.Switch enabled;
 
     public signal void node_changed(IDhtNode node);
 

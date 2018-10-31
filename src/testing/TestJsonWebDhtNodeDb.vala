@@ -1,7 +1,7 @@
 /*
  *    TestJsonWebDhtNodeDb.vala
  *
- *    Copyright (C) 2017 Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -23,26 +23,14 @@ using Venom;
 using Mock;
 
 namespace TestJsonWebDhtNodeDb {
-  private static ILogger logger;
-  private static IDhtNodeFactory nodeFactory;
-
-  private static void before() {
-    logger = new MockLogger();
-    nodeFactory = new MockDhtNodeFactory();
-  }
-
   private static void testWebNodeDb() {
-    before();
-    var database = new JsonWebDhtNodeDatabase(logger);
+    var database = new JsonWebDhtNodeUpdater(new MockLogger());
     assert_nonnull(database);
   }
 
   private static void testWebNodeDbGet() {
-    before();
-    var database = new JsonWebDhtNodeDatabase(logger);
-    assert_nonnull(database);
-    var nodes = database.getDhtNodes(nodeFactory);
-    assert(nodes.length() != 0);
+    var database = new JsonWebDhtNodeUpdater(new MockLogger());
+    assert(database.get_dht_nodes().iterator().next());
   }
 
   private static int main(string[] args) {

@@ -32,16 +32,18 @@ src/viewmodel/ConferenceInfoViewModel.vala
 src/tox/ToxSessionIO.vala
 src/tox/DhtNodeDatabase.vala
 src/tox/ToxAdapterFriendListener.vala
-src/tox/ContactDatabase.vala
+src/tox/JsonWebDhtNodeUpdater.vala
 src/tox/ToxAdapterFiletransferListener.vala
+src/tox/SqliteNospamRepository.vala
 src/tox/Conference.vala
 src/tox/FriendRequest.vala
 src/tox/ToxSessionThread.vala
+src/tox/SqliteDhtNodeRepository.vala
+src/tox/SqliteFriendRequestRepository.vala
 src/tox/ToxContact.vala
 src/tox/ToxSession.vala
-src/tox/JsonWebDhtNodeDatabase.vala
 src/tox/DhtNode.vala
-src/tox/SqliteDhtNodeDatabase.vala
+src/tox/ContactRepository.vala
 src/tox/ToxAdapterSelfListener.vala
 src/tox/ToxAdapterConferenceListener.vala
 src/tox/MessageDatabase.vala
@@ -68,6 +70,7 @@ src/view/AddContactWidget.vala
 src/view/ConversationWindow.vala
 src/view/PeerEntry.vala
 src/view/FileTransferEntry.vala
+src/view/NospamEntry.vala
 src/view/ConferenceInviteEntry.vala
 src/view/UserInfoWidget.vala
 src/view/FriendInfoWidget.vala
@@ -95,6 +98,7 @@ src/ui/user_info_widget.ui
 src/ui/contact_list_entry.ui
 src/ui/file_transfer_entry_inline.ui
 src/ui/settings_widget.ui
+src/ui/nospam_entry.ui
 src/ui/friend_info_widget.ui
 src/ui/error_widget.ui
 src/db/DatabaseInterfaces.vala

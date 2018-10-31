@@ -72,6 +72,12 @@ namespace Venom {
       user_info.info_changed();
     }
 
+    public virtual void set_self_nospam(int nospam) throws GLib.Error {
+      session.self_set_nospam((uint32) nospam);
+      user_info.tox_id = Tools.bin_to_hexstring(session.self_get_address());
+      user_info.info_changed();
+    }
+
     public virtual void set_self_avatar(Gdk.Pixbuf pixbuf) throws GLib.Error {
       logger.d("ToxAdapterSelfListenerImpl set_self_avatar");
       avatar_cancellable.cancel();

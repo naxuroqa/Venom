@@ -1,7 +1,7 @@
 /*
  *    DhtNode.vala
  *
- *    Copyright (C) 2013-2017  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -20,13 +20,8 @@
  */
 
 namespace Venom {
-  public class DhtNodeFactory : IDhtNodeFactory, Object {
-    public IDhtNode createDhtNode(string key, string address, uint port, bool is_blocked, string owner, string location) {
-      return new DhtNode(key, address, port, is_blocked, owner, location);
-    }
-  }
-
   public class DhtNode : IDhtNode, Object {
+    public int    id         { get; set; }
     public string pub_key    { get; set; }
     public string host       { get; set; }
     public uint   port       { get; set; }
@@ -34,7 +29,10 @@ namespace Venom {
     public string maintainer { get; set; }
     public string location   { get; set; }
 
-    public DhtNode(string pub_key, string host, uint port = 33445, bool is_blocked = false, string maintainer = "", string location = "") {
+    public DhtNode() {
+    }
+
+    public DhtNode.with_params(string pub_key, string host, uint port = 33445, bool is_blocked = false, string maintainer = "", string location = "") {
       this.pub_key = pub_key;
       this.host = host;
       this.port = port;

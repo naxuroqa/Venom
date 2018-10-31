@@ -25,6 +25,8 @@ namespace Venom {
     private ILogger logger;
     private ObservableList contacts;
     private NotificationListener notification_listener;
+    private IContactRepository contact_repository;
+    private IFriendRequestRepository friend_request_repository;
     private GLib.HashTable<IContact, ObservableList> conversations;
     private GLib.HashTable<uint32, Message> messages_waiting_for_rr;
 
@@ -39,10 +41,12 @@ namespace Venom {
 
     public bool show_typing { get; set; }
 
-    public ToxAdapterFriendListenerImpl(ILogger logger, UserInfo user_info, ObservableList contacts, ObservableList friend_requests, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
+    public ToxAdapterFriendListenerImpl(ILogger logger, UserInfo user_info, IFriendRequestRepository friend_request_repository, IContactRepository contact_repository, ObservableList contacts, ObservableList friend_requests, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
       logger.d("ToxAdapterFriendListenerImpl created.");
       this.logger = logger;
       this.user_info = user_info;
+      this.contact_repository = contact_repository;
+      this.friend_request_repository = friend_request_repository;
       this.contacts = contacts;
       this.friend_requests = friend_requests;
       this.conversations = conversations;
@@ -50,6 +54,10 @@ namespace Venom {
 
       messages_waiting_for_rr = new GLib.HashTable<uint32, Message>(null, null);
       tox_friend_requests = new Gee.HashMap<string, FriendRequest>();
+      foreach (var request in friend_requests.get_all()) {
+        var r = (FriendRequest) request;
+        tox_friend_requests.@set(r.id, r);
+      }
 
       user_info.info_changed.connect(on_info_changed);
       avatar_hash = user_info.avatar.hash;
@@ -79,7 +87,7 @@ namespace Venom {
       logger.d("ToxAdapterFriendListenerImpl destroyed.");
     }
 
-    public virtual void attach_to_session(ToxSession session) {
+    public void attach_to_session(ToxSession session) {
       this.session = session;
       session.set_friend_listener(this);
 
@@ -94,38 +102,44 @@ namespace Venom {
       }
     }
 
-    public virtual void on_remove_friend(IContact c) throws Error {
+    public void on_remove_friend(IContact c) throws Error {
       var contact = c as Contact;
       session.friend_delete(contact.tox_friend_number);
     }
 
-    public virtual void on_send_friend_request(string address, string message) throws Error {
+    public void on_apply_friend_settings(IContact contact) {
+      contact_repository.update(contact);
+    }
+
+    public void on_send_friend_request(string address, string message) throws Error {
       var bin_address = Tools.hexstring_to_bin(address);
       session.friend_add(bin_address, message);
     }
 
-    public virtual void on_accept_friend_request(string id) throws Error {
+    public void on_accept_friend_request(string id) throws Error {
       var friend_request = tox_friend_requests.@get(id);
       var public_key = Tools.hexstring_to_bin(id);
       session.friend_add_norequest(public_key);
 
       friend_requests.remove(friend_request);
+      friend_request_repository.delete(friend_request);
       tox_friend_requests.unset(id);
     }
 
-    public virtual void on_reject_friend_request(string id) throws Error {
+    public void on_reject_friend_request(string id) throws Error {
       var friend_request = tox_friend_requests.@get(id);
 
       friend_requests.remove(friend_request);
+      friend_request_repository.delete(friend_request);
       tox_friend_requests.unset(id);
     }
 
-    public virtual void on_send_message(IContact c, string message) throws Error {
+    public void on_send_message(IContact c, string message) throws Error {
       var contact = c as Contact;
       session.friend_send_message(contact.tox_friend_number, message);
     }
 
-    public virtual void on_set_typing(IContact c, bool typing) throws Error {
+    public void on_set_typing(IContact c, bool typing) throws Error {
       if (!show_typing) {
         return;
       }
@@ -133,7 +147,7 @@ namespace Venom {
       session.self_set_typing(contact.tox_friend_number, typing);
     }
 
-    public virtual void on_friend_message(uint32 friend_number, string message_str) {
+    public void on_friend_message(uint32 friend_number, string message_str) {
       logger.d("on_friend_message");
       var contact = friends.@get(friend_number) as Contact;
       var conversation = conversations.@get(contact);
@@ -144,7 +158,7 @@ namespace Venom {
       conversation.append(message);
     }
 
-    public virtual void on_friend_read_receipt(uint32 friend_number, uint32 message_id) {
+    public void on_friend_read_receipt(uint32 friend_number, uint32 message_id) {
       var message = messages_waiting_for_rr.@get(message_id);
       if (message != null) {
         message.received = true;
@@ -156,36 +170,41 @@ namespace Venom {
       }
     }
 
-    public virtual void on_friend_name_changed(uint32 friend_number, string name) {
+    public void on_friend_name_changed(uint32 friend_number, string name) {
       var contact = friends.@get(friend_number) as Contact;
       contact.name = name;
       contact.changed();
     }
 
-    public virtual void on_friend_status_message_changed(uint32 friend_number, string message) {
+    public void on_friend_status_message_changed(uint32 friend_number, string message) {
       logger.d("on_friend_status_message_changed");
       var contact = friends.@get(friend_number) as Contact;
       contact.status_message = message;
       contact.changed();
     }
 
-    public virtual void on_friend_request(uint8[] public_key, string message) {
+    public void on_friend_request(uint8[] public_key, string message) {
       logger.d("on_friend_request");
       var id = Tools.bin_to_hexstring(public_key);
+      if (tox_friend_requests.has_key(id)) {
+        logger.d("Friend request already in list, ignoring.");
+        return;
+      }
       var request = new FriendRequest(id, message);
       friend_requests.append(request);
+      friend_request_repository.create(request);
       tox_friend_requests.@set(id, request);
       notification_listener.on_friend_request(request);
     }
 
-    public virtual void on_friend_status_changed(uint32 friend_number, UserStatus status) {
+    public void on_friend_status_changed(uint32 friend_number, UserStatus status) {
       logger.d("on_friend_status_changed");
       var contact = friends.@get(friend_number) as Contact;
       contact.user_status = status;
       contact.changed();
     }
 
-    public virtual void on_friend_connection_status_changed(uint32 friend_number, bool is_connected) {
+    public void on_friend_connection_status_changed(uint32 friend_number, bool is_connected) {
       logger.d("on_friend_connection_status_changed");
       var contact = friends.@get(friend_number) as Contact;
       contact.connected = is_connected;
@@ -199,14 +218,14 @@ namespace Venom {
       }
     }
 
-    public virtual void on_friend_typing_status_changed(uint32 friend_number, bool is_typing) {
+    public void on_friend_typing_status_changed(uint32 friend_number, bool is_typing) {
       logger.d("on_friend_typing_status_changed");
       var contact = friends.@get(friend_number) as Contact;
       contact._is_typing = is_typing;
       contact.changed();
     }
 
-    public virtual void on_friend_added(uint32 friend_number, uint8[] public_key) {
+    public void on_friend_added(uint32 friend_number, uint8[] public_key) {
       logger.d("on_friend_added");
       var str_id = Tools.bin_to_hexstring(public_key);
       var contact = new Contact(friend_number, str_id);
@@ -215,8 +234,10 @@ namespace Venom {
         contact.status_message = session.friend_get_status_message(friend_number);
         contact.last_seen = new DateTime.from_unix_local((int64) session.friend_get_last_online(friend_number));
       } catch (ToxError e) {
-        logger.i("Restoring contact information failed");
+        logger.e("Getting contact information failed");
       }
+
+      contact_repository.create(contact);
 
       if (!conversations.contains(contact)) {
         var conversation = new ObservableList();
@@ -245,15 +266,16 @@ namespace Venom {
       contacts.append(contact);
     }
 
-    public virtual void on_friend_deleted(uint32 friend_number) {
+    public void on_friend_deleted(uint32 friend_number) {
       logger.d("on_friend_deleted");
       var contact = friends.@get(friend_number);
+      contact_repository.delete(contact);
       conversations.remove(contact);
       friends.remove(friend_number);
       contacts.remove(contact);
     }
 
-    public virtual void on_friend_message_sent(uint32 friend_number, uint32 message_id, string message) {
+    public void on_friend_message_sent(uint32 friend_number, uint32 message_id, string message) {
       logger.d("on_friend_message_sent");
       var contact = friends.@get(friend_number);
       var conversation = conversations.@get(contact);

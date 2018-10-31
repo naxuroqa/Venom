@@ -1,7 +1,7 @@
 /*
  *    SqliteWrapper.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -23,25 +23,29 @@ namespace Venom {
 
   public class SqliteWrapperFactory : IDatabaseFactory, Object {
     public IDatabase createDatabase(string path) throws DatabaseError {
-      return new SqliteDatabaseWrapper(path);
+      var update = new SqliteDatabaseV1(null);
+      return new SqliteDatabaseWrapper(path, update);
     }
-
-    public IDatabaseStatementFactory createStatementFactory(IDatabase database) {
+    public IDatabaseStatementFactory create_statement_factory(IDatabase database) {
       return new SqliteStatementFactory(database as SqliteDatabaseWrapper);
     }
-
-    public IDhtNodeDatabase createNodeDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      return new SqliteDhtNodeDatabase(factory, logger);
+    public IDhtNodeRepository create_node_repository(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+      return new SqliteDhtNodeRepository(factory, logger);
     }
-    public IContactDatabase createContactDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      return new SqliteContactDatabase(factory, logger);
+    public IContactRepository create_contact_repository(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+      return new SqliteContactRepository(factory, logger);
     }
     public IMessageDatabase createMessageDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
       return new SqliteMessageDatabase(factory, logger);
     }
-
-    public ISettingsDatabase createSettingsDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public ISettingsDatabase create_settings_database(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
       return new SqliteSettingsDatabase(factory, logger);
+    }
+    public IFriendRequestRepository create_friend_request_repository(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+      return new SqliteFriendRequestRepository(factory, logger);
+    }
+    public INospamRepository create_nospam_repository(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+      return new SqliteNospamRepository(factory, logger);
     }
   }
 
@@ -51,8 +55,16 @@ namespace Venom {
       this.database = database;
     }
 
-    public IDatabaseStatement createStatement(string zSql) throws DatabaseStatementError {
+    public IDatabaseStatement create_statement(string zSql) throws DatabaseStatementError {
       return new SqliteStatementWrapper(database, zSql);
+    }
+
+    public SqliteQueryResult query_database(string sql) throws DatabaseError {
+      return database.query(sql);
+    }
+
+    public int64 last_insert_rowid() {
+      return database.last_insert_rowid();
     }
   }
 
@@ -172,18 +184,121 @@ namespace Venom {
     }
   }
 
+  public interface SqlSpecification : GLib.Object {
+    public abstract string to_sql_query();
+  }
+
+  public interface SqliteDatabaseUpdate : GLib.Object {
+    public abstract void update_database(SqliteDatabaseWrapper database) throws DatabaseError;
+  }
+
+  public class SqliteDatabaseV1 : SqliteDatabaseUpdate, GLib.Object {
+    private SqliteDatabaseUpdate? next_update;
+    public SqliteDatabaseV1(SqliteDatabaseUpdate? next_update) {
+      this.next_update = next_update;
+    }
+    public void update_database(SqliteDatabaseWrapper database) throws DatabaseError {
+      if (database.version == 0) {
+        database.query(
+          """
+          DROP TABLE IF EXISTS Contacts;
+          DROP TABLE IF EXISTS Nodes;
+          PRAGMA user_version=1;
+          """
+        );
+      }
+      if (next_update != null) {
+        next_update.update_database(database);
+      }
+    }
+  }
+
+  public class SqliteQueryResultRow {
+    public int n_columns;
+    public string[] values;
+    public string[] column_names;
+    public SqliteQueryResultRow(int n_columns, string[] values, string[] column_names) {
+      this.n_columns = n_columns;
+      this.values = new string[n_columns];
+      this.column_names = new string[n_columns];
+      for(var i = 0; i < n_columns; i++) {
+        this.values[i] = values[i];
+        this.column_names[i] = column_names[i];
+      }
+    }
+  }
+
+  public class SqliteQueryResult {
+    public SqliteQueryResultRow[] rows;
+    public SqliteQueryResult(SqliteQueryResultRow[] rows) {
+      this.rows = rows;
+    }
+
+    public string to_string() {
+      var str = new StringBuilder();
+      foreach(var row in rows) {
+        for (var i = 0; i < row.n_columns; i++) {
+          str.append("[%s] %s\n".printf(row.column_names[i], row.values[i]));
+        }
+      }
+      return str.str;
+    }
+  }
+
+  public class SqliteQuery {
+    private string query;
+    public SqliteQuery(string query) {
+      this.query = query;
+    }
+    public SqliteQueryResult exec(Sqlite.Database db) throws DatabaseError {
+      string errmsg;
+      SqliteQueryResultRow[] rows = {};
+      var result = db.exec(query, (n_columns, values, column_names) => {
+        rows += new SqliteQueryResultRow(n_columns, values, column_names);
+        return 0;
+      }, out errmsg);
+
+      if (result != Sqlite.OK) {
+        throw new DatabaseError.EXEC("Cannot execute query: " + errmsg);
+      }
+      return new SqliteQueryResult(rows);
+    }
+  }
+
   public class SqliteDatabaseWrapper : IDatabase, Object {
     private Sqlite.Database database;
+    private int _version = 0;
 
     public Sqlite.Database handle {
       get { return database; }
     }
 
-    public SqliteDatabaseWrapper(string path) throws DatabaseError {
+    public int version {
+      get { return _version; }
+    }
+
+    public SqliteQueryResult query(string sql) throws DatabaseError {
+      return (new SqliteQuery(sql)).exec(database);
+    }
+
+    public int64 last_insert_rowid() {
+      return database.last_insert_rowid();
+    }
+
+    public SqliteDatabaseWrapper(string path, SqliteDatabaseUpdate updater) throws DatabaseError {
       var result = Sqlite.Database.open_v2(path, out database);
       if (result != Sqlite.OK) {
         throw new DatabaseError.OPEN("Cannot open sqlite database: " + database.errmsg());
       }
+
+      try {
+        var version = query("PRAGMA user_version;");
+        _version = int.parse(version.rows[0].values[0]);
+      } catch (DatabaseError e) {
+        stdout.printf("");
+      }
+
+      updater.update_database(this);
     }
   }
 }

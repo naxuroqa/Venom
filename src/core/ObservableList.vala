@@ -34,11 +34,12 @@ namespace Venom {
       }
     }
 
-    public void set_collection(Gee.Collection<GLib.Object> collection) {
-      this.list.clear();
-      foreach (var item in collection) {
-        this.list.add(item);
-      }
+    public void set_collection(Gee.Traversable<GLib.Object> iterable) {
+      list.clear();
+      iterable.@foreach((item) => {
+        list.add(item);
+        return true;
+      });
     }
 
     public void append(GLib.Object item) {
@@ -57,6 +58,10 @@ namespace Venom {
 
     public uint length() {
       return list.size;
+    }
+
+    public Gee.Iterable<GLib.Object> get_all() {
+      return list;
     }
 
     public uint index(GLib.Object item) {

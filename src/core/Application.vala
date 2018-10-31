@@ -44,9 +44,11 @@ namespace Venom {
     private IDatabase database;
     private ILogger logger;
     private ToxSession session;
-    private IDhtNodeDatabase node_database;
+    private IDhtNodeRepository node_database;
     private ISettingsDatabase settings_database;
-    private IContactDatabase contact_database;
+    private IContactRepository contact_repository;
+    private IFriendRequestRepository friend_request_repository;
+    private INospamRepository nospam_repository;
     private Factory.IWidgetFactory widget_factory;
     private IDatabaseFactory database_factory;
 
@@ -60,7 +62,7 @@ namespace Venom {
     }
 
     private Gtk.ApplicationWindow create_application_window() throws Error {
-      return widget_factory.createApplicationWindow(this, session, node_database, settings_database, contact_database);
+      return widget_factory.createApplicationWindow(this, session, nospam_repository, friend_request_repository, node_database, settings_database, contact_repository);
     }
 
     private Gtk.ApplicationWindow create_error_window(string error_message) {
@@ -110,10 +112,12 @@ namespace Venom {
         var db_file = R.constants.db_filename();
         create_path_for_filename(db_file);
         database = database_factory.createDatabase(db_file);
-        var statementFactory = database_factory.createStatementFactory(database);
-        node_database = database_factory.createNodeDatabase(statementFactory, logger);
-        contact_database = database_factory.createContactDatabase(statementFactory, logger);
-        settings_database = database_factory.createSettingsDatabase(statementFactory, logger);
+        var statement_factory = database_factory.create_statement_factory(database);
+        node_database = database_factory.create_node_repository(statement_factory, logger);
+        contact_repository = database_factory.create_contact_repository(statement_factory, logger);
+        friend_request_repository = database_factory.create_friend_request_repository(statement_factory, logger);
+        nospam_repository = database_factory.create_nospam_repository(statement_factory, logger);
+        settings_database = database_factory.create_settings_database(statement_factory, logger);
         settings_database.load();
 
       } catch (Error e) {
@@ -138,7 +142,7 @@ namespace Venom {
       settings_database.save();
 
       settings_database = null;
-      contact_database = null;
+      contact_repository = null;
       node_database = null;
       database = null;
 

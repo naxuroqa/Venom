@@ -78,11 +78,11 @@ namespace Venom {
       this.logger = logger;
 
       statementFactory
-          .createStatement(CREATE_TABLE_SETTINGS)
+          .create_statement(CREATE_TABLE_SETTINGS)
           .step();
 
-      insertStatement = statementFactory.createStatement(STATEMENT_INSERT_SETTINGS);
-      selectStatement = statementFactory.createStatement(STATEMENT_SELECT_SETTINGS);
+      insertStatement = statementFactory.create_statement(STATEMENT_INSERT_SETTINGS);
+      selectStatement = statementFactory.create_statement(STATEMENT_SELECT_SETTINGS);
       logger.d("SqliteSettingsDatabase created.");
     }
 
