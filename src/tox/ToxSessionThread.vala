@@ -1,7 +1,7 @@
 /*
  *    ToxSessionThread.vala
  *
- *    Copyright (C) 2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -29,16 +29,16 @@ namespace Venom {
 
   public class ToxSessionThreadImpl : ToxSessionThread, Object {
     private unowned ToxSessionImpl session;
-    private unowned List<IDhtNode> bootstrapNodes;
+    private unowned Gee.Iterable<IDhtNode> bootstrap_nodes;
     private ILogger logger;
     private bool running;
     private bool bootstrapped;
     private Thread<int> session_thread = null;
 
-    public ToxSessionThreadImpl(ToxSessionImpl session, ILogger logger, List<IDhtNode> bootstrapNodes) {
+    public ToxSessionThreadImpl(ToxSessionImpl session, ILogger logger, Gee.Iterable<IDhtNode> bootstrap_nodes) {
       this.session = session;
       this.logger = logger;
-      this.bootstrapNodes = bootstrapNodes;
+      this.bootstrap_nodes = bootstrap_nodes;
       this.running = false;
       this.bootstrapped = false;
       logger.d("ToxSessionThread created.");
@@ -56,7 +56,7 @@ namespace Venom {
       if (!bootstrapped) {
         logger.d("Connecting to DHT Nodes:");
         session.@lock();
-        foreach (var dht_node in bootstrapNodes) {
+        foreach (var dht_node in bootstrap_nodes) {
           if (dht_node.is_blocked) {
             continue;
           }

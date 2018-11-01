@@ -21,11 +21,11 @@
 
 namespace Venom.Factory {
   public interface IWidgetFactory : Object {
-    public abstract ApplicationWindow createApplicationWindow(Gtk.Application application, ToxSession session, IDhtNodeDatabase node_database, ISettingsDatabase settings_database, IContactDatabase contact_database);
+    public abstract ApplicationWindow createApplicationWindow(Gtk.Application application, ToxSession session, INospamRepository nospam_repository, IFriendRequestRepository friend_request_repository, IDhtNodeRepository node_database, ISettingsDatabase settings_database, IContactRepository contact_repository);
     public abstract ILogger createLogger();
     public abstract Gtk.Dialog createAboutDialog();
     public abstract IDatabaseFactory createDatabaseFactory();
-    public abstract SettingsWidget createSettingsWidget(ApplicationWindow? app_window, ISettingsDatabase database, IDhtNodeDatabase nodeDatabase);
+    public abstract SettingsWidget createSettingsWidget(ApplicationWindow? app_window, ISettingsDatabase database, IDhtNodeRepository nodeRepository);
   }
 
   public class WidgetFactory : IWidgetFactory, Object {
@@ -33,9 +33,9 @@ namespace Venom.Factory {
     private Gtk.Dialog about_dialog;
     private ApplicationWindow app_window;
 
-    public ApplicationWindow createApplicationWindow(Gtk.Application application, ToxSession session, IDhtNodeDatabase node_database, ISettingsDatabase settings_database, IContactDatabase contact_database) {
+    public ApplicationWindow createApplicationWindow(Gtk.Application application, ToxSession session, INospamRepository nospam_repository, IFriendRequestRepository friend_request_repository, IDhtNodeRepository node_database, ISettingsDatabase settings_database, IContactRepository contact_repository) {
       if (app_window == null) {
-        app_window = new ApplicationWindow(application, this, session, node_database, settings_database, contact_database);
+        app_window = new ApplicationWindow(application, this, session, nospam_repository, friend_request_repository, node_database, settings_database, contact_repository);
       }
       return app_window;
     }
@@ -60,8 +60,8 @@ namespace Venom.Factory {
       return about_dialog;
     }
 
-    public SettingsWidget createSettingsWidget(ApplicationWindow? app_window, ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase) {
-      return new SettingsWidget(createLogger(), app_window, settingsDatabase, nodeDatabase);
+    public SettingsWidget createSettingsWidget(ApplicationWindow? app_window, ISettingsDatabase settingsDatabase, IDhtNodeRepository nodeRepository) {
+      return new SettingsWidget(createLogger(), app_window, settingsDatabase, nodeRepository);
     }
   }
 

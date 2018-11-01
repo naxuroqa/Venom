@@ -63,6 +63,12 @@ namespace Mock {
                      .create();
       mock().actual_call(this, "self_set_user_status", args);
     }
+    public void self_set_nospam(uint32 nospam) {
+      var args = Arguments.builder()
+                     .uint(nospam)
+                     .create();
+      mock().actual_call(this, "self_set_nospam", args);
+    }
     public UserStatus self_get_user_status() {
       return (UserStatus) mock().actual_call(this, "self_get_user_status").get_int();
     }

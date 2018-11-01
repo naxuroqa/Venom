@@ -44,7 +44,7 @@ public class TestMessageDb : UnitTest {
         .then_return_object(builder);
 
     statementFactory = new MockStatementFactory();
-    when(statementFactory, "createStatement", args().string("", any_string()).create())
+    when(statementFactory, "create_statement", args().string("", any_string()).create())
         .then_return_object(statement);
 
     message = new MockLoggedMessage();

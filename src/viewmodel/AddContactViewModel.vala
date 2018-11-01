@@ -52,8 +52,8 @@ namespace Venom {
       contact_id_error_visible = false;
       var id = Tools.hexstring_to_bin(contact_id);
       if (id.length == ToxCore.address_size()) {
-        var pixbuf = Identicon.generate_pixbuf(id[0 : ToxCore.public_key_size()]);
-        contact_image = round_corners(pixbuf.scale_simple(44, 44, Gdk.InterpType.BILINEAR));
+        var pixbuf = Identicon.generate_pixbuf(id[0 : ToxCore.public_key_size()], 40);
+        contact_image = round_corners(pixbuf);
         contact_image_visible = true;
       } else {
         contact_image_visible = false;

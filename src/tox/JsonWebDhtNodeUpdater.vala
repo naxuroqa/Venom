@@ -1,7 +1,7 @@
 /*
  *    JsonWebDhtNodeDatabase.vala
  *
- *    Copyright (C) 2017  Venom authors and contributors
+ *    Copyright (C) 2017-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -35,13 +35,14 @@ namespace Venom {
     public int last_ping { get; set; }
   }
 
-  public class JsonWebDhtNodeDatabase : IDhtNodeDatabase, GLib.Object {
+  public class JsonWebDhtNodeUpdater : GLib.Object {
     private ILogger logger;
-    public JsonWebDhtNodeDatabase(ILogger logger) {
+    public JsonWebDhtNodeUpdater(ILogger logger) {
       this.logger = logger;
     }
-    public List<IDhtNode> getDhtNodes(IDhtNodeFactory factory) {
-      var dhtNodes = new List<IDhtNode>();
+
+    public Gee.Iterable<IDhtNode> get_dht_nodes() {
+      var dht_nodes = new Gee.LinkedList<IDhtNode>();
 
       var uri = "https://nodes.tox.chat/json";
 
@@ -60,21 +61,24 @@ namespace Venom {
         foreach (var node in nodes.get_elements()) {
           var json_node = Json.gobject_deserialize(typeof(JsonDhtNode), node) as JsonDhtNode;
           if (json_node.ipv4 != "-") {
-            dhtNodes.append(factory.createDhtNode(json_node.public_key, json_node.ipv4, json_node.port, false, json_node.maintainer, json_node.location));
+            var dht_node = new DhtNode.with_params(json_node.public_key, json_node.ipv4, json_node.port, false, json_node.maintainer, json_node.location);
+            dht_nodes.add(dht_node);
+          }
+          if (json_node.ipv6 != "-") {
+            var dht_node = new DhtNode.with_params(json_node.public_key, json_node.ipv6, json_node.port, false, json_node.maintainer, json_node.location);
+            dht_nodes.add(dht_node);
           }
           //FIXME allow multiple addresses per pubkey in node database
           // if (json_node.ipv6 != "-") {
-          //   dhtNodes.append(factory.createDhtNode(json_node.public_key, json_node.ipv6, json_node.port, false, json_node.maintainer, json_node.location));
+          //   dht_nodes.append(factory.createDhtNode(json_node.public_key, json_node.ipv6, json_node.port, false, json_node.maintainer, json_node.location));
           // }
 
         }
       } catch (Error e) {
         logger.e("Failed to load dht nodes from uri: " + e.message);
       }
-      return dhtNodes;
+      return dht_nodes;
     }
 
-    public void insertDhtNode(string key, string address, uint port, bool isBlocked, string owner, string location) {}
-    public void deleteDhtNode(string key) {}
   }
 }

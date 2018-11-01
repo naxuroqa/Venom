@@ -1,7 +1,7 @@
 /*
  *    MessageDatabase.vala
  *
- *    Copyright (C) 2013-2017  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -61,17 +61,17 @@ namespace Venom {
       this.logger = logger;
 
       statementFactory
-          .createStatement(QUERY_TABLE_HISTORY)
+          .create_statement(QUERY_TABLE_HISTORY)
           .step();
 
-      insertStatement = statementFactory.createStatement(STATEMENT_INSERT_HISTORY);
-      selectStatement = statementFactory.createStatement(STATEMENT_SELECT_HISTORY);
-      sanitizeStatement = statementFactory.createStatement(STATEMENT_SANITIZE_DATABASE);
-      logger.d("SQLite database created.");
+      insertStatement = statementFactory.create_statement(STATEMENT_INSERT_HISTORY);
+      selectStatement = statementFactory.create_statement(STATEMENT_SELECT_HISTORY);
+      sanitizeStatement = statementFactory.create_statement(STATEMENT_SANITIZE_DATABASE);
+      logger.d("SqliteMessageDatabase created.");
     }
 
     ~SqliteMessageDatabase() {
-      logger.d("SQLite database closed.");
+      logger.d("SqliteMessageDatabase destroyed.");
     }
 
     public void insertMessage(string userId, string contactId, string message, DateTime time, bool outgoing) {

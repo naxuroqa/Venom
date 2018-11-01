@@ -1,7 +1,7 @@
 /*
  *    Interfaces.vala
  *
- *    Copyright (C) 2017-2018  Venom authors and contributors
+ *    Copyright (C) 2017-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -21,6 +21,7 @@
 
 namespace Venom {
   public interface IDhtNode : Object {
+    public abstract int    id         { get; set; }
     public abstract string pub_key    { get; set; }
     public abstract string host       { get; set; }
     public abstract uint   port       { get; set; }

@@ -23,25 +23,12 @@ using Venom;
 
 namespace Mock {
   public class MockDhtNode : IDhtNode, Object {
+    public int    id         { get; set; }
     public string pub_key    { get; set; }
     public string host       { get; set; }
     public uint   port       { get; set; }
     public bool   is_blocked { get; set; }
     public string maintainer { get; set; }
     public string location   { get; set; }
-  }
-
-  public class MockDhtNodeFactory : IDhtNodeFactory, GLib.Object {
-    public IDhtNode createDhtNode(string address, string key, uint port, bool blocked, string owner, string location) {
-      var args = Arguments.builder()
-                     .string(address)
-                     .string(key)
-                     .uint(port)
-                     .bool(blocked)
-                     .string(owner)
-                     .string(location)
-                     .create();
-      return (IDhtNode) mock().actual_call(this, "createDhtNode", args).get_object();
-    }
   }
 }

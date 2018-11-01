@@ -95,6 +95,7 @@ namespace Venom {
         contact.auto_location = "";
       }
       contact._show_notifications = show_notifications;
+      listener.on_apply_friend_settings(contact);
       contact.changed();
     }
 
@@ -119,5 +120,6 @@ namespace Venom {
 
   public interface FriendInfoWidgetListener : GLib.Object {
     public abstract void on_remove_friend(IContact contact) throws Error;
+    public abstract void on_apply_friend_settings(IContact contact);
   }
 }

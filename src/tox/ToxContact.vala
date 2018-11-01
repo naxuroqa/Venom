@@ -1,7 +1,7 @@
 /*
  *    ToxContact.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -22,6 +22,7 @@
 namespace Venom {
   public class Contact : IContact, GLib.Object {
     // Saved in toxs savefile
+    public int         db_id           { get; set; }
     public string      tox_id          { get; set; }
     public uint32      tox_friend_number { get; set; }
     public string      name            { get; set; default = ""; }
@@ -29,7 +30,6 @@ namespace Venom {
     public DateTime    last_seen       { get; set; default = new DateTime.now_local(); }
     public UserStatus  user_status     { get; set; default = UserStatus.NONE; }
     // Saved in venoms savefile
-    public string      note            { get; set; default = ""; }
     public string      alias           { get; set; default = ""; }
     public bool        is_blocked      { get; set; default = false; }
     public string      group           { get; set; default = ""; }

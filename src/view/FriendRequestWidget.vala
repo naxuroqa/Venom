@@ -1,7 +1,7 @@
 /*
  *    FriendRequestWidget.vala
  *
- *    Copyright (C) 2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -44,7 +44,7 @@ namespace Venom {
       contact_message.label = friend_request.message;
       contact_time.label = TimeStamp.get_pretty_timestamp(friend_request.timestamp);
       var pub_key = Tools.hexstring_to_bin(friend_request.id);
-      contact_image.pixbuf = round_corners(Identicon.generate_pixbuf(pub_key).scale_simple(44, 44, Gdk.InterpType.BILINEAR));
+      contact_image.pixbuf = round_corners(Identicon.generate_pixbuf(pub_key, 40));
 
       accept.clicked.connect(on_accept_clicked);
       reject.clicked.connect(on_reject_clicked);

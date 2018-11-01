@@ -1,7 +1,7 @@
 /*
  *    ApplicationWindow.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -48,8 +48,10 @@ namespace Venom {
     private unowned Factory.IWidgetFactory widget_factory;
     private ILogger logger;
     private ISettingsDatabase settings_database;
-    private IContactDatabase contact_database;
-    private IDhtNodeDatabase node_database;
+    private IContactRepository contact_repository;
+    private IDhtNodeRepository node_repository;
+    private INospamRepository nospam_repository;
+    private IFriendRequestRepository friend_request_repository;
     private ToxSession session;
     private ToxAdapterFriendListenerImpl friend_listener;
     private ToxAdapterConferenceListenerImpl conference_listener;
@@ -68,7 +70,9 @@ namespace Venom {
     private UserInfo user_info;
 
     public ApplicationWindow(Gtk.Application application, Factory.IWidgetFactory widget_factory, ToxSession session,
-                             IDhtNodeDatabase node_database, ISettingsDatabase settings_database, IContactDatabase contact_database) {
+                             INospamRepository nospam_repository, IFriendRequestRepository friend_request_repository,
+                             IDhtNodeRepository node_repository, ISettingsDatabase settings_database,
+                             IContactRepository contact_repository) {
       Object(application: application);
 
       conversations = new GLib.HashTable<IContact, ObservableList>(null, null);
@@ -78,24 +82,28 @@ namespace Venom {
       this.logger = widget_factory.createLogger();
       logger.attach_to_glib();
 
-      this.node_database = node_database;
+      this.node_repository = node_repository;
       this.settings_database = settings_database;
-      this.contact_database = contact_database;
+      this.contact_repository = contact_repository;
+      this.friend_request_repository = friend_request_repository;
+      this.nospam_repository = nospam_repository;
 
       contacts = new ObservableList();
       contacts.set_list(new GLib.List<IContact>());
       transfers = new ObservableList();
       transfers.set_list(new GLib.List<FileTransfer>());
       friend_requests = new ObservableList();
-      friend_requests.set_list(new GLib.List<FriendRequest>());
+      friend_requests.set_collection(friend_request_repository.query_all());
       conference_invites = new ObservableList();
       conference_invites.set_list(new GLib.List<ConferenceInvite>());
 
       notification_listener = new NotificationListenerImpl(logger);
       notification_listener.clear_notifications();
 
+      init_dht_nodes();
+
       session_listener = new ToxAdapterSelfListenerImpl(logger, user_info);
-      friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, contacts, friend_requests, conversations, notification_listener);
+      friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, friend_request_repository, contact_repository, contacts, friend_requests, conversations, notification_listener);
       conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conference_invites, conversations, notification_listener);
       filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, conversations, notification_listener);
 
@@ -134,6 +142,22 @@ namespace Venom {
     ~ApplicationWindow() {
       logger.d("ApplicationWindow destroyed.");
       save_window_state();
+    }
+
+    private void init_dht_nodes() {
+      var dht_nodes = node_repository.query_all();
+      if (!dht_nodes.iterator().next()) {
+        logger.i("DHT Node database empty, populating from web...");
+        var updater = new JsonWebDhtNodeUpdater(logger);
+        var nodes = updater.get_dht_nodes();
+        foreach (var node in nodes) {
+          node_repository.create(node);
+        }
+
+        if (!node_repository.query_all().iterator().next()) {
+          logger.e("Node initialisation from web database failed.");
+        }
+      }
     }
 
     private void on_status_icon_activate() {
@@ -255,7 +279,7 @@ namespace Venom {
     }
 
     public void show_settings() {
-      switch_content_with(() => { return widget_factory.createSettingsWidget(this, settings_database, node_database); });
+      switch_content_with(() => { return widget_factory.createSettingsWidget(this, settings_database, node_repository); });
     }
 
     public void show_welcome() {
@@ -263,7 +287,7 @@ namespace Venom {
     }
 
     private void on_show_user() {
-      switch_content_with(() => { return new UserInfoWidget(logger, this, user_info, session_listener); });
+      switch_content_with(() => { return new UserInfoWidget(logger, this, nospam_repository, user_info, session_listener); });
     }
 
     public void on_create_groupchat() {
@@ -306,9 +330,10 @@ namespace Venom {
       logger.d(@"on_mute_contact($contact_id)");
       var c = find_contact(contact_id);
       if (c != null && c is Contact) {
-        (c as Contact)._show_notifications = false;
+        ((Contact)c)._show_notifications = false;
+        friend_listener.on_apply_friend_settings(c);
       } else if (c != null && c is Conference) {
-        (c as Conference)._show_notifications = false;
+        ((Conference)c)._show_notifications = false;
       } else {
         logger.e(@"Friend with id $contact_id not found.");
       }

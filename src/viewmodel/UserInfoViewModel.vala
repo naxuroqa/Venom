@@ -21,23 +21,29 @@
 
 namespace Venom {
   public class UserInfoViewModel : GLib.Object {
+    public signal void reset_nospams();
+
     public string username { get; set; }
     public string statusmessage { get; set; }
     public Gdk.Pixbuf avatar { get; set; }
     public string tox_id { get; set; }
     public Gdk.Pixbuf tox_qr_code { get; set; }
+    public string tox_nospam { get; set; }
 
     private ILogger logger;
     private UserInfo user_info;
     private UserInfoViewListener listener;
     private AvatarChange avatar_change;
     private GLib.ListStore avatars;
+    private INospamRepository nospam_repository;
+    private Rand random = new Rand();
 
-    public UserInfoViewModel(ILogger logger, UserInfo user_info, UserInfoViewListener listener) {
+    public UserInfoViewModel(ILogger logger, INospamRepository nospam_repository, UserInfo user_info, UserInfoViewListener listener) {
       logger.d("UserInfoViewModel created.");
       this.logger = logger;
       this.user_info = user_info;
       this.listener = listener;
+      this.nospam_repository = nospam_repository;
       avatars = new GLib.ListStore(typeof(GLib.File));
       init_liststore.begin();
 
@@ -78,12 +84,56 @@ namespace Venom {
       }
     }
 
+    public void on_set_nospam_clicked() {
+      logger.d("UserInfoViewModel on_set_nospam_clicked.");
+      int new_nospam = nospam_str_to_int(tox_nospam);
+      int current_nospam =  nospam_str_to_int(get_current_nospam());
+
+      var nospam = new Nospam();
+      nospam.nospam = current_nospam;
+      nospam.timestamp = new DateTime.now_local();
+
+      try {
+        listener.set_self_nospam(new_nospam);
+
+        nospam_repository.create(nospam);
+        reset_nospams();
+        update_info();
+      } catch (GLib.Error e) {
+        logger.e("UserInfoViewModel cannot set user info: " + e.message);
+      }
+    }
+
+    public void on_remove_nospam_clicked(Nospam nospam) {
+      nospam_repository.delete(nospam);
+      reset_nospams();
+    }
+
+    public void on_random_nospam() {
+      tox_nospam = "%.8X".printf(random.next_int() & 0xffffffff);
+    }
+
+    public void on_select_nospam(Nospam nospam) {
+      tox_nospam = "%.8X".printf(nospam.nospam);
+    }
+
+    private int nospam_str_to_int(string nospam_str) {
+      int nospam_int = 0;
+      nospam_str.up().scanf("%X", &nospam_int);
+      return nospam_int & 0xffffffff;
+    }
+
+    private string get_current_nospam() {
+      return user_info.tox_id.substring(ToxCore.PUBLIC_KEY_SIZE * 2, ToxCore.NOSPAM_SIZE * 2);
+    }
+
     private void update_info() {
       logger.d("UserInfoViewModel update_info.");
       username = user_info.name;
       statusmessage = user_info.status_message;
       avatar = user_info.avatar.pixbuf;
       tox_id = user_info.tox_id;
+      tox_nospam = get_current_nospam();
 
       avatar_change = AvatarChange.NONE;
     }
@@ -145,6 +195,7 @@ namespace Venom {
     public abstract void set_self_name(string name) throws GLib.Error;
     public abstract void set_self_status_message(string status_message) throws GLib.Error;
     public abstract void set_self_avatar(Gdk.Pixbuf pixbuf) throws GLib.Error;
+    public abstract void set_self_nospam(int nospam) throws GLib.Error;
     public abstract void reset_self_avatar() throws GLib.Error;
   }
 }

@@ -1,7 +1,7 @@
 /*
  *    ToxSession.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -65,6 +65,7 @@ namespace Venom {
 
     public abstract uint8[] self_get_address();
     public abstract uint8[] self_get_public_key();
+    public abstract void self_set_nospam(uint32 nospam);
 
     public abstract void self_get_friend_list_foreach(GetFriendListCallback callback) throws ToxError;
     public abstract void friend_add(uint8[] address, string message) throws ToxError;
@@ -143,10 +144,10 @@ namespace Venom {
     public Tox handle;
     private Mutex mutex;
 
-    private IDhtNodeDatabase dht_node_database;
+    private IDhtNodeRepository dht_node_repository;
     private ISettingsDatabase settings_database;
 
-    private List<IDhtNode> dht_nodes = new List<IDhtNode>();
+    private Gee.Iterable<IDhtNode> dht_nodes = Gee.Collection.empty<IDhtNode>();
     private ILogger logger;
     private ToxSessionThread sessionThread;
 
@@ -157,8 +158,8 @@ namespace Venom {
     private ToxSessionIO iohandler;
     private GLib.HashTable<uint32, IContact> friends;
 
-    public ToxSessionImpl(ToxSessionIO iohandler, IDhtNodeDatabase node_database, ISettingsDatabase settings_database, ILogger logger) throws Error {
-      this.dht_node_database = node_database;
+    public ToxSessionImpl(ToxSessionIO iohandler, IDhtNodeRepository node_database, ISettingsDatabase settings_database, ILogger logger) throws Error {
+      this.dht_node_repository = node_database;
       this.settings_database = settings_database;
       this.logger = logger;
       this.mutex = Mutex();
@@ -283,21 +284,7 @@ namespace Venom {
     }
 
     private void init_dht_nodes() {
-      var nodeFactory = new DhtNodeFactory();
-      dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
-      logger.d("Items in dht node list: %u".printf(dht_nodes.length()));
-      if (dht_nodes.length() == 0) {
-        logger.d("Node database empty, populating from static database.");
-        var nodeDatabase = new JsonWebDhtNodeDatabase(logger);
-        var nodes = nodeDatabase.getDhtNodes(nodeFactory);
-        foreach (var node in nodes) {
-          dht_node_database.insertDhtNode(node.pub_key, node.host, node.port, node.is_blocked, node.maintainer, node.location);
-        }
-        dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
-        if (dht_nodes.length() == 0) {
-          logger.e("Node initialisation from static database failed.");
-        }
-      }
+      dht_nodes = dht_node_repository.query_all();
     }
 
     public virtual unowned GLib.HashTable<uint32, IContact> get_friends() {
@@ -578,6 +565,10 @@ namespace Venom {
 
     public virtual uint8[] self_get_public_key() {
       return handle.self_get_public_key();
+    }
+
+    public virtual void self_set_nospam(uint32 nospam) {
+      handle.self_nospam = nospam;
     }
 
     public virtual void self_set_status_message(string status) {
