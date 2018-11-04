@@ -20,6 +20,16 @@
  */
 
 namespace Venom {
+  public interface Logger : Object {
+    public abstract void d(string message);
+    public abstract void i(string message);
+    public abstract void w(string message);
+    public abstract void e(string message);
+    public abstract void f(string message);
+    public abstract string get_log();
+    public abstract void attach_to_glib();
+  }
+
   namespace TermColor {
     public const string BLACK = "\x1B[30m";
     public const string RED = "\x1B[31m";
@@ -89,20 +99,20 @@ namespace Venom {
     }
   }
 
-  public class Logger : ILogger, Object {
+  public class CommandLineLogger : Logger, Object {
     public static LogLevel displayed_level { get; set; default = LogLevel.WARNING; }
     private StringBuilder log_builder;
     public string get_log() {
       return log_builder.str;
     }
 
-    public Logger() {
+    public CommandLineLogger() {
       log_builder = new StringBuilder();
-      d("Logger created.");
+      d("CommandLineLogger created.");
     }
 
-    ~Logger() {
-      d("Logger destroyed.");
+    ~CommandLineLogger() {
+      d("CommandLineLogger destroyed.");
     }
 
     public void d(string message) {

@@ -30,15 +30,15 @@ namespace Venom {
     public Gdk.Pixbuf tox_qr_code { get; set; }
     public string tox_nospam { get; set; }
 
-    private ILogger logger;
+    private Logger logger;
     private UserInfo user_info;
     private UserInfoViewListener listener;
     private AvatarChange avatar_change;
     private GLib.ListStore avatars;
-    private INospamRepository nospam_repository;
+    private NospamRepository nospam_repository;
     private Rand random = new Rand();
 
-    public UserInfoViewModel(ILogger logger, INospamRepository nospam_repository, UserInfo user_info, UserInfoViewListener listener) {
+    public UserInfoViewModel(Logger logger, NospamRepository nospam_repository, UserInfo user_info, UserInfoViewListener listener) {
       logger.d("UserInfoViewModel created.");
       this.logger = logger;
       this.user_info = user_info;

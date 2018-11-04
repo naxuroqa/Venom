@@ -29,10 +29,10 @@ namespace Venom {
     public signal void remove_clicked(Nospam item);
     public signal void row_activated(Nospam item);
 
-    private ILogger logger;
+    private Logger logger;
     private Nospam item;
 
-    public NospamEntry(ILogger logger, Nospam item) {
+    public NospamEntry(Logger logger, Nospam item) {
       this.logger = logger;
       this.item = item;
 

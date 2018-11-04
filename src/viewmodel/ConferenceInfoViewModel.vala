@@ -28,13 +28,13 @@ namespace Venom {
     public bool show_notifications { get; set; }
     public signal void leave_view();
 
-    private ILogger logger;
+    private Logger logger;
     private ConferenceInfoWidgetListener listener;
 
     private Conference contact;
     private ObservableList peers_list;
 
-    public ConferenceInfoViewModel(ILogger logger, ConferenceInfoWidgetListener listener, Conference contact) {
+    public ConferenceInfoViewModel(Logger logger, ConferenceInfoWidgetListener listener, Conference contact) {
       logger.d("ConferenceInfoViewModel created.");
       this.logger = logger;
       this.contact = contact;

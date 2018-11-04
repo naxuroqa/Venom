@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class SqliteDhtNodeRepository : IDhtNodeRepository, Object {
+  public class SqliteDhtNodeRepository : DhtNodeRepository, Object {
     private const string CREATE_TABLE_NODES = """
       CREATE TABLE IF NOT EXISTS nodes (
         id        INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -34,10 +34,10 @@ namespace Venom {
     """;
     private enum NodeColumn { ID, KEY, ADDRESS, PORT, ISBLOCKED, OWNER, LOCATION }
 
-    private ILogger logger;
+    private Logger logger;
     private SqliteStatementFactory statementFactory;
 
-    public SqliteDhtNodeRepository(IDatabaseStatementFactory statementFactory, ILogger logger) throws DatabaseStatementError {
+    public SqliteDhtNodeRepository(DatabaseStatementFactory statementFactory, Logger logger) throws DatabaseStatementError {
       this.logger = logger;
       this.statementFactory = (SqliteStatementFactory) statementFactory;
 
@@ -52,7 +52,7 @@ namespace Venom {
       logger.d("SqliteDhtNodeRepository destroyed.");
     }
 
-    public void create(IDhtNode node) {
+    public void create(DhtNode node) {
       var query_stmt = statementFactory.create_statement(
         """
         SELECT (id) FROM nodes
@@ -83,7 +83,7 @@ namespace Venom {
       }
 
     }
-    public void read(IDhtNode node) {
+    public void read(DhtNode node) {
       var query_stmt = statementFactory.create_statement(
         """
         SELECT * FROM nodes
@@ -102,7 +102,7 @@ namespace Venom {
         logger.e("Can not find dht node with id %i".printf(node.id));
       }
     }
-    public void update(IDhtNode node) {
+    public void update(DhtNode node) {
       statementFactory.create_statement(
         """
         UPDATE nodes
@@ -118,7 +118,7 @@ namespace Venom {
         .bind_text("$LOCATION", node.location)
         .step();
     }
-    public void delete(IDhtNode node) {
+    public void delete(DhtNode node) {
       statementFactory.create_statement(
         """
         DELETE FROM nodes
@@ -127,8 +127,8 @@ namespace Venom {
         .bind_int("$ID", node.id)
         .step();
     }
-    public Gee.Iterable<IDhtNode> query_all() {
-      var list = new Gee.LinkedList<IDhtNode>();
+    public Gee.Iterable<DhtNode> query_all() {
+      var list = new Gee.LinkedList<DhtNode>();
       var query_stmt = statementFactory.create_statement("SELECT * FROM nodes;");
       while (query_stmt.step() == DatabaseResult.ROW) {
         var node = new DhtNode();

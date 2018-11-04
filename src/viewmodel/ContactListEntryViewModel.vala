@@ -21,7 +21,7 @@
 
 namespace Venom {
   public class ContactListEntryViewModel : GLib.Object {
-    private ILogger logger;
+    private Logger logger;
     private IContact contact;
     private bool compact;
 
@@ -32,7 +32,7 @@ namespace Venom {
     public string contact_status_tooltip { get; set; }
     public bool contact_requires_attention { get; set; }
 
-    public ContactListEntryViewModel(ILogger logger, IContact contact, bool compact) {
+    public ContactListEntryViewModel(Logger logger, IContact contact, bool compact) {
       logger.d("ContactListEntryViewModel created.");
       this.logger = logger;
       this.contact = contact;

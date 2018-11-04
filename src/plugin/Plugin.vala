@@ -27,7 +27,7 @@ namespace Venom {
 
   public interface Plugin : GLib.Object {
     public abstract PluginState get_state();
-    public abstract void activate(ILogger logger);
-    public abstract void deactiviate(ILogger logger);
+    public abstract void activate(Logger logger);
+    public abstract void deactiviate(Logger logger);
   }
 }

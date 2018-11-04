@@ -22,14 +22,14 @@
 namespace Venom {
   [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/file_transfer_widget.ui")]
   public class FileTransferWidget : Gtk.Box {
-    private ILogger logger;
+    private Logger logger;
     private ObservableList transfers;
     private FileTransferEntryListener listener;
 
     [GtkChild] private Gtk.ListBox file_transfers;
     [GtkChild] private Gtk.Widget placeholder;
 
-    public FileTransferWidget(ILogger logger, ApplicationWindow app_window, ObservableList transfers, FileTransferEntryListener listener) {
+    public FileTransferWidget(Logger logger, ApplicationWindow app_window, ObservableList transfers, FileTransferEntryListener listener) {
       logger.d("FileTransferWidget created.");
       this.logger = logger;
       this.transfers = transfers;
@@ -48,9 +48,9 @@ namespace Venom {
     }
 
     private class FileTransferEntryCreator {
-      private unowned ILogger logger;
+      private unowned Logger logger;
       private unowned FileTransferEntryListener listener;
-      public FileTransferEntryCreator(ILogger logger, FileTransferEntryListener listener) {
+      public FileTransferEntryCreator(Logger logger, FileTransferEntryListener listener) {
         this.logger = logger;
         this.listener = listener;
       }

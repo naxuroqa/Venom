@@ -22,7 +22,7 @@
 namespace Venom {
   [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/conference_invite_entry.ui")]
   public class ConferenceInviteEntry : Gtk.ListBoxRow {
-    private ILogger logger;
+    private Logger logger;
     private ConferenceInvite invite;
     private ConferenceInviteEntryListener listener;
 
@@ -33,7 +33,7 @@ namespace Venom {
     [GtkChild] private Gtk.Button accept;
     [GtkChild] private Gtk.Button reject;
 
-    public ConferenceInviteEntry(ILogger logger, ConferenceInvite invite, ConferenceInviteEntryListener listener) {
+    public ConferenceInviteEntry(Logger logger, ConferenceInvite invite, ConferenceInviteEntryListener listener) {
       logger.d("ConferenceInviteEntry created.");
       this.logger = logger;
       this.invite = invite;

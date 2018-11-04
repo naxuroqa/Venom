@@ -38,14 +38,14 @@ namespace Venom {
     [GtkChild] private Gtk.Entry entry_nospam;
     [GtkChild] private Gtk.ListBox listbox_nospam;
 
-    private ILogger logger;
+    private Logger logger;
     private UserInfoViewModel view_model;
     private ObservableList nospams;
     private ObservableListModel nospams_model;
     private ContextStyleBinding toggle_arrow_binding;
-    private INospamRepository nospam_repository;
+    private NospamRepository nospam_repository;
 
-    public UserInfoWidget(ILogger logger, ApplicationWindow app_window, INospamRepository nospam_repository, UserInfo user_info, UserInfoViewListener listener) {
+    public UserInfoWidget(Logger logger, ApplicationWindow app_window, NospamRepository nospam_repository, UserInfo user_info, UserInfoViewListener listener) {
       logger.d("UserInfoWidget created.");
       this.logger = logger;
       this.nospam_repository = nospam_repository;
@@ -119,9 +119,9 @@ namespace Venom {
     }
 
     private class NospamEntryCreator {
-      private unowned ILogger logger;
+      private unowned Logger logger;
       private unowned UserInfoViewModel vm;
-      public NospamEntryCreator(ILogger logger, UserInfoViewModel vm) {
+      public NospamEntryCreator(Logger logger, UserInfoViewModel vm) {
         this.logger = logger;
         this.vm = vm;
       }
@@ -137,8 +137,8 @@ namespace Venom {
     private class AvatarChild : Gtk.FlowBoxChild {
       public File file { get; set; }
 
-      private ILogger logger;
-      public AvatarChild(ILogger logger, GLib.File file) {
+      private Logger logger;
+      public AvatarChild(Logger logger, GLib.File file) {
         this.logger = logger;
         this.file = file;
 
@@ -154,8 +154,8 @@ namespace Venom {
     }
 
     private class AvatarChildCreator {
-      private ILogger logger;
-      public AvatarChildCreator(ILogger logger) {
+      private Logger logger;
+      public AvatarChildCreator(Logger logger) {
         this.logger = logger;
       }
       public Gtk.Widget create(GLib.Object o) {

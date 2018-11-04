@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class DhtNode : IDhtNode, Object {
+  public class DhtNode : GLib.Object {
     public int    id         { get; set; }
     public string pub_key    { get; set; }
     public string host       { get; set; }
@@ -39,6 +39,10 @@ namespace Venom {
       this.is_blocked = is_blocked;
       this.maintainer = maintainer;
       this.location = location;
+    }
+
+    public string to_string() {
+      return "%s:%u %s - %s / %s (blocked: %s)".printf(host, port, pub_key, maintainer, location, is_blocked ? "true" : "false");
     }
   }
 }

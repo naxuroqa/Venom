@@ -143,6 +143,46 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                       <object class="GtkImage">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="icon_name">network-wired-symbolic</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Bootstrap nodes</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkListBoxRow">
+                <property name="width_request">200</property>
+                <property name="height_request">50</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">6</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="icon_name">network-server-symbolic</property>
                       </object>
                       <packing>
@@ -630,6 +670,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                       <object class="GtkRevealer" id="notify_revealer">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
+                                        <property name="transition_type">slide-up</property>
                                         <property name="reveal_child">True</property>
                                         <child>
                                           <object class="GtkListBox" id="listbox2">
@@ -857,6 +898,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                       <object class="GtkRevealer" id="tray_revealer">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
+                                        <property name="transition_type">slide-up</property>
                                         <property name="reveal_child">True</property>
                                         <child>
                                           <object class="GtkListBox" id="listbox5">
@@ -1693,6 +1735,86 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                 <property name="position">1</property>
                               </packing>
                             </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="name">page1</property>
+                <property name="title">page1</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <child>
+                  <object class="GtkViewport">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">6</property>
+                    <property name="shadow_type">none</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">6</property>
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
@@ -1752,7 +1874,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">True</property>
-                                <property name="position">2</property>
+                                <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
@@ -1770,7 +1892,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">True</property>
-                                <property name="position">3</property>
+                                <property name="position">1</property>
                               </packing>
                             </child>
                           </object>
@@ -1807,9 +1929,9 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 </child>
               </object>
               <packing>
-                <property name="name">page1</property>
-                <property name="title">page1</property>
-                <property name="position">1</property>
+                <property name="name">page2</property>
+                <property name="title">page2</property>
+                <property name="position">2</property>
               </packing>
             </child>
             <child>
@@ -1907,6 +2029,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                               <object class="GtkRevealer" id="proxy_revealer">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="transition_type">slide-up</property>
                                 <property name="reveal_child">True</property>
                                 <child>
                                   <object class="GtkListBox">
@@ -2047,6 +2170,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                               <object class="GtkRevealer" id="proxy_manual_revealer">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
+                                                <property name="transition_type">slide-up</property>
                                                 <child>
                                                   <object class="GtkBox">
                                                     <property name="visible">True</property>
@@ -2177,9 +2301,9 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 </child>
               </object>
               <packing>
-                <property name="name">page2</property>
-                <property name="title">page2</property>
-                <property name="position">2</property>
+                <property name="name">page3</property>
+                <property name="title">page3</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </object>

@@ -28,15 +28,15 @@ namespace Venom {
     [GtkChild] private Gtk.Label message;
     [GtkChild] private Gtk.Image sent;
 
-    private ILogger logger;
+    private Logger logger;
     private MessageViewModel view_model;
     private UriTransform uri_transform;
     private PangoTransform pango_transform;
     private ContextStyleBinding dim_binding;
 
-    public MessageWidget(ILogger logger, IMessage message_content, ISettingsDatabase settings) {
+    public MessageWidget(Logger logger, Message message_content, UserInfo user_info, ISettingsDatabase settings) {
       this.logger = logger;
-      this.view_model = new MessageViewModel(logger, message_content, settings);
+      this.view_model = new MessageViewModel(logger, message_content, user_info, settings);
       this.uri_transform = new UriTransform(logger);
       this.pango_transform = new PangoTransform();
       this.dim_binding = new ContextStyleBinding(sent, "dim-label");
@@ -52,6 +52,7 @@ namespace Venom {
       view_model.bind_property("sent-visible", sent, "visible", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("sent-tooltip", sent, "tooltip-text", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("sent-dim", dim_binding, "enable", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("sent-visible", sent, "visible", GLib.BindingFlags.SYNC_CREATE);
 
       logger.d("MessageWidget created.");
     }

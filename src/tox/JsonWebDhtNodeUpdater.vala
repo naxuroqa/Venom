@@ -20,29 +20,14 @@
  */
 
 namespace Venom {
-  public class JsonDhtNode : GLib.Object {
-    public string ipv4 { get; set; }
-    public string ipv6 { get; set; }
-    public int port { get; set; }
-    //public int[] tcp_ports { get; set; }
-    public string public_key { get; set; }
-    public string maintainer { get; set; }
-    public string location { get; set; }
-    public bool status_udp { get; set; }
-    public bool status_tcp { get; set; }
-    public string version { get; set; }
-    public string motd { get; set; }
-    public int last_ping { get; set; }
-  }
-
   public class JsonWebDhtNodeUpdater : GLib.Object {
-    private ILogger logger;
-    public JsonWebDhtNodeUpdater(ILogger logger) {
+    private Logger logger;
+    public JsonWebDhtNodeUpdater(Logger logger) {
       this.logger = logger;
     }
 
-    public Gee.Iterable<IDhtNode> get_dht_nodes() {
-      var dht_nodes = new Gee.LinkedList<IDhtNode>();
+    public Gee.Iterable<DhtNode> get_dht_nodes() {
+      var dht_nodes = new Gee.LinkedList<DhtNode>();
 
       var uri = "https://nodes.tox.chat/json";
 
@@ -80,5 +65,19 @@ namespace Venom {
       return dht_nodes;
     }
 
+    private class JsonDhtNode : GLib.Object {
+      public string ipv4 { get; set; }
+      public string ipv6 { get; set; }
+      public int port { get; set; }
+      //public int[] tcp_ports { get; set; }
+      public string public_key { get; set; }
+      public string maintainer { get; set; }
+      public string location { get; set; }
+      public bool status_udp { get; set; }
+      public bool status_tcp { get; set; }
+      public string version { get; set; }
+      public string motd { get; set; }
+      public int last_ping { get; set; }
+    }
   }
 }

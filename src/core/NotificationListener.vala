@@ -22,7 +22,7 @@ namespace Venom {
   public interface NotificationListener : GLib.Object {
     public abstract bool show_notifications { get; set; }
     public abstract bool play_sound_notifications { get; set; }
-    public abstract void on_unread_message(IMessage message, IContact sender);
+    public abstract void on_unread_message(FormattedMessage message, IContact sender);
     public abstract void on_friend_request(FriendRequest friend_request);
     public abstract void on_filetransfer(FileTransfer transfer, IContact sender);
     public abstract void on_conference_invite(ConferenceInvite invite);
@@ -33,14 +33,14 @@ namespace Venom {
     public bool show_notifications { get; set; default = true; }
     public bool play_sound_notifications { get; set; default = true; }
     private const int PIXBUF_SIZE = 48;
-    private ILogger logger;
+    private Logger logger;
     private Canberra.Context context;
     private static string message_id = "new-message";
     private static string friend_request_id = "new-friend-request";
     private static string transfer_id = "new-transfer";
     private static string invite_id = "new-invite";
 
-    public NotificationListenerImpl(ILogger logger) {
+    public NotificationListenerImpl(Logger logger) {
       this.logger = logger;
       var result = Canberra.Context.create(out context);
       if (result != 0) {
@@ -67,7 +67,7 @@ namespace Venom {
       return pixbuf.scale_simple(PIXBUF_SIZE, PIXBUF_SIZE, Gdk.InterpType.BILINEAR);
     }
 
-    public virtual void on_unread_message(IMessage message, IContact sender) {
+    public virtual void on_unread_message(FormattedMessage message, IContact sender) {
       logger.d("on_unread_message");
       if (!show_notifications || !sender.show_notifications()) {
         return;

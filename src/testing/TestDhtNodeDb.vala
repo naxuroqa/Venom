@@ -24,10 +24,10 @@ using Mock;
 using Testing;
 
 public class TestDhtNodeDb : UnitTest {
-  // private ILogger logger;
-  // private IDatabaseStatementFactory statement_factory;
-  // private IDatabaseStatement statement;
-  // private IDatabaseStatementBuilder builder;
+  // private Logger logger;
+  // private DatabaseStatementFactory statement_factory;
+  // private DatabaseStatement statement;
+  // private DatabaseStatementBuilder builder;
   //
   // public TestDhtNodeDb() {
   //   add_func("test_init", test_init);
@@ -41,7 +41,7 @@ public class TestDhtNodeDb : UnitTest {
   // }
   // 
   // public override void set_up() throws GLib.Error {
-  //   logger = new MockLogger();
+  //   logger = new MockCommandLineLogger();
   //   statement = new MockStatement();
   //   builder = new SqliteStatementWrapper.Builder(statement);
   //   statement_factory = new MockStatementFactory();
@@ -58,7 +58,7 @@ public class TestDhtNodeDb : UnitTest {
   //
   // private void test_real_dht_node_db() throws GLib.Error {
   //   var factory = new SqliteWrapperFactory();
-  //   var db = factory.createDatabase(":memory:");
+  //   var db = factory.create_database(":memory:");
   //   var statement_factory = factory.create_statement_factory(db);
   //   var node_database = new SqliteDhtNodeRepository(statement_factory, logger);
   //   Assert.assert_not_null(node_database);
@@ -126,9 +126,9 @@ public class TestDhtNodeDb : UnitTest {
   //   Assert.assert_equals<uint>(0, nodes.length());
   // }
   //
-  // private IDatabaseStatementFactory create_memory_stmt_factory() {
+  // private DatabaseStatementFactory create_memory_stmt_factory() {
   //   var factory = new SqliteWrapperFactory();
-  //   var db = factory.createDatabase(":memory:");
+  //   var db = factory.create_database(":memory:");
   //   return factory.create_statement_factory(db);
   // }
 

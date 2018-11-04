@@ -25,7 +25,7 @@ namespace Mock {
   public class MockNotificationListener : NotificationListener, GLib.Object {
     public bool show_notifications { get; set; }
     public bool play_sound_notifications { get; set; }
-    public void on_unread_message(IMessage message, IContact c) {
+    public void on_unread_message(FormattedMessage message, IContact c) {
       var args = Arguments.builder()
                      .object(message)
                      .object(c)

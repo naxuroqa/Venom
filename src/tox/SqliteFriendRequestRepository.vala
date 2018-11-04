@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class SqliteFriendRequestRepository : IFriendRequestRepository, Object {
+  public class SqliteFriendRequestRepository : FriendRequestRepository, Object {
     private const string CREATE_TABLE_FRIEND_REQUESTS = """
       CREATE TABLE IF NOT EXISTS friend_requests (
         id        INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -32,10 +32,10 @@ namespace Venom {
 
     private enum FriendRequestColumn { ID, KEY, MESSAGE, TIMESTAMP}
 
-    private ILogger logger;
+    private Logger logger;
     private SqliteStatementFactory statement_factory;
 
-    public SqliteFriendRequestRepository(IDatabaseStatementFactory statement_factory, ILogger logger) throws DatabaseStatementError {
+    public SqliteFriendRequestRepository(DatabaseStatementFactory statement_factory, Logger logger) throws DatabaseStatementError {
       this.logger = logger;
       this.statement_factory = (SqliteStatementFactory) statement_factory;
 

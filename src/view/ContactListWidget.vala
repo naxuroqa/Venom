@@ -22,7 +22,7 @@
 namespace Venom {
   [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/contact_list_widget.ui")]
   public class ContactListWidget : Gtk.Box {
-    private ILogger logger;
+    private Logger logger;
     private ContactListViewModel view_model;
 
     [GtkChild] private Gtk.Box top_bar_box;
@@ -41,7 +41,7 @@ namespace Venom {
     private unowned Gtk.ListBoxRow ? selected_row;
     private ListModel contact_list_model;
 
-    public ContactListWidget(ILogger logger, ApplicationWindow app_window, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info, ISettingsDatabase settings_database) {
+    public ContactListWidget(Logger logger, ApplicationWindow app_window, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info, ISettingsDatabase settings_database) {
       logger.d("ContactListWidget created.");
       this.logger = logger;
       this.view_model = new ContactListViewModel(logger, contacts, friend_requests, conference_invites, callback, user_info);
@@ -126,9 +126,9 @@ namespace Venom {
     }
 
     private class ContactListEntryCreator {
-      private unowned ILogger logger;
+      private unowned Logger logger;
       private ISettingsDatabase settings_database;
-      public ContactListEntryCreator(ILogger logger, ISettingsDatabase settings_database) {
+      public ContactListEntryCreator(Logger logger, ISettingsDatabase settings_database) {
         this.logger = logger;
         this.settings_database = settings_database;
       }

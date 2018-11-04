@@ -39,22 +39,24 @@ namespace Venom {
     };
 
     private unowned ApplicationWindow app_window;
-    private ILogger logger;
+    private Logger logger;
     private ObservableList conversation;
     private ConferenceWidgetListener listener;
     private IContact contact;
+    private UserInfo user_info;
     private TextViewEventHandler text_view_event_handler;
     private AdjustmentAutoScroller auto_scroller;
     private Cancellable cancellable;
     private ObservableList peers_list;
     private Undo.TextBufferUndoBinding text_buffer_undo_binding;
 
-    public ConferenceWindow(ApplicationWindow app_window, ILogger logger, ObservableList conversation, IContact contact, ISettingsDatabase settings, ConferenceWidgetListener listener) {
+    public ConferenceWindow(ApplicationWindow app_window, Logger logger, ObservableList conversation, IContact contact, UserInfo user_info, ISettingsDatabase settings, ConferenceWidgetListener listener) {
       this.app_window = app_window;
       this.logger = logger;
       this.conversation = conversation;
       this.listener = listener;
       this.contact = contact;
+      this.user_info = user_info;
       this.cancellable = new Cancellable();
 
       this.text_buffer_undo_binding = new Undo.TextBufferUndoBinding();
@@ -78,7 +80,7 @@ namespace Venom {
       update_widgets();
 
       var model = new LazyObservableListModel(logger, conversation, cancellable);
-      var creator = new MessageWidgetCreator(logger, settings, null);
+      var creator = new MessageWidgetCreator(logger, user_info, settings, null);
       message_list.bind_model(model, creator.create_message);
       message_list.set_placeholder(placeholder);
 
@@ -155,8 +157,8 @@ namespace Venom {
     }
 
     private class PeersListCreator {
-      ILogger logger;
-      public PeersListCreator(ILogger logger) {
+      Logger logger;
+      public PeersListCreator(Logger logger) {
         this.logger = logger;
       }
       public Gtk.Widget create(GLib.Object o) {

@@ -94,6 +94,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 </child>
                 <child>
                   <object class="GtkImage" id="sent">
+                    <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="icon_name">emblem-ok-symbolic</property>

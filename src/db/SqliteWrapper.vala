@@ -21,41 +21,41 @@
 
 namespace Venom {
 
-  public class SqliteWrapperFactory : IDatabaseFactory, Object {
-    public IDatabase createDatabase(string path) throws DatabaseError {
+  public class SqliteWrapperFactory : DatabaseFactory, Object {
+    public Database create_database(string path) throws DatabaseError {
       var update = new SqliteDatabaseV1(null);
       return new SqliteDatabaseWrapper(path, update);
     }
-    public IDatabaseStatementFactory create_statement_factory(IDatabase database) {
+    public DatabaseStatementFactory create_statement_factory(Database database) {
       return new SqliteStatementFactory(database as SqliteDatabaseWrapper);
     }
-    public IDhtNodeRepository create_node_repository(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public DhtNodeRepository create_node_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
       return new SqliteDhtNodeRepository(factory, logger);
     }
-    public IContactRepository create_contact_repository(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public ContactRepository create_contact_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
       return new SqliteContactRepository(factory, logger);
     }
-    public IMessageDatabase createMessageDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      return new SqliteMessageDatabase(factory, logger);
+    public MessageRepository create_message_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
+      return new SqliteMessageRepository(factory, logger);
     }
-    public ISettingsDatabase create_settings_database(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public ISettingsDatabase create_settings_database(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
       return new SqliteSettingsDatabase(factory, logger);
     }
-    public IFriendRequestRepository create_friend_request_repository(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public FriendRequestRepository create_friend_request_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
       return new SqliteFriendRequestRepository(factory, logger);
     }
-    public INospamRepository create_nospam_repository(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public NospamRepository create_nospam_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
       return new SqliteNospamRepository(factory, logger);
     }
   }
 
-  public class SqliteStatementFactory : IDatabaseStatementFactory, Object {
+  public class SqliteStatementFactory : DatabaseStatementFactory, Object {
     private SqliteDatabaseWrapper database;
     public SqliteStatementFactory(SqliteDatabaseWrapper database) {
       this.database = database;
     }
 
-    public IDatabaseStatement create_statement(string zSql) throws DatabaseStatementError {
+    public DatabaseStatement create_statement(string zSql) throws DatabaseStatementError {
       return new SqliteStatementWrapper(database, zSql);
     }
 
@@ -68,7 +68,7 @@ namespace Venom {
     }
   }
 
-  public class SqliteStatementWrapper : IDatabaseStatement, Object {
+  public class SqliteStatementWrapper : DatabaseStatement, Object {
     private Sqlite.Statement statement;
 
     public SqliteStatementWrapper(SqliteDatabaseWrapper database, string zSql) throws DatabaseStatementError {
@@ -147,37 +147,37 @@ namespace Venom {
       statement.reset();
     }
 
-    public IDatabaseStatementBuilder builder() {
+    public DatabaseStatementBuilder builder() {
       return new Builder(this);
     }
 
-    public class Builder : IDatabaseStatementBuilder, Object {
-      private IDatabaseStatement statement;
-      public Builder(IDatabaseStatement statement) {
+    public class Builder : DatabaseStatementBuilder, Object {
+      private DatabaseStatement statement;
+      public Builder(DatabaseStatement statement) {
         this.statement = statement;
       }
 
-      public IDatabaseStatementBuilder step() throws DatabaseStatementError {
+      public DatabaseStatementBuilder step() throws DatabaseStatementError {
         statement.step();
         return this;
       }
-      public IDatabaseStatementBuilder bind_text(string key, string val) throws DatabaseStatementError {
+      public DatabaseStatementBuilder bind_text(string key, string val) throws DatabaseStatementError {
         statement.bind_text(key, val);
         return this;
       }
-      public IDatabaseStatementBuilder bind_int64(string key, int64 val) throws DatabaseStatementError {
+      public DatabaseStatementBuilder bind_int64(string key, int64 val) throws DatabaseStatementError {
         statement.bind_int64(key, val);
         return this;
       }
-      public IDatabaseStatementBuilder bind_int(string key, int val) throws DatabaseStatementError {
+      public DatabaseStatementBuilder bind_int(string key, int val) throws DatabaseStatementError {
         statement.bind_int(key, val);
         return this;
       }
-      public IDatabaseStatementBuilder bind_bool(string key, bool val) throws DatabaseStatementError {
+      public DatabaseStatementBuilder bind_bool(string key, bool val) throws DatabaseStatementError {
         statement.bind_bool(key, val);
         return this;
       }
-      public IDatabaseStatementBuilder reset() {
+      public DatabaseStatementBuilder reset() {
         statement.reset();
         return this;
       }
@@ -185,7 +185,7 @@ namespace Venom {
   }
 
   public interface SqlSpecification : GLib.Object {
-    public abstract string to_sql_query();
+    public abstract string create_statement(SqliteStatementFactory statement_factory);
   }
 
   public interface SqliteDatabaseUpdate : GLib.Object {
@@ -265,7 +265,7 @@ namespace Venom {
     }
   }
 
-  public class SqliteDatabaseWrapper : IDatabase, Object {
+  public class SqliteDatabaseWrapper : Database, Object {
     private Sqlite.Database database;
     private int _version = 0;
 

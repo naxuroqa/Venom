@@ -20,43 +20,40 @@
  */
 
 namespace Venom {
-  public class ConferenceMessage : IMessage, Object {
-    public GLib.DateTime timestamp            { get; protected set; }
-    public MessageDirection message_direction { get; protected set; }
-    public bool important                     { get; set; }
-    public bool is_action                     { get; set; }
-    public bool received                      { get; set; }
+  public class ConferenceMessage : Message, FormattedMessage, GLib.Object {
+    public int id                      { get; set; }
+    public int peers_index             { get; set; }
+    public DateTime timestamp          { get; set; }
+    public MessageSender sender        { get; set; }
+    public string message              { get; set; }
+    public bool is_action              { get; set; }
+    public TransmissionState state     { get; set; }
 
-    public string message                     { get; protected set; }
-    public string peer_name                   { get; protected set; }
-    public string peer_key                    { get; protected set; }
+    public string peer_name            { get; set; }
+    public string peer_key             { get; set; }
 
-    public unowned IContact from              { get; protected set; }
-    public unowned IContact to                { get; protected set; }
+    public unowned IContact conference { get; set; }
 
-    private unowned IContact conference;
-
-    private ConferenceMessage(IContact conference, MessageDirection direction, string message, GLib.DateTime timestamp) {
+    public ConferenceMessage(IContact conference, MessageSender sender, string message, GLib.DateTime timestamp, bool is_action) {
       this.conference = conference;
-      this.message_direction = direction;
+      this.sender = sender;
       this.message = message;
       this.timestamp = timestamp;
-      this.important = false;
-      this.is_action = false;
+      this.is_action = is_action;
     }
 
     public ConferenceMessage.outgoing(IContact conference, string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
-      this(conference, MessageDirection.OUTGOING, message, timestamp);
+      this(conference, MessageSender.LOCAL, message, timestamp, false);
     }
 
     public ConferenceMessage.incoming(IContact conference, string peer_key, string peer_name, string message, GLib.DateTime timestamp = new GLib.DateTime.now_local()) {
-      this(conference, MessageDirection.INCOMING, message, timestamp);
+      this(conference, MessageSender.REMOTE, message, timestamp, false);
       this.peer_key = peer_key;
       this.peer_name = peer_name;
     }
 
     public string get_sender_plain() {
-      if (message_direction == MessageDirection.OUTGOING) {
+      if (sender == MessageSender.LOCAL) {
         return _("me");
       } else {
         return peer_name;
@@ -88,14 +85,14 @@ namespace Venom {
     }
 
     public Gdk.Pixbuf get_sender_image() {
-      if (message_direction == MessageDirection.OUTGOING) {
+      if (sender == MessageSender.LOCAL) {
         return pixbuf_from_resource(R.icons.default_contact);
       }
       var pub_key = Tools.hexstring_to_bin(peer_key);
       return Identicon.generate_pixbuf(pub_key);
     }
 
-    public bool equals_sender(IMessage m) {
+    public bool equals_sender(Message m) {
       return m is ConferenceMessage && ((ConferenceMessage) m).peer_key == peer_key;
     }
   }

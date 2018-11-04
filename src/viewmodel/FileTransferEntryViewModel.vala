@@ -21,7 +21,7 @@
 
 namespace Venom {
   public class FileTransferEntryViewModel : GLib.Object {
-    private ILogger logger;
+    private Logger logger;
     private unowned FileTransfer file_transfer;
     private unowned FileTransferEntryListener listener;
 
@@ -35,7 +35,7 @@ namespace Venom {
     public signal void open_file(string filename);
     public signal void open_save_file_dialog(string path, string filename);
 
-    public FileTransferEntryViewModel(ILogger logger, FileTransfer file_transfer, FileTransferEntryListener listener) {
+    public FileTransferEntryViewModel(Logger logger, FileTransfer file_transfer, FileTransferEntryListener listener) {
       logger.d("FileTransferEntryViewModel created.");
       this.logger = logger;
       this.file_transfer = file_transfer;

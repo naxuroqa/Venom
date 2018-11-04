@@ -36,12 +36,12 @@ namespace Venom {
     [GtkChild] private Gtk.Box friend_request_item;
     [GtkChild] private Gtk.Widget custom_title;
 
-    private ILogger logger;
+    private Logger logger;
     private AddContactViewModel view_model;
     private ContainerChildBooleanBinding stack_binding;
     private StackIndexTransform contact_image_stack_transform;
 
-    public AddContactWidget(ILogger logger, ApplicationWindow app_window, ObservableList friend_requests_model, AddContactWidgetListener listener, FriendRequestWidgetListener friend_request_listener) {
+    public AddContactWidget(Logger logger, ApplicationWindow app_window, ObservableList friend_requests_model, AddContactWidgetListener listener, FriendRequestWidgetListener friend_request_listener) {
       logger.d("AddContactWidget created.");
       this.logger = logger;
       view_model = new AddContactViewModel(logger, friend_requests_model, listener);
@@ -77,9 +77,9 @@ namespace Venom {
     }
 
     public class FriendRequestWidgetCreator {
-      private unowned ILogger logger;
+      private unowned Logger logger;
       private FriendRequestWidgetListener listener;
-      public FriendRequestWidgetCreator(ILogger logger, FriendRequestWidgetListener listener) {
+      public FriendRequestWidgetCreator(Logger logger, FriendRequestWidgetListener listener) {
         this.logger = logger;
         this.listener = listener;
       }

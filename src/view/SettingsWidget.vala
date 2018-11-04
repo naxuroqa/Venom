@@ -23,12 +23,11 @@ namespace Venom {
   [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/settings_widget.ui")]
   public class SettingsWidget : Gtk.Box {
     private ISettingsDatabase settingsDatabase;
-    private IDhtNodeRepository node_repository;
-    private ILogger logger;
+    private DhtNodeRepository node_repository;
+    private Logger logger;
 
     [GtkChild] private Gtk.Stack stack;
     [GtkChild] private Gtk.ListBox sidebar;
-    [GtkChild] private Gtk.ListBox node_list_box;
 
     [GtkChild] private Gtk.Switch enable_dark_theme;
     [GtkChild] private Gtk.Switch enable_animations;
@@ -63,13 +62,14 @@ namespace Venom {
     [GtkChild] private Gtk.Entry custom_proxy_host;
     [GtkChild] private Gtk.SpinButton custom_proxy_port;
 
+    [GtkChild] private Gtk.ListBox node_list_box;
     [GtkChild] private Gtk.Button update_nodes;
 
     private ObservableList dht_nodes;
     private ObservableListModel list_model;
     private StackIndexTransform stack_transform;
 
-    public SettingsWidget(ILogger logger, ApplicationWindow? app_window, ISettingsDatabase settingsDatabase, IDhtNodeRepository node_repository) {
+    public SettingsWidget(Logger logger, ApplicationWindow? app_window, ISettingsDatabase settingsDatabase, DhtNodeRepository node_repository) {
       logger.d("SettingsWidget created.");
       this.logger = logger;
       this.settingsDatabase = settingsDatabase;
@@ -145,21 +145,21 @@ namespace Venom {
       node_list_box.bind_model(list_model, creator.create_dht_node);
     }
 
-    public void on_node_changed(IDhtNode node) {
+    public void on_node_changed(DhtNode node) {
       logger.d("on_node_changed");
       node_repository.update(node);
     }
 
     private class SettingsDhtNodeCreator {
-      private unowned ILogger logger;
+      private unowned Logger logger;
       private unowned SettingsWidget settings_widget;
-      public SettingsDhtNodeCreator(ILogger logger, SettingsWidget settings_widget) {
+      public SettingsDhtNodeCreator(Logger logger, SettingsWidget settings_widget) {
         this.logger = logger;
         this.settings_widget = settings_widget;
       }
 
       public Gtk.Widget create_dht_node(GLib.Object o) {
-        var node = o as IDhtNode;
+        var node = o as DhtNode;
         var widget = new NodeWidget(logger, node);
         widget.node_changed.connect(settings_widget.on_node_changed);
         return widget;

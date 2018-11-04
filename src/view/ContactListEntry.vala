@@ -27,11 +27,11 @@ namespace Venom {
     [GtkChild] private Gtk.Image contact_image;
     [GtkChild] private Gtk.Image status_image;
 
-    private ILogger logger;
+    private Logger logger;
     private ContactListEntryViewModel view_model;
     private ContextStyleBinding attention_binding;
 
-    public ContactListEntry(ILogger logger, IContact contact) {
+    public ContactListEntry(Logger logger, IContact contact) {
       logger.d("ContactListEntry created.");
       this.logger = logger;
       this.view_model = new ContactListEntryViewModel(logger, contact, false);

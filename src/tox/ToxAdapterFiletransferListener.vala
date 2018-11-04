@@ -24,7 +24,7 @@ namespace Venom {
     private const int MAX_AVATAR_SIZE = 64 * 1024;
 
     private unowned ToxSession session;
-    private ILogger logger;
+    private Logger logger;
     private NotificationListener notification_listener;
 
     private unowned GLib.HashTable<uint32, IContact> friends;
@@ -33,7 +33,7 @@ namespace Venom {
 
     private ObservableList transfers;
 
-    public ToxAdapterFiletransferListenerImpl(ILogger logger, ObservableList transfers, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
+    public ToxAdapterFiletransferListenerImpl(Logger logger, ObservableList transfers, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
       logger.d("ToxAdapterFiletransferListenerImpl created.");
       this.logger = logger;
       this.transfers = transfers;

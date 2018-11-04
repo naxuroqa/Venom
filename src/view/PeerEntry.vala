@@ -28,9 +28,9 @@ namespace Venom {
     [GtkChild] private Gtk.Image peer_known;
     [GtkChild] private Gtk.Image peer_self;
 
-    private ILogger logger;
+    private Logger logger;
 
-    public PeerEntry(ILogger logger, ConferencePeer peer) {
+    public PeerEntry(Logger logger, ConferencePeer peer) {
       this.logger = logger;
       peer_name.label = peer.peer_name;
       peer_key.label = peer.peer_key;
@@ -53,9 +53,9 @@ namespace Venom {
     [GtkChild] private Gtk.Image peer_known;
     [GtkChild] private Gtk.Image peer_self;
 
-    private ILogger logger;
+    private Logger logger;
 
-    public PeerEntryCompact(ILogger logger, ConferencePeer peer) {
+    public PeerEntryCompact(Logger logger, ConferencePeer peer) {
       this.logger = logger;
       peer_name.label = peer.peer_name;
       peer_known.visible = peer.is_known;

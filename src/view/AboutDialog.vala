@@ -21,9 +21,9 @@
 
 namespace Venom {
   public class AboutDialog : Gtk.AboutDialog {
-    private ILogger logger;
+    private Logger logger;
 
-    public AboutDialog(ILogger logger) {
+    public AboutDialog(Logger logger) {
       this.logger = logger;
       logger.d("AboutDialog created.");
 

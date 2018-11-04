@@ -22,7 +22,7 @@
 namespace Venom {
   [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/welcome_widget.ui")]
   public class WelcomeWidget : Gtk.Box {
-    private ILogger logger;
+    private Logger logger;
     private GLib.Rand rand = new GLib.Rand();
 
     [GtkChild] private Gtk.Button link_learn_more;
@@ -31,7 +31,7 @@ namespace Venom {
     [GtkChild] private Gtk.Label title;
     [GtkChild] private Gtk.Label content;
 
-    public WelcomeWidget(ILogger logger, ApplicationWindow app_window) {
+    public WelcomeWidget(Logger logger, ApplicationWindow app_window) {
       logger.d("WelcomeWidget created.");
       this.logger = logger;
 

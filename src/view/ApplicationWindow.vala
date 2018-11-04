@@ -45,13 +45,14 @@ namespace Venom {
     [GtkChild] public Gtk.Box header_start;
     [GtkChild] public Gtk.Box header_end;
 
-    private unowned Factory.IWidgetFactory widget_factory;
-    private ILogger logger;
+    private unowned Factory.WidgetFactory widget_factory;
+    private Logger logger;
     private ISettingsDatabase settings_database;
-    private IContactRepository contact_repository;
-    private IDhtNodeRepository node_repository;
-    private INospamRepository nospam_repository;
-    private IFriendRequestRepository friend_request_repository;
+    private ContactRepository contact_repository;
+    private DhtNodeRepository node_repository;
+    private NospamRepository nospam_repository;
+    private MessageRepository message_repository;
+    private FriendRequestRepository friend_request_repository;
     private ToxSession session;
     private ToxAdapterFriendListenerImpl friend_listener;
     private ToxAdapterConferenceListenerImpl conference_listener;
@@ -69,17 +70,17 @@ namespace Venom {
     private GLib.HashTable<IContact, ObservableList> conversations;
     private UserInfo user_info;
 
-    public ApplicationWindow(Gtk.Application application, Factory.IWidgetFactory widget_factory, ToxSession session,
-                             INospamRepository nospam_repository, IFriendRequestRepository friend_request_repository,
-                             IDhtNodeRepository node_repository, ISettingsDatabase settings_database,
-                             IContactRepository contact_repository) {
+    public ApplicationWindow(Gtk.Application application, Factory.WidgetFactory widget_factory, ToxSession session,
+                             NospamRepository nospam_repository, FriendRequestRepository friend_request_repository,
+                             MessageRepository message_repository, DhtNodeRepository node_repository,
+                             ISettingsDatabase settings_database, ContactRepository contact_repository) {
       Object(application: application);
 
       conversations = new GLib.HashTable<IContact, ObservableList>(null, null);
       user_info = new UserInfoImpl();
 
       this.widget_factory = widget_factory;
-      this.logger = widget_factory.createLogger();
+      this.logger = widget_factory.create_logger();
       logger.attach_to_glib();
 
       this.node_repository = node_repository;
@@ -87,6 +88,7 @@ namespace Venom {
       this.contact_repository = contact_repository;
       this.friend_request_repository = friend_request_repository;
       this.nospam_repository = nospam_repository;
+      this.message_repository = message_repository;
 
       contacts = new ObservableList();
       contacts.set_list(new GLib.List<IContact>());
@@ -102,8 +104,10 @@ namespace Venom {
 
       init_dht_nodes();
 
+      ((SqliteMessageRepository)message_repository).set_contacts(session.get_friends());
+
       session_listener = new ToxAdapterSelfListenerImpl(logger, user_info);
-      friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, friend_request_repository, contact_repository, contacts, friend_requests, conversations, notification_listener);
+      friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, message_repository, friend_request_repository, contact_repository, contacts, friend_requests, conversations, notification_listener);
       conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conference_invites, conversations, notification_listener);
       filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, conversations, notification_listener);
 
@@ -144,15 +148,18 @@ namespace Venom {
       save_window_state();
     }
 
+    private void add_nodes_to_repository(Gee.Iterable<DhtNode> nodes) {
+      foreach (var node in nodes) {
+        node_repository.create(node);
+      }
+    }
+
     private void init_dht_nodes() {
       var dht_nodes = node_repository.query_all();
       if (!dht_nodes.iterator().next()) {
         logger.i("DHT Node database empty, populating from web...");
-        var updater = new JsonWebDhtNodeUpdater(logger);
-        var nodes = updater.get_dht_nodes();
-        foreach (var node in nodes) {
-          node_repository.create(node);
-        }
+        add_nodes_to_repository((new StaticDhtNodeUpdater()).get_dht_nodes());
+        add_nodes_to_repository((new JsonWebDhtNodeUpdater(logger)).get_dht_nodes());
 
         if (!node_repository.query_all().iterator().next()) {
           logger.e("Node initialisation from web database failed.");
@@ -267,10 +274,10 @@ namespace Venom {
       logger.d("ApplicationWindow on_contact_selected");
       if (contact is Contact) {
         var conv = conversations.@get(contact);
-        switch_content_with(() => { return new ConversationWindow(this, logger, conv, contact, settings_database, friend_listener, filetransfer_listener, filetransfer_listener); });
+        switch_content_with(() => { return new ConversationWindow(this, logger, conv, contact, user_info, settings_database, friend_listener, filetransfer_listener, filetransfer_listener); });
       } else if (contact is Conference) {
         var conv = conversations.@get(contact);
-        switch_content_with(() => { return new ConferenceWindow(this, logger, conv, contact, settings_database, conference_listener); });
+        switch_content_with(() => { return new ConferenceWindow(this, logger, conv, contact, user_info, settings_database, conference_listener); });
       }
     }
 
@@ -279,7 +286,7 @@ namespace Venom {
     }
 
     public void show_settings() {
-      switch_content_with(() => { return widget_factory.createSettingsWidget(this, settings_database, node_repository); });
+      switch_content_with(() => { return widget_factory.create_settings_widget(this, settings_database, node_repository); });
     }
 
     public void show_welcome() {
@@ -304,6 +311,9 @@ namespace Venom {
 
     public void on_show_conference(IContact contact) {
       switch_content_with(() => { return new ConferenceInfoWidget(logger, this, conference_listener, contact, settings_database); });
+    }
+    public void on_add_contact() {
+      switch_content_with(() => { return new AddContactWidget(logger, this, friend_requests, friend_listener, friend_listener); });
     }
 
     private IContact ? find_contact(string contact_id) {
@@ -433,14 +443,6 @@ namespace Venom {
           session_listener.self_set_user_status(UserStatus.BUSY);
           break;
       }
-    }
-
-    public void on_add_contact() {
-      logger.d("on_add_contact()");
-      switch_content_with(() => {
-        var widget = new AddContactWidget(logger, this, friend_requests, friend_listener, friend_listener);
-        return widget;
-      });
     }
 
     private void on_copy_id() {

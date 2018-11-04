@@ -27,10 +27,10 @@ namespace Venom {
       return PluginState.INACTIVE;
     }
 
-    public virtual void activate(ILogger logger) {
+    public virtual void activate(Logger logger) {
       logger.i("%s activated.".printf(TAG));
     }
-    public virtual void deactiviate(ILogger logger) {
+    public virtual void deactiviate(Logger logger) {
       logger.i("%s deactivated.".printf(TAG));
     }
   }

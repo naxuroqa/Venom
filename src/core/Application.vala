@@ -41,16 +41,17 @@ namespace Venom {
 
     private static LogLevel loglevel = LogLevel.INFO;
 
-    private IDatabase database;
-    private ILogger logger;
+    private Database database;
+    private Logger logger;
     private ToxSession session;
-    private IDhtNodeRepository node_database;
+    private DhtNodeRepository node_database;
     private ISettingsDatabase settings_database;
-    private IContactRepository contact_repository;
-    private IFriendRequestRepository friend_request_repository;
-    private INospamRepository nospam_repository;
-    private Factory.IWidgetFactory widget_factory;
-    private IDatabaseFactory database_factory;
+    private ContactRepository contact_repository;
+    private FriendRequestRepository friend_request_repository;
+    private NospamRepository nospam_repository;
+    private MessageRepository message_repository;
+    private Factory.WidgetFactory widget_factory;
+    private DatabaseFactory database_factory;
 
     public Application() {
       Object(
@@ -62,14 +63,14 @@ namespace Venom {
     }
 
     private Gtk.ApplicationWindow create_application_window() throws Error {
-      return widget_factory.createApplicationWindow(this, session, nospam_repository, friend_request_repository, node_database, settings_database, contact_repository);
+      return widget_factory.create_application_window(this, session, nospam_repository, friend_request_repository, message_repository, node_database, settings_database, contact_repository);
     }
 
     private Gtk.ApplicationWindow create_error_window(string error_message) {
       var window = new Gtk.ApplicationWindow(this);
       window.set_default_size(800, 600);
       var err_widget = new ErrorWidget(window, error_message);
-      err_widget.add_page(widget_factory.createSettingsWidget(null, settings_database, node_database), "settings", _("Settings"));
+      err_widget.add_page(widget_factory.create_settings_widget(null, settings_database, node_database), "settings", _("Settings"));
       var log_view = new Gtk.TextView();
       log_view.editable = false;
       log_view.monospace = true;
@@ -103,20 +104,21 @@ namespace Venom {
 
       Gtk.AccelMap.load(R.constants.accels_filename());
 
-      Logger.displayed_level = loglevel;
-      widget_factory = new Factory.WidgetFactory();
-      logger = widget_factory.createLogger();
-      database_factory = widget_factory.createDatabaseFactory();
+      CommandLineLogger.displayed_level = loglevel;
+      widget_factory = new Factory.DefaultWidgetFactory();
+      logger = widget_factory.create_logger();
+      database_factory = widget_factory.create_database_factory();
 
       try {
         var db_file = R.constants.db_filename();
         create_path_for_filename(db_file);
-        database = database_factory.createDatabase(db_file);
+        database = database_factory.create_database(db_file);
         var statement_factory = database_factory.create_statement_factory(database);
         node_database = database_factory.create_node_repository(statement_factory, logger);
         contact_repository = database_factory.create_contact_repository(statement_factory, logger);
         friend_request_repository = database_factory.create_friend_request_repository(statement_factory, logger);
         nospam_repository = database_factory.create_nospam_repository(statement_factory, logger);
+        message_repository = database_factory.create_message_repository(statement_factory, logger);
         settings_database = database_factory.create_settings_database(statement_factory, logger);
         settings_database.load();
 
@@ -144,6 +146,8 @@ namespace Venom {
       settings_database = null;
       contact_repository = null;
       node_database = null;
+      nospam_repository = null;
+      friend_request_repository = null;
       database = null;
 
       Gtk.AccelMap.save(R.constants.accels_filename());
@@ -212,7 +216,7 @@ namespace Venom {
     }
 
     public void on_show_about() {
-      var about_dialog = widget_factory.createAboutDialog();
+      var about_dialog = widget_factory.create_about_dialog();
       about_dialog.transient_for = get_active_window();
       about_dialog.run();
       about_dialog.destroy();

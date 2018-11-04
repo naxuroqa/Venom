@@ -61,25 +61,15 @@ test_sqlite_db = executable('test_sqlite_db', ['TestSqliteDb.vala'],
 			dependencies : [venom_dep, mox_dep]
 			)
 
-test_message_db = executable('test_message_db', ['TestMessageDb.vala',
-			'mocks/MockLogger.vala',
-			'mocks/MockDb.vala',
-			'mocks/MockMessageDb.vala',
-			],
-			dependencies : [venom_dep, mox_dep]
-			)
-
 test_dht_node_db = executable('test_dht_node_db', ['TestDhtNodeDb.vala',
 			'mocks/MockLogger.vala',
-			'mocks/MockDb.vala',
-			'mocks/MockDht.vala',
+			'mocks/MockDb.vala'
 			],
 			dependencies : [venom_dep, mox_dep]
 			)
 
 test_json_web_dht_node_db = executable('test_json_web_dht_node_db', ['TestJsonWebDhtNodeDb.vala',
-			'mocks/MockLogger.vala',
-			'mocks/MockDht.vala',
+			'mocks/MockLogger.vala'
 			],
 			dependencies : [venom_dep, mox_dep]
 			)
@@ -107,7 +97,6 @@ test('test observable list', test_observable_list)
 test('test contact', test_contact)
 test('test about', test_about)
 test('test sqlite db', test_sqlite_db)
-test('test message db', test_message_db)
 test('test dht node db', test_dht_node_db)
 test('test json web dht node db', test_json_web_dht_node_db)
 test('test undo', test_undo)
