@@ -19,6 +19,7 @@ Features
 * Socks5 Proxy support
 * Spell checking
 * Sound notifications
+* [Faux offline messaging](https://wiki.tox.chat/users/offline_messaging)
 
 Roadmap
 -------
