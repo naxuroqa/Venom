@@ -1,5 +1,5 @@
 /*
- *    MockLogger.vala
+ *    MockCommandLineLogger.vala
  *
  *    Copyright (C) 2017-2018 Venom authors and contributors
  *
@@ -22,7 +22,7 @@
 using Venom;
 
 namespace Mock {
-  public class MockLogger : ILogger, Object {
+  public class MockLogger : Logger, Object {
     public MockLogger() {}
     public void d(string message) { mock().actual_call(this, "d", args().string(message).create()); }
     public void i(string message) { mock().actual_call(this, "i", args().string(message).create()); }

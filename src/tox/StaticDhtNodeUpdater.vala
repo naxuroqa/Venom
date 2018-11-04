@@ -21,9 +21,9 @@
 
 namespace Venom {
   public class StaticDhtNodeUpdater : Object {
-    public List<IDhtNode> getDhtNodes() {
-      var nodes = new List<IDhtNode>();
-      nodes.append(new DhtNode.with_params(
+    public Gee.Iterable<DhtNode> get_dht_nodes() {
+      var nodes = new Gee.LinkedList<DhtNode>();
+      nodes.add(new DhtNode.with_params(
                      "461FA3776EF0FA655F1A05477DF1B3B614F7D6B124F7DB1DD4FE3C08B03B640F",
                      "130.133.110.14",
                      33445,
@@ -31,7 +31,7 @@ namespace Venom {
                      "manolis",
                      "DE"
                      ));
-      nodes.append(new DhtNode.with_params(
+      nodes.add(new DhtNode.with_params(
                      "F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67",
                      "node.tox.biribiri.org",
                      33445,

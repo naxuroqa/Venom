@@ -124,6 +124,13 @@ namespace Mock {
                      .create();
       mock().actual_call(this, "friend_send_message", args).get_throws();
     }
+    public uint32 friend_send_message_direct(uint32 friend_number, string message) throws ToxError {
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .string(message)
+                     .create();
+      return mock().actual_call(this, "friend_send_message_direct", args).get_int();
+    }
     public string friend_get_name(uint32 friend_number) throws ToxError {
       var args = Arguments.builder()
                      .uint(friend_number)

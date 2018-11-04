@@ -22,9 +22,9 @@
 using Venom;
 
 namespace Mock {
-  public class MockDatabase : IDatabase, Object {}
+  public class MockDatabase : Database, Object {}
 
-  public class MockStatement : IDatabaseStatement, Object {
+  public class MockStatement : DatabaseStatement, Object {
     public DatabaseResult step() throws DatabaseStatementError {
       return (DatabaseResult) mock().actual_call(this, "step").get_int();
     }
@@ -83,74 +83,74 @@ namespace Mock {
     public void reset() {
       mock().actual_call(this, "reset");
     }
-    public IDatabaseStatementBuilder builder() {
-      return (IDatabaseStatementBuilder) mock().actual_call(this, "builder").get_object();
+    public DatabaseStatementBuilder builder() {
+      return (DatabaseStatementBuilder) mock().actual_call(this, "builder").get_object();
     }
   }
 
-  public class MockDatabaseFactory : IDatabaseFactory, Object {
-    public IDatabase createDatabase(string path) throws DatabaseError {
+  public class MockDatabaseFactory : DatabaseFactory, Object {
+    public Database create_database(string path) throws DatabaseError {
       var args = Arguments.builder()
                      .string(path)
                      .create();
-      return (IDatabase) mock().actual_call(this, "createDatabase", args).get_object();
+      return (Database) mock().actual_call(this, "create_database", args).get_object();
     }
-    public IDatabaseStatementFactory create_statement_factory(IDatabase database) {
+    public DatabaseStatementFactory create_statement_factory(Database database) {
       var args = Arguments.builder()
                      .object(database)
                      .create();
-      return (IDatabaseStatementFactory) mock().actual_call(this, "create_statement_factory", args).get_object();
+      return (DatabaseStatementFactory) mock().actual_call(this, "create_statement_factory", args).get_object();
     }
-    public IDhtNodeRepository create_node_repository(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public DhtNodeRepository create_node_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
       var args = Arguments.builder()
                      .object(factory)
                      .object(logger)
                      .create();
-      return (IDhtNodeRepository) mock().actual_call(this, "create_node_repository", args).get_object();
+      return (DhtNodeRepository) mock().actual_call(this, "create_node_repository", args).get_object();
     }
-    public IContactRepository create_contact_repository(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public ContactRepository create_contact_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
       var args = Arguments.builder()
                      .object(factory)
                      .object(logger)
                      .create();
-      return (IContactRepository) mock().actual_call(this, "createContactDatabase", args).get_object();
+      return (ContactRepository) mock().actual_call(this, "createContactDatabase", args).get_object();
     }
-    public IMessageDatabase createMessageDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public MessageRepository create_message_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
       var args = Arguments.builder()
                      .object(factory)
                      .object(logger)
                      .create();
-      return (IMessageDatabase) mock().actual_call(this, "createMessageDatabase", args).get_object();
+      return (MessageRepository) mock().actual_call(this, "create_message_repository", args).get_object();
     }
-    public ISettingsDatabase create_settings_database(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public ISettingsDatabase create_settings_database(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
       var args = Arguments.builder()
                      .object(factory)
                      .object(logger)
                      .create();
       return (ISettingsDatabase) mock().actual_call(this, "create_settings_database", args).get_object();
     }
-    public IFriendRequestRepository create_friend_request_repository(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public FriendRequestRepository create_friend_request_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
       var args = Arguments.builder()
                      .object(factory)
                      .object(logger)
                      .create();
-      return (IFriendRequestRepository) mock().actual_call(this, "create_friend_request_repository", args).get_object();
+      return (FriendRequestRepository) mock().actual_call(this, "create_friend_request_repository", args).get_object();
     }
-    public INospamRepository create_nospam_repository(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public NospamRepository create_nospam_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
       var args = Arguments.builder()
                      .object(factory)
                      .object(logger)
                      .create();
-      return (INospamRepository) mock().actual_call(this, "create_nospam_repository", args).get_object();
+      return (NospamRepository) mock().actual_call(this, "create_nospam_repository", args).get_object();
     }
   }
 
-  public class MockStatementFactory : IDatabaseStatementFactory, Object {
-    public IDatabaseStatement create_statement(string statement) {
+  public class MockStatementFactory : DatabaseStatementFactory, Object {
+    public DatabaseStatement create_statement(string statement) {
       var args = Arguments.builder()
                      .string(statement)
                      .create();
-      return (IDatabaseStatement) mock().actual_call(this, "create_statement", args).get_object();
+      return (DatabaseStatement) mock().actual_call(this, "create_statement", args).get_object();
     }
   }
 }

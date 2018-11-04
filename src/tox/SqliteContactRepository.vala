@@ -1,5 +1,5 @@
 /*
- *    ContactRepository.vala
+ *    SqliteContactRepository.vala
  *
  *    Copyright (C) 2013-2018 Venom authors and contributors
  *
@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class SqliteContactRepository : IContactRepository, Object {
+  public class SqliteContactRepository : ContactRepository, Object {
     private const string CREATE_TABLES = """
       CREATE TABLE IF NOT EXISTS peers (
         id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -39,11 +39,11 @@ namespace Venom {
     private enum PeersColumn { ID, KEY }
     private enum PeerSettingsColumn { PEER_KEY, ALIAS, AUTO_ACCEPT_CI, AUTO_ACCEPT_FT, FT_DIRECTORY, NOTIFICATIONS }
 
-    private ILogger logger;
+    private Logger logger;
 
     private SqliteStatementFactory statementFactory;
 
-    public SqliteContactRepository(IDatabaseStatementFactory statementFactory, ILogger logger) throws DatabaseStatementError, DatabaseError {
+    public SqliteContactRepository(DatabaseStatementFactory statementFactory, Logger logger) throws DatabaseStatementError, DatabaseError {
       this.logger = logger;
 
       this.statementFactory = (SqliteStatementFactory) statementFactory;
@@ -120,10 +120,6 @@ namespace Venom {
         statementFactory.create_statement("DELETE FROM peer_settings WHERE peers_index=$PEER_INDEX;")
         .builder()
         .bind_int("$PEER_INDEX", c.db_id)
-        .step();
-        statementFactory.create_statement("DELETE FROM peers WHERE id=$ID;")
-        .builder()
-        .bind_int("$ID", c.db_id)
         .step();
       }
     }

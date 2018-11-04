@@ -36,11 +36,11 @@ namespace Venom {
 
     public signal void leave_view();
 
-    private ILogger logger;
+    private Logger logger;
     private Contact contact;
     private FriendInfoWidgetListener listener;
 
-    public FriendInfoViewModel(ILogger logger, FriendInfoWidgetListener listener, Contact contact) {
+    public FriendInfoViewModel(Logger logger, FriendInfoWidgetListener listener, Contact contact) {
       logger.d("FriendInfoViewModel created.");
       this.logger = logger;
       this.contact = contact;

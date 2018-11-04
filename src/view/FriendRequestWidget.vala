@@ -22,7 +22,7 @@
 namespace Venom {
   [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/friend_request_widget.ui")]
   public class FriendRequestWidget : Gtk.ListBoxRow {
-    private ILogger logger;
+    private Logger logger;
     private FriendRequest friend_request;
     private FriendRequestWidgetListener listener;
 
@@ -34,7 +34,7 @@ namespace Venom {
     [GtkChild] private Gtk.Button accept;
     [GtkChild] private Gtk.Button reject;
 
-    public FriendRequestWidget(ILogger logger, FriendRequest friend_request, FriendRequestWidgetListener listener) {
+    public FriendRequestWidget(Logger logger, FriendRequest friend_request, FriendRequestWidgetListener listener) {
       logger.d("FriendRequestWidget created.");
       this.logger = logger;
       this.friend_request = friend_request;

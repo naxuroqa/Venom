@@ -22,12 +22,12 @@
 namespace Venom {
   public class ToxAdapterSelfListenerImpl : ToxAdapterSelfListener, UserInfoViewListener, GLib.Object {
     private unowned ToxSession session;
-    private ILogger logger;
+    private Logger logger;
     private UserInfo user_info;
     private GLib.File avatar_file;
     private GLib.Cancellable avatar_cancellable;
 
-    public ToxAdapterSelfListenerImpl(ILogger logger, UserInfo user_info) {
+    public ToxAdapterSelfListenerImpl(Logger logger, UserInfo user_info) {
       logger.d("ToxAdapterSelfListenerImpl created.");
       this.logger = logger;
       this.user_info = user_info;

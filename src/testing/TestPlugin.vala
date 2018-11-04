@@ -23,7 +23,7 @@ using Mock;
 
 namespace TestPlugin {
   private static void test_plugin() {
-    var logger = new MockLogger();
+    var logger = new MockCommandLineLogger();
     mock().expect_one_call(logger, "i");
     try {
       var test_plugin = new Venom.Pluginregistrar<Venom.Plugin>(logger, "/../src/testing/libexample_plugin");

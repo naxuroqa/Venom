@@ -40,13 +40,13 @@ public class TestSqliteDb : UnitTest {
 
   private void test_sqlite_database_wrapper() throws Error {
     var factory = new SqliteWrapperFactory();
-    var database = factory.createDatabase(":memory:");
+    var database = factory.create_database(":memory:");
     Assert.assert_not_null(database);
   }
 
   private void test_sqlite_statement_wrapper() throws Error {
     var factory = new SqliteWrapperFactory();
-    var database = factory.createDatabase(":memory:");
+    var database = factory.create_database(":memory:");
     var stmtFactory = factory.create_statement_factory(database);
     var statement = stmtFactory.create_statement("");
     Assert.assert_not_null(statement);
@@ -55,7 +55,7 @@ public class TestSqliteDb : UnitTest {
   private void test_sqlite_fail_real_database() throws Error {
     var factory = new SqliteWrapperFactory();
     try {
-      factory.createDatabase("file://invalid_path");
+      factory.create_database("file://invalid_path");
     } catch (Error e) {
       return;
     }
@@ -65,7 +65,7 @@ public class TestSqliteDb : UnitTest {
   private void test_sqlite_fail_real_statement() throws Error {
     var factory = new SqliteWrapperFactory();
     try {
-      var database = factory.createDatabase(":memory:");
+      var database = factory.create_database(":memory:");
       var stmtFactory = factory.create_statement_factory(database);
       var statement = stmtFactory.create_statement("");
       statement.step();
@@ -77,7 +77,7 @@ public class TestSqliteDb : UnitTest {
 
   private void test_sqlite_real_statement() throws Error {
     var factory = new SqliteWrapperFactory();
-    var database = factory.createDatabase(":memory:");
+    var database = factory.create_database(":memory:");
     var stmtFactory = factory.create_statement_factory(database);
     var statement = stmtFactory.create_statement("ANALYZE sqlite_master");
     statement.step();

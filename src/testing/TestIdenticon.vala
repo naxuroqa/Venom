@@ -24,7 +24,7 @@ using Mock;
 using Testing;
 
 public class TestIdenticon : UnitTest {
-  private ILogger logger;
+  private Logger logger;
   private uint8[] key;
   private uint8[] expected_hash;
 

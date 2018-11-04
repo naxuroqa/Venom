@@ -73,6 +73,7 @@ namespace Venom {
     public abstract void friend_delete(uint32 friend_number) throws ToxError;
 
     public abstract void friend_send_message(uint32 friend_number, string message) throws ToxError;
+    public abstract uint32 friend_send_message_direct(uint32 friend_number, string message) throws ToxError;
 
     public abstract string friend_get_name(uint32 friend_number) throws ToxError;
     public abstract string friend_get_status_message(uint32 friend_number) throws ToxError;
@@ -144,11 +145,11 @@ namespace Venom {
     public Tox handle;
     private Mutex mutex;
 
-    private IDhtNodeRepository dht_node_repository;
+    private DhtNodeRepository dht_node_repository;
     private ISettingsDatabase settings_database;
 
-    private Gee.Iterable<IDhtNode> dht_nodes = Gee.Collection.empty<IDhtNode>();
-    private ILogger logger;
+    private Gee.Iterable<DhtNode> dht_nodes = Gee.Collection.empty<DhtNode>();
+    private Logger logger;
     private ToxSessionThread sessionThread;
 
     private ToxAdapterSelfListener self_listener;
@@ -158,7 +159,7 @@ namespace Venom {
     private ToxSessionIO iohandler;
     private GLib.HashTable<uint32, IContact> friends;
 
-    public ToxSessionImpl(ToxSessionIO iohandler, IDhtNodeRepository node_database, ISettingsDatabase settings_database, ILogger logger) throws Error {
+    public ToxSessionImpl(ToxSessionIO iohandler, DhtNodeRepository node_database, ISettingsDatabase settings_database, Logger logger) throws Error {
       this.dht_node_repository = node_database;
       this.settings_database = settings_database;
       this.logger = logger;
@@ -670,13 +671,18 @@ namespace Venom {
     }
 
     public virtual void friend_send_message(uint32 friend_number, string message) throws ToxError {
+      var ret = friend_send_message_direct(friend_number, message);
+      friend_listener.on_friend_message_sent(friend_number, ret, message);
+    }
+
+    public virtual uint32 friend_send_message_direct(uint32 friend_number, string message) throws ToxError {
       var e = ErrFriendSendMessage.OK;
       var ret = handle.friend_send_message(friend_number, MessageType.NORMAL, message, out e);
       if (e != ErrFriendSendMessage.OK) {
         logger.i("friend_send_message failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      friend_listener.on_friend_message_sent(friend_number, ret, message);
+      return ret;
     }
 
     public virtual void self_set_typing(uint32 friend_number, bool typing) throws ToxError {

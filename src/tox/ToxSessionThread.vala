@@ -29,13 +29,13 @@ namespace Venom {
 
   public class ToxSessionThreadImpl : ToxSessionThread, Object {
     private unowned ToxSessionImpl session;
-    private unowned Gee.Iterable<IDhtNode> bootstrap_nodes;
-    private ILogger logger;
+    private unowned Gee.Iterable<DhtNode> bootstrap_nodes;
+    private Logger logger;
     private bool running;
     private bool bootstrapped;
     private Thread<int> session_thread = null;
 
-    public ToxSessionThreadImpl(ToxSessionImpl session, ILogger logger, Gee.Iterable<IDhtNode> bootstrap_nodes) {
+    public ToxSessionThreadImpl(ToxSessionImpl session, Logger logger, Gee.Iterable<DhtNode> bootstrap_nodes) {
       this.session = session;
       this.logger = logger;
       this.bootstrap_nodes = bootstrap_nodes;

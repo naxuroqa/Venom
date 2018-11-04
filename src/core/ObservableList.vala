@@ -108,10 +108,10 @@ namespace Venom {
 
   public class LazyObservableListModel : ObservableListModel {
     private const int NUM_ENTRIES_PER_ITERATION = 10;
-    protected ILogger logger;
+    protected Logger logger;
     private uint index = 0;
     private bool initialized = false;
-    public LazyObservableListModel(ILogger logger, ObservableList list, Cancellable? cancellable = null) {
+    public LazyObservableListModel(Logger logger, ObservableList list, Cancellable? cancellable = null) {
       base(list);
       this.logger = logger;
       initialize.begin(cancellable);
@@ -139,6 +139,7 @@ namespace Venom {
     protected override void on_added(GLib.Object item, uint index) {
       if (!initialized) {
         // ignore while not initialized
+        stderr.printf("not initialized, dropping....\n");
         return;
       }
       items_changed(index, 0, 1);

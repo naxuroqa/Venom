@@ -39,11 +39,11 @@ namespace Venom {
     [GtkChild] private Gtk.Button remove_button;
     [GtkChild] private Gtk.Button apply;
 
-    private ILogger logger;
+    private Logger logger;
     private unowned ApplicationWindow app_window;
     private FriendInfoViewModel view_model;
 
-    public FriendInfoWidget(ILogger logger, ApplicationWindow app_window, FriendInfoWidgetListener listener, IContact contact, ISettingsDatabase settings_database) {
+    public FriendInfoWidget(Logger logger, ApplicationWindow app_window, FriendInfoWidgetListener listener, IContact contact, ISettingsDatabase settings_database) {
       logger.d("FriendInfoWidget created.");
       this.logger = logger;
       this.app_window = app_window;

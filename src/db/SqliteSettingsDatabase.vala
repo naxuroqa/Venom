@@ -68,12 +68,12 @@ namespace Venom {
 
     private static string STATEMENT_SELECT_SETTINGS = "SELECT * FROM Settings WHERE id = (%s)".printf(TABLE_ID);
 
-    private IDatabaseStatement insertStatement;
-    private IDatabaseStatement selectStatement;
+    private DatabaseStatement insertStatement;
+    private DatabaseStatement selectStatement;
 
-    private ILogger logger;
+    private Logger logger;
 
-    public SqliteSettingsDatabase(IDatabaseStatementFactory statementFactory, ILogger logger) throws DatabaseStatementError {
+    public SqliteSettingsDatabase(DatabaseStatementFactory statementFactory, Logger logger) throws DatabaseStatementError {
 
       this.logger = logger;
 

@@ -27,9 +27,9 @@ namespace Venom {
   }
 
   public class ToxSessionIOImpl : ToxSessionIO, GLib.Object {
-    private ILogger logger;
+    private Logger logger;
 
-    public ToxSessionIOImpl(ILogger logger) {
+    public ToxSessionIOImpl(Logger logger) {
       this.logger = logger;
     }
 

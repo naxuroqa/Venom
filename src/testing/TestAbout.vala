@@ -24,7 +24,7 @@ using Mock;
 using Testing;
 
 public class TestAbout : UnitTest {
-  private ILogger logger;
+  private Logger logger;
 
   public TestAbout() {
     add_func("/test_gtk", test_gtk);

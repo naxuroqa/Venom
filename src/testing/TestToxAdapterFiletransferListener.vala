@@ -25,7 +25,7 @@ using Testing;
 
 public class TestToxAdapterFiletransferListener : UnitTest {
   private ObservableList transfers;
-  private ILogger logger;
+  private Logger logger;
   private NotificationListener notification_listener;
   private ToxSession session;
   private ToxAdapterFiletransferListenerImpl listener;

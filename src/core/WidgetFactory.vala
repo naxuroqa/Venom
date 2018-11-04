@@ -20,38 +20,38 @@
  */
 
 namespace Venom.Factory {
-  public interface IWidgetFactory : Object {
-    public abstract ApplicationWindow createApplicationWindow(Gtk.Application application, ToxSession session, INospamRepository nospam_repository, IFriendRequestRepository friend_request_repository, IDhtNodeRepository node_database, ISettingsDatabase settings_database, IContactRepository contact_repository);
-    public abstract ILogger createLogger();
-    public abstract Gtk.Dialog createAboutDialog();
-    public abstract IDatabaseFactory createDatabaseFactory();
-    public abstract SettingsWidget createSettingsWidget(ApplicationWindow? app_window, ISettingsDatabase database, IDhtNodeRepository nodeRepository);
+  public interface WidgetFactory : Object {
+    public abstract ApplicationWindow create_application_window(Gtk.Application application, ToxSession session, NospamRepository nospam_repository, FriendRequestRepository friend_request_repository, MessageRepository message_repository, DhtNodeRepository node_database, ISettingsDatabase settings_database, ContactRepository contact_repository);
+    public abstract Logger create_logger();
+    public abstract Gtk.Dialog create_about_dialog();
+    public abstract DatabaseFactory create_database_factory();
+    public abstract SettingsWidget create_settings_widget(ApplicationWindow? app_window, ISettingsDatabase database, DhtNodeRepository nodeRepository);
   }
 
-  public class WidgetFactory : IWidgetFactory, Object {
-    private ILogger logger;
+  public class DefaultWidgetFactory : WidgetFactory, Object {
+    private Logger logger;
     private Gtk.Dialog about_dialog;
     private ApplicationWindow app_window;
 
-    public ApplicationWindow createApplicationWindow(Gtk.Application application, ToxSession session, INospamRepository nospam_repository, IFriendRequestRepository friend_request_repository, IDhtNodeRepository node_database, ISettingsDatabase settings_database, IContactRepository contact_repository) {
+    public ApplicationWindow create_application_window(Gtk.Application application, ToxSession session, NospamRepository nospam_repository, FriendRequestRepository friend_request_repository, MessageRepository message_repository, DhtNodeRepository node_database, ISettingsDatabase settings_database, ContactRepository contact_repository) {
       if (app_window == null) {
-        app_window = new ApplicationWindow(application, this, session, nospam_repository, friend_request_repository, node_database, settings_database, contact_repository);
+        app_window = new ApplicationWindow(application, this, session, nospam_repository, friend_request_repository, message_repository, node_database, settings_database, contact_repository);
       }
       return app_window;
     }
 
-    public ILogger createLogger() {
+    public Logger create_logger() {
       if (logger == null) {
-        logger = new Logger();
+        logger = new CommandLineLogger();
       }
       return logger;
     }
 
-    public IDatabaseFactory createDatabaseFactory() {
+    public DatabaseFactory create_database_factory() {
       return new SqliteWrapperFactory();
     }
 
-    public Gtk.Dialog createAboutDialog() {
+    public Gtk.Dialog create_about_dialog() {
       if (about_dialog == null) {
         about_dialog = new AboutDialog(logger);
         about_dialog.modal = true;
@@ -60,8 +60,8 @@ namespace Venom.Factory {
       return about_dialog;
     }
 
-    public SettingsWidget createSettingsWidget(ApplicationWindow? app_window, ISettingsDatabase settingsDatabase, IDhtNodeRepository nodeRepository) {
-      return new SettingsWidget(createLogger(), app_window, settingsDatabase, nodeRepository);
+    public SettingsWidget create_settings_widget(ApplicationWindow? app_window, ISettingsDatabase settingsDatabase, DhtNodeRepository nodeRepository) {
+      return new SettingsWidget(create_logger(), app_window, settingsDatabase, nodeRepository);
     }
   }
 

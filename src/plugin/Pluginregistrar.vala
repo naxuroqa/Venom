@@ -28,11 +28,11 @@ namespace Venom {
     private string path;
     private GLib.Type type;
     private GLib.Module module;
-    private ILogger logger;
+    private Logger logger;
 
     private delegate GLib.Type RegisterPluginFunction(GLib.Module module);
 
-    public Pluginregistrar(ILogger logger, string name) {
+    public Pluginregistrar(Logger logger, string name) {
       assert(GLib.Module.supported());
       this.logger = logger;
       this.path = GLib.Module.build_path(GLib.Environment.get_variable("PWD"), name);

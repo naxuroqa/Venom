@@ -36,11 +36,11 @@ namespace Venom {
     [GtkChild] private Gtk.Button accept_all;
     [GtkChild] private Gtk.Button reject_all;
 
-    private ILogger logger;
+    private Logger logger;
     private CreateGroupchatViewModel view_model;
     private ContainerChildBooleanBinding stack_binding;
 
-    public CreateGroupchatWidget(ILogger logger, ApplicationWindow app_window, ObservableList conference_invites_model, CreateGroupchatWidgetListener listener, ConferenceInviteEntryListener entry_listener) {
+    public CreateGroupchatWidget(Logger logger, ApplicationWindow app_window, ObservableList conference_invites_model, CreateGroupchatWidgetListener listener, ConferenceInviteEntryListener entry_listener) {
       logger.d("CreateGroupChatWidget created.");
       this.logger = logger;
       this.view_model = new CreateGroupchatViewModel(logger, conference_invites_model, listener, entry_listener);
@@ -80,9 +80,9 @@ namespace Venom {
     }
 
     private class ConferenceInviteEntryCreator {
-      private ILogger logger;
+      private Logger logger;
       private ConferenceInviteEntryListener listener;
-      public ConferenceInviteEntryCreator(ILogger logger, ConferenceInviteEntryListener listener) {
+      public ConferenceInviteEntryCreator(Logger logger, ConferenceInviteEntryListener listener) {
         this.logger = logger;
         this.listener = listener;
       }
