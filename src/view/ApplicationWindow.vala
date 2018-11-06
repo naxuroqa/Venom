@@ -25,6 +25,7 @@ namespace Venom {
 
     private const GLib.ActionEntry win_entries[] =
     {
+      { "activate",     on_status_icon_activate },
       { "add_contact",  on_add_contact },
       { "copy_id",      on_copy_id },
       { "filetransfer", on_filetransfer },
@@ -132,6 +133,7 @@ namespace Venom {
       filetransfer_listener.attach_to_session(session);
 
       status_icon.activate.connect(on_status_icon_activate);
+      status_icon.popup_menu.connect(on_status_icon_popup_menu);
       delete_event.connect(on_delete_event);
       focus_in_event.connect(on_focus_in_event);
       window_state_event.connect(on_window_state_event);
@@ -165,6 +167,32 @@ namespace Venom {
           logger.e("Node initialisation from web database failed.");
         }
       }
+    }
+
+    private void on_status_icon_popup_menu() {
+      logger.d("on_status_icon_popup_menu");
+
+      var menu = new GLib.Menu();
+      menu.append(is_active ? _("Hide") : _("Show"), "win.activate");
+
+      var submenu = new GLib.Menu();
+      submenu.append(_("Online"), "win.change_userstatus('online')");
+      submenu.append(_("Away"), "win.change_userstatus('away')");
+      submenu.append(_("Busy"), "win.change_userstatus('busy')");
+      menu.append_submenu(_("Status"), submenu);
+
+      var misc_section = new GLib.Menu();
+      misc_section.append(_("Preferences"), "app.preferences");
+      misc_section.append(_("About"), "app.about");
+      menu.append_section(null, misc_section);
+
+      var quit_section = new GLib.Menu();
+      quit_section.append(_("Quit"), "app.quit");
+      menu.append_section(null, quit_section);
+
+      var shell = new Gtk.Menu.from_model(menu);
+      shell.attach_to_widget(this, null);
+      shell.popup_at_pointer();
     }
 
     private void on_status_icon_activate() {
