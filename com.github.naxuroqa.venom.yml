@@ -22,19 +22,24 @@ cleanup-commands:
   - rm -rf /app/lib/enchant-2/{*.a,*.la}
   - rm -rf /app/share/{vala,man,gir-1.0}
 build-options:
-  cflags: -O3
+  cflags: -O3 -DSQLITE_HAS_CODEC
   cxxflags: -O3
 modules:
-  - name: libgee
-    build-options:
-      env:
-        PKG_CONFIG_GOBJECT_INTROSPECTION_1_0_GIRDIR: /app/share/gir-1.0
-        PKG_CONFIG_GOBJECT_INTROSPECTION_1_0_TYPELIBDIR: /app/lib/girepository-1.0
+  - name: sqlcipher
+    rm-configure: true
+    config-opts:
+      - --enable-tempstore=yes
+      - --disable-tcl
     sources:
       - type: git
-        url: https://gitlab.gnome.org/GNOME/libgee
-        tag: 0.20.1
-        commit: 57e4c8a08d61ab77bbec310a3a1621e6bf3111cb
+        url: https://github.com/sqlcipher/sqlcipher
+        tag: v3.4.2
+        commit: c6f709fca81c910ba133aaf6330c28e01ccfe5f8
+        disable-fsckobjects: true
+      - type: script
+        dest-filename: autogen.sh
+        commands:
+          - AUTOMAKE="automake --foreign" autoreconf -vfi
   - name: libsodium
     sources:
       - type: git
@@ -51,6 +56,16 @@ modules:
         url: https://github.com/toktok/c-toxcore
         tag: v0.2.8
         commit: 3f35a84968f100e1e6d3c9df467fd3c82a9ebb13
+  - name: libgee
+    build-options:
+      env:
+        PKG_CONFIG_GOBJECT_INTROSPECTION_1_0_GIRDIR: /app/share/gir-1.0
+        PKG_CONFIG_GOBJECT_INTROSPECTION_1_0_TYPELIBDIR: /app/lib/girepository-1.0
+    sources:
+      - type: git
+        url: https://gitlab.gnome.org/GNOME/libgee
+        tag: 0.20.1
+        commit: 57e4c8a08d61ab77bbec310a3a1621e6bf3111cb
   - name: enchant
     sources:
       - type: archive

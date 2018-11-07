@@ -14,6 +14,7 @@ src/core/Contact.vala
 src/core/FileIO.vala
 src/core/WidgetFactory.vala
 src/core/Tools.vala
+src/core/Profile.vala
 src/core/WindowState.vala
 src/core/Application.vala
 src/core/Identicon.vala
@@ -29,7 +30,6 @@ src/viewmodel/FileTransferEntryViewModel.vala
 src/viewmodel/CreateGroupchatViewModel.vala
 src/viewmodel/ConferenceInfoViewModel.vala
 src/tox/ToxMessage.vala
-src/tox/ToxSessionIO.vala
 src/tox/ToxAdapterFriendListener.vala
 src/tox/JsonWebDhtNodeUpdater.vala
 src/tox/ToxAdapterFiletransferListener.vala
@@ -53,6 +53,7 @@ src/plugin/Pluginregistrar.vala
 src/view/MessageWidget.vala
 src/view/ConferenceInfoWidget.vala
 src/view/ApplicationWindow.vala
+src/view/LoginWidget.vala
 src/view/InAppNotification.vala
 src/view/ConferenceWindow.vala
 src/view/NodeWidget.vala
@@ -77,6 +78,7 @@ src/view/UserInfoWidget.vala
 src/view/FriendInfoWidget.vala
 src/view/ContextStyleBinding.vala
 src/ui/file_transfer_widget.ui
+src/ui/login_widget.ui
 src/ui/contact_list_entry_compact.ui
 src/ui/application_window.ui
 src/ui/file_transfer_entry.ui

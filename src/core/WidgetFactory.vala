@@ -21,7 +21,7 @@
 
 namespace Venom.Factory {
   public interface WidgetFactory : Object {
-    public abstract ApplicationWindow create_application_window(Gtk.Application application, ToxSession session, NospamRepository nospam_repository, FriendRequestRepository friend_request_repository, MessageRepository message_repository, DhtNodeRepository node_database, ISettingsDatabase settings_database, ContactRepository contact_repository);
+    public abstract ApplicationWindow create_application_window(Gtk.Application application, ToxSession session, Profile profile, NospamRepository nospam_repository, FriendRequestRepository friend_request_repository, MessageRepository message_repository, DhtNodeRepository node_database, ISettingsDatabase settings_database, ContactRepository contact_repository);
     public abstract Logger create_logger();
     public abstract Gtk.Dialog create_about_dialog();
     public abstract DatabaseFactory create_database_factory();
@@ -33,9 +33,9 @@ namespace Venom.Factory {
     private Gtk.Dialog about_dialog;
     private ApplicationWindow app_window;
 
-    public ApplicationWindow create_application_window(Gtk.Application application, ToxSession session, NospamRepository nospam_repository, FriendRequestRepository friend_request_repository, MessageRepository message_repository, DhtNodeRepository node_database, ISettingsDatabase settings_database, ContactRepository contact_repository) {
+    public ApplicationWindow create_application_window(Gtk.Application application, ToxSession session, Profile profile, NospamRepository nospam_repository, FriendRequestRepository friend_request_repository, MessageRepository message_repository, DhtNodeRepository node_database, ISettingsDatabase settings_database, ContactRepository contact_repository) {
       if (app_window == null) {
-        app_window = new ApplicationWindow(application, this, session, nospam_repository, friend_request_repository, message_repository, node_database, settings_database, contact_repository);
+        app_window = new ApplicationWindow(application, this, session, profile, nospam_repository, friend_request_repository, message_repository, node_database, settings_database, contact_repository);
       }
       return app_window;
     }

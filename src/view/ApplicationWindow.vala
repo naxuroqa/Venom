@@ -60,6 +60,7 @@ namespace Venom {
     private NospamRepository nospam_repository;
     private MessageRepository message_repository;
     private FriendRequestRepository friend_request_repository;
+    private Profile profile;
     private ToxSession session;
     private ToxAdapterFriendListenerImpl friend_listener;
     private ToxAdapterConferenceListenerImpl conference_listener;
@@ -78,7 +79,7 @@ namespace Venom {
     private GLib.HashTable<IContact, ObservableList> conversations;
     private UserInfo user_info;
 
-    public ApplicationWindow(Gtk.Application application, Factory.WidgetFactory widget_factory, ToxSession session,
+    public ApplicationWindow(Gtk.Application application, Factory.WidgetFactory widget_factory, ToxSession session, Profile profile,
                              NospamRepository nospam_repository, FriendRequestRepository friend_request_repository,
                              MessageRepository message_repository, DhtNodeRepository node_repository,
                              ISettingsDatabase settings_database, ContactRepository contact_repository) {
@@ -89,6 +90,7 @@ namespace Venom {
 
       this.widget_factory = widget_factory;
       this.logger = widget_factory.create_logger();
+      this.profile = profile;
       logger.attach_to_glib();
 
       this.node_repository = node_repository;
@@ -154,11 +156,15 @@ namespace Venom {
 
       show_welcome();
 
+      Gtk.AccelMap.load(profile.accelsfile);
+
       logger.d("ApplicationWindow created.");
     }
 
     ~ApplicationWindow() {
       logger.d("ApplicationWindow destroyed.");
+
+      Gtk.AccelMap.save(profile.accelsfile);
       save_window_state();
     }
 
@@ -244,7 +250,7 @@ namespace Venom {
 
     private void init_window_state() {
       try {
-        var window_state_string = FileIO.load_contents_text(R.constants.window_state_filename());
+        var window_state_string = FileIO.load_contents_text(profile.windowstatefile);
         window_state = WindowState.deserialize(window_state_string);
       } catch (Error e) {
         logger.i("Loading window state failed: " + e.message);
@@ -267,18 +273,13 @@ namespace Venom {
     private void save_window_state() {
       try {
         var data = WindowState.serialize(window_state);
-        FileIO.save_contents_text(R.constants.window_state_filename(), data);
+        FileIO.save_contents_text(profile.windowstatefile, data);
       } catch (Error e) {
         logger.e("Saving window state failed: " + e.message);
       }
     }
 
     private void init_widgets() {
-      var screen = Gdk.Screen.get_default();
-      var css_provider = new Gtk.CssProvider();
-      css_provider.load_from_resource("/com/github/naxuroqa/venom/css/custom.css");
-      Gtk.StyleContext.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-
       var gtk_settings = Gtk.Settings.get_default();
       settings_database.bind_property("enable-dark-theme", gtk_settings, "gtk-application-prefer-dark-theme", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings_database.bind_property("enable-animations", gtk_settings, "gtk-enable-animations", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
@@ -493,11 +494,10 @@ namespace Venom {
     }
 
     private void switch_content_with(owned WidgetProvider widget_provider) {
-      {
-        var previous = content_bin.get_child();
-        if (previous != null) {
-          previous.destroy();
-        }
+      var previous = content_bin.get_child();
+      if (previous != null) {
+        previous.destroy();
+        previous = null;
       }
 
       var current = widget_provider();

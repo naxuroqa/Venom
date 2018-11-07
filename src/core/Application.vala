@@ -62,8 +62,8 @@ namespace Venom {
       add_action_entries(app_entries, this);
     }
 
-    private Gtk.ApplicationWindow create_application_window() throws Error {
-      return widget_factory.create_application_window(this, session, nospam_repository, friend_request_repository, message_repository, node_database, settings_database, contact_repository);
+    private Gtk.ApplicationWindow create_application_window(Profile profile) throws Error {
+      return widget_factory.create_application_window(this, session, profile, nospam_repository, friend_request_repository, message_repository, node_database, settings_database, contact_repository);
     }
 
     private Gtk.ApplicationWindow create_error_window(string error_message) {
@@ -93,30 +93,14 @@ namespace Venom {
       Posix.signal(Posix.Signal.TERM, on_sig_int);
 #endif
 
-      Gtk.AccelMap.load(R.constants.accels_filename());
-
       CommandLineLogger.displayed_level = loglevel;
       widget_factory = new Factory.DefaultWidgetFactory();
       logger = widget_factory.create_logger();
-      database_factory = widget_factory.create_database_factory();
 
-      try {
-        var db_file = R.constants.db_filename();
-        create_path_for_filename(db_file);
-        database = database_factory.create_database(db_file);
-        var statement_factory = database_factory.create_statement_factory(database);
-        node_database = database_factory.create_node_repository(statement_factory, logger);
-        contact_repository = database_factory.create_contact_repository(statement_factory, logger);
-        friend_request_repository = database_factory.create_friend_request_repository(statement_factory, logger);
-        nospam_repository = database_factory.create_nospam_repository(statement_factory, logger);
-        message_repository = database_factory.create_message_repository(statement_factory, logger);
-        settings_database = database_factory.create_settings_database(statement_factory, logger);
-        settings_database.load();
-
-      } catch (Error e) {
-        logger.f("Database creation failed: " + e.message);
-        assert_not_reached();
-      }
+      var screen = Gdk.Screen.get_default();
+      var css_provider = new Gtk.CssProvider();
+      css_provider.load_from_resource("/com/github/naxuroqa/venom/css/custom.css");
+      Gtk.StyleContext.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
       var builder = new Gtk.Builder();
       try {
@@ -132,16 +116,26 @@ namespace Venom {
     }
 
     protected override void shutdown() {
-      settings_database.save();
+      var window = get_active_window();
+      if (window != null) {
+        window.destroy();
+        window = null;
+      }
+
+      widget_factory = null;
+
+      if (settings_database != null) {
+        settings_database.save();
+      }
 
       settings_database = null;
       contact_repository = null;
       node_database = null;
       nospam_repository = null;
       friend_request_repository = null;
+      message_repository = null;
       database = null;
 
-      Gtk.AccelMap.save(R.constants.accels_filename());
       base.shutdown();
     }
 
@@ -152,12 +146,35 @@ namespace Venom {
         return;
       }
 
+      window = new LoginWidget(this, logger);
+      window.present();
+    }
+
+    public void try_show_main_window(Profile profile) {
+      var window = get_active_window() as Gtk.ApplicationWindow;
+      database_factory = widget_factory.create_database_factory();
       try {
+        var db_file = profile.dbfile;
+        create_path_for_filename(db_file);
+        database = database_factory.create_database(db_file, profile.get_db_key());
+        var statement_factory = database_factory.create_statement_factory(database);
+        node_database = database_factory.create_node_repository(statement_factory, logger);
+        contact_repository = database_factory.create_contact_repository(statement_factory, logger);
+        friend_request_repository = database_factory.create_friend_request_repository(statement_factory, logger);
+        nospam_repository = database_factory.create_nospam_repository(statement_factory, logger);
+        message_repository = database_factory.create_message_repository(statement_factory, logger);
+        settings_database = database_factory.create_settings_database(statement_factory, logger);
+        settings_database.load();
+
         if (session == null) {
-          var session_io = new ToxSessionIOImpl(logger);
-          session = new ToxSessionImpl(session_io, node_database, settings_database, logger);
+          session = new ToxSessionImpl(profile, node_database, settings_database, logger);
         }
-        create_application_window().present();
+
+        if (window != null) {
+          window.destroy();
+        }
+
+        create_application_window(profile).present();
       } catch (Error e) {
         create_error_window(e.message).present();
       }
@@ -202,11 +219,13 @@ namespace Venom {
     }
 
     private void on_show_preferences() {
+      logger.d("on_show_preferences");
       activate();
       on_active_window((win) => win.show_settings());
     }
 
     public void on_show_about() {
+      logger.d("on_show_about");
       var about_dialog = widget_factory.create_about_dialog();
       about_dialog.transient_for = get_active_window();
       about_dialog.run();

@@ -157,15 +157,15 @@ namespace Venom {
     private ToxAdapterFriendListener friend_listener;
     private ToxAdapterConferenceListener conference_listener;
     private ToxAdapterFiletransferListener filetransfer_listener;
-    private ToxSessionIO iohandler;
+    private Profile profile;
     private GLib.HashTable<uint32, IContact> friends;
 
-    public ToxSessionImpl(ToxSessionIO iohandler, DhtNodeRepository node_database, ISettingsDatabase settings_database, Logger logger) throws Error {
+    public ToxSessionImpl(Profile profile, DhtNodeRepository node_database, ISettingsDatabase settings_database, Logger logger) throws Error {
       this.dht_node_repository = node_database;
       this.settings_database = settings_database;
       this.logger = logger;
       this.mutex = Mutex();
-      this.iohandler = iohandler;
+      this.profile = profile;
 
       var options_error = ToxCore.ErrOptionsNew.OK;
       var options = new ToxCore.Options(out options_error);
@@ -173,7 +173,7 @@ namespace Venom {
       options.log_callback = on_tox_message;
       friends = new GLib.HashTable<uint32, IContact>(null, null);
 
-      var savedata = iohandler.load_sessiondata();
+      var savedata = profile.load_sessiondata();
       if (savedata != null) {
         options.savedata_type = SaveDataType.TOX_SAVE;
         options.set_savedata_data(savedata);
@@ -194,10 +194,12 @@ namespace Venom {
       if (error == ErrNew.PROXY_BAD_HOST || error == ErrNew.PROXY_BAD_PORT || error == ErrNew.PROXY_NOT_FOUND) {
         var message = "Proxy could not be used: " + error.to_string();
         logger.e(message);
+        handle = null;
         throw new ToxError.GENERIC(message);
       } else if (error != ToxCore.ErrNew.OK) {
         var message = "Could not create tox instance: " + error.to_string();
         logger.e(message);
+        handle = null;
         throw new ToxError.GENERIC(message);
       }
 
@@ -235,7 +237,7 @@ namespace Venom {
       }
       if (handle != null) {
         logger.i("ToxSession saving session data.");
-        iohandler.save_sessiondata(handle.get_savedata());
+        profile.save_sessiondata(handle.get_savedata());
         handle = null;
       }
       logger.d("ToxSession destroyed.");

@@ -136,7 +136,7 @@ namespace Venom {
   }
 
   public interface DatabaseFactory : GLib.Object {
-    public abstract Database create_database(string path) throws DatabaseError;
+    public abstract Database create_database(string path, string key) throws DatabaseError;
     public abstract DatabaseStatementFactory create_statement_factory(Database database);
 
     public abstract DhtNodeRepository create_node_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError;

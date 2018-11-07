@@ -89,9 +89,10 @@ namespace Mock {
   }
 
   public class MockDatabaseFactory : DatabaseFactory, Object {
-    public Database create_database(string path) throws DatabaseError {
+    public Database create_database(string path, string key) throws DatabaseError {
       var args = Arguments.builder()
                      .string(path)
+                     .string(key)
                      .create();
       return (Database) mock().actual_call(this, "create_database", args).get_object();
     }
