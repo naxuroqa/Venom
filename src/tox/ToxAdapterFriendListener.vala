@@ -42,6 +42,7 @@ namespace Venom {
     private GLib.Bytes avatar_hash;
 
     public bool show_typing { get; set; }
+    public bool enable_logging { get; set; }
 
     private class QueuedMessageStorage : GLib.Object {
       private Gee.Map<uint32, Gee.Queue<Message>> messages = new Gee.HashMap<uint32,Gee.Queue<Message>>();
@@ -173,7 +174,9 @@ namespace Venom {
         logger.d("on_send_message message queued ");
         var msg = new ToxMessage.outgoing(contact, message);
         queued_messages.offer(contact.tox_friend_number, msg);
-        message_repository.create(msg);
+        if (enable_logging) {
+          message_repository.create(msg);
+        }
         var conversation = conversations.@get(contact);
         conversation.append(msg);
       }
@@ -192,7 +195,9 @@ namespace Venom {
       var contact = friends.@get(friend_number) as Contact;
       var conversation = conversations.@get(contact);
       var message = new ToxMessage.incoming(contact, message_str);
-      message_repository.create(message);
+      if (enable_logging) {
+        message_repository.create(message);
+      }
       notification_listener.on_unread_message(message, contact);
       contact.unread_messages++;
       contact.changed();
@@ -204,7 +209,9 @@ namespace Venom {
       if (message != null) {
         message.state = TransmissionState.RECEIVED;
         messages_waiting_for_rr.remove(message_id);
-        message_repository.update(message);
+        if (enable_logging) {
+          message_repository.update(message);
+        }
       } else {
         logger.f("Got read receipt for unknown message.");
       }
@@ -261,7 +268,9 @@ namespace Venom {
           while (message != null) {
             var message_id = session.friend_send_message_direct(friend_number, message.message);
             message.state = TransmissionState.SENT;
-            message_repository.update(message);
+            if (enable_logging) {
+              message_repository.update(message);
+            }
 
             messages_waiting_for_rr.@set(message_id, message);
             queued_messages.poll(friend_number);
@@ -299,14 +308,16 @@ namespace Venom {
         conversation.set_list(new GLib.List<Message>());
         conversations.@set(contact, conversation);
 
-        // FIXME move this into SqlSpecification
-        var messages = ((SqliteMessageRepository) message_repository).query_all_for_contact(contact);
-        foreach (var msg in messages) {
-          if (msg.sender == MessageSender.LOCAL && msg.state == TransmissionState.NONE) {
-            logger.d("on_friend_added restoring queued message...");
-            queued_messages.offer(friend_number, msg);
+        if (enable_logging) {
+          // FIXME move this into SqlSpecification
+          var messages = ((SqliteMessageRepository) message_repository).query_all_for_contact(contact);
+          foreach (var msg in messages) {
+            if (msg.sender == MessageSender.LOCAL && msg.state == TransmissionState.NONE) {
+              logger.d("on_friend_added restoring queued message...");
+              queued_messages.offer(friend_number, msg);
+            }
+            conversation.append(msg);
           }
-          conversation.append(msg);
         }
       }
 
@@ -347,7 +358,9 @@ namespace Venom {
       var msg = new ToxMessage.outgoing(contact, message);
       msg.state = TransmissionState.SENT;
       msg.tox_id = message_id;
-      message_repository.create(msg);
+      if (enable_logging) {
+        message_repository.create(msg);
+      }
       conversation.append(msg);
       messages_waiting_for_rr.@set(message_id, msg);
     }

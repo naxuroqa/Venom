@@ -113,6 +113,7 @@ namespace Venom {
       filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, conversations, notification_listener);
 
       settings_database.bind_property("enable-send-typing", friend_listener, "show-typing", BindingFlags.SYNC_CREATE);
+      settings_database.bind_property("enable-logging", friend_listener, "enable-logging", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-notification-sounds", notification_listener, "play-sound-notifications", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-tray", status_icon, "visible", BindingFlags.SYNC_CREATE);
 

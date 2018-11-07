@@ -46,9 +46,6 @@ namespace Venom {
     [GtkChild] private Gtk.Switch enable_show_typing;
 
     [GtkChild] private Gtk.Switch keep_history;
-    [GtkChild] private Gtk.Revealer history_revealer;
-    [GtkChild] private Gtk.RadioButton history_keep_radio;
-    [GtkChild] private Gtk.SpinButton history_delete_spinbutton;
 
     [GtkChild] private Gtk.Switch enable_udp;
     [GtkChild] private Gtk.Switch enable_ipv6;
@@ -100,10 +97,7 @@ namespace Venom {
 
       settingsDatabase.bind_property("enable-send-typing", enable_show_typing, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
-      settingsDatabase.bind_property("enable-logging",      keep_history,              "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-      settingsDatabase.bind_property("enable-logging",      history_revealer,          "reveal-child", BindingFlags.SYNC_CREATE);
-      settingsDatabase.bind_property("enable-infinite-log", history_keep_radio,        "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-      settingsDatabase.bind_property("days-to-log",         history_delete_spinbutton, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("enable-logging", keep_history, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
       settingsDatabase.bind_property("enable-udp",             enable_udp,             "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-ipv6",            enable_ipv6,            "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
