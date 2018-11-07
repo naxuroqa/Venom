@@ -28,9 +28,7 @@ namespace Venom {
     public bool   enable_tray                 { get; set; default = false; }
     public bool   enable_tray_minimize        { get; set; default = false; }
     public bool   enable_notify               { get; set; default = false; }
-    public bool   enable_infinite_log         { get; set; default = true; }
     public bool   enable_send_typing          { get; set; default = false; }
-    public int    days_to_log                 { get; set; default = 180; }
     public bool   enable_proxy                { get; set; default = true; }
     public bool   enable_custom_proxy         { get; set; default = false; }
     public string custom_proxy_host           { get; set; default = "localhost"; }

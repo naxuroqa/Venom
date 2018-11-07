@@ -28,9 +28,7 @@ namespace Venom {
     public abstract bool   enable_tray                 { get; set; }
     public abstract bool   enable_tray_minimize        { get; set; }
     public abstract bool   enable_notify               { get; set; }
-    public abstract bool   enable_infinite_log         { get; set; }
     public abstract bool   enable_send_typing          { get; set; }
-    public abstract int    days_to_log                 { get; set; }
     public abstract bool   enable_proxy                { get; set; }
     public abstract bool   enable_custom_proxy         { get; set; }
     public abstract string custom_proxy_host           { get; set; }
