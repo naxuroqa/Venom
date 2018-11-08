@@ -1,4 +1,4 @@
-Venom
+![Venom](.github/banner/venom.svg)
 =====
 
 [![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=develop)](https://travis-ci.org/naxuroqa/Venom) [![tip for next commit](http://tip4commit.com/projects/634.svg)](http://tip4commit.com/projects/634) [![codecov](https://codecov.io/gh/naxuroqa/Venom/branch/develop/graph/badge.svg)](https://codecov.io/gh/naxuroqa/Venom)
