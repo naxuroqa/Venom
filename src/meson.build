@@ -99,6 +99,7 @@ venom_source = files(
 			'view/FileTransferWidget.vala',
 			'view/FriendInfoWidget.vala',
 			'view/FriendRequestWidget.vala',
+			'view/InAppNotification.vala',
 			'view/MessageWidget.vala',
 			'view/NodeWidget.vala',
 			'view/NospamEntry.vala',

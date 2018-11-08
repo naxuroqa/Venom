@@ -111,6 +111,9 @@ namespace Mock {
     public void friend_add_norequest(uint8[] address) throws ToxError {
       mock().actual_call(this, "friend_add_norequest").get_throws();
     }
+    public uint32 friend_add_norequest_direct(uint8[] address) throws ToxError {
+      return mock().actual_call(this, "friend_add_norequest_direct").get_int();
+    }
     public void friend_delete(uint32 friend_number) throws ToxError {
       var args = Arguments.builder()
                      .uint(friend_number)
