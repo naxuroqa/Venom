@@ -46,6 +46,12 @@ namespace Venom {
     [GtkChild] public Gtk.Box header_start;
     [GtkChild] public Gtk.Box header_end;
 
+    [GtkChild] private Gtk.Revealer notification_revealer;
+    [GtkChild] private Gtk.Button notification_dismiss;
+    [GtkChild] private Gtk.Button notification_action;
+    [GtkChild] private Gtk.Label notification_action_message;
+    [GtkChild] private Gtk.Label notification_message;
+
     private unowned Factory.WidgetFactory widget_factory;
     private Logger logger;
     private ISettingsDatabase settings_database;
@@ -62,6 +68,7 @@ namespace Venom {
     private NotificationListener notification_listener;
     private WindowState window_state;
     private unowned ContactListViewModel contact_list_view_model;
+    private InAppNotification in_app_notification;
 
     private ObservableList contacts;
     private ObservableList transfers;
@@ -103,12 +110,16 @@ namespace Venom {
       notification_listener = new NotificationListenerImpl(logger);
       notification_listener.clear_notifications();
 
+      in_app_notification = new InAppNotification(notification_revealer, notification_dismiss,
+        notification_action, notification_action_message, notification_message);
+
       init_dht_nodes();
 
       ((SqliteMessageRepository)message_repository).set_contacts(session.get_friends());
 
       session_listener = new ToxAdapterSelfListenerImpl(logger, user_info);
-      friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, message_repository, friend_request_repository, contact_repository, contacts, friend_requests, conversations, notification_listener);
+      friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, message_repository, friend_request_repository, 
+        contact_repository, contacts, friend_requests, conversations, notification_listener, in_app_notification);
       conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conference_invites, conversations, notification_listener);
       filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, conversations, notification_listener);
 

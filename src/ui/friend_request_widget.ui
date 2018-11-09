@@ -39,8 +39,9 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="can_focus">False</property>
             <property name="halign">end</property>
             <property name="valign">start</property>
-            <property name="pixel_size">44</property>
+            <property name="pixel_size">40</property>
             <property name="icon_name">friend-symbolic</property>
+            <property name="icon_size">0</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -52,12 +53,60 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="spacing">6</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">7</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
+                <property name="valign">center</property>
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkButton" id="accept">
+                    <property name="label" translatable="yes">Accept</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <style>
+                      <class name="suggested-action"/>
+                      <class name="image-button"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="reject">
+                    <property name="label" translatable="yes">Deny</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <style>
+                      <class name="image-button"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="pack_type">end</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="contact_id">
                     <property name="visible">True</property>
@@ -90,85 +139,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="contact_message">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label">contact_message</property>
-                    <property name="wrap">True</property>
-                    <property name="xalign">0</property>
-                    <property name="yalign">0</property>
-                    <attributes>
-                      <attribute name="style" value="italic"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">center</property>
-                <property name="spacing">6</property>
-                <child>
-                  <object class="GtkButton" id="accept">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Accept request</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">object-select-symbolic</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="suggested-action"/>
-                      <class name="image-button"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="reject">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Reject request</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">user-trash-symbolic</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="destructive-action"/>
-                      <class name="image-button"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
+                    <property name="pack_type">end</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -177,6 +148,25 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="contact_message">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label">contact_message</property>
+                <property name="wrap">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <property name="yalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>

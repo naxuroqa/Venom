@@ -20,6 +20,21 @@
  */
 
 namespace Venom {
+  public class FriendDeletedNotification : NotificationAction {
+    private Contact contact;
+    private ToxAdapterFriendListenerImpl listener;
+    public FriendDeletedNotification(Contact contact, ToxAdapterFriendListenerImpl listener) {
+      this.contact = contact;
+      this.listener = listener;
+      message = _("%s has been removed from your contact list.").printf(contact.get_name_string());
+      action_message = _("Undo");
+    }
+
+    public override void do_action() {
+      listener.on_friend_undelete(contact);
+    }
+  }
+
   public class ToxAdapterFriendListenerImpl : ToxAdapterFriendListener, AddContactWidgetListener, ConversationWidgetListener, FriendInfoWidgetListener, FriendRequestWidgetListener, GLib.Object {
     private unowned ToxSession session;
     private Logger logger;
@@ -37,6 +52,7 @@ namespace Venom {
     private ObservableList friend_requests;
 
     private Gee.HashMap<uint32, Bytes> friend_avatar_hashes;
+    private InAppNotification in_app_notification;
 
     private UserInfo user_info;
     private GLib.Bytes avatar_hash;
@@ -45,7 +61,7 @@ namespace Venom {
     public bool enable_logging { get; set; }
 
     private class QueuedMessageStorage : GLib.Object {
-      private Gee.Map<uint32, Gee.Queue<Message>> messages = new Gee.HashMap<uint32,Gee.Queue<Message>>();
+      private Gee.Map<uint32, Gee.Queue<Message> > messages = new Gee.HashMap<uint32,Gee.Queue<Message> >();
       public void offer(uint32 id, Message message) {
         Gee.Queue<Message> queue;
         if (!messages.has_key(id)) {
@@ -56,13 +72,16 @@ namespace Venom {
         }
         queue.offer(message);
       }
-      public Message? peek(uint32 id) {
+      public void unset(uint32 id) {
+        messages.unset(id);
+      }
+      public Message ? peek(uint32 id) {
         if (!messages.has_key(id)) {
           return null;
         }
         return messages.@get(id).peek();
       }
-      public Message? poll(uint32 id) {
+      public Message ? poll(uint32 id) {
         if (!messages.has_key(id)) {
           return null;
         }
@@ -70,7 +89,10 @@ namespace Venom {
       }
     }
 
-    public ToxAdapterFriendListenerImpl(Logger logger, UserInfo user_info, MessageRepository message_repository, FriendRequestRepository friend_request_repository, ContactRepository contact_repository, ObservableList contacts, ObservableList friend_requests, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
+    public ToxAdapterFriendListenerImpl(Logger logger, UserInfo user_info, MessageRepository message_repository,
+                                        FriendRequestRepository friend_request_repository, ContactRepository contact_repository,
+                                        ObservableList contacts, ObservableList friend_requests, GLib.HashTable<IContact, ObservableList> conversations,
+                                        NotificationListener notification_listener, InAppNotification in_app_notification) {
       logger.d("ToxAdapterFriendListenerImpl created.");
       this.logger = logger;
       this.user_info = user_info;
@@ -81,6 +103,7 @@ namespace Venom {
       this.friend_requests = friend_requests;
       this.conversations = conversations;
       this.notification_listener = notification_listener;
+      this.in_app_notification = in_app_notification;
 
       messages_waiting_for_rr = new GLib.HashTable<uint32, Message>(null, null);
       queued_messages = new QueuedMessageStorage();
@@ -153,7 +176,7 @@ namespace Venom {
       session.friend_add_norequest(public_key);
 
       friend_requests.remove(friend_request);
-      friend_request_repository.delete(friend_request);
+      friend_request_repository.delete (friend_request);
       tox_friend_requests.unset(id);
     }
 
@@ -161,7 +184,7 @@ namespace Venom {
       var friend_request = tox_friend_requests.@get(id);
 
       friend_requests.remove(friend_request);
-      friend_request_repository.delete(friend_request);
+      friend_request_repository.delete (friend_request);
       tox_friend_requests.unset(id);
     }
 
@@ -264,7 +287,7 @@ namespace Venom {
         session.file_send_avatar(friend_number, avatar_data);
 
         try {
-          Message? message = queued_messages.peek(friend_number);
+          Message ? message = queued_messages.peek(friend_number);
           while (message != null) {
             var message_id = session.friend_send_message_direct(friend_number, message.message);
             message.state = TransmissionState.SENT;
@@ -289,18 +312,7 @@ namespace Venom {
       contact.changed();
     }
 
-    public void on_friend_added(uint32 friend_number, uint8[] public_key) {
-      logger.d("on_friend_added");
-      var str_id = Tools.bin_to_hexstring(public_key);
-      var contact = new Contact(friend_number, str_id);
-      try {
-        contact.name = session.friend_get_name(friend_number);
-        contact.status_message = session.friend_get_status_message(friend_number);
-        contact.last_seen = new DateTime.from_unix_local((int64) session.friend_get_last_online(friend_number));
-      } catch (ToxError e) {
-        logger.e("on_friend_added getting contact information failed");
-      }
-
+    private void init_friend_in_contacts(Contact contact) {
       contact_repository.create(contact);
 
       if (!conversations.contains(contact)) {
@@ -314,11 +326,27 @@ namespace Venom {
           foreach (var msg in messages) {
             if (msg.sender == MessageSender.LOCAL && msg.state == TransmissionState.NONE) {
               logger.d("on_friend_added restoring queued message...");
-              queued_messages.offer(friend_number, msg);
+              queued_messages.offer(contact.tox_friend_number, msg);
             }
             conversation.append(msg);
           }
         }
+      }
+
+      friends.@set(contact.tox_friend_number, contact);
+      contacts.append(contact);
+    }
+
+    public void on_friend_added(uint32 friend_number, uint8[] public_key) {
+      logger.d("on_friend_added");
+      var str_id = Tools.bin_to_hexstring(public_key);
+      var contact = new Contact(friend_number, str_id);
+      try {
+        contact.name = session.friend_get_name(friend_number);
+        contact.status_message = session.friend_get_status_message(friend_number);
+        contact.last_seen = new DateTime.from_unix_local((int64) session.friend_get_last_online(friend_number));
+      } catch (ToxError e) {
+        logger.e("on_friend_added getting contact information failed");
       }
 
       var filepath = GLib.Path.build_filename(R.constants.avatars_folder(), @"$str_id.png");
@@ -338,17 +366,26 @@ namespace Venom {
         }
       }
 
-      friends.@set(friend_number, contact);
-      contacts.append(contact);
+      init_friend_in_contacts(contact);
+    }
+
+    public void on_friend_undelete(Contact contact) {
+      var public_key = Tools.hexstring_to_bin(contact.tox_id);
+      contact.tox_friend_number = session.friend_add_norequest_direct(public_key);
+      init_friend_in_contacts(contact);
+      contact_repository.update(contact);
     }
 
     public void on_friend_deleted(uint32 friend_number) {
       logger.d("on_friend_deleted");
-      var contact = friends.@get(friend_number);
-      contact_repository.delete(contact);
+      var contact = friends.@get(friend_number) as Contact;
+      contact.connected = false;
+      contact_repository.delete (contact);
       conversations.remove(contact);
       friends.remove(friend_number);
       contacts.remove(contact);
+      queued_messages.unset(friend_number);
+      in_app_notification.show_notification(new FriendDeletedNotification(contact, this));
     }
 
     public void on_friend_message_sent(uint32 friend_number, uint32 message_id, string message) {

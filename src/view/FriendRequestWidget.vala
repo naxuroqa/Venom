@@ -41,8 +41,9 @@ namespace Venom {
       this.listener = listener;
 
       contact_id.label = friend_request.id;
-      contact_message.label = friend_request.message;
+      contact_message.label = _("“%s”").printf(friend_request.message);
       contact_time.label = TimeStamp.get_pretty_timestamp(friend_request.timestamp);
+      contact_time.tooltip_text = friend_request.timestamp.format("%c");
       var pub_key = Tools.hexstring_to_bin(friend_request.id);
       contact_image.pixbuf = round_corners(Identicon.generate_pixbuf(pub_key, 40));
 
