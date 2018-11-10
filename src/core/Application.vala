@@ -67,24 +67,15 @@ namespace Venom {
     }
 
     private Gtk.ApplicationWindow create_error_window(string error_message) {
-      var window = new Gtk.ApplicationWindow(this);
-      window.set_default_size(800, 600);
-      var err_widget = new ErrorWidget(window, error_message);
+      var err_widget = new ErrorWidget(this, logger, error_message);
       err_widget.add_page(widget_factory.create_settings_widget(null, settings_database, node_database), "settings", _("Settings"));
-      var log_view = new Gtk.TextView();
-      log_view.editable = false;
-      log_view.monospace = true;
-      Gtk.TextIter iter;
-      log_view.buffer.get_start_iter(out iter);
-      log_view.buffer.insert_markup(ref iter, logger.get_log(), -1);
-      err_widget.add_page(log_view, "log", _("Log"));
+
       err_widget.on_retry.connect(() => {
-        window.destroy();
+        err_widget.destroy();
+        settings_database.save();
         try_show_app_window();
       });
-      window.add(err_widget);
-      window.show_all();
-      return window;
+      return err_widget;
     }
 
     private static void create_path_for_filename(string filename) throws Error {
