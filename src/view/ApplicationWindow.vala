@@ -115,10 +115,10 @@ namespace Venom {
 
       init_dht_nodes();
 
-      ((SqliteMessageRepository)message_repository).set_contacts(session.get_friends());
+      ((SqliteMessageRepository) message_repository).set_contacts(session.get_friends());
 
       session_listener = new ToxAdapterSelfListenerImpl(logger, user_info);
-      friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, message_repository, friend_request_repository, 
+      friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, message_repository, friend_request_repository,
         contact_repository, contacts, friend_requests, conversations, notification_listener, in_app_notification);
       conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conference_invites, conversations, notification_listener);
       filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, conversations, notification_listener);
