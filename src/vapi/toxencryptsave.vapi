@@ -34,7 +34,7 @@ namespace ToxEncryptSave {
    */
   public uint32 pass_encryption_extra_length();
 
-  [CCode(cname = "TOX_ERR_KEY_DERIVATION", cprefix = "TOX_ERR_KEY_DERIVATION_")]
+  [CCode(cname = "TOX_ERR_KEY_DERIVATION", cprefix = "TOX_ERR_KEY_DERIVATION_", has_type_id = false)]
   public enum ErrKeyDerivation {
     /**
      * The function returned successfully.
@@ -51,7 +51,7 @@ namespace ToxEncryptSave {
     FAILED
   }
 
-  [CCode(cname = "TOX_ERR_ENCRYPTION", cprefix = "TOX_ERR_ENCRYPTION_")]
+  [CCode(cname = "TOX_ERR_ENCRYPTION", cprefix = "TOX_ERR_ENCRYPTION_", has_type_id = false)]
   public enum ErrEncryption {
     /**
      * The function returned successfully.
@@ -73,7 +73,7 @@ namespace ToxEncryptSave {
     FAILED
   }
 
-  [CCode(cname = "TOX_ERR_DECRYPTION", cprefix = "TOX_ERR_DECRYPTION_")]
+  [CCode(cname = "TOX_ERR_DECRYPTION", cprefix = "TOX_ERR_DECRYPTION_", has_type_id = false)]
   public enum ErrDecryption {
     /**
      * The function returned successfully.
@@ -236,7 +236,7 @@ namespace ToxEncryptSave {
     }
   }
 
-  [CCode(cname = "TOX_ERR_GET_SALT", cprefix = "TOX_ERR_GET_SALT_")]
+  [CCode(cname = "TOX_ERR_GET_SALT", cprefix = "TOX_ERR_GET_SALT_", has_type_id = false)]
   public enum ErrGetSalt {
     /**
      * The function returned successfully.

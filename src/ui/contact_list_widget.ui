@@ -335,7 +335,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
               <object class="GtkImage">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="icon_name">contact-new-symbolic</property>
+                <property name="icon_name">friend-symbolic</property>
               </object>
             </child>
             <style>

@@ -22,9 +22,9 @@
 namespace Venom {
 
   public class SqliteWrapperFactory : DatabaseFactory, Object {
-    public Database create_database(string path) throws DatabaseError {
+    public Database create_database(string path, string key) throws DatabaseError {
       var update = new SqliteDatabaseV1(null);
-      return new SqliteDatabaseWrapper(path, update);
+      return new SqliteDatabaseWrapper(path, key, update);
     }
     public DatabaseStatementFactory create_statement_factory(Database database) {
       return new SqliteStatementFactory(database as SqliteDatabaseWrapper);
@@ -268,6 +268,7 @@ namespace Venom {
   public class SqliteDatabaseWrapper : Database, Object {
     private Sqlite.Database database;
     private int _version = 0;
+    private string key = "";
 
     public Sqlite.Database handle {
       get { return database; }
@@ -285,10 +286,15 @@ namespace Venom {
       return database.last_insert_rowid();
     }
 
-    public SqliteDatabaseWrapper(string path, SqliteDatabaseUpdate updater) throws DatabaseError {
+    public SqliteDatabaseWrapper(string path, string key, SqliteDatabaseUpdate updater) throws DatabaseError {
       var result = Sqlite.Database.open_v2(path, out database);
       if (result != Sqlite.OK) {
         throw new DatabaseError.OPEN("Cannot open sqlite database: " + database.errmsg());
+      }
+
+      if (key.length > 0) {
+        query(@"PRAGMA key = \"x'$key'\";");
+        query(@"SELECT count(*) FROM sqlite_master;");
       }
 
       try {
