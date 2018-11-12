@@ -24,6 +24,7 @@ namespace Venom {
       { "preferences", on_show_preferences, null, null, null },
       { "about", on_show_about, null, null, null },
       { "quit", on_quit, null, null, null },
+      { "logout", on_logout, null, null, null },
       { "show-filetransfers", on_show_filetransfers, null, null, null },
       { "show-conferences", on_show_conferences, null, null, null },
       { "show-add-contact", on_show_add_contact, null, null, null },
@@ -52,6 +53,7 @@ namespace Venom {
     private MessageRepository message_repository;
     private Factory.WidgetFactory widget_factory;
     private DatabaseFactory database_factory;
+    private GlobalSettings global_settings;
 
     public Application() {
       Object(
@@ -113,6 +115,8 @@ namespace Venom {
       var app_menu = builder.get_object("app_menu") as MenuModel;
       assert(app_menu != null);
       set_app_menu(app_menu);
+
+      load_global_settings();
     }
 
     protected override void shutdown() {
@@ -121,6 +125,8 @@ namespace Venom {
         window.destroy();
         window = null;
       }
+
+      save_global_settings();
 
       widget_factory = null;
 
@@ -146,7 +152,17 @@ namespace Venom {
         return;
       }
 
-      window = new LoginWidget(this, logger);
+      if (global_settings.auto_login && global_settings.last_used_profile.length > 0) {
+        var profile = new Profile(R.constants.default_profile_dir(), global_settings.last_used_profile);
+        if (profile.is_sane() && !profile.test_is_encrypted()) {
+          try_show_main_window(profile);
+          return;
+        } else {
+          logger.i("Auto login set, but profile either does not exist or is encrypted");
+        }
+      }
+
+      window = new LoginWidget(this, global_settings, logger);
       window.present();
     }
 
@@ -209,6 +225,25 @@ namespace Venom {
       logger.f("not implemented.");
     }
 
+    private void load_global_settings() {
+      try {
+        var settings_string = FileIO.load_contents_text(R.constants.default_global_settings());
+        global_settings = GlobalSettings.deserialize(settings_string);
+      } catch (Error e) {
+        logger.i("Loading global settings failed: " + e.message);
+        global_settings = new GlobalSettings();
+      }
+    }
+
+    private void save_global_settings() {
+      try {
+        var settings_string = GlobalSettings.serialize(global_settings);
+        FileIO.save_contents_text(R.constants.default_global_settings(), settings_string);
+      } catch (Error e) {
+        logger.e("Saving global settings failed: " + e.message);
+      }
+    }
+
     private delegate void AppWindowDelegate(ApplicationWindow win);
 
     private void on_active_window(AppWindowDelegate run) {
@@ -222,6 +257,34 @@ namespace Venom {
       logger.d("on_show_preferences");
       activate();
       on_active_window((win) => win.show_settings());
+    }
+
+    private void on_logout() {
+      logger.d("on_logout");
+      global_settings.auto_login = false;
+      var active_window = get_active_window() as ApplicationWindow;
+      if (active_window != null) {
+        active_window.destroy();
+        active_window = null;
+
+        widget_factory = new Factory.DefaultWidgetFactory();
+
+        if (settings_database != null) {
+          settings_database.save();
+        }
+
+        settings_database = null;
+        contact_repository = null;
+        node_database = null;
+        nospam_repository = null;
+        friend_request_repository = null;
+        message_repository = null;
+        database = null;
+        session = null;
+
+        Gtk.Settings.get_default().gtk_application_prefer_dark_theme = false;
+        try_show_app_window();
+      }
     }
 
     public void on_show_about() {

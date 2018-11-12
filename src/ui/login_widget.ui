@@ -115,8 +115,8 @@
                                 <property name="spacing">6</property>
                                 <child>
                                   <object class="GtkSwitch" id="login_automatically_switch">
+                                    <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="no_show_all">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -127,8 +127,8 @@
                                 </child>
                                 <child>
                                   <object class="GtkLabel">
+                                    <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="no_show_all">True</property>
                                     <property name="label" translatable="yes">Login automatically</property>
                                   </object>
                                   <packing>
@@ -581,9 +581,6 @@
                             <property name="fill">True</property>
                             <property name="position">5</property>
                           </packing>
-                        </child>
-                        <child>
-                          <placeholder/>
                         </child>
                       </object>
                       <packing>
