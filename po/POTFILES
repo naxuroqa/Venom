@@ -10,6 +10,7 @@ src/core/FileTransfer.vala
 src/core/R.vala
 src/core/Logger.vala
 src/core/Message.vala
+src/core/GlobalSettings.vala
 src/core/Contact.vala
 src/core/FileIO.vala
 src/core/WidgetFactory.vala

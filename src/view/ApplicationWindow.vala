@@ -205,6 +205,7 @@ namespace Venom {
       menu.append_section(null, misc_section);
 
       var quit_section = new GLib.Menu();
+      quit_section.append(_("Logout"), "app.logout");
       quit_section.append(_("Quit"), "app.quit");
       menu.append_section(null, quit_section);
 
