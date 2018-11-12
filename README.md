@@ -1,13 +1,20 @@
-Venom
+![Venom](.github/banner/venom.svg)
 =====
 
-[![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=develop)](https://travis-ci.org/naxuroqa/Venom) [![tip for next commit](http://tip4commit.com/projects/634.svg)](http://tip4commit.com/projects/634) [![codecov](https://codecov.io/gh/naxuroqa/Venom/branch/develop/graph/badge.svg)](https://codecov.io/gh/naxuroqa/Venom)
+[![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=develop)](https://travis-ci.org/naxuroqa/Venom)
+![GitHub](https://img.shields.io/github/license/naxuroqa/venom.svg)
+![GitHub release](https://img.shields.io/github/release/naxuroqa/venom.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/naxuroqa/venom.svg)
+[![tip for next commit](http://tip4commit.com/projects/634.svg)](http://tip4commit.com/projects/634)
+[![codecov](https://codecov.io/gh/naxuroqa/Venom/branch/develop/graph/badge.svg)](https://codecov.io/gh/naxuroqa/Venom)
+
 
 ###### a modern [Tox](https://github.com/TokTok/c-toxcore) client for the GNU/Linux desktop
 
 Features
 --------
 
+* Encrypted profiles
 * Secure, private messaging
 * Read receipts
 * Contact aliases
@@ -19,6 +26,7 @@ Features
 * Socks5 Proxy support
 * Spell checking
 * Sound notifications
+* [Faux offline messaging](https://wiki.tox.chat/users/offline_messaging)
 
 Roadmap
 -------
@@ -41,7 +49,7 @@ Dependencies
 * `libgee >= 0.20`
 * `libsoup-2.4`
 * `gspell >= 1.8`
-* `sqlite3`
+* `sqlcipher`
 * `toxcore >= 0.2`
 
 Build-Dependencies

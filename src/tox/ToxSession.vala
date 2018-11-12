@@ -1,7 +1,7 @@
 /*
  *    ToxSession.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -65,13 +65,16 @@ namespace Venom {
 
     public abstract uint8[] self_get_address();
     public abstract uint8[] self_get_public_key();
+    public abstract void self_set_nospam(uint32 nospam);
 
     public abstract void self_get_friend_list_foreach(GetFriendListCallback callback) throws ToxError;
     public abstract void friend_add(uint8[] address, string message) throws ToxError;
+    public abstract uint32 friend_add_norequest_direct(uint8[] public_key) throws ToxError;
     public abstract void friend_add_norequest(uint8[] address) throws ToxError;
     public abstract void friend_delete(uint32 friend_number) throws ToxError;
 
     public abstract void friend_send_message(uint32 friend_number, string message) throws ToxError;
+    public abstract uint32 friend_send_message_direct(uint32 friend_number, string message) throws ToxError;
 
     public abstract string friend_get_name(uint32 friend_number) throws ToxError;
     public abstract string friend_get_status_message(uint32 friend_number) throws ToxError;
@@ -143,26 +146,26 @@ namespace Venom {
     public Tox handle;
     private Mutex mutex;
 
-    private IDhtNodeDatabase dht_node_database;
+    private DhtNodeRepository dht_node_repository;
     private ISettingsDatabase settings_database;
 
-    private List<IDhtNode> dht_nodes = new List<IDhtNode>();
-    private ILogger logger;
+    private Gee.Iterable<DhtNode> dht_nodes = Gee.Collection.empty<DhtNode>();
+    private Logger logger;
     private ToxSessionThread sessionThread;
 
     private ToxAdapterSelfListener self_listener;
     private ToxAdapterFriendListener friend_listener;
     private ToxAdapterConferenceListener conference_listener;
     private ToxAdapterFiletransferListener filetransfer_listener;
-    private ToxSessionIO iohandler;
+    private Profile profile;
     private GLib.HashTable<uint32, IContact> friends;
 
-    public ToxSessionImpl(ToxSessionIO iohandler, IDhtNodeDatabase node_database, ISettingsDatabase settings_database, ILogger logger) throws Error {
-      this.dht_node_database = node_database;
+    public ToxSessionImpl(Profile profile, DhtNodeRepository node_database, ISettingsDatabase settings_database, Logger logger) throws Error {
+      this.dht_node_repository = node_database;
       this.settings_database = settings_database;
       this.logger = logger;
       this.mutex = Mutex();
-      this.iohandler = iohandler;
+      this.profile = profile;
 
       var options_error = ToxCore.ErrOptionsNew.OK;
       var options = new ToxCore.Options(out options_error);
@@ -170,7 +173,7 @@ namespace Venom {
       options.log_callback = on_tox_message;
       friends = new GLib.HashTable<uint32, IContact>(null, null);
 
-      var savedata = iohandler.load_sessiondata();
+      var savedata = profile.load_sessiondata();
       if (savedata != null) {
         options.savedata_type = SaveDataType.TOX_SAVE;
         options.set_savedata_data(savedata);
@@ -191,10 +194,12 @@ namespace Venom {
       if (error == ErrNew.PROXY_BAD_HOST || error == ErrNew.PROXY_BAD_PORT || error == ErrNew.PROXY_NOT_FOUND) {
         var message = "Proxy could not be used: " + error.to_string();
         logger.e(message);
+        handle = null;
         throw new ToxError.GENERIC(message);
       } else if (error != ToxCore.ErrNew.OK) {
         var message = "Could not create tox instance: " + error.to_string();
         logger.e(message);
+        handle = null;
         throw new ToxError.GENERIC(message);
       }
 
@@ -232,7 +237,7 @@ namespace Venom {
       }
       if (handle != null) {
         logger.i("ToxSession saving session data.");
-        iohandler.save_sessiondata(handle.get_savedata());
+        profile.save_sessiondata(handle.get_savedata());
         handle = null;
       }
       logger.d("ToxSession destroyed.");
@@ -283,21 +288,7 @@ namespace Venom {
     }
 
     private void init_dht_nodes() {
-      var nodeFactory = new DhtNodeFactory();
-      dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
-      logger.d("Items in dht node list: %u".printf(dht_nodes.length()));
-      if (dht_nodes.length() == 0) {
-        logger.d("Node database empty, populating from static database.");
-        var nodeDatabase = new JsonWebDhtNodeDatabase(logger);
-        var nodes = nodeDatabase.getDhtNodes(nodeFactory);
-        foreach (var node in nodes) {
-          dht_node_database.insertDhtNode(node.pub_key, node.host, node.port, node.is_blocked, node.maintainer, node.location);
-        }
-        dht_nodes = dht_node_database.getDhtNodes(nodeFactory);
-        if (dht_nodes.length() == 0) {
-          logger.e("Node initialisation from static database failed.");
-        }
-      }
+      dht_nodes = dht_node_repository.query_all();
     }
 
     public virtual unowned GLib.HashTable<uint32, IContact> get_friends() {
@@ -580,6 +571,10 @@ namespace Venom {
       return handle.self_get_public_key();
     }
 
+    public virtual void self_set_nospam(uint32 nospam) {
+      handle.self_nospam = nospam;
+    }
+
     public virtual void self_set_status_message(string status) {
       var e = ErrSetInfo.OK;
       if (!handle.self_set_status_message(status, out e)) {
@@ -659,13 +654,18 @@ namespace Venom {
       friend_listener.on_friend_added(friend_number, key);
     }
 
-    public virtual void friend_add_norequest(uint8[] public_key) throws ToxError {
+    public uint32 friend_add_norequest_direct(uint8[] public_key) throws ToxError {
       var e = ErrFriendAdd.OK;
       var friend_number = handle.friend_add_norequest(public_key, out e);
       if (e != ErrFriendAdd.OK) {
         logger.i("friend_add failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
+      return friend_number;
+    }
+
+    public virtual void friend_add_norequest(uint8[] public_key) throws ToxError {
+      var friend_number = friend_add_norequest_direct(public_key);
       friend_listener.on_friend_added(friend_number, public_key);
     }
 
@@ -679,13 +679,18 @@ namespace Venom {
     }
 
     public virtual void friend_send_message(uint32 friend_number, string message) throws ToxError {
+      var ret = friend_send_message_direct(friend_number, message);
+      friend_listener.on_friend_message_sent(friend_number, ret, message);
+    }
+
+    public virtual uint32 friend_send_message_direct(uint32 friend_number, string message) throws ToxError {
       var e = ErrFriendSendMessage.OK;
       var ret = handle.friend_send_message(friend_number, MessageType.NORMAL, message, out e);
       if (e != ErrFriendSendMessage.OK) {
         logger.i("friend_send_message failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
-      friend_listener.on_friend_message_sent(friend_number, ret, message);
+      return ret;
     }
 
     public virtual void self_set_typing(uint32 friend_number, bool typing) throws ToxError {

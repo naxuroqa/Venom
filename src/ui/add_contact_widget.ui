@@ -81,8 +81,9 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
           <object class="GtkImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="pixel_size">44</property>
+            <property name="pixel_size">40</property>
             <property name="icon_name">contact-new-symbolic</property>
+            <property name="icon_size">0</property>
           </object>
           <packing>
             <property name="name">page0</property>

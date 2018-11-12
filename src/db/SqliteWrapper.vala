@@ -1,7 +1,7 @@
 /*
  *    SqliteWrapper.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -21,42 +21,54 @@
 
 namespace Venom {
 
-  public class SqliteWrapperFactory : IDatabaseFactory, Object {
-    public IDatabase createDatabase(string path) throws DatabaseError {
-      return new SqliteDatabaseWrapper(path);
+  public class SqliteWrapperFactory : DatabaseFactory, Object {
+    public Database create_database(string path, string key) throws DatabaseError {
+      var update = new SqliteDatabaseV1(null);
+      return new SqliteDatabaseWrapper(path, key, update);
     }
-
-    public IDatabaseStatementFactory createStatementFactory(IDatabase database) {
+    public DatabaseStatementFactory create_statement_factory(Database database) {
       return new SqliteStatementFactory(database as SqliteDatabaseWrapper);
     }
-
-    public IDhtNodeDatabase createNodeDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      return new SqliteDhtNodeDatabase(factory, logger);
+    public DhtNodeRepository create_node_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
+      return new SqliteDhtNodeRepository(factory, logger);
     }
-    public IContactDatabase createContactDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      return new SqliteContactDatabase(factory, logger);
+    public ContactRepository create_contact_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
+      return new SqliteContactRepository(factory, logger);
     }
-    public IMessageDatabase createMessageDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
-      return new SqliteMessageDatabase(factory, logger);
+    public MessageRepository create_message_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
+      return new SqliteMessageRepository(factory, logger);
     }
-
-    public ISettingsDatabase createSettingsDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError {
+    public ISettingsDatabase create_settings_database(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
       return new SqliteSettingsDatabase(factory, logger);
+    }
+    public FriendRequestRepository create_friend_request_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
+      return new SqliteFriendRequestRepository(factory, logger);
+    }
+    public NospamRepository create_nospam_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError {
+      return new SqliteNospamRepository(factory, logger);
     }
   }
 
-  public class SqliteStatementFactory : IDatabaseStatementFactory, Object {
+  public class SqliteStatementFactory : DatabaseStatementFactory, Object {
     private SqliteDatabaseWrapper database;
     public SqliteStatementFactory(SqliteDatabaseWrapper database) {
       this.database = database;
     }
 
-    public IDatabaseStatement createStatement(string zSql) throws DatabaseStatementError {
+    public DatabaseStatement create_statement(string zSql) throws DatabaseStatementError {
       return new SqliteStatementWrapper(database, zSql);
+    }
+
+    public SqliteQueryResult query_database(string sql) throws DatabaseError {
+      return database.query(sql);
+    }
+
+    public int64 last_insert_rowid() {
+      return database.last_insert_rowid();
     }
   }
 
-  public class SqliteStatementWrapper : IDatabaseStatement, Object {
+  public class SqliteStatementWrapper : DatabaseStatement, Object {
     private Sqlite.Statement statement;
 
     public SqliteStatementWrapper(SqliteDatabaseWrapper database, string zSql) throws DatabaseStatementError {
@@ -135,55 +147,164 @@ namespace Venom {
       statement.reset();
     }
 
-    public IDatabaseStatementBuilder builder() {
+    public DatabaseStatementBuilder builder() {
       return new Builder(this);
     }
 
-    public class Builder : IDatabaseStatementBuilder, Object {
-      private IDatabaseStatement statement;
-      public Builder(IDatabaseStatement statement) {
+    public class Builder : DatabaseStatementBuilder, Object {
+      private DatabaseStatement statement;
+      public Builder(DatabaseStatement statement) {
         this.statement = statement;
       }
 
-      public IDatabaseStatementBuilder step() throws DatabaseStatementError {
+      public DatabaseStatementBuilder step() throws DatabaseStatementError {
         statement.step();
         return this;
       }
-      public IDatabaseStatementBuilder bind_text(string key, string val) throws DatabaseStatementError {
+      public DatabaseStatementBuilder bind_text(string key, string val) throws DatabaseStatementError {
         statement.bind_text(key, val);
         return this;
       }
-      public IDatabaseStatementBuilder bind_int64(string key, int64 val) throws DatabaseStatementError {
+      public DatabaseStatementBuilder bind_int64(string key, int64 val) throws DatabaseStatementError {
         statement.bind_int64(key, val);
         return this;
       }
-      public IDatabaseStatementBuilder bind_int(string key, int val) throws DatabaseStatementError {
+      public DatabaseStatementBuilder bind_int(string key, int val) throws DatabaseStatementError {
         statement.bind_int(key, val);
         return this;
       }
-      public IDatabaseStatementBuilder bind_bool(string key, bool val) throws DatabaseStatementError {
+      public DatabaseStatementBuilder bind_bool(string key, bool val) throws DatabaseStatementError {
         statement.bind_bool(key, val);
         return this;
       }
-      public IDatabaseStatementBuilder reset() {
+      public DatabaseStatementBuilder reset() {
         statement.reset();
         return this;
       }
     }
   }
 
-  public class SqliteDatabaseWrapper : IDatabase, Object {
+  public interface SqlSpecification : GLib.Object {
+    public abstract string create_statement(SqliteStatementFactory statement_factory);
+  }
+
+  public interface SqliteDatabaseUpdate : GLib.Object {
+    public abstract void update_database(SqliteDatabaseWrapper database) throws DatabaseError;
+  }
+
+  public class SqliteDatabaseV1 : SqliteDatabaseUpdate, GLib.Object {
+    private SqliteDatabaseUpdate? next_update;
+    public SqliteDatabaseV1(SqliteDatabaseUpdate? next_update) {
+      this.next_update = next_update;
+    }
+    public void update_database(SqliteDatabaseWrapper database) throws DatabaseError {
+      if (database.version == 0) {
+        database.query(
+          """
+          DROP TABLE IF EXISTS Contacts;
+          DROP TABLE IF EXISTS Nodes;
+          PRAGMA user_version=1;
+          """
+        );
+      }
+      if (next_update != null) {
+        next_update.update_database(database);
+      }
+    }
+  }
+
+  public class SqliteQueryResultRow {
+    public int n_columns;
+    public string[] values;
+    public string[] column_names;
+    public SqliteQueryResultRow(int n_columns, string[] values, string[] column_names) {
+      this.n_columns = n_columns;
+      this.values = new string[n_columns];
+      this.column_names = new string[n_columns];
+      for(var i = 0; i < n_columns; i++) {
+        this.values[i] = values[i];
+        this.column_names[i] = column_names[i];
+      }
+    }
+  }
+
+  public class SqliteQueryResult {
+    public SqliteQueryResultRow[] rows;
+    public SqliteQueryResult(SqliteQueryResultRow[] rows) {
+      this.rows = rows;
+    }
+
+    public string to_string() {
+      var str = new StringBuilder();
+      foreach(var row in rows) {
+        for (var i = 0; i < row.n_columns; i++) {
+          str.append("[%s] %s\n".printf(row.column_names[i], row.values[i]));
+        }
+      }
+      return str.str;
+    }
+  }
+
+  public class SqliteQuery {
+    private string query;
+    public SqliteQuery(string query) {
+      this.query = query;
+    }
+    public SqliteQueryResult exec(Sqlite.Database db) throws DatabaseError {
+      string errmsg;
+      SqliteQueryResultRow[] rows = {};
+      var result = db.exec(query, (n_columns, values, column_names) => {
+        rows += new SqliteQueryResultRow(n_columns, values, column_names);
+        return 0;
+      }, out errmsg);
+
+      if (result != Sqlite.OK) {
+        throw new DatabaseError.EXEC("Cannot execute query: " + errmsg);
+      }
+      return new SqliteQueryResult(rows);
+    }
+  }
+
+  public class SqliteDatabaseWrapper : Database, Object {
     private Sqlite.Database database;
+    private int _version = 0;
+    private string key = "";
 
     public Sqlite.Database handle {
       get { return database; }
     }
 
-    public SqliteDatabaseWrapper(string path) throws DatabaseError {
+    public int version {
+      get { return _version; }
+    }
+
+    public SqliteQueryResult query(string sql) throws DatabaseError {
+      return (new SqliteQuery(sql)).exec(database);
+    }
+
+    public int64 last_insert_rowid() {
+      return database.last_insert_rowid();
+    }
+
+    public SqliteDatabaseWrapper(string path, string key, SqliteDatabaseUpdate updater) throws DatabaseError {
       var result = Sqlite.Database.open_v2(path, out database);
       if (result != Sqlite.OK) {
         throw new DatabaseError.OPEN("Cannot open sqlite database: " + database.errmsg());
       }
+
+      if (key.length > 0) {
+        query(@"PRAGMA key = \"x'$key'\";");
+        query(@"SELECT count(*) FROM sqlite_master;");
+      }
+
+      try {
+        var version = query("PRAGMA user_version;");
+        _version = int.parse(version.rows[0].values[0]);
+      } catch (DatabaseError e) {
+        stdout.printf("");
+      }
+
+      updater.update_database(this);
     }
   }
 }

@@ -36,11 +36,11 @@ namespace Venom {
 
     public signal void leave_view();
 
-    private ILogger logger;
+    private Logger logger;
     private Contact contact;
     private FriendInfoWidgetListener listener;
 
-    public FriendInfoViewModel(ILogger logger, FriendInfoWidgetListener listener, Contact contact) {
+    public FriendInfoViewModel(Logger logger, FriendInfoWidgetListener listener, Contact contact) {
       logger.d("FriendInfoViewModel created.");
       this.logger = logger;
       this.contact = contact;
@@ -95,6 +95,7 @@ namespace Venom {
         contact.auto_location = "";
       }
       contact._show_notifications = show_notifications;
+      listener.on_apply_friend_settings(contact);
       contact.changed();
     }
 
@@ -119,5 +120,6 @@ namespace Venom {
 
   public interface FriendInfoWidgetListener : GLib.Object {
     public abstract void on_remove_friend(IContact contact) throws Error;
+    public abstract void on_apply_friend_settings(IContact contact);
   }
 }

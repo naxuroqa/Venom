@@ -1,7 +1,7 @@
 /*
  *    DatabaseInterfaces.vala
  *
- *    Copyright (C) 2017  Venom authors and contributors
+ *    Copyright (C) 2017-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public interface ISettingsDatabase : Object {
+  public interface ISettingsDatabase : GLib.Object {
     public abstract bool   enable_dark_theme           { get; set; }
     public abstract bool   enable_animations           { get; set; }
     public abstract bool   enable_logging              { get; set; }
@@ -28,9 +28,7 @@ namespace Venom {
     public abstract bool   enable_tray                 { get; set; }
     public abstract bool   enable_tray_minimize        { get; set; }
     public abstract bool   enable_notify               { get; set; }
-    public abstract bool   enable_infinite_log         { get; set; }
     public abstract bool   enable_send_typing          { get; set; }
-    public abstract int    days_to_log                 { get; set; }
     public abstract bool   enable_proxy                { get; set; }
     public abstract bool   enable_custom_proxy         { get; set; }
     public abstract string custom_proxy_host           { get; set; }
@@ -48,36 +46,45 @@ namespace Venom {
     public abstract void save();
   }
 
-  public interface IDhtNodeDatabase : Object {
-    public abstract void insertDhtNode(string key, string address, uint port, bool isBlocked, string owner, string location);
-    public abstract List<IDhtNode> getDhtNodes(IDhtNodeFactory factory);
-    public abstract void deleteDhtNode(string key);
+  public interface Specification : GLib.Object {}
+
+  public interface DhtNodeRepository : GLib.Object {
+    public abstract void create(DhtNode node);
+    public abstract void read(DhtNode node);
+    public abstract void update(DhtNode node);
+    public abstract void delete (DhtNode node);
+    public abstract Gee.Iterable<DhtNode> query_all();
   }
 
-  public interface IDhtNodeFactory : Object {
-    public abstract IDhtNode createDhtNode(string key, string address, uint port, bool blocked, string owner, string location);
+  public interface MessageRepository : GLib.Object {
+    public abstract void create(Message message);
+    public abstract void update(Message message);
+    public abstract Gee.Iterable<Message> query_all_for_contact(IContact contact);
   }
 
-  public interface ILoggedMessage : Object {}
-
-  public interface ILoggedMessageFactory : Object {
-    public abstract ILoggedMessage createLoggedMessage(string userId, string contactId, string message, DateTime time, bool outgoing);
+  public interface FriendRequestRepository : GLib.Object {
+    public abstract void create(FriendRequest friend_request);
+    public abstract void delete (FriendRequest friend_request);
+    public abstract Gee.Iterable<FriendRequest> query_all();
   }
 
-  public interface IMessageDatabase : Object {
-    public abstract void insertMessage(string userId, string contactId, string message, DateTime time, bool outgoing);
-    public abstract List<ILoggedMessage> retrieveMessages(string userId, string contactId, ILoggedMessageFactory messageFactory);
-    public abstract void deleteMessagesBefore(DateTime date);
+  public interface ContactRepository : GLib.Object {
+    public abstract void create(IContact contact);
+    public abstract void read(IContact contact);
+    public abstract void update(IContact contact);
+    public abstract void delete (IContact contact);
   }
 
-  public interface IContactDatabase : Object {
-    public abstract void loadContactData(string userId, IContactData contactData);
-    public abstract void saveContactData(string userId, string note, string alias, bool isBlocked, string group);
-    public abstract void deleteContactData(string userId);
+  public class Nospam : GLib.Object {
+    public int id { get; set; }
+    public int nospam { get; set; }
+    public DateTime timestamp { get; set; }
   }
 
-  public interface IContactData : Object {
-    public abstract void saveContactData(string note, string alias, bool isBlocked, string group);
+  public interface NospamRepository : GLib.Object {
+    public abstract void create(Nospam friend_request);
+    public abstract void delete (Nospam friend_request);
+    public abstract Gee.Iterable<Nospam> query_all();
   }
 
   public errordomain DatabaseStatementError {
@@ -89,7 +96,8 @@ namespace Venom {
 
   public errordomain DatabaseError {
     OPEN,
-    QUERY
+    QUERY,
+    EXEC
   }
 
   public enum DatabaseResult {
@@ -101,10 +109,10 @@ namespace Venom {
     OTHER
   }
 
-  public interface IDatabase : Object {
+  public interface Database : GLib.Object {
   }
 
-  public interface IDatabaseStatement : Object {
+  public interface DatabaseStatement : GLib.Object {
     public abstract DatabaseResult step() throws DatabaseStatementError;
     public abstract void bind_text(string key, string val) throws DatabaseStatementError;
     public abstract void bind_int64(string key, int64 val) throws DatabaseStatementError;
@@ -115,29 +123,31 @@ namespace Venom {
     public abstract int column_int(int key) throws DatabaseStatementError;
     public abstract bool column_bool(int key) throws DatabaseStatementError;
     public abstract void reset();
-    public abstract IDatabaseStatementBuilder builder();
+    public abstract DatabaseStatementBuilder builder();
   }
 
-  public interface IDatabaseStatementBuilder : Object {
-    public abstract IDatabaseStatementBuilder step() throws DatabaseStatementError;
-    public abstract IDatabaseStatementBuilder bind_text(string key, string val) throws DatabaseStatementError;
-    public abstract IDatabaseStatementBuilder bind_int64(string key, int64 val) throws DatabaseStatementError;
-    public abstract IDatabaseStatementBuilder bind_int(string key, int val) throws DatabaseStatementError;
-    public abstract IDatabaseStatementBuilder bind_bool(string key, bool val) throws DatabaseStatementError;
-    public abstract IDatabaseStatementBuilder reset();
+  public interface DatabaseStatementBuilder : GLib.Object {
+    public abstract DatabaseStatementBuilder step() throws DatabaseStatementError;
+    public abstract DatabaseStatementBuilder bind_text(string key, string val) throws DatabaseStatementError;
+    public abstract DatabaseStatementBuilder bind_int64(string key, int64 val) throws DatabaseStatementError;
+    public abstract DatabaseStatementBuilder bind_int(string key, int val) throws DatabaseStatementError;
+    public abstract DatabaseStatementBuilder bind_bool(string key, bool val) throws DatabaseStatementError;
+    public abstract DatabaseStatementBuilder reset();
   }
 
-  public interface IDatabaseFactory : Object {
-    public abstract IDatabase createDatabase(string path) throws DatabaseError;
-    public abstract IDatabaseStatementFactory createStatementFactory(IDatabase database);
+  public interface DatabaseFactory : GLib.Object {
+    public abstract Database create_database(string path, string key) throws DatabaseError;
+    public abstract DatabaseStatementFactory create_statement_factory(Database database);
 
-    public abstract IDhtNodeDatabase createNodeDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError;
-    public abstract IContactDatabase createContactDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError;
-    public abstract IMessageDatabase createMessageDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError;
-    public abstract ISettingsDatabase createSettingsDatabase(IDatabaseStatementFactory factory, ILogger logger) throws DatabaseStatementError;
+    public abstract DhtNodeRepository create_node_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError;
+    public abstract ContactRepository create_contact_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError;
+    public abstract MessageRepository create_message_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError;
+    public abstract ISettingsDatabase create_settings_database(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError;
+    public abstract FriendRequestRepository create_friend_request_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError;
+    public abstract NospamRepository create_nospam_repository(DatabaseStatementFactory factory, Logger logger) throws DatabaseStatementError;
   }
 
-  public interface IDatabaseStatementFactory : Object {
-    public abstract IDatabaseStatement createStatement(string zSql) throws DatabaseStatementError;
+  public interface DatabaseStatementFactory : GLib.Object {
+    public abstract DatabaseStatement create_statement(string zSql) throws DatabaseStatementError;
   }
 }

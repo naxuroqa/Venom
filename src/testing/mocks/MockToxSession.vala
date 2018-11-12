@@ -63,6 +63,12 @@ namespace Mock {
                      .create();
       mock().actual_call(this, "self_set_user_status", args);
     }
+    public void self_set_nospam(uint32 nospam) {
+      var args = Arguments.builder()
+                     .uint(nospam)
+                     .create();
+      mock().actual_call(this, "self_set_nospam", args);
+    }
     public UserStatus self_get_user_status() {
       return (UserStatus) mock().actual_call(this, "self_get_user_status").get_int();
     }
@@ -105,6 +111,9 @@ namespace Mock {
     public void friend_add_norequest(uint8[] address) throws ToxError {
       mock().actual_call(this, "friend_add_norequest").get_throws();
     }
+    public uint32 friend_add_norequest_direct(uint8[] address) throws ToxError {
+      return mock().actual_call(this, "friend_add_norequest_direct").get_int();
+    }
     public void friend_delete(uint32 friend_number) throws ToxError {
       var args = Arguments.builder()
                      .uint(friend_number)
@@ -117,6 +126,13 @@ namespace Mock {
                      .string(message)
                      .create();
       mock().actual_call(this, "friend_send_message", args).get_throws();
+    }
+    public uint32 friend_send_message_direct(uint32 friend_number, string message) throws ToxError {
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .string(message)
+                     .create();
+      return mock().actual_call(this, "friend_send_message_direct", args).get_int();
     }
     public string friend_get_name(uint32 friend_number) throws ToxError {
       var args = Arguments.builder()

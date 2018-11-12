@@ -23,12 +23,11 @@ namespace Venom {
   [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/settings_widget.ui")]
   public class SettingsWidget : Gtk.Box {
     private ISettingsDatabase settingsDatabase;
-    private IDhtNodeDatabase nodeDatabase;
-    private ILogger logger;
+    private DhtNodeRepository node_repository;
+    private Logger logger;
 
     [GtkChild] private Gtk.Stack stack;
     [GtkChild] private Gtk.ListBox sidebar;
-    [GtkChild] private Gtk.ListBox node_list_box;
 
     [GtkChild] private Gtk.Switch enable_dark_theme;
     [GtkChild] private Gtk.Switch enable_animations;
@@ -47,9 +46,6 @@ namespace Venom {
     [GtkChild] private Gtk.Switch enable_show_typing;
 
     [GtkChild] private Gtk.Switch keep_history;
-    [GtkChild] private Gtk.Revealer history_revealer;
-    [GtkChild] private Gtk.RadioButton history_keep_radio;
-    [GtkChild] private Gtk.SpinButton history_delete_spinbutton;
 
     [GtkChild] private Gtk.Switch enable_udp;
     [GtkChild] private Gtk.Switch enable_ipv6;
@@ -63,15 +59,18 @@ namespace Venom {
     [GtkChild] private Gtk.Entry custom_proxy_host;
     [GtkChild] private Gtk.SpinButton custom_proxy_port;
 
+    [GtkChild] private Gtk.ListBox node_list_box;
+    [GtkChild] private Gtk.Button update_nodes;
+
     private ObservableList dht_nodes;
     private ObservableListModel list_model;
     private StackIndexTransform stack_transform;
 
-    public SettingsWidget(ILogger logger, ApplicationWindow? app_window, ISettingsDatabase settingsDatabase, IDhtNodeDatabase nodeDatabase) {
+    public SettingsWidget(Logger logger, ApplicationWindow? app_window, ISettingsDatabase settingsDatabase, DhtNodeRepository node_repository) {
       logger.d("SettingsWidget created.");
       this.logger = logger;
       this.settingsDatabase = settingsDatabase;
-      this.nodeDatabase = nodeDatabase;
+      this.node_repository = node_repository;
 
       if (app_window != null) {
         app_window.reset_header_bar();
@@ -98,10 +97,7 @@ namespace Venom {
 
       settingsDatabase.bind_property("enable-send-typing", enable_show_typing, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
-      settingsDatabase.bind_property("enable-logging",      keep_history,              "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-      settingsDatabase.bind_property("enable-logging",      history_revealer,          "reveal-child", BindingFlags.SYNC_CREATE);
-      settingsDatabase.bind_property("enable-infinite-log", history_keep_radio,        "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-      settingsDatabase.bind_property("days-to-log",         history_delete_spinbutton, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+      settingsDatabase.bind_property("enable-logging", keep_history, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
       settingsDatabase.bind_property("enable-udp",             enable_udp,             "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("enable-ipv6",            enable_ipv6,            "active",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
@@ -115,33 +111,49 @@ namespace Venom {
       settingsDatabase.bind_property("custom-proxy-host",   custom_proxy_host,     "text",   BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settingsDatabase.bind_property("custom-proxy-port",   custom_proxy_port,     "value",  BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
-      var dhtNodeFactory = new DhtNodeFactory();
+      update_nodes.clicked.connect(update_nodes_from_web);
+
       dht_nodes = new ObservableList();
-      dht_nodes.set_list(nodeDatabase.getDhtNodes(dhtNodeFactory));
-      list_model = new ObservableListModel(dht_nodes);
-      var creator = new SettingsDhtNodeCreator(logger, this);
-      node_list_box.bind_model(list_model, creator.create_dht_node);
+      reset_node_list();
     }
 
     ~SettingsWidget() {
       logger.d("SettingsWidget destroyed.");
     }
 
-    public void on_node_changed(IDhtNode node) {
+    private void update_nodes_from_web() {
+      logger.d("update_nodes_from_web");
+      var updater = new JsonWebDhtNodeUpdater(logger);
+      foreach (var node in updater.get_dht_nodes()) {
+        node_repository.create(node);
+      }
+      reset_node_list();
+    }
+
+    private void reset_node_list() {
+      dht_nodes.set_collection(node_repository.query_all().order_by((a, b) => {
+          return strcmp(a.location, b.location);
+        }));
+      list_model = new ObservableListModel(dht_nodes);
+      var creator = new SettingsDhtNodeCreator(logger, this);
+      node_list_box.bind_model(list_model, creator.create_dht_node);
+    }
+
+    public void on_node_changed(DhtNode node) {
       logger.d("on_node_changed");
-      nodeDatabase.insertDhtNode(node.pub_key, node.host, node.port, node.is_blocked, node.maintainer, node.location);
+      node_repository.update(node);
     }
 
     private class SettingsDhtNodeCreator {
-      private unowned ILogger logger;
+      private unowned Logger logger;
       private unowned SettingsWidget settings_widget;
-      public SettingsDhtNodeCreator(ILogger logger, SettingsWidget settings_widget) {
+      public SettingsDhtNodeCreator(Logger logger, SettingsWidget settings_widget) {
         this.logger = logger;
         this.settings_widget = settings_widget;
       }
 
       public Gtk.Widget create_dht_node(GLib.Object o) {
-        var node = o as IDhtNode;
+        var node = o as DhtNode;
         var widget = new NodeWidget(logger, node);
         widget.node_changed.connect(settings_widget.on_node_changed);
         return widget;

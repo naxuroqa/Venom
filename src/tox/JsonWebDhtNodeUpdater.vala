@@ -1,7 +1,7 @@
 /*
  *    JsonWebDhtNodeDatabase.vala
  *
- *    Copyright (C) 2017  Venom authors and contributors
+ *    Copyright (C) 2017-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -20,28 +20,14 @@
  */
 
 namespace Venom {
-  public class JsonDhtNode : GLib.Object {
-    public string ipv4 { get; set; }
-    public string ipv6 { get; set; }
-    public int port { get; set; }
-    //public int[] tcp_ports { get; set; }
-    public string public_key { get; set; }
-    public string maintainer { get; set; }
-    public string location { get; set; }
-    public bool status_udp { get; set; }
-    public bool status_tcp { get; set; }
-    public string version { get; set; }
-    public string motd { get; set; }
-    public int last_ping { get; set; }
-  }
-
-  public class JsonWebDhtNodeDatabase : IDhtNodeDatabase, GLib.Object {
-    private ILogger logger;
-    public JsonWebDhtNodeDatabase(ILogger logger) {
+  public class JsonWebDhtNodeUpdater : GLib.Object {
+    private Logger logger;
+    public JsonWebDhtNodeUpdater(Logger logger) {
       this.logger = logger;
     }
-    public List<IDhtNode> getDhtNodes(IDhtNodeFactory factory) {
-      var dhtNodes = new List<IDhtNode>();
+
+    public Gee.Iterable<DhtNode> get_dht_nodes() {
+      var dht_nodes = new Gee.LinkedList<DhtNode>();
 
       var uri = "https://nodes.tox.chat/json";
 
@@ -60,21 +46,38 @@ namespace Venom {
         foreach (var node in nodes.get_elements()) {
           var json_node = Json.gobject_deserialize(typeof(JsonDhtNode), node) as JsonDhtNode;
           if (json_node.ipv4 != "-") {
-            dhtNodes.append(factory.createDhtNode(json_node.public_key, json_node.ipv4, json_node.port, false, json_node.maintainer, json_node.location));
+            var dht_node = new DhtNode.with_params(json_node.public_key, json_node.ipv4, json_node.port, false, json_node.maintainer, json_node.location);
+            dht_nodes.add(dht_node);
+          }
+          if (json_node.ipv6 != "-") {
+            var dht_node = new DhtNode.with_params(json_node.public_key, json_node.ipv6, json_node.port, false, json_node.maintainer, json_node.location);
+            dht_nodes.add(dht_node);
           }
           //FIXME allow multiple addresses per pubkey in node database
           // if (json_node.ipv6 != "-") {
-          //   dhtNodes.append(factory.createDhtNode(json_node.public_key, json_node.ipv6, json_node.port, false, json_node.maintainer, json_node.location));
+          //   dht_nodes.append(factory.createDhtNode(json_node.public_key, json_node.ipv6, json_node.port, false, json_node.maintainer, json_node.location));
           // }
 
         }
       } catch (Error e) {
         logger.e("Failed to load dht nodes from uri: " + e.message);
       }
-      return dhtNodes;
+      return dht_nodes;
     }
 
-    public void insertDhtNode(string key, string address, uint port, bool isBlocked, string owner, string location) {}
-    public void deleteDhtNode(string key) {}
+    private class JsonDhtNode : GLib.Object {
+      public string ipv4 { get; set; }
+      public string ipv6 { get; set; }
+      public int port { get; set; }
+      //public int[] tcp_ports { get; set; }
+      public string public_key { get; set; }
+      public string maintainer { get; set; }
+      public string location { get; set; }
+      public bool status_udp { get; set; }
+      public bool status_tcp { get; set; }
+      public string version { get; set; }
+      public string motd { get; set; }
+      public int last_ping { get; set; }
+    }
   }
 }

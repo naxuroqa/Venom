@@ -28,9 +28,7 @@ namespace Venom {
     public bool   enable_tray                 { get; set; default = false; }
     public bool   enable_tray_minimize        { get; set; default = false; }
     public bool   enable_notify               { get; set; default = false; }
-    public bool   enable_infinite_log         { get; set; default = true; }
     public bool   enable_send_typing          { get; set; default = false; }
-    public int    days_to_log                 { get; set; default = 180; }
     public bool   enable_proxy                { get; set; default = true; }
     public bool   enable_custom_proxy         { get; set; default = false; }
     public string custom_proxy_host           { get; set; default = "localhost"; }
@@ -68,21 +66,21 @@ namespace Venom {
 
     private static string STATEMENT_SELECT_SETTINGS = "SELECT * FROM Settings WHERE id = (%s)".printf(TABLE_ID);
 
-    private IDatabaseStatement insertStatement;
-    private IDatabaseStatement selectStatement;
+    private DatabaseStatement insertStatement;
+    private DatabaseStatement selectStatement;
 
-    private ILogger logger;
+    private Logger logger;
 
-    public SqliteSettingsDatabase(IDatabaseStatementFactory statementFactory, ILogger logger) throws DatabaseStatementError {
+    public SqliteSettingsDatabase(DatabaseStatementFactory statementFactory, Logger logger) throws DatabaseStatementError {
 
       this.logger = logger;
 
       statementFactory
-          .createStatement(CREATE_TABLE_SETTINGS)
+          .create_statement(CREATE_TABLE_SETTINGS)
           .step();
 
-      insertStatement = statementFactory.createStatement(STATEMENT_INSERT_SETTINGS);
-      selectStatement = statementFactory.createStatement(STATEMENT_SELECT_SETTINGS);
+      insertStatement = statementFactory.create_statement(STATEMENT_INSERT_SETTINGS);
+      selectStatement = statementFactory.create_statement(STATEMENT_SELECT_SETTINGS);
       logger.d("SqliteSettingsDatabase created.");
     }
 

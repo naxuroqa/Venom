@@ -20,6 +20,12 @@
  */
 
 namespace Venom {
+  public enum UserStatus {
+    NONE,
+    AWAY,
+    BUSY
+  }
+
   public interface UserInfo : GLib.Object {
     public signal void info_changed();
 
@@ -40,12 +46,12 @@ namespace Venom {
       hash = new GLib.Bytes(new uint8[] {});
     }
 
-    public void set_from_pixbuf(ILogger logger, Gdk.Pixbuf pixbuf) {
+    public void set_from_pixbuf(Logger logger, Gdk.Pixbuf pixbuf) {
       this.hash = new GLib.Bytes(new uint8[] {});
       this.pixbuf = pixbuf;
     }
 
-    public void set_from_data(ILogger logger, uint8[] data, Gdk.Pixbuf? pixbuf = null) throws Error {
+    public void set_from_data(Logger logger, uint8[] data, Gdk.Pixbuf? pixbuf = null) throws Error {
       this.hash = new GLib.Bytes(ToxCore.Tox.hash(data));
       if (pixbuf != null) {
         this.pixbuf = pixbuf;

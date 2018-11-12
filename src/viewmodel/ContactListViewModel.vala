@@ -21,7 +21,7 @@
 
 namespace Venom {
   public class ContactListViewModel : GLib.Object {
-    private ILogger logger;
+    private Logger logger;
     private ContactListWidgetCallback callback;
     private UserInfo user_info;
     private ObservableList contacts;
@@ -40,7 +40,7 @@ namespace Venom {
     public bool conference_invite_visible { get; set; }
     public string conference_invite_label { get; set; }
 
-    public ContactListViewModel(ILogger logger, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info) {
+    public ContactListViewModel(Logger logger, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info) {
       logger.d("ContactListViewModel created.");
       this.logger = logger;
       this.contacts = contacts;

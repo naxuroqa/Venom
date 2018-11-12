@@ -1,7 +1,7 @@
 /*
- *    MessageDbMock.vala
+ *    GlobalSettings.vala
  *
- *    Copyright (C) 2017 Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -19,21 +19,17 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Venom;
+namespace Venom {
+  public class GlobalSettings : GLib.Object {
+    public string last_used_profile { get; set; default = ""; }
+    public bool auto_login { get; set; default = false; }
 
-namespace Mock {
-  public class MockLoggedMessageFactory : ILoggedMessageFactory, Object {
-    public ILoggedMessage createLoggedMessage(string userId, string contactId, string message, DateTime time, bool outgoing) {
-      var args = Arguments.builder()
-                     .string(userId)
-                     .string(contactId)
-                     .string(message)
-                     .bool(outgoing)
-                     .create();
-      return (ILoggedMessage) mock().actual_call(this, "createLoggedMessage", args).get_object();
+    public static string serialize(GlobalSettings settings) throws Error {
+      return Json.gobject_to_data(settings, null);
     }
-  }
 
-  public class MockLoggedMessage : ILoggedMessage, Object {
+    public static GlobalSettings deserialize(string data) throws Error {
+      return Json.gobject_from_data(typeof(GlobalSettings), data) as GlobalSettings;
+    }
   }
 }

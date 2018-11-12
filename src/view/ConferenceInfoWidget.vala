@@ -32,11 +32,11 @@ namespace Venom {
     [GtkChild] private Gtk.Box notifications_box;
     [GtkChild] private Gtk.Revealer notifications_notice;
 
-    private ILogger logger;
+    private Logger logger;
     private ConferenceInfoViewModel view_model;
     private unowned ApplicationWindow app_window;
 
-    public ConferenceInfoWidget(ILogger logger, ApplicationWindow app_window, ConferenceInfoWidgetListener listener, IContact contact, ISettingsDatabase settings_database) {
+    public ConferenceInfoWidget(Logger logger, ApplicationWindow app_window, ConferenceInfoWidgetListener listener, IContact contact, ISettingsDatabase settings_database) {
       logger.d("ConferenceInfoWidget created.");
       this.logger = logger;
       this.app_window = app_window;
@@ -71,8 +71,8 @@ namespace Venom {
     }
 
     private class ConferencePeerWidgetCreator {
-      private unowned ILogger logger;
-      public ConferencePeerWidgetCreator(ILogger logger) {
+      private unowned Logger logger;
+      public ConferencePeerWidgetCreator(Logger logger) {
         this.logger = logger;
       }
       public Gtk.Widget create_peer_widget(Object o) {

@@ -11,7 +11,7 @@ gee_dep = dependency('gee-0.8')
 gspell_dep = dependency('gspell-1')
 canberra_dep = dependency('libcanberra')
 gmodule_dep = dependency('gmodule-2.0')
-sqlite_dep = dependency('sqlite3')
+sqlcipher_dep = dependency('sqlcipher')
 json_dep = dependency('json-glib-1.0')
 soup_dep = dependency('libsoup-2.4')
 tox_dep = dependency('toxcore')
@@ -39,12 +39,13 @@ venom_source = files(
 			'core/Contact.vala',
 			'core/FileIO.vala',
 			'core/FileTransfer.vala',
+			'core/GlobalSettings.vala',
 			'core/Identicon.vala',
-			'core/Interfaces.vala',
 			'core/Logger.vala',
 			'core/Message.vala',
 			'core/NotificationListener.vala',
 			'core/ObservableList.vala',
+			'core/Profile.vala',
 			'core/R.vala',
 			'core/TimeStamp.vala',
 			'core/Tools.vala',
@@ -60,20 +61,22 @@ venom_source = files(
 			'portal/Screenshot.vala',
 			'tox/Conference.vala',
 			'tox/ConferenceMessage.vala',
-			'tox/ContactDatabase.vala',
 			'tox/DhtNode.vala',
-			'tox/DhtNodeDatabase.vala',
 			'tox/FriendRequest.vala',
-			'tox/JsonWebDhtNodeDatabase.vala',
-			'tox/MessageDatabase.vala',
-			'tox/SqliteDhtNodeDatabase.vala',
+			'tox/JsonWebDhtNodeUpdater.vala',
+			'tox/SqliteContactRepository.vala',
+			'tox/SqliteDhtNodeRepository.vala',
+			'tox/SqliteFriendRequestRepository.vala',
+			'tox/SqliteMessageRepository.vala',
+			'tox/SqliteNospamRepository.vala',
+			'tox/StaticDhtNodeUpdater.vala',
 			'tox/ToxAdapterConferenceListener.vala',
 			'tox/ToxAdapterFriendListener.vala',
 			'tox/ToxAdapterFiletransferListener.vala',
 			'tox/ToxAdapterSelfListener.vala',
 			'tox/ToxContact.vala',
+			'tox/ToxMessage.vala',
 			'tox/ToxSession.vala',
-			'tox/ToxSessionIO.vala',
 			'tox/ToxSessionThread.vala',
 			'undo/SimpleUndoStack.vala',
 			'undo/TextBufferUndoBinding.vala',
@@ -97,8 +100,11 @@ venom_source = files(
 			'view/FileTransferWidget.vala',
 			'view/FriendInfoWidget.vala',
 			'view/FriendRequestWidget.vala',
+			'view/InAppNotification.vala',
+			'view/LoginWidget.vala',
 			'view/MessageWidget.vala',
 			'view/NodeWidget.vala',
+			'view/NospamEntry.vala',
 			'view/PeerEntry.vala',
 			'view/SettingsWidget.vala',
 			'view/UserInfoWidget.vala',
@@ -114,7 +120,7 @@ venom_source = files(
 			'viewmodel/UserInfoViewModel.vala'
 			)
 
-venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlite_dep, json_dep, tox_dep, config_dep, soup_dep, posix_dep, gspell_dep, canberra_dep]
+venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlcipher_dep, json_dep, tox_dep, config_dep, soup_dep, posix_dep, gspell_dep, canberra_dep]
 
 venom_lib = static_library('venom', [venom_source, venom_ui_resources, venom_icons_resources],
 			dependencies : venom_deps

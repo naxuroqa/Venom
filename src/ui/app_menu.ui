@@ -35,6 +35,10 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
         <attribute name="action">app.about</attribute>
       </item>
       <item>
+        <attribute name="label" translatable="yes">Logout</attribute>
+        <attribute name="action">app.logout</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">_Quit</attribute>
         <attribute name="action">app.quit</attribute>
       </item>

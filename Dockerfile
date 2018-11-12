@@ -11,7 +11,7 @@ RUN \
     libopus-dev \
     libsodium-dev \
     libsoup2.4-dev \
-    libsqlite3-dev \
+    libsqlcipher-dev \
     libvpx-dev \
     libgee-0.8-dev \
     libgspell-1-dev \

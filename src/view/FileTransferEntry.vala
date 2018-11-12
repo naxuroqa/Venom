@@ -30,11 +30,11 @@ namespace Venom {
     [GtkChild] private Gtk.Button stop_transfer;
     [GtkChild] private Gtk.Button remove_transfer;
 
-    private ILogger logger;
+    private Logger logger;
     private FileTransferEntryViewModel view_model;
     private FileTransferExternalCommands external_commands;
 
-    public FileTransferEntry(ILogger logger, FileTransfer file_transfer, FileTransferEntryListener listener) {
+    public FileTransferEntry(Logger logger, FileTransfer file_transfer, FileTransferEntryListener listener) {
       logger.d("FileTransferEntry created.");
 
       this.logger = logger;
@@ -65,8 +65,8 @@ namespace Venom {
   }
 
   public class FileTransferExternalCommands : GLib.Object {
-    private ILogger logger;
-    public FileTransferExternalCommands(ILogger logger) {
+    private Logger logger;
+    public FileTransferExternalCommands(Logger logger) {
       this.logger = logger;
     }
 

@@ -143,6 +143,46 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                       <object class="GtkImage">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="icon_name">network-wired-symbolic</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Bootstrap nodes</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkListBoxRow">
+                <property name="width_request">200</property>
+                <property name="height_request">50</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">6</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="icon_name">network-server-symbolic</property>
                       </object>
                       <packing>
@@ -630,6 +670,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                       <object class="GtkRevealer" id="notify_revealer">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
+                                        <property name="transition_type">slide-up</property>
                                         <property name="reveal_child">True</property>
                                         <child>
                                           <object class="GtkListBox" id="listbox2">
@@ -857,6 +898,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                       <object class="GtkRevealer" id="tray_revealer">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
+                                        <property name="transition_type">slide-up</property>
                                         <property name="reveal_child">True</property>
                                         <child>
                                           <object class="GtkListBox" id="listbox5">
@@ -1073,6 +1115,75 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                             </child>
                                           </object>
                                         </child>
+                                        <child>
+                                          <object class="GtkListBoxRow">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="border_width">6</property>
+                                                <property name="spacing">6</property>
+                                                <child>
+                                                  <object class="GtkBox">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="orientation">vertical</property>
+                                                    <child>
+                                                      <object class="GtkLabel">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <property name="label" translatable="yes">Keep History</property>
+                                                        <property name="xalign">0</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <property name="label" translatable="yes">&lt;small&gt;Store your sent and received messages&lt;/small&gt;</property>
+                                                        <property name="use_markup">True</property>
+                                                        <property name="xalign">0</property>
+                                                        <style>
+                                                          <class name="dim-label"/>
+                                                        </style>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSwitch" id="keep_history">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="valign">center</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="pack_type">end</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
                                         <style>
                                           <class name="frame"/>
                                           <class name="separated"/>
@@ -1082,222 +1193,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                         <property name="expand">False</property>
                                         <property name="fill">True</property>
                                         <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkFlowBoxChild">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <child>
-                                  <object class="GtkBox">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="orientation">vertical</property>
-                                    <property name="spacing">6</property>
-                                    <child>
-                                      <object class="GtkBox">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="spacing">6</property>
-                                        <child>
-                                          <object class="GtkImage">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="icon_name">system-search-symbolic</property>
-                                          </object>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">True</property>
-                                            <property name="position">0</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="label" translatable="yes">History</property>
-                                            <attributes>
-                                              <attribute name="weight" value="bold"/>
-                                            </attributes>
-                                          </object>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">True</property>
-                                            <property name="position">1</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <object class="GtkSwitch" id="keep_history">
-                                            <property name="visible">True</property>
-                                            <property name="sensitive">False</property>
-                                            <property name="can_focus">True</property>
-                                          </object>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">True</property>
-                                            <property name="pack_type">end</property>
-                                            <property name="position">2</property>
-                                          </packing>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkRevealer" id="history_revealer">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="reveal_child">True</property>
-                                        <child>
-                                          <object class="GtkListBox" id="listbox4">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="selection_mode">none</property>
-                                            <child>
-                                              <object class="GtkListBoxRow">
-                                                <property name="visible">True</property>
-                                                <property name="can_focus">True</property>
-                                                <child>
-                                                  <object class="GtkBox">
-                                                    <property name="visible">True</property>
-                                                    <property name="can_focus">False</property>
-                                                    <property name="border_width">6</property>
-                                                    <property name="orientation">vertical</property>
-                                                    <child>
-                                                      <object class="GtkRadioButton" id="history_keep_radio">
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">True</property>
-                                                        <property name="receives_default">False</property>
-                                                        <property name="draw_indicator">True</property>
-                                                        <property name="group">history_delete_radio</property>
-                                                        <child>
-                                                          <object class="GtkLabel">
-                                                            <property name="visible">True</property>
-                                                            <property name="can_focus">False</property>
-                                                            <property name="label" translatable="yes">Keep forever</property>
-                                                            <property name="xalign">0</property>
-                                                          </object>
-                                                        </child>
-                                                      </object>
-                                                      <packing>
-                                                        <property name="expand">False</property>
-                                                        <property name="fill">True</property>
-                                                        <property name="position">0</property>
-                                                      </packing>
-                                                    </child>
-                                                  </object>
-                                                </child>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkListBoxRow">
-                                                <property name="visible">True</property>
-                                                <property name="can_focus">True</property>
-                                                <child>
-                                                  <object class="GtkBox" id="history_delete_box">
-                                                    <property name="visible">True</property>
-                                                    <property name="can_focus">False</property>
-                                                    <property name="border_width">6</property>
-                                                    <property name="spacing">6</property>
-                                                    <child>
-                                                      <object class="GtkRadioButton" id="history_delete_radio">
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">True</property>
-                                                        <property name="receives_default">False</property>
-                                                        <property name="active">True</property>
-                                                        <property name="draw_indicator">True</property>
-                                                        <child>
-                                                          <object class="GtkLabel">
-                                                            <property name="visible">True</property>
-                                                            <property name="can_focus">False</property>
-                                                            <property name="label" translatable="yes">Remove older than</property>
-                                                            <property name="xalign">0</property>
-                                                          </object>
-                                                        </child>
-                                                      </object>
-                                                      <packing>
-                                                        <property name="expand">False</property>
-                                                        <property name="fill">True</property>
-                                                        <property name="position">0</property>
-                                                      </packing>
-                                                    </child>
-                                                    <child>
-                                                      <object class="GtkSpinButton" id="history_delete_spinbutton">
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">True</property>
-                                                        <property name="width_chars">5</property>
-                                                        <property name="text">180</property>
-                                                        <property name="input_purpose">digits</property>
-                                                        <property name="adjustment">history_delete_adjustment</property>
-                                                        <property name="snap_to_ticks">True</property>
-                                                        <property name="numeric">True</property>
-                                                        <property name="update_policy">if-valid</property>
-                                                        <property name="value">180</property>
-                                                      </object>
-                                                      <packing>
-                                                        <property name="expand">False</property>
-                                                        <property name="fill">True</property>
-                                                        <property name="position">1</property>
-                                                      </packing>
-                                                    </child>
-                                                    <child>
-                                                      <object class="GtkLabel" id="history_delete_label">
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">False</property>
-                                                        <property name="label" translatable="yes">days</property>
-                                                      </object>
-                                                      <packing>
-                                                        <property name="expand">False</property>
-                                                        <property name="fill">True</property>
-                                                        <property name="position">2</property>
-                                                      </packing>
-                                                    </child>
-                                                  </object>
-                                                </child>
-                                              </object>
-                                            </child>
-                                            <style>
-                                              <class name="frame"/>
-                                              <class name="separated"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkButton" id="clear_history">
-                                        <property name="visible">True</property>
-                                        <property name="sensitive">False</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="receives_default">True</property>
-                                        <property name="tooltip_text" translatable="yes">Delete all previous conversations</property>
-                                        <child>
-                                          <object class="GtkImage">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="icon_name">user-trash-symbolic</property>
-                                          </object>
-                                        </child>
-                                        <style>
-                                          <class name="destructive-action"/>
-                                        </style>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">2</property>
                                       </packing>
                                     </child>
                                   </object>
@@ -1693,18 +1588,97 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                 <property name="position">1</property>
                               </packing>
                             </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="name">page1</property>
+                <property name="title">page1</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <child>
+                  <object class="GtkViewport">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">6</property>
+                    <property name="shadow_type">none</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">6</property>
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="spacing">6</property>
                                 <child>
-                                  <object class="GtkButton">
+                                  <object class="GtkButton" id="update_nodes">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Update bootstrap nodes</property>
-                                    <property name="action_name">app.update-nodes</property>
                                     <child>
                                       <object class="GtkImage">
                                         <property name="visible">True</property>
@@ -1753,7 +1727,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">True</property>
-                                <property name="position">2</property>
+                                <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
@@ -1771,7 +1745,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">True</property>
-                                <property name="position">3</property>
+                                <property name="position">1</property>
                               </packing>
                             </child>
                           </object>
@@ -1808,9 +1782,9 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 </child>
               </object>
               <packing>
-                <property name="name">page1</property>
-                <property name="title">page1</property>
-                <property name="position">1</property>
+                <property name="name">page2</property>
+                <property name="title">page2</property>
+                <property name="position">2</property>
               </packing>
             </child>
             <child>
@@ -1908,6 +1882,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                               <object class="GtkRevealer" id="proxy_revealer">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="transition_type">slide-up</property>
                                 <property name="reveal_child">True</property>
                                 <child>
                                   <object class="GtkListBox">
@@ -2048,6 +2023,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                               <object class="GtkRevealer" id="proxy_manual_revealer">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
+                                                <property name="transition_type">slide-up</property>
                                                 <child>
                                                   <object class="GtkBox">
                                                     <property name="visible">True</property>
@@ -2058,7 +2034,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                                       <object class="GtkBox">
                                                         <property name="visible">True</property>
                                                         <property name="can_focus">False</property>
-                                                        <property name="spacing">6</property>
                                                         <child>
                                                           <object class="GtkEntry" id="custom_proxy_host">
                                                             <property name="visible">True</property>
@@ -2092,6 +2067,9 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                                             <property name="position">1</property>
                                                           </packing>
                                                         </child>
+                                                        <style>
+                                                          <class name="linked"/>
+                                                        </style>
                                                       </object>
                                                       <packing>
                                                         <property name="expand">False</property>
@@ -2176,9 +2154,9 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 </child>
               </object>
               <packing>
-                <property name="name">page2</property>
-                <property name="title">page2</property>
-                <property name="position">2</property>
+                <property name="name">page3</property>
+                <property name="title">page3</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </object>
@@ -2201,7 +2179,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
       <widget name="listbox1"/>
       <widget name="listbox2"/>
       <widget name="listbox3"/>
-      <widget name="listbox4"/>
       <widget name="listbox5"/>
     </widgets>
   </object>

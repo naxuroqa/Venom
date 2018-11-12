@@ -1,7 +1,7 @@
 /*
  *    ApplicationWindow.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -25,6 +25,7 @@ namespace Venom {
 
     private const GLib.ActionEntry win_entries[] =
     {
+      { "activate",     on_status_icon_activate },
       { "add_contact",  on_add_contact },
       { "copy_id",      on_copy_id },
       { "filetransfer", on_filetransfer },
@@ -45,11 +46,21 @@ namespace Venom {
     [GtkChild] public Gtk.Box header_start;
     [GtkChild] public Gtk.Box header_end;
 
-    private unowned Factory.IWidgetFactory widget_factory;
-    private ILogger logger;
+    [GtkChild] private Gtk.Revealer notification_revealer;
+    [GtkChild] private Gtk.Button notification_dismiss;
+    [GtkChild] private Gtk.Button notification_action;
+    [GtkChild] private Gtk.Label notification_action_message;
+    [GtkChild] private Gtk.Label notification_message;
+
+    private unowned Factory.WidgetFactory widget_factory;
+    private Logger logger;
     private ISettingsDatabase settings_database;
-    private IContactDatabase contact_database;
-    private IDhtNodeDatabase node_database;
+    private ContactRepository contact_repository;
+    private DhtNodeRepository node_repository;
+    private NospamRepository nospam_repository;
+    private MessageRepository message_repository;
+    private FriendRequestRepository friend_request_repository;
+    private Profile profile;
     private ToxSession session;
     private ToxAdapterFriendListenerImpl friend_listener;
     private ToxAdapterConferenceListenerImpl conference_listener;
@@ -58,6 +69,7 @@ namespace Venom {
     private NotificationListener notification_listener;
     private WindowState window_state;
     private unowned ContactListViewModel contact_list_view_model;
+    private InAppNotification in_app_notification;
 
     private ObservableList contacts;
     private ObservableList transfers;
@@ -67,39 +79,54 @@ namespace Venom {
     private GLib.HashTable<IContact, ObservableList> conversations;
     private UserInfo user_info;
 
-    public ApplicationWindow(Gtk.Application application, Factory.IWidgetFactory widget_factory, ToxSession session,
-                             IDhtNodeDatabase node_database, ISettingsDatabase settings_database, IContactDatabase contact_database) {
+    public ApplicationWindow(Gtk.Application application, Factory.WidgetFactory widget_factory, ToxSession session, Profile profile,
+                             NospamRepository nospam_repository, FriendRequestRepository friend_request_repository,
+                             MessageRepository message_repository, DhtNodeRepository node_repository,
+                             ISettingsDatabase settings_database, ContactRepository contact_repository) {
       Object(application: application);
 
       conversations = new GLib.HashTable<IContact, ObservableList>(null, null);
       user_info = new UserInfoImpl();
 
       this.widget_factory = widget_factory;
-      this.logger = widget_factory.createLogger();
+      this.logger = widget_factory.create_logger();
+      this.profile = profile;
       logger.attach_to_glib();
 
-      this.node_database = node_database;
+      this.node_repository = node_repository;
       this.settings_database = settings_database;
-      this.contact_database = contact_database;
+      this.contact_repository = contact_repository;
+      this.friend_request_repository = friend_request_repository;
+      this.nospam_repository = nospam_repository;
+      this.message_repository = message_repository;
 
       contacts = new ObservableList();
       contacts.set_list(new GLib.List<IContact>());
       transfers = new ObservableList();
       transfers.set_list(new GLib.List<FileTransfer>());
       friend_requests = new ObservableList();
-      friend_requests.set_list(new GLib.List<FriendRequest>());
+      friend_requests.set_collection(friend_request_repository.query_all());
       conference_invites = new ObservableList();
       conference_invites.set_list(new GLib.List<ConferenceInvite>());
 
       notification_listener = new NotificationListenerImpl(logger);
       notification_listener.clear_notifications();
 
+      in_app_notification = new InAppNotification(notification_revealer, notification_dismiss,
+        notification_action, notification_action_message, notification_message);
+
+      init_dht_nodes();
+
+      ((SqliteMessageRepository) message_repository).set_contacts(session.get_friends());
+
       session_listener = new ToxAdapterSelfListenerImpl(logger, user_info);
-      friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, contacts, friend_requests, conversations, notification_listener);
+      friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, message_repository, friend_request_repository,
+        contact_repository, contacts, friend_requests, conversations, notification_listener, in_app_notification);
       conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conference_invites, conversations, notification_listener);
       filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, conversations, notification_listener);
 
       settings_database.bind_property("enable-send-typing", friend_listener, "show-typing", BindingFlags.SYNC_CREATE);
+      settings_database.bind_property("enable-logging", friend_listener, "enable-logging", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-notification-sounds", notification_listener, "play-sound-notifications", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-tray", status_icon, "visible", BindingFlags.SYNC_CREATE);
 
@@ -120,6 +147,7 @@ namespace Venom {
       filetransfer_listener.attach_to_session(session);
 
       status_icon.activate.connect(on_status_icon_activate);
+      status_icon.popup_menu.connect(on_status_icon_popup_menu);
       delete_event.connect(on_delete_event);
       focus_in_event.connect(on_focus_in_event);
       window_state_event.connect(on_window_state_event);
@@ -128,12 +156,62 @@ namespace Venom {
 
       show_welcome();
 
+      Gtk.AccelMap.load(profile.accelsfile);
+
       logger.d("ApplicationWindow created.");
     }
 
     ~ApplicationWindow() {
       logger.d("ApplicationWindow destroyed.");
+
+      Gtk.AccelMap.save(profile.accelsfile);
       save_window_state();
+    }
+
+    private void add_nodes_to_repository(Gee.Iterable<DhtNode> nodes) {
+      foreach (var node in nodes) {
+        node_repository.create(node);
+      }
+    }
+
+    private void init_dht_nodes() {
+      var dht_nodes = node_repository.query_all();
+      if (!dht_nodes.iterator().next()) {
+        logger.i("DHT Node database empty, populating from web...");
+        add_nodes_to_repository((new StaticDhtNodeUpdater()).get_dht_nodes());
+        add_nodes_to_repository((new JsonWebDhtNodeUpdater(logger)).get_dht_nodes());
+
+        if (!node_repository.query_all().iterator().next()) {
+          logger.e("Node initialisation from web database failed.");
+        }
+      }
+    }
+
+    private void on_status_icon_popup_menu() {
+      logger.d("on_status_icon_popup_menu");
+
+      var menu = new GLib.Menu();
+      menu.append(is_active ? _("Hide") : _("Show"), "win.activate");
+
+      var submenu = new GLib.Menu();
+      submenu.append(_("Online"), "win.change_userstatus('online')");
+      submenu.append(_("Away"), "win.change_userstatus('away')");
+      submenu.append(_("Busy"), "win.change_userstatus('busy')");
+      menu.append_submenu(_("Status"), submenu);
+
+      var misc_section = new GLib.Menu();
+      misc_section.append(_("Preferences"), "app.preferences");
+      misc_section.append(_("About"), "app.about");
+      menu.append_section(null, misc_section);
+
+      var quit_section = new GLib.Menu();
+      quit_section.append(_("Logout"), "app.logout");
+      quit_section.append(_("Quit"), "app.quit");
+      menu.append_section(null, quit_section);
+
+      var shell = new Gtk.Menu.from_model(menu);
+      shell.attach_to_widget(this, null);
+      shell.popup_at_pointer();
     }
 
     private void on_status_icon_activate() {
@@ -173,7 +251,7 @@ namespace Venom {
 
     private void init_window_state() {
       try {
-        var window_state_string = FileIO.load_contents_text(R.constants.window_state_filename());
+        var window_state_string = FileIO.load_contents_text(profile.windowstatefile);
         window_state = WindowState.deserialize(window_state_string);
       } catch (Error e) {
         logger.i("Loading window state failed: " + e.message);
@@ -196,18 +274,13 @@ namespace Venom {
     private void save_window_state() {
       try {
         var data = WindowState.serialize(window_state);
-        FileIO.save_contents_text(R.constants.window_state_filename(), data);
+        FileIO.save_contents_text(profile.windowstatefile, data);
       } catch (Error e) {
         logger.e("Saving window state failed: " + e.message);
       }
     }
 
     private void init_widgets() {
-      var screen = Gdk.Screen.get_default();
-      var css_provider = new Gtk.CssProvider();
-      css_provider.load_from_resource("/com/github/naxuroqa/venom/css/custom.css");
-      Gtk.StyleContext.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-
       var gtk_settings = Gtk.Settings.get_default();
       settings_database.bind_property("enable-dark-theme", gtk_settings, "gtk-application-prefer-dark-theme", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
       settings_database.bind_property("enable-animations", gtk_settings, "gtk-enable-animations", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
@@ -243,10 +316,10 @@ namespace Venom {
       logger.d("ApplicationWindow on_contact_selected");
       if (contact is Contact) {
         var conv = conversations.@get(contact);
-        switch_content_with(() => { return new ConversationWindow(this, logger, conv, contact, settings_database, friend_listener, filetransfer_listener, filetransfer_listener); });
+        switch_content_with(() => { return new ConversationWindow(this, logger, conv, contact, user_info, settings_database, friend_listener, filetransfer_listener, filetransfer_listener); });
       } else if (contact is Conference) {
         var conv = conversations.@get(contact);
-        switch_content_with(() => { return new ConferenceWindow(this, logger, conv, contact, settings_database, conference_listener); });
+        switch_content_with(() => { return new ConferenceWindow(this, logger, conv, contact, user_info, settings_database, conference_listener); });
       }
     }
 
@@ -255,7 +328,7 @@ namespace Venom {
     }
 
     public void show_settings() {
-      switch_content_with(() => { return widget_factory.createSettingsWidget(this, settings_database, node_database); });
+      switch_content_with(() => { return widget_factory.create_settings_widget(this, settings_database, node_repository); });
     }
 
     public void show_welcome() {
@@ -263,7 +336,7 @@ namespace Venom {
     }
 
     private void on_show_user() {
-      switch_content_with(() => { return new UserInfoWidget(logger, this, user_info, session_listener); });
+      switch_content_with(() => { return new UserInfoWidget(logger, this, nospam_repository, user_info, session_listener); });
     }
 
     public void on_create_groupchat() {
@@ -280,6 +353,9 @@ namespace Venom {
 
     public void on_show_conference(IContact contact) {
       switch_content_with(() => { return new ConferenceInfoWidget(logger, this, conference_listener, contact, settings_database); });
+    }
+    public void on_add_contact() {
+      switch_content_with(() => { return new AddContactWidget(logger, this, friend_requests, friend_listener, friend_listener); });
     }
 
     private IContact ? find_contact(string contact_id) {
@@ -306,9 +382,10 @@ namespace Venom {
       logger.d(@"on_mute_contact($contact_id)");
       var c = find_contact(contact_id);
       if (c != null && c is Contact) {
-        (c as Contact)._show_notifications = false;
+        ((Contact)c)._show_notifications = false;
+        friend_listener.on_apply_friend_settings(c);
       } else if (c != null && c is Conference) {
-        (c as Conference)._show_notifications = false;
+        ((Conference)c)._show_notifications = false;
       } else {
         logger.e(@"Friend with id $contact_id not found.");
       }
@@ -410,14 +487,6 @@ namespace Venom {
       }
     }
 
-    public void on_add_contact() {
-      logger.d("on_add_contact()");
-      switch_content_with(() => {
-        var widget = new AddContactWidget(logger, this, friend_requests, friend_listener, friend_listener);
-        return widget;
-      });
-    }
-
     private void on_copy_id() {
       logger.d("on_copy_id()");
       var clipboard = Gtk.Clipboard.@get(Gdk.SELECTION_CLIPBOARD);
@@ -426,11 +495,10 @@ namespace Venom {
     }
 
     private void switch_content_with(owned WidgetProvider widget_provider) {
-      {
-        var previous = content_bin.get_child();
-        if (previous != null) {
-          previous.destroy();
-        }
+      var previous = content_bin.get_child();
+      if (previous != null) {
+        previous.destroy();
+        previous = null;
       }
 
       var current = widget_provider();

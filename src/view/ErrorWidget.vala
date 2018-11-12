@@ -21,16 +21,26 @@
 
 namespace Venom {
   [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/error_widget.ui")]
-  public class ErrorWidget : Gtk.Box {
+  public class ErrorWidget : Gtk.ApplicationWindow {
     [GtkChild] private Gtk.Stack stack;
     [GtkChild] private Gtk.Label message;
     [GtkChild] private Gtk.Button retry;
+    [GtkChild] private Gtk.TextView log_view;
 
     public signal void on_retry();
 
-    public ErrorWidget(Gtk.ApplicationWindow application_window, string error_message) {
+    private Logger logger;
+
+    public ErrorWidget(Gtk.Application application, Logger logger, string error_message) {
+      Object(application: application);
+
+      this.logger = logger;
       message.label = error_message;
       retry.clicked.connect(() => { on_retry(); });
+
+      Gtk.TextIter iter;
+      log_view.buffer.get_start_iter(out iter);
+      log_view.buffer.insert_markup(ref iter, logger.get_log(), -1);
     }
 
     public void add_page(Gtk.Widget widget, string name, string title) {
@@ -38,6 +48,7 @@ namespace Venom {
       scrolled_window.get_style_context().add_class("frame");
       scrolled_window.add(widget);
       stack.add_titled(scrolled_window, name, title);
+      scrolled_window.show_all();
     }
   }
 }

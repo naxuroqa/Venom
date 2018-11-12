@@ -22,7 +22,7 @@
 namespace Venom {
   public class ToxAdapterConferenceListenerImpl : ToxAdapterConferenceListener, ConferenceInviteEntryListener, ConferenceWidgetListener, ConferenceInfoWidgetListener, CreateGroupchatWidgetListener, GLib.Object {
     private unowned ToxSession session;
-    private ILogger logger;
+    private Logger logger;
     private ObservableList contacts;
     private ObservableList conference_invites;
     private NotificationListener notification_listener;
@@ -31,7 +31,7 @@ namespace Venom {
     private GLib.HashTable<uint32, IContact> conferences;
     private unowned GLib.HashTable<uint32, IContact> friends;
 
-    public ToxAdapterConferenceListenerImpl(ILogger logger, ObservableList contacts, ObservableList conference_invites, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
+    public ToxAdapterConferenceListenerImpl(Logger logger, ObservableList contacts, ObservableList conference_invites, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
       logger.d("ToxAdapterConferenceListenerImpl created.");
       this.logger = logger;
       this.contacts = contacts;
@@ -139,7 +139,7 @@ namespace Venom {
       contacts.append(contact);
       conferences.@set(conference_number, contact);
       var conversation = new ObservableList();
-      conversation.set_list(new GLib.List<IMessage>());
+      conversation.set_list(new GLib.List<Message>());
       conversations.@set(contact, conversation);
     }
 
@@ -199,7 +199,7 @@ namespace Venom {
       var contact = conferences.@get(conference_number) as Conference;
       var conversation = conversations.@get(contact);
       var msg = new ConferenceMessage.outgoing(contact, message);
-      msg.received = true;
+      msg.state = TransmissionState.RECEIVED;
       conversation.append(msg);
     }
   }

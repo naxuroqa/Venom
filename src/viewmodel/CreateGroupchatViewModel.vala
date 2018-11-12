@@ -31,12 +31,12 @@ namespace Venom {
 
     public signal void leave_view();
 
-    private ILogger logger;
+    private Logger logger;
     private ObservableList conference_invites;
     private CreateGroupchatWidgetListener listener;
     ConferenceInviteEntryListener entry_listener;
 
-    public CreateGroupchatViewModel(ILogger logger, ObservableList conference_invites, CreateGroupchatWidgetListener listener, ConferenceInviteEntryListener entry_listener) {
+    public CreateGroupchatViewModel(Logger logger, ObservableList conference_invites, CreateGroupchatWidgetListener listener, ConferenceInviteEntryListener entry_listener) {
       logger.d("CreateGroupchatViewModel created.");
       this.logger = logger;
       this.listener = listener;

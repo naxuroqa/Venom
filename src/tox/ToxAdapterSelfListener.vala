@@ -22,12 +22,12 @@
 namespace Venom {
   public class ToxAdapterSelfListenerImpl : ToxAdapterSelfListener, UserInfoViewListener, GLib.Object {
     private unowned ToxSession session;
-    private ILogger logger;
+    private Logger logger;
     private UserInfo user_info;
     private GLib.File avatar_file;
     private GLib.Cancellable avatar_cancellable;
 
-    public ToxAdapterSelfListenerImpl(ILogger logger, UserInfo user_info) {
+    public ToxAdapterSelfListenerImpl(Logger logger, UserInfo user_info) {
       logger.d("ToxAdapterSelfListenerImpl created.");
       this.logger = logger;
       this.user_info = user_info;
@@ -69,6 +69,12 @@ namespace Venom {
     public virtual void set_self_status_message(string status_message) throws GLib.Error {
       session.self_set_status_message(status_message);
       user_info.status_message = status_message;
+      user_info.info_changed();
+    }
+
+    public virtual void set_self_nospam(int nospam) throws GLib.Error {
+      session.self_set_nospam((uint32) nospam);
+      user_info.tox_id = Tools.bin_to_hexstring(session.self_get_address());
       user_info.info_changed();
     }
 

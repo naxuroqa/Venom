@@ -45,21 +45,23 @@ namespace Venom {
     };
 
     private unowned ApplicationWindow app_window;
-    private ILogger logger;
+    private Logger logger;
     private ObservableList conversation;
     private ConversationWidgetListener listener;
     private ConversationWidgetFiletransferListener filetransfer_listener;
     private bool is_typing;
     private IContact contact;
+    private UserInfo user_info;
     private TextViewEventHandler text_view_event_handler;
     private AdjustmentAutoScroller auto_scroller;
     private Cancellable cancellable;
     private Undo.TextBufferUndoBinding text_buffer_undo_binding;
 
     public ConversationWindow(ApplicationWindow app_window,
-                              ILogger logger,
+                              Logger logger,
                               ObservableList conversation,
                               IContact contact,
+                              UserInfo user_info,
                               ISettingsDatabase settings,
                               ConversationWidgetListener listener,
                               ConversationWidgetFiletransferListener filetransfer_listener,
@@ -68,6 +70,7 @@ namespace Venom {
       this.logger = logger;
       this.conversation = conversation;
       this.contact = contact;
+      this.user_info = user_info;
       this.listener = listener;
       this.filetransfer_listener = filetransfer_listener;
       this.cancellable = new Cancellable();
@@ -95,7 +98,7 @@ namespace Venom {
       update_widgets();
 
       var model = new LazyObservableListModel(logger, conversation, cancellable);
-      var creator = new MessageWidgetCreator(logger, settings, file_transfer_entry_listener);
+      var creator = new MessageWidgetCreator(logger, user_info, settings, file_transfer_entry_listener);
       message_list.bind_model(model, creator.create_message);
       message_list.set_placeholder(placeholder);
 
@@ -302,18 +305,20 @@ namespace Venom {
   }
 
   public class MessageWidgetCreator {
-    private unowned ILogger logger;
+    private unowned Logger logger;
+    private UserInfo user_info;
     private ISettingsDatabase settings;
     private FileTransferEntryListener? file_transfer_entry_listener;
-    public MessageWidgetCreator(ILogger logger, ISettingsDatabase settings, FileTransferEntryListener? file_transfer_entry_listener) {
+    public MessageWidgetCreator(Logger logger, UserInfo user_info, ISettingsDatabase settings, FileTransferEntryListener? file_transfer_entry_listener) {
       this.logger = logger;
+      this.user_info = user_info;
       this.settings = settings;
       this.file_transfer_entry_listener = file_transfer_entry_listener;
     }
 
     public Gtk.Widget create_message(GLib.Object object) {
-      if (object is IMessage) {
-        return new MessageWidget(logger, (IMessage) object, settings);
+      if (object is Message) {
+        return new MessageWidget(logger, (Message) object, user_info, settings);
       } else if (file_transfer_entry_listener != null && object is FileTransfer) {
         return new FileTransferEntryInline(logger, (FileTransfer) object, file_transfer_entry_listener);
       } else {

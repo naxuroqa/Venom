@@ -34,11 +34,12 @@ namespace Venom {
       }
     }
 
-    public void set_collection(Gee.Collection<GLib.Object> collection) {
-      this.list.clear();
-      foreach (var item in collection) {
-        this.list.add(item);
-      }
+    public void set_collection(Gee.Traversable<GLib.Object> iterable) {
+      list.clear();
+      iterable.@foreach((item) => {
+        list.add(item);
+        return true;
+      });
     }
 
     public void append(GLib.Object item) {
@@ -57,6 +58,10 @@ namespace Venom {
 
     public uint length() {
       return list.size;
+    }
+
+    public Gee.Iterable<GLib.Object> get_all() {
+      return list;
     }
 
     public uint index(GLib.Object item) {
@@ -103,10 +108,10 @@ namespace Venom {
 
   public class LazyObservableListModel : ObservableListModel {
     private const int NUM_ENTRIES_PER_ITERATION = 10;
-    protected ILogger logger;
+    protected Logger logger;
     private uint index = 0;
     private bool initialized = false;
-    public LazyObservableListModel(ILogger logger, ObservableList list, Cancellable? cancellable = null) {
+    public LazyObservableListModel(Logger logger, ObservableList list, Cancellable? cancellable = null) {
       base(list);
       this.logger = logger;
       initialize.begin(cancellable);
@@ -134,6 +139,7 @@ namespace Venom {
     protected override void on_added(GLib.Object item, uint index) {
       if (!initialized) {
         // ignore while not initialized
+        stderr.printf("not initialized, dropping....\n");
         return;
       }
       items_changed(index, 0, 1);

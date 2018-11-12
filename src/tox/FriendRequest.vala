@@ -1,7 +1,7 @@
 /*
  *    FriendRequest.vala
  *
- *    Copyright (C) 2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -21,9 +21,13 @@
 
 namespace Venom {
   public class FriendRequest : GLib.Object {
+    public int db_id { get; set; }
     public string id { get; set; }
     public string message { get; set; }
     public DateTime timestamp { get; set; }
+
+    public FriendRequest.empty() {
+    }
 
     public FriendRequest(string id, string message) {
       this.id = id;

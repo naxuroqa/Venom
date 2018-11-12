@@ -1,7 +1,7 @@
 /*
  *    FriendRequestWidget.vala
  *
- *    Copyright (C) 2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -22,7 +22,7 @@
 namespace Venom {
   [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/friend_request_widget.ui")]
   public class FriendRequestWidget : Gtk.ListBoxRow {
-    private ILogger logger;
+    private Logger logger;
     private FriendRequest friend_request;
     private FriendRequestWidgetListener listener;
 
@@ -34,17 +34,18 @@ namespace Venom {
     [GtkChild] private Gtk.Button accept;
     [GtkChild] private Gtk.Button reject;
 
-    public FriendRequestWidget(ILogger logger, FriendRequest friend_request, FriendRequestWidgetListener listener) {
+    public FriendRequestWidget(Logger logger, FriendRequest friend_request, FriendRequestWidgetListener listener) {
       logger.d("FriendRequestWidget created.");
       this.logger = logger;
       this.friend_request = friend_request;
       this.listener = listener;
 
       contact_id.label = friend_request.id;
-      contact_message.label = friend_request.message;
+      contact_message.label = _("“%s”").printf(friend_request.message);
       contact_time.label = TimeStamp.get_pretty_timestamp(friend_request.timestamp);
+      contact_time.tooltip_text = friend_request.timestamp.format("%c");
       var pub_key = Tools.hexstring_to_bin(friend_request.id);
-      contact_image.pixbuf = round_corners(Identicon.generate_pixbuf(pub_key).scale_simple(44, 44, Gdk.InterpType.BILINEAR));
+      contact_image.pixbuf = round_corners(Identicon.generate_pixbuf(pub_key, 40));
 
       accept.clicked.connect(on_accept_clicked);
       reject.clicked.connect(on_reject_clicked);
