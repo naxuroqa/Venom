@@ -74,6 +74,8 @@ namespace Venom {
     public sealed class ConstantsResource {
       public string downloads_dir { get; set; default = GLib.Environment.get_user_special_dir(GLib.UserDirectory.DOWNLOAD); }
       public string default_profile_dir() { return GLib.Path.build_filename(GLib.Environment.get_user_data_dir(), "tox"); }
+      public string default_global_dir() { return GLib.Path.build_filename(GLib.Environment.get_user_config_dir(), "tox"); }
+      public string default_global_settings() { return GLib.Path.build_filename(default_global_dir(), "venom.json"); }
       public string avatars_folder() { return GLib.Path.build_filename(GLib.Environment.get_user_config_dir(), "tox", "avatars"); }
       public string icons_prefix() { return "/com/github/naxuroqa/venom/icons/scalable/status/"; }
       public string icons_suffix() { return ".svg"; }

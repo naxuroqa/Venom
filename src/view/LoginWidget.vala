@@ -25,10 +25,13 @@ namespace Venom {
     private Logger logger;
     private ContextStyleBinding accounts_arrow_binding;
     private Profile selected_profile;
+    private GlobalSettings global_settings;
 
     [GtkChild] private Gtk.Widget login_page;
     [GtkChild] private Gtk.Button login_button;
     [GtkChild] private Gtk.Entry login_password_entry;
+    [GtkChild] private Gtk.Switch login_automatically_switch;
+
     [GtkChild] private Gtk.ToggleButton accounts_toggle;
     [GtkChild] private Gtk.Revealer accounts_revealer;
     [GtkChild] private Gtk.Image accounts_arrow;
@@ -53,17 +56,28 @@ namespace Venom {
     [GtkChild] private Gtk.Widget create_page;
     [GtkChild] private Gtk.Button create_button;
 
-    public LoginWidget(Gtk.Application application, Logger logger) {
+    public LoginWidget(Gtk.Application application, GlobalSettings global_settings, Logger logger) {
       Object(application: application);
       logger.d("LoginWidget created.");
       this.logger = logger;
+      this.global_settings = global_settings;
 
       var path = R.constants.default_profile_dir();
       var profiles = Profile.scan_profiles(logger, path);
-      update_profiles_list(profiles);
       var it = profiles.iterator();
       if (it.next()) {
-        set_selected_profile(it.@get());
+        var profile_to_select = it.@get();
+        if (global_settings.last_used_profile.length > 0 && profile_to_select.name != global_settings.last_used_profile) {
+          while(it.next()) {
+            var prof = it.@get();
+            if (prof.name == global_settings.last_used_profile) {
+              profile_to_select = prof;
+              break;
+            }
+          }
+        }
+        set_selected_profile(profile_to_select);
+        update_profiles_list(profiles);
       } else {
         login_page.visible = false;
       }
@@ -115,12 +129,10 @@ namespace Venom {
 
     private void update_profiles_list(Gee.Iterable<Profile> profiles) {
       profiles_listbox.foreach ((element) => profiles_listbox.remove(element));
-      var first = true;
       foreach (var profile in profiles) {
         var row = new ProfileEntry(logger, profile);
         profiles_listbox.add(row);
-        if (first) {
-          first = false;
+        if (selected_profile == profile) {
           profiles_listbox.select_row(row);
         }
       }
@@ -140,7 +152,12 @@ namespace Venom {
       try {
         if (selected_profile.is_encrypted) {
           selected_profile.load(login_password_entry.text);
+          global_settings.auto_login = false;
+        } else {
+          global_settings.auto_login = login_automatically_switch.active;
         }
+
+        global_settings.last_used_profile = selected_profile.name;
 
         var app = GLib.Application.get_default() as Application;
         app.try_show_main_window(selected_profile);
@@ -199,6 +216,9 @@ namespace Venom {
       if (is_create_username_valid() && is_create_password_valid() && is_create_password_repeat_valid()) {
         try {
           var profile = Profile.create(R.constants.default_profile_dir(), create_username.text, create_password.text);
+
+          global_settings.last_used_profile = profile.name;
+          global_settings.auto_login = false;
 
           var app = GLib.Application.get_default() as Application;
           app.try_show_main_window(profile);

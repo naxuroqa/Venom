@@ -127,6 +127,11 @@ namespace Venom {
       return data;
     }
 
+    public bool is_sane() {
+      var baseprof = GLib.Path.build_filename(dir, name);
+      return exists(baseprof + ".tox") && exists(baseprof + ".db");
+    }
+
     public static Profile create(string path, string username, string password) throws Error {
       var profile = new Profile(path, username);
 
