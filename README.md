@@ -8,6 +8,7 @@
 Features
 --------
 
+* Encrypted profiles
 * Secure, private messaging
 * Read receipts
 * Contact aliases
@@ -42,7 +43,7 @@ Dependencies
 * `libgee >= 0.20`
 * `libsoup-2.4`
 * `gspell >= 1.8`
-* `sqlite3`
+* `sqlcipher`
 * `toxcore >= 0.2`
 
 Build-Dependencies
