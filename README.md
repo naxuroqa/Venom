@@ -11,6 +11,10 @@
 
 ###### a modern [Tox](https://github.com/TokTok/c-toxcore) client for the GNU/Linux desktop
 
+![screenshot1](.github/screenshots/screenshot1.png)
+
+![screenshot2](.github/screenshots/screenshot2.png)
+
 Features
 --------
 
