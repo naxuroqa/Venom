@@ -28,7 +28,7 @@ public class TestToxAdapterFiletransferListener : UnitTest {
   private Logger logger;
   private NotificationListener notification_listener;
   private ToxSession session;
-  private ToxAdapterFiletransferListenerImpl listener;
+  private DefaultToxFiletransferAdapter listener;
   private FileTransfer transfer;
   private GLib.HashTable<IContact, ObservableList> conversations;
   private IContact contact;
@@ -50,7 +50,7 @@ public class TestToxAdapterFiletransferListener : UnitTest {
     conversations = new GLib.HashTable<IContact, ObservableList>(null, null);
     contact = new MockContact();
 
-    listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, conversations, notification_listener);
+    listener = new DefaultToxFiletransferAdapter(logger, transfers, conversations, notification_listener);
   }
 
   private void test_init() throws Error {

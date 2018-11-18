@@ -87,7 +87,7 @@ namespace Venom {
     public void on_set_nospam_clicked() {
       logger.d("UserInfoViewModel on_set_nospam_clicked.");
       int new_nospam = nospam_str_to_int(tox_nospam);
-      int current_nospam =  nospam_str_to_int(get_current_nospam());
+      int current_nospam = nospam_str_to_int(get_current_nospam());
 
       var nospam = new Nospam();
       nospam.nospam = current_nospam;
@@ -165,6 +165,11 @@ namespace Venom {
       } catch (GLib.Error e) {
         logger.e("UserInfoViewModel can not read file: " + e.message);
       }
+    }
+
+    public void set_pixbuf(Gdk.Pixbuf pixbuf) {
+      avatar_change = AvatarChange.NEW;
+      avatar = pixbuf.scale_simple(120, 120, Gdk.InterpType.BILINEAR);
     }
 
     public void set_file(GLib.File file) {

@@ -28,6 +28,7 @@ namespace Venom {
     [GtkChild] private Gtk.Label label_id;
     [GtkChild] private Gtk.Button reset_avatar;
     [GtkChild] private Gtk.FileChooserButton filechooser;
+    [GtkChild] private Gtk.Button take_picture;
     [GtkChild] private Gtk.FlowBox avatars;
     [GtkChild] private Gtk.Button apply;
 
@@ -44,6 +45,7 @@ namespace Venom {
     private ObservableListModel nospams_model;
     private ContextStyleBinding toggle_arrow_binding;
     private NospamRepository nospam_repository;
+    private PhotoboothWindow? photobooth;
 
     public UserInfoWidget(Logger logger, ApplicationWindow app_window, NospamRepository nospam_repository, UserInfo user_info, UserInfoViewListener listener) {
       logger.d("UserInfoWidget created.");
@@ -86,6 +88,41 @@ namespace Venom {
       filechooser.file_set.connect(on_file_set);
       reset_avatar.clicked.connect(on_file_reset);
       apply.clicked.connect(view_model.on_apply_clicked);
+
+#if ENABLE_GSTREAMER
+      take_picture.clicked.connect(start_photobooth);
+#else
+      take_picture.sensitive = false;
+#endif
+    }
+
+    ~UserInfoWidget() {
+      destroy_photobooth();
+      logger.d("UserInfoWidget destroyed.");
+    }
+
+    private void destroy_photobooth() {
+      if (photobooth != null) {
+        photobooth.destroy();
+        photobooth = null;
+      }
+    }
+
+    private void on_photo(Gdk.Pixbuf photo) {
+      view_model.set_pixbuf(photo);
+      avatars.unselect_all();
+      destroy_photobooth();
+    }
+
+    private void start_photobooth() {
+      if (photobooth == null) {
+        photobooth = new PhotoboothWindow();
+        photobooth.title = _("Take a picture");
+        photobooth.destroy.connect(destroy_photobooth);
+        photobooth.new_photo.connect(on_photo);
+      }
+      photobooth.show_all();
+      photobooth.present();
     }
 
     private void reset_nospam_model() {
@@ -112,10 +149,6 @@ namespace Venom {
       view_model.reset_file();
       filechooser.unselect_all();
       avatars.unselect_all();
-    }
-
-    ~UserInfoWidget() {
-      logger.d("UserInfoWidget destroyed.");
     }
 
     private class NospamEntryCreator {

@@ -62,10 +62,10 @@ namespace Venom {
     private FriendRequestRepository friend_request_repository;
     private Profile profile;
     private ToxSession session;
-    private ToxAdapterFriendListenerImpl friend_listener;
-    private ToxAdapterConferenceListenerImpl conference_listener;
-    private ToxAdapterFiletransferListenerImpl filetransfer_listener;
-    private ToxAdapterSelfListenerImpl session_listener;
+    private DefaultToxFriendAdapter friend_listener;
+    private DefaultToxConferenceAdapter conference_listener;
+    private DefaultToxFiletransferAdapter filetransfer_listener;
+    private DefaultToxSelfAdapter session_listener;
     private NotificationListener notification_listener;
     private WindowState window_state;
     private unowned ContactListViewModel contact_list_view_model;
@@ -119,11 +119,11 @@ namespace Venom {
 
       ((SqliteMessageRepository) message_repository).set_contacts(session.get_friends());
 
-      session_listener = new ToxAdapterSelfListenerImpl(logger, user_info);
-      friend_listener = new ToxAdapterFriendListenerImpl(logger, user_info, message_repository, friend_request_repository,
+      session_listener = new DefaultToxSelfAdapter(logger, user_info);
+      friend_listener = new DefaultToxFriendAdapter(logger, user_info, message_repository, friend_request_repository,
         contact_repository, contacts, friend_requests, conversations, notification_listener, in_app_notification);
-      conference_listener = new ToxAdapterConferenceListenerImpl(logger, contacts, conference_invites, conversations, notification_listener);
-      filetransfer_listener = new ToxAdapterFiletransferListenerImpl(logger, transfers, conversations, notification_listener);
+      conference_listener = new DefaultToxConferenceAdapter(logger, contacts, conference_invites, conversations, notification_listener);
+      filetransfer_listener = new DefaultToxFiletransferAdapter(logger, transfers, conversations, notification_listener);
 
       settings_database.bind_property("enable-send-typing", friend_listener, "show-typing", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-logging", friend_listener, "enable-logging", BindingFlags.SYNC_CREATE);

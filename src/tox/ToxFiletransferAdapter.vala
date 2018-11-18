@@ -1,5 +1,5 @@
 /*
- *    ToxAdapterFiletransferListener.vala
+ *    ToxFiletransferAdapter.vala
  *
  *    Copyright (C) 2018 Venom authors and contributors
  *
@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class ToxAdapterFiletransferListenerImpl : ToxAdapterFiletransferListener, FileTransferEntryListener, ConversationWidgetFiletransferListener, GLib.Object {
+  public class DefaultToxFiletransferAdapter : ToxFiletransferAdapter, FileTransferEntryListener, ConversationWidgetFiletransferListener, GLib.Object {
     private const int MAX_AVATAR_SIZE = 64 * 1024;
 
     private unowned ToxSession session;
@@ -33,8 +33,8 @@ namespace Venom {
 
     private ObservableList transfers;
 
-    public ToxAdapterFiletransferListenerImpl(Logger logger, ObservableList transfers, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
-      logger.d("ToxAdapterFiletransferListenerImpl created.");
+    public DefaultToxFiletransferAdapter(Logger logger, ObservableList transfers, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
+      logger.d("DefaultToxFiletransferAdapter created.");
       this.logger = logger;
       this.transfers = transfers;
       this.conversations = conversations;
@@ -43,8 +43,8 @@ namespace Venom {
       file_transfers = new Gee.HashMap<uint32, Gee.Map<uint32, FileTransfer> >();
     }
 
-    ~ToxAdapterFiletransferListenerImpl() {
-      logger.d("ToxAdapterFiletransferListenerImpl destroyed.");
+    ~DefaultToxFiletransferAdapter() {
+      logger.d("DefaultToxFiletransferAdapter destroyed.");
     }
 
     public virtual void attach_to_session(ToxSession session) {

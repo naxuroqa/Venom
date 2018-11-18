@@ -55,6 +55,7 @@ Dependencies
 * `gspell >= 1.8`
 * `sqlcipher`
 * `toxcore >= 0.2`
+* `libstreamer1.0 >= 1.14`
 
 Build-Dependencies
 ------------------

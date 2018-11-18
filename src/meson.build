@@ -21,6 +21,9 @@ posix_dep = valac.find_library('posix', required : false)
 if (posix_dep.found())
 			add_project_arguments(['-D', 'ENABLE_POSIX'], language: 'vala')
 endif
+if (gst_dep.found())
+			add_project_arguments(['-D', 'ENABLE_GSTREAMER'], language: 'vala')
+endif
 
 config_vapi = valac.find_library('config', dirs: vapi_dir)
 config_dep = declare_dependency(dependencies: [config_vapi], include_directories : include_directories('.'))
@@ -35,6 +38,9 @@ venom_icons_resources = gnome.compile_resources('venom_icons_resources', 'icons/
 			c_name : 'c_venom_icons_res')
 
 venom_source = files(
+			'av/CropWidget.vala',
+			'av/Photobooth.vala',
+			'av/PhotoboothWindow.vala',
 			'core/Application.vala',
 			'core/Contact.vala',
 			'core/FileIO.vala',
@@ -70,10 +76,10 @@ venom_source = files(
 			'tox/SqliteMessageRepository.vala',
 			'tox/SqliteNospamRepository.vala',
 			'tox/StaticDhtNodeUpdater.vala',
-			'tox/ToxAdapterConferenceListener.vala',
-			'tox/ToxAdapterFriendListener.vala',
-			'tox/ToxAdapterFiletransferListener.vala',
-			'tox/ToxAdapterSelfListener.vala',
+			'tox/ToxConferenceAdapter.vala',
+			'tox/ToxFriendAdapter.vala',
+			'tox/ToxFiletransferAdapter.vala',
+			'tox/ToxSelfAdapter.vala',
 			'tox/ToxContact.vala',
 			'tox/ToxMessage.vala',
 			'tox/ToxSession.vala',
@@ -120,7 +126,7 @@ venom_source = files(
 			'viewmodel/UserInfoViewModel.vala'
 			)
 
-venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlcipher_dep, json_dep, tox_dep, config_dep, soup_dep, posix_dep, gspell_dep, canberra_dep]
+venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlcipher_dep, json_dep, tox_dep, config_dep, soup_dep, posix_dep, gspell_dep, canberra_dep, gst_dep]
 
 venom_lib = static_library('venom', [venom_source, venom_ui_resources, venom_icons_resources],
 			dependencies : venom_deps

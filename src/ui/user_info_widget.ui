@@ -81,7 +81,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <child>
               <object class="GtkButton" id="take_picture">
                 <property name="visible">True</property>
-                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Take a picture</property>

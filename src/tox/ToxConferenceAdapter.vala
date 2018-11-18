@@ -1,5 +1,5 @@
 /*
- *    ToxAdapterConferenceListener.vala
+ *    ToxConferenceAdapter.vala
  *
  *    Copyright (C) 2018 Venom authors and contributors
  *
@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public class ToxAdapterConferenceListenerImpl : ToxAdapterConferenceListener, ConferenceInviteEntryListener, ConferenceWidgetListener, ConferenceInfoWidgetListener, CreateGroupchatWidgetListener, GLib.Object {
+  public class DefaultToxConferenceAdapter : ToxConferenceAdapter, ConferenceInviteEntryListener, ConferenceWidgetListener, ConferenceInfoWidgetListener, CreateGroupchatWidgetListener, GLib.Object {
     private unowned ToxSession session;
     private Logger logger;
     private ObservableList contacts;
@@ -31,8 +31,8 @@ namespace Venom {
     private GLib.HashTable<uint32, IContact> conferences;
     private unowned GLib.HashTable<uint32, IContact> friends;
 
-    public ToxAdapterConferenceListenerImpl(Logger logger, ObservableList contacts, ObservableList conference_invites, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
-      logger.d("ToxAdapterConferenceListenerImpl created.");
+    public DefaultToxConferenceAdapter(Logger logger, ObservableList contacts, ObservableList conference_invites, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
+      logger.d("DefaultToxConferenceAdapter created.");
       this.logger = logger;
       this.contacts = contacts;
       this.conference_invites = conference_invites;
@@ -42,8 +42,8 @@ namespace Venom {
       conferences = new GLib.HashTable<uint32, IContact>(null, null);
     }
 
-    ~ToxAdapterConferenceListenerImpl() {
-      logger.d("ToxAdapterConferenceListenerImpl destroyed.");
+    ~DefaultToxConferenceAdapter() {
+      logger.d("DefaultToxConferenceAdapter destroyed.");
     }
 
     public virtual void attach_to_session(ToxSession session) {
