@@ -24,6 +24,209 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
   <!-- interface-license-type gplv3 -->
   <!-- interface-name Venom -->
   <!-- interface-copyright 2013-2018 Venom authors and contributors -->
+  <object class="GtkPopover" id="app_menu_popover">
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="border_width">12</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="action_name">win.show_user</property>
+            <property name="text" translatable="yes">Show user details</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="action_name">app.preferences</property>
+            <property name="text" translatable="yes">_Preferences</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="action_name">app.about</property>
+            <property name="text" translatable="yes">About</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="action_name">app.logout</property>
+            <property name="text" translatable="yes">Logout</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="action_name">app.quit</property>
+            <property name="text" translatable="yes">_Quit</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkBox" id="top_bar_box">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkMenuButton">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="popover">app_menu_popover</property>
+        <child>
+          <object class="GtkImage" id="userimage">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="pixel_size">22</property>
+            <property name="icon_name">friend-symbolic</property>
+            <style>
+              <class name="avatar"/>
+            </style>
+          </object>
+        </child>
+        <style>
+          <class name="image-button"/>
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkMenuButton" id="user_status_menu">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="tooltip_text" translatable="yes">Change your status</property>
+        <child>
+          <placeholder/>
+        </child>
+        <style>
+          <class name="image-button"/>
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="pack_type">end</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="valign">center</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="username">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label">username</property>
+            <property name="ellipsize">end</property>
+            <property name="max_width_chars">1</property>
+            <property name="xalign">0</property>
+            <style>
+              <class name="title"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="statusmessage">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label">statusmessage</property>
+            <property name="ellipsize">end</property>
+            <property name="max_width_chars">1</property>
+            <property name="xalign">0</property>
+            <style>
+              <class name="subtitle"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+  </object>
   <object class="GtkImage" id="image_status">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -435,107 +638,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
     <property name="can_focus">False</property>
     <child>
       <placeholder/>
-    </child>
-  </object>
-  <object class="GtkBox" id="top_bar_box">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkButton">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="tooltip_text" translatable="yes">Edit your profile</property>
-        <property name="action_name">win.show_user</property>
-        <child>
-          <object class="GtkImage" id="userimage">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="pixel_size">22</property>
-            <property name="icon_name">friend-symbolic</property>
-            <style>
-              <class name="avatar"/>
-            </style>
-          </object>
-        </child>
-        <style>
-          <class name="image-button"/>
-        </style>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkMenuButton" id="user_status_menu">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="tooltip_text" translatable="yes">Change your status</property>
-        <child>
-          <placeholder/>
-        </child>
-        <style>
-          <class name="image-button"/>
-        </style>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="pack_type">end</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="valign">center</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkLabel" id="username">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label">username</property>
-            <property name="ellipsize">end</property>
-            <property name="max_width_chars">1</property>
-            <property name="xalign">0</property>
-            <style>
-              <class name="title"/>
-            </style>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="statusmessage">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label">statusmessage</property>
-            <property name="ellipsize">end</property>
-            <property name="max_width_chars">1</property>
-            <property name="xalign">0</property>
-            <style>
-              <class name="subtitle"/>
-            </style>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">True</property>
-        <property name="fill">True</property>
-        <property name="position">2</property>
-      </packing>
     </child>
   </object>
 </interface>
