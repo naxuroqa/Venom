@@ -104,18 +104,6 @@ namespace Venom {
       css_provider.load_from_resource("/com/github/naxuroqa/venom/css/custom.css");
       Gtk.StyleContext.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
-      var builder = new Gtk.Builder();
-      try {
-        builder.add_from_resource("/com/github/naxuroqa/venom/ui/app_menu.ui");
-      } catch (Error e) {
-        logger.f("Loading app menu failed: " + e.message);
-        assert_not_reached();
-      }
-
-      var app_menu = builder.get_object("app_menu") as MenuModel;
-      assert(app_menu != null);
-      set_app_menu(app_menu);
-
       load_global_settings();
     }
 
