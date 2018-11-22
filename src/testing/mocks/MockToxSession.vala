@@ -27,25 +27,25 @@ namespace Mock {
     public MockToxSession() {
       contacts = new GLib.HashTable<uint32, IContact>(null, null);
     }
-    public void set_session_listener(ToxAdapterSelfListener listener) {
+    public void set_session_listener(ToxSelfAdapter listener) {
       var args = Arguments.builder()
                      .object(listener)
                      .create();
       mock().actual_call(this, "set_session_listener", args);
     }
-    public void set_filetransfer_listener(ToxAdapterFiletransferListener listener) {
+    public void set_filetransfer_listener(ToxFiletransferAdapter listener) {
       var args = Arguments.builder()
                      .object(listener)
                      .create();
       mock().actual_call(this, "set_filetransfer_listener", args);
     }
-    public void set_friend_listener(ToxAdapterFriendListener listener) {
+    public void set_friend_listener(ToxFriendAdapter listener) {
       var args = Arguments.builder()
                      .object(listener)
                      .create();
       mock().actual_call(this, "set_friend_listener", args);
     }
-    public void set_conference_listener(ToxAdapterConferenceListener listener) {
+    public void set_conference_listener(ToxConferenceAdapter listener) {
       var args = Arguments.builder()
                      .object(listener)
                      .create();

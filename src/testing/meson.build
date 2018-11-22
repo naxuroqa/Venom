@@ -8,9 +8,11 @@ if posix_dep.found()
 endif
 
 if gst_dep.found()
-			executable('toxav', ['ToxAVTest.vala',
-						join_paths(root_source_dir, 'core/Tools.vala')],
-						dependencies : [gtk_dep, tox_dep, gst_dep]
+			executable('photobooth_test', 'PhotoboothTest.vala',
+						dependencies : [venom_dep]
+						)
+			executable('test_av', 'ToxAVTest.vala',
+						dependencies : [venom_dep]
 						)
 endif
 

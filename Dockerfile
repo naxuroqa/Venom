@@ -16,6 +16,7 @@ RUN \
     libgee-0.8-dev \
     libgspell-1-dev \
     libcanberra-dev \
+    libgstreamer1.0-dev \
     meson \
     valac \
     wget

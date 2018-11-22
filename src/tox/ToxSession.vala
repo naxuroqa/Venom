@@ -49,10 +49,10 @@ namespace Venom {
   public delegate void GetFriendListCallback(uint32 friend_number, uint8[] friend_key);
 
   public interface ToxSession : GLib.Object {
-    public abstract void set_session_listener(ToxAdapterSelfListener listener);
-    public abstract void set_filetransfer_listener(ToxAdapterFiletransferListener listener);
-    public abstract void set_friend_listener(ToxAdapterFriendListener listener);
-    public abstract void set_conference_listener(ToxAdapterConferenceListener listener);
+    public abstract void set_session_listener(ToxSelfAdapter listener);
+    public abstract void set_filetransfer_listener(ToxFiletransferAdapter listener);
+    public abstract void set_friend_listener(ToxFriendAdapter listener);
+    public abstract void set_conference_listener(ToxConferenceAdapter listener);
 
     public abstract void self_set_user_name(string name);
     public abstract void self_set_status_message(string status);
@@ -97,11 +97,11 @@ namespace Venom {
     public abstract unowned GLib.HashTable<uint32, IContact> get_friends();
   }
 
-  public interface ToxAdapterSelfListener : GLib.Object {
+  public interface ToxSelfAdapter : GLib.Object {
     public abstract void on_self_connection_status_changed(bool is_connected);
   }
 
-  public interface ToxAdapterFriendListener : GLib.Object {
+  public interface ToxFriendAdapter : GLib.Object {
     public abstract void on_friend_status_changed(uint32 friend_number, UserStatus status);
     public abstract void on_friend_connection_status_changed(uint32 friend_number, bool connected);
     public abstract void on_friend_name_changed(uint32 friend_number, string name);
@@ -117,7 +117,7 @@ namespace Venom {
     public abstract void on_friend_read_receipt(uint32 friend_number, uint32 message_id);
   }
 
-  public interface ToxAdapterConferenceListener : GLib.Object {
+  public interface ToxConferenceAdapter : GLib.Object {
     public abstract void on_conference_new(uint32 conference_number, string title);
     public abstract void on_conference_deleted(uint32 conference_number);
     public abstract void on_conference_invite_received(uint32 friend_number, Venom.ConferenceType type, uint8[] cookie);
@@ -130,7 +130,7 @@ namespace Venom {
     public abstract void on_conference_message_sent(uint32 conference_number, string message);
   }
 
-  public interface ToxAdapterFiletransferListener : GLib.Object {
+  public interface ToxFiletransferAdapter : GLib.Object {
     public abstract void on_file_recv_data(uint32 friend_number, uint32 file_number, uint64 file_size, string filename);
     public abstract void on_file_recv_avatar(uint32 friend_number, uint32 file_number, uint64 file_size);
 
@@ -153,10 +153,10 @@ namespace Venom {
     private Logger logger;
     private ToxSessionThread sessionThread;
 
-    private ToxAdapterSelfListener self_listener;
-    private ToxAdapterFriendListener friend_listener;
-    private ToxAdapterConferenceListener conference_listener;
-    private ToxAdapterFiletransferListener filetransfer_listener;
+    private ToxSelfAdapter self_listener;
+    private ToxFriendAdapter friend_listener;
+    private ToxConferenceAdapter conference_listener;
+    private ToxFiletransferAdapter filetransfer_listener;
     private Profile profile;
     private GLib.HashTable<uint32, IContact> friends;
 
@@ -315,19 +315,19 @@ namespace Venom {
       }
     }
 
-    public virtual void set_session_listener(ToxAdapterSelfListener listener) {
+    public virtual void set_session_listener(ToxSelfAdapter listener) {
       this.self_listener = listener;
     }
 
-    public virtual void set_filetransfer_listener(ToxAdapterFiletransferListener listener) {
+    public virtual void set_filetransfer_listener(ToxFiletransferAdapter listener) {
       this.filetransfer_listener = listener;
     }
 
-    public virtual void set_friend_listener(ToxAdapterFriendListener listener) {
+    public virtual void set_friend_listener(ToxFriendAdapter listener) {
       this.friend_listener = listener;
     }
 
-    public virtual void set_conference_listener(ToxAdapterConferenceListener listener) {
+    public virtual void set_conference_listener(ToxConferenceAdapter listener) {
       this.conference_listener = listener;
     }
 

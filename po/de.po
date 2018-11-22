@@ -785,11 +785,11 @@ msgstr "com.github.naxuroqa.venom-symbolic"
 msgid "Notice"
 msgstr "Systemnotiz"
 
-#: src/tox/ToxAdapterFriendListener.vala:29
+#: src/tox/ToxFriendAdapter.vala:29
 msgid "%s has been removed from your contact list."
 msgstr "%s wurde von deiner Kontaktliste entfernt."
 
-#: src/tox/ToxAdapterFriendListener.vala:30
+#: src/tox/ToxFriendAdapter.vala:30
 msgid "Undo"
 msgstr "Rückgängig"
 

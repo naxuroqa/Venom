@@ -1,5 +1,5 @@
 /*
- *    ToxAdapterSelfListener.vala
+ *    ToxSelfAdapter.vala
  *
  *    Copyright (C) 2018 Venom authors and contributors
  *
@@ -20,22 +20,22 @@
  */
 
 namespace Venom {
-  public class ToxAdapterSelfListenerImpl : ToxAdapterSelfListener, UserInfoViewListener, GLib.Object {
+  public class DefaultToxSelfAdapter : ToxSelfAdapter, UserInfoViewListener, GLib.Object {
     private unowned ToxSession session;
     private Logger logger;
     private UserInfo user_info;
     private GLib.File avatar_file;
     private GLib.Cancellable avatar_cancellable;
 
-    public ToxAdapterSelfListenerImpl(Logger logger, UserInfo user_info) {
-      logger.d("ToxAdapterSelfListenerImpl created.");
+    public DefaultToxSelfAdapter(Logger logger, UserInfo user_info) {
+      logger.d("DefaultToxSelfAdapter created.");
       this.logger = logger;
       this.user_info = user_info;
       this.avatar_cancellable = new Cancellable();
     }
 
-    ~ToxAdapterSelfListenerImpl() {
-      logger.d("ToxAdapterSelfListenerImpl destroyed.");
+    ~DefaultToxSelfAdapter() {
+      logger.d("DefaultToxSelfAdapter destroyed.");
     }
 
     public virtual void attach_to_session(ToxSession session) {
@@ -79,7 +79,7 @@ namespace Venom {
     }
 
     public virtual void set_self_avatar(Gdk.Pixbuf pixbuf) throws GLib.Error {
-      logger.d("ToxAdapterSelfListenerImpl set_self_avatar");
+      logger.d("DefaultToxSelfAdapter set_self_avatar");
       avatar_cancellable.cancel();
       avatar_cancellable.reset();
       uint8[] buf;
@@ -93,7 +93,7 @@ namespace Venom {
     }
 
     public virtual void reset_self_avatar() throws GLib.Error {
-      logger.d("ToxAdapterSelfListenerImpl reset_self_avatar");
+      logger.d("DefaultToxSelfAdapter reset_self_avatar");
       avatar_cancellable.cancel();
       avatar_cancellable.reset();
       if (user_info.custom_avatar) {

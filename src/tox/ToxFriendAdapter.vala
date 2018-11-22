@@ -1,5 +1,5 @@
 /*
- *    ToxAdapterFriendListener.vala
+ *    ToxFriendAdapter.vala
  *
  *    Copyright (C) 2018 Venom authors and contributors
  *
@@ -22,8 +22,8 @@
 namespace Venom {
   public class FriendDeletedNotification : NotificationAction {
     private Contact contact;
-    private ToxAdapterFriendListenerImpl listener;
-    public FriendDeletedNotification(Contact contact, ToxAdapterFriendListenerImpl listener) {
+    private DefaultToxFriendAdapter listener;
+    public FriendDeletedNotification(Contact contact, DefaultToxFriendAdapter listener) {
       this.contact = contact;
       this.listener = listener;
       message = _("%s has been removed from your contact list.").printf(contact.get_name_string());
@@ -35,7 +35,7 @@ namespace Venom {
     }
   }
 
-  public class ToxAdapterFriendListenerImpl : ToxAdapterFriendListener, AddContactWidgetListener, ConversationWidgetListener, FriendInfoWidgetListener, FriendRequestWidgetListener, GLib.Object {
+  public class DefaultToxFriendAdapter : ToxFriendAdapter, AddContactWidgetListener, ConversationWidgetListener, FriendInfoWidgetListener, FriendRequestWidgetListener, GLib.Object {
     private unowned ToxSession session;
     private Logger logger;
     private ObservableList contacts;
@@ -89,11 +89,11 @@ namespace Venom {
       }
     }
 
-    public ToxAdapterFriendListenerImpl(Logger logger, UserInfo user_info, MessageRepository message_repository,
+    public DefaultToxFriendAdapter(Logger logger, UserInfo user_info, MessageRepository message_repository,
                                         FriendRequestRepository friend_request_repository, ContactRepository contact_repository,
                                         ObservableList contacts, ObservableList friend_requests, GLib.HashTable<IContact, ObservableList> conversations,
                                         NotificationListener notification_listener, InAppNotification in_app_notification) {
-      logger.d("ToxAdapterFriendListenerImpl created.");
+      logger.d("DefaultToxFriendAdapter created.");
       this.logger = logger;
       this.user_info = user_info;
       this.message_repository = message_repository;
@@ -137,8 +137,8 @@ namespace Venom {
       }
     }
 
-    ~ToxAdapterFriendListenerImpl() {
-      logger.d("ToxAdapterFriendListenerImpl destroyed.");
+    ~DefaultToxFriendAdapter() {
+      logger.d("DefaultToxFriendAdapter destroyed.");
     }
 
     public void attach_to_session(ToxSession session) {

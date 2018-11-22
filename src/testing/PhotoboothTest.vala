@@ -1,7 +1,7 @@
 /*
- *    Main.vala
+ *    PhotoboothTest.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -19,16 +19,23 @@
  *    along with Venom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Venom {
-  int main (string[] args) {
-    GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.GETTEXT_PATH);
-    GLib.Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "utf-8");
-    GLib.Intl.textdomain(Config.GETTEXT_PACKAGE);
+public static int main (string[] args) {
+  Gst.init(ref args);
+  Gtk.init(ref args);
 
-#if ENABLE_GSTREAMER
-    Gst.init(ref args);
-#endif
+  var booth = new Venom.PhotoboothWindow();
+  booth.title = "Photobooth test window";
+  booth.show_all();
+  booth.timeout = 0;
+  booth.new_photo.connect((pixbuf) => {
+    var timestamp = new GLib.DateTime.now_local();
+    pixbuf.save("%s.png".printf(timestamp.format("%c")), "png");
+    booth.destroy();
+    booth = null;
+  });
+  booth.destroy.connect(Gtk.main_quit);
 
-    return new Application().run(args);
-  }
+  Gtk.main();
+
+  return 0;
 }
