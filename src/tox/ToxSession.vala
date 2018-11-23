@@ -84,6 +84,7 @@ namespace Venom {
     public abstract void conference_delete(uint32 conference_number) throws ToxError;
     public abstract void conference_invite(uint32 friend_number, uint32 conference_number) throws ToxError;
     public abstract void conference_join(uint32 friend_number, ConferenceType type, uint8[] cookie) throws ToxError;
+    public abstract Gee.Iterable<uint32> conference_get_chatlist();
 
     public abstract void conference_send_message(uint32 conference_number, string message) throws ToxError;
     public abstract void conference_set_title(uint32 conference_number, string title) throws ToxError;
@@ -836,6 +837,15 @@ namespace Venom {
         logger.e("sending conference message failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());
       }
+    }
+
+    public Gee.Iterable<uint32> conference_get_chatlist() {
+      var chatlist = handle.conference_get_chatlist();
+      var list = new Gee.ArrayList<uint32>();
+      foreach (var c in chatlist) {
+        list.add(c);
+      }
+      return list;
     }
 
     public void @lock() {
