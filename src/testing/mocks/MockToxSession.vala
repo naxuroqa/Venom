@@ -198,6 +198,9 @@ namespace Mock {
                      .create();
       return mock().actual_call(this, "conference_get_title", args).get_string();
     }
+    public Gee.Iterable<uint32> conference_get_chatlist() {
+      return (Gee.Iterable<uint32>) mock().actual_call(this, "conference_get_chatlist").get_object();
+    }
     public void file_control(uint32 friend_number, uint32 file_number, ToxCore.FileControl control) throws ToxError {
       var args = Arguments.builder()
                      .uint(friend_number)

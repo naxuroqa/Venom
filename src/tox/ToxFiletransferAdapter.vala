@@ -315,7 +315,7 @@ namespace Venom {
           var buf = transfer.get_avatar_buffer();
           var directory = GLib.File.new_for_path(R.constants.avatars_folder());
           if (!directory.query_exists()) {
-            directory.make_directory();
+            directory.make_directory_with_parents();
           }
 
           var id = contact.get_id();

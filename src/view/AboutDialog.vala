@@ -27,6 +27,9 @@ namespace Venom {
       this.logger = logger;
       logger.d("AboutDialog created.");
 
+      artists = {
+        "ItsDuke <anondelivers.org@gmail.com>"
+      };
       authors = {
         "naxuroqa <naxuroqa@gmail.com>",
         "John Poulakos <jhn1291@gmail.com>",
@@ -39,26 +42,20 @@ namespace Venom {
         "Bahkuh <philip_hq@hotmail.com>",
         "Joel Leclerc <lkjoel@ubuntu.com>",
         "infirit <infirit@gmail.com>",
-        "Maxim Golubev <3demax@gmail.com>",
-        null
+        "Maxim Golubev <3demax@gmail.com>"
       };
-      artists = {
-        "ItsDuke <anondelivers.org@gmail.com>",
-        null
-      };
-      string [] packagers = {
-        "Sean <sean@tox.im>",
-        null
+      var packagers = new string[] {
+        "Sean <sean@tox.im>"
       };
       add_credit_section(_("Packagers"), packagers);
       comments = _("A modern Tox client for the Linux desktop");
       copyright = _("Copyright © 2013-2018 Venom authors and contributors");
       license_type = Gtk.License.GPL_3_0;
+      logo_icon_name = "venom-symbolic";
       program_name = "Venom";
       translator_credits = _("translator-credits");
       version = Config.VERSION;
       website = "https://github.com/naxuroqa/Venom";
-      website_label = "Github";
     }
 
     ~AboutDialog() {
