@@ -50,6 +50,10 @@ namespace Venom {
       this.session = session;
       session.set_conference_listener(this);
       friends = session.get_friends();
+      var chatlist = session.conference_get_chatlist();
+      foreach (var conference_number in chatlist) {
+        on_conference_new(conference_number, "");
+      }
     }
 
     public virtual void on_remove_conference(IContact c) throws Error {

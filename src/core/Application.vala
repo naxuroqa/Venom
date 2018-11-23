@@ -238,7 +238,9 @@ namespace Venom {
     private void save_global_settings() {
       try {
         var settings_string = GlobalSettings.serialize(global_settings);
-        FileIO.save_contents_text(R.constants.default_global_settings(), settings_string);
+        var filename = R.constants.default_global_settings();
+        create_path_for_filename(filename);
+        FileIO.save_contents_text(filename, settings_string);
       } catch (Error e) {
         logger.e("Saving global settings failed: " + e.message);
       }
@@ -290,7 +292,7 @@ namespace Venom {
     public void on_show_about() {
       logger.d("on_show_about");
       var about_dialog = widget_factory.create_about_dialog();
-      about_dialog.transient_for = get_active_window();
+      about_dialog.transient_for = get_active_window() as ApplicationWindow;
       about_dialog.run();
       about_dialog.destroy();
     }
