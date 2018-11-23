@@ -292,7 +292,7 @@ namespace Venom {
     public void on_show_about() {
       logger.d("on_show_about");
       var about_dialog = widget_factory.create_about_dialog();
-      about_dialog.transient_for = get_active_window();
+      about_dialog.transient_for = get_active_window() as ApplicationWindow;
       about_dialog.run();
       about_dialog.destroy();
     }
