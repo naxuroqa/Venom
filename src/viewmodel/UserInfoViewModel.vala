@@ -132,10 +132,17 @@ namespace Venom {
       username = user_info.name;
       statusmessage = user_info.status_message;
       avatar = user_info.avatar.pixbuf;
-      tox_id = user_info.tox_id;
       tox_nospam = get_current_nospam();
 
+      var pub_key = user_info.tox_id.substring(0, ToxCore.PUBLIC_KEY_SIZE * 2);
+      var checksum = user_info.tox_id.substring(ToxCore.PUBLIC_KEY_SIZE * 2 + ToxCore.NOSPAM_SIZE * 2);
+      tox_id = pub_key + fgcolor("#ee0290", tox_nospam) + fgcolor("#ee6002", checksum);
+
       avatar_change = AvatarChange.NONE;
+    }
+
+    private string fgcolor(string color, string val) {
+      return @"<span fgcolor='$color'>$val</span>";
     }
 
     public void on_apply_clicked() {
