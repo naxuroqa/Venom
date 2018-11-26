@@ -7,7 +7,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/naxuroqa/venom.svg)
 [![tip for next commit](http://tip4commit.com/projects/634.svg)](http://tip4commit.com/projects/634)
 [![codecov](https://codecov.io/gh/naxuroqa/Venom/branch/develop/graph/badge.svg)](https://codecov.io/gh/naxuroqa/Venom)
-
+[![Translation status](https://hosted.weblate.org/widgets/venom/-/translations/svg-badge.svg)](https://hosted.weblate.org/engage/venom/?utm_source=widget)
 
 ###### a modern [Tox](https://github.com/TokTok/c-toxcore) client for the GNU/Linux desktop
 
@@ -40,8 +40,8 @@ See [projects](https://github.com/naxuroqa/Venom/projects) for planned features.
 Translations
 ------------
 
-Translations are done via the [venom project on poeditor](https://poeditor.com/join/project/5weMhrvGjN).
-Don't create pull requests for translations here. Updated translations from poeditor will be merged in this repository on every release.
+Translations are done via the [venom project on weblate](https://hosted.weblate.org/projects/venom/translations/).
+Don't create pull requests for translations here. Updated translations from weblate will be merged in this repository on every release.
 
 Dependencies
 ------------
