@@ -128,6 +128,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
           <object class="GtkPaned" id="content_paned">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="position">352</property>
             <child>
               <object class="GtkBox" id="contact_list_box">
                 <property name="visible">True</property>
@@ -140,22 +141,52 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow">
+              <object class="GtkOverlay">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkViewport" id="content_bin">
+                  <object class="GtkScrolledWindow">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
                     <child>
-                      <placeholder/>
+                      <object class="GtkViewport" id="content_bin">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </object>
                     </child>
+                  </object>
+                  <packing>
+                    <property name="index">-1</property>
+                  </packing>
+                </child>
+                <child type="overlay">
+                  <object class="GtkButton" id="hide_contacts">
+                    <property name="height_request">64</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="relief">none</property>
+                    <child>
+                      <object class="GtkImage" id="hide_contacts_image">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="icon_name">pan-start-symbolic</property>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="image-button"/>
+                    </style>
                   </object>
                 </child>
               </object>
               <packing>
                 <property name="resize">True</property>
-                <property name="shrink">False</property>
+                <property name="shrink">True</property>
               </packing>
             </child>
           </object>
@@ -256,6 +287,22 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
           </object>
           <packing>
             <property name="pass_through">True</property>
+          </packing>
+        </child>
+        <child type="overlay">
+          <object class="GtkRevealer" id="contact_list_revealer">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="transition_type">slide-left</property>
+            <property name="transition_duration">500</property>
+            <property name="reveal_child">True</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="index">1</property>
           </packing>
         </child>
       </object>

@@ -52,6 +52,10 @@ namespace Venom {
     [GtkChild] private Gtk.Label notification_action_message;
     [GtkChild] private Gtk.Label notification_message;
 
+    [GtkChild] private Gtk.Button hide_contacts;
+    [GtkChild] private Gtk.Image hide_contacts_image;
+    [GtkChild] private Gtk.Revealer contact_list_revealer;
+
     private unowned Factory.WidgetFactory widget_factory;
     private Logger logger;
     private ISettingsDatabase settings_database;
@@ -299,9 +303,24 @@ namespace Venom {
       content_paned.bind_property("position", user_info_box, "width-request", BindingFlags.SYNC_CREATE,
                                   (binding, source, ref target) => { target = source.get_int() - 12; return true; });
 
-      var app = GLib.Application.get_default() as Gtk.Application;
-      app.set_accels_for_action("win.undo", { "<Control>Z" });
-      app.set_accels_for_action("win.redo", { "<Control>Y" });
+      application.set_accels_for_action("win.undo", { "<Control>Z" });
+      application.set_accels_for_action("win.redo", { "<Control>Y" });
+
+      hide_contacts.clicked.connect(toggle_hide_contacts);
+    }
+
+    private void toggle_hide_contacts() {
+      if (contact_list_box.parent == content_paned) {
+        content_paned.remove(contact_list_box);
+        contact_list_revealer.add(contact_list_box);
+        contact_list_revealer.reveal_child = false;
+        hide_contacts_image.get_style_context().add_class("flip");
+      } else {
+        contact_list_revealer.remove(contact_list_box);
+        content_paned.pack1(contact_list_box, false, false);
+        contact_list_revealer.reveal_child = true;
+        hide_contacts_image.get_style_context().remove_class("flip");
+      }
     }
 
     public void reset_header_bar() {
