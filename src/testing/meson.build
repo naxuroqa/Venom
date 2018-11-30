@@ -8,12 +8,24 @@ if posix_dep.found()
 endif
 
 if gst_dep.found()
-			executable('photobooth_test', 'PhotoboothTest.vala',
-						dependencies : [venom_dep]
-						)
-			executable('test_av', 'ToxAVTest.vala',
-						dependencies : [venom_dep]
-						)
+executable('photobooth_test', 'PhotoboothTest.vala',
+			dependencies : [venom_dep]
+			)
+executable('test_av', 'ToxAVTest.vala',
+			dependencies : [venom_dep, gst_video_dep]
+			)
+executable('video_receive_bot', 'VideoReceiveBot.vala',
+			dependencies : [gtk_dep, gst_dep, gst_video_dep, gst_app_dep, tox_dep]
+			)
+executable('audio_receive_bot', 'AudioReceiveBot.vala',
+			dependencies : [gtk_dep, gst_dep, gst_audio_dep, gst_app_dep, tox_dep]
+			)
+executable('video_send_bot', 'VideoSendBot.vala',
+			dependencies : [gtk_dep, gst_dep, gst_video_dep, gst_app_dep, tox_dep]
+			)
+executable('audio_send_bot', 'AudioSendBot.vala',
+			dependencies : [gtk_dep, gst_dep, gst_audio_dep, gst_app_dep, tox_dep]
+			)
 endif
 
 mox_lib = library('mox',
