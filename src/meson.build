@@ -15,8 +15,12 @@ sqlcipher_dep = dependency('sqlcipher')
 json_dep = dependency('json-glib-1.0')
 soup_dep = dependency('libsoup-2.4')
 tox_dep = dependency('toxcore')
-gst_dep = dependency('gstreamer-1.0', required : false)
 posix_dep = valac.find_library('posix', required : false)
+
+gst_dep = dependency('gstreamer-1.0', required : false)
+gst_video_dep = dependency('gstreamer-video-1.0', required : false)
+gst_audio_dep = dependency('gstreamer-audio-1.0', required : false)
+gst_app_dep = dependency('gstreamer-app-1.0', required : false)
 
 if (posix_dep.found())
 			add_project_arguments(['-D', 'ENABLE_POSIX'], language: 'vala')
