@@ -86,6 +86,11 @@ namespace Venom {
 
       peers.set_placeholder(peers_placeholder);
 
+      model.notify["initialized"].connect(show_messages);
+      if (model.initialized) {
+        show_messages();
+      }
+
       app_window.add_action_entries(win_entries, this);
       app_window.focus_in_event.connect(on_focus_in_event);
 
@@ -102,6 +107,11 @@ namespace Venom {
         app_window.remove_action(entry.name);
       }
       logger = null;
+    }
+
+    private void show_messages() {
+      var stack = scrolled_window.parent as Gtk.Stack;
+      stack.set_visible_child(scrolled_window);
     }
 
     private bool on_focus_in_event() {

@@ -30,22 +30,13 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
     <property name="spacing">6</property>
     <child>
       <object class="GtkButton">
+        <property name="label" translatable="yes">Call</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="no_show_all">True</property>
         <property name="tooltip_text" translatable="yes">Start a call</property>
         <property name="action_name">win.start-call</property>
-        <child>
-          <object class="GtkImage">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="icon_name">call-start-symbolic</property>
-          </object>
-        </child>
-        <style>
-          <class name="image-button"/>
-        </style>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -55,22 +46,13 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
     </child>
     <child>
       <object class="GtkButton">
+        <property name="label" translatable="yes">Video call</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="no_show_all">True</property>
         <property name="tooltip_text" translatable="yes">Start a video call</property>
         <property name="action_name">win.start-video</property>
-        <child>
-          <object class="GtkImage">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="icon_name">video-x-generic-symbolic</property>
-          </object>
-        </child>
-        <style>
-          <class name="image-button"/>
-        </style>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -145,25 +127,17 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="border_width">6</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkButton">
+            <property name="label" translatable="yes">Send screenshot</property>
             <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Attach screenshot…</property>
             <property name="action_name">win.insert-screenshot</property>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">insert-image-symbolic</property>
-              </object>
-            </child>
-            <style>
-              <class name="image-button"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -173,22 +147,13 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
         </child>
         <child>
           <object class="GtkButton">
+            <property name="label" translatable="yes">Send file</property>
             <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Attach file…</property>
             <property name="action_name">win.insert-file</property>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">insert-object-symbolic</property>
-              </object>
-            </child>
-            <style>
-              <class name="image-button"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -204,9 +169,53 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <child>
-      <object class="GtkOverlay" id="overlay">
+      <object class="GtkStack">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="transition_duration">250</property>
+        <property name="transition_type">crossfade</property>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="border_width">6</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkSpinner">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="active">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Restoring messages…</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <style>
+              <class name="dim-label"/>
+            </style>
+          </object>
+          <packing>
+            <property name="name">page1</property>
+            <property name="title">page1</property>
+          </packing>
+        </child>
         <child>
           <object class="GtkScrolledWindow" id="scrolled_window">
             <property name="visible">True</property>
@@ -217,28 +226,68 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="can_focus">False</property>
                 <property name="shadow_type">none</property>
                 <child>
-                  <object class="GtkListBox" id="message_list">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="selection_mode">none</property>
-                    <property name="activate_on_single_click">False</property>
-                    <style>
-                      <class name="conversation"/>
-                    </style>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkListBox" id="message_list">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="selection_mode">none</property>
+                        <property name="activate_on_single_click">False</property>
+                        <style>
+                          <class name="conversation"/>
+                        </style>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkRevealer" id="typing_revealer">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="valign">end</property>
+                        <property name="transition_type">slide-up</property>
+                        <property name="reveal_child">True</property>
+                        <child>
+                          <object class="GtkLabel" id="typing_label">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="margin_right">6</property>
+                            <property name="margin_top">6</property>
+                            <property name="margin_bottom">6</property>
+                            <property name="label">[contact] is typing ...</property>
+                            <property name="xalign">1</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
             </child>
           </object>
           <packing>
-            <property name="index">-1</property>
+            <property name="name">page0</property>
+            <property name="title">page0</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </object>
       <packing>
         <property name="expand">True</property>
         <property name="fill">True</property>
-        <property name="position">2</property>
+        <property name="position">0</property>
       </packing>
     </child>
     <child>
@@ -349,20 +398,4 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
       </packing>
     </child>
   </template>
-  <object class="GtkRevealer" id="typing_revealer">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="halign">end</property>
-    <property name="valign">end</property>
-    <property name="border_width">6</property>
-    <property name="transition_type">slide-up</property>
-    <property name="reveal_child">True</property>
-    <child>
-      <object class="GtkLabel" id="typing_label">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label">typing_label</property>
-      </object>
-    </child>
-  </object>
 </interface>

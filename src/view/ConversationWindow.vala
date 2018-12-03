@@ -28,7 +28,6 @@ namespace Venom {
     [GtkChild] private Gtk.ScrolledWindow scrolled_window;
     [GtkChild] private Gtk.Revealer typing_revealer;
     [GtkChild] private Gtk.Label typing_label;
-    [GtkChild] private Gtk.Overlay overlay;
     [GtkChild] private Gtk.Popover popover;
     [GtkChild] private Gtk.Box placeholder;
     [GtkChild] private Gtk.Widget header_start;
@@ -88,8 +87,6 @@ namespace Venom {
       text_view_event_handler.send.connect(on_send);
       text_view.key_press_event.connect(text_view_event_handler.on_key_press_event);
 
-      overlay.add_overlay(typing_revealer);
-
       app_window.reset_header_bar();
       app_window.header_start.pack_start(header_start);
       app_window.header_end.pack_start(header_end);
@@ -102,6 +99,11 @@ namespace Venom {
       message_list.bind_model(model, creator.create_message);
       message_list.set_placeholder(placeholder);
 
+      model.notify["initialized"].connect(show_messages);
+      if (model.initialized) {
+        show_messages();
+      }
+
       text_view.buffer.changed.connect(on_buffer_changed);
       app_window.add_action_entries(win_entries, this);
       app_window.focus_in_event.connect(on_focus_in_event);
@@ -110,6 +112,11 @@ namespace Venom {
       auto_scroller.scroll_to_bottom();
 
       logger.d("ConversationWindow created.");
+    }
+
+    private void show_messages() {
+      var stack = scrolled_window.parent as Gtk.Stack;
+      stack.set_visible_child(scrolled_window);
     }
 
     private void update_widgets() {
