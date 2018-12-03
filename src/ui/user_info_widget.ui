@@ -507,7 +507,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Tox nospam</property>
+                        <property name="label" translatable="yes">Tox NoSpam</property>
                         <property name="xalign">0</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
@@ -529,7 +529,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                             <property name="can_focus">True</property>
                             <property name="max_length">8</property>
                             <property name="secondary_icon_name">media-playlist-shuffle-symbolic</property>
-                            <property name="secondary_icon_tooltip_text" translatable="yes">Generate new random nospam</property>
+                            <property name="secondary_icon_tooltip_text" translatable="yes">Generate new random NoSpam</property>
                             <property name="input_purpose">number</property>
                           </object>
                           <packing>
@@ -543,7 +543,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <property name="tooltip_text" translatable="yes">Set this nospam</property>
+                            <property name="tooltip_text" translatable="yes">Set this NoSpam</property>
                             <child>
                               <object class="GtkImage">
                                 <property name="visible">True</property>
@@ -575,7 +575,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Previous nospams</property>
+                        <property name="label" translatable="yes">Previous NoSpams</property>
                         <property name="xalign">0</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
