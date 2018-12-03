@@ -10,6 +10,7 @@ script:
   - docker exec test-image-container meson -D b_coverage=true build
   - docker exec test-image-container ninja -C build
   - docker exec test-image-container ninja -C build test
+  - docker exec test-image-container scripts/flatpak-bundle.sh
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

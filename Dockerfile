@@ -18,7 +18,8 @@ RUN \
     libcanberra-dev \
     meson \
     valac \
-    wget
+    wget \
+    flatpak-builder
 
 RUN rm -rf /var/lib/apt/lists/*
 
