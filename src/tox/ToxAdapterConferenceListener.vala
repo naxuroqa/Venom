@@ -52,7 +52,13 @@ namespace Venom {
       friends = session.get_friends();
       var chatlist = session.conference_get_chatlist();
       foreach (var conference_number in chatlist) {
-        on_conference_new(conference_number, "");
+        string title = "";
+        try {
+          title = session.conference_get_title(conference_number);
+        } catch (ToxError e) {
+          //ignore
+        }
+        on_conference_new(conference_number, title);
       }
     }
 
