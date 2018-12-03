@@ -110,7 +110,7 @@ namespace Venom {
     private const int NUM_ENTRIES_PER_ITERATION = 10;
     protected Logger logger;
     private uint index = 0;
-    private bool initialized = false;
+    public bool initialized {get; set;}
     public LazyObservableListModel(Logger logger, ObservableList list, Cancellable? cancellable = null) {
       base(list);
       this.logger = logger;
@@ -139,7 +139,7 @@ namespace Venom {
     protected override void on_added(GLib.Object item, uint index) {
       if (!initialized) {
         // ignore while not initialized
-        stderr.printf("not initialized, dropping....\n");
+        logger.e("LazyObservableListModel not initialized, ignoring add...");
         return;
       }
       items_changed(index, 0, 1);
@@ -147,6 +147,7 @@ namespace Venom {
 
     protected override void on_removed(GLib.Object item, uint index) {
       if (!initialized) {
+        logger.e("LazyObservableListModel not initialized, ignoring remove...");
         // ignore while not initialized
         return;
       }
