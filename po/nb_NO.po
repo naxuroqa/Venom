@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: venom\n"
 "Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
-"PO-Revision-Date: 2018-12-03 07:18+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"PO-Revision-Date: 2018-12-03 11:37+0000\n"
+"Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/venom/"
 "translations/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.3\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: src/undo/TextBufferUndoBinding.vala:169
 msgid "_Redo"
@@ -159,7 +159,7 @@ msgstr "Sist sett: %s"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:61
 msgid "New Message!"
-msgstr "Ny melding."
+msgstr "Ny melding!"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:67
 msgid "Offline"
@@ -778,7 +778,7 @@ msgstr "Mørkt"
 
 #: src/ui/settings_widget.ui:348
 msgid "<small>Use a dark variant of the theme</small>"
-msgstr "<small>Ifør en mørk variant av drakten"
+msgstr "<small>Ifør en mørk variant av drakten</small>"
 
 #: src/ui/settings_widget.ui:404
 msgid "Animations"
@@ -786,7 +786,7 @@ msgstr "Animasjoner"
 
 #: src/ui/settings_widget.ui:417
 msgid "<small>Turn on animated transitions</small>"
-msgstr "<small>Skru på animerte overganger"
+msgstr "<small>Skru på animerte overganger</small>"
 
 #: src/ui/settings_widget.ui:473
 msgid "Small contacts"
@@ -794,7 +794,7 @@ msgstr "Små kontakter"
 
 #: src/ui/settings_widget.ui:486
 msgid "<small>Show contacts in a compact format</small>"
-msgstr "<small>Vis kontakter i kompakt format"
+msgstr "<small>Vis kontakter i kompakt format</small>"
 
 #: src/ui/settings_widget.ui:542
 msgid "Spellcheck"
@@ -802,7 +802,7 @@ msgstr "Stavekontroll"
 
 #: src/ui/settings_widget.ui:555
 msgid "<small>Check your spelling while you type</small>"
-msgstr "<small>Sjekk at det du skriver er rett mens du skriver"
+msgstr "<small>Sjekk at det du skriver er rett mens du skriver</small>"
 
 #: src/ui/settings_widget.ui:699
 msgid "Sounds"
@@ -810,7 +810,7 @@ msgstr "Lyder"
 
 #: src/ui/settings_widget.ui:712
 msgid "<small>Play sounds on new notifications</small>"
-msgstr "<small>Spill av lyder ved nye merknader"
+msgstr "<small>Spill av lyder ved nye merknader</small>"
 
 #: src/ui/settings_widget.ui:768
 msgid "While Busy"
@@ -818,7 +818,7 @@ msgstr "Når opptatt"
 
 #: src/ui/settings_widget.ui:781
 msgid "<small>Receive notifications even while you are busy</small>"
-msgstr "<small>Motta merknader selv når du er opptatt"
+msgstr "<small>Motta merknader selv når du er opptatt</small>"
 
 #: src/ui/settings_widget.ui:866
 msgid "Tray icon"
@@ -830,7 +830,7 @@ msgstr "Minimer"
 
 #: src/ui/settings_widget.ui:940
 msgid "<small>Minimize to tray instead of close</small>"
-msgstr "<small>Minimer til systemkurv istedenfor å lukke"
+msgstr "<small>Minimer til systemkurv istedenfor å lukke</small>"
 
 #: src/ui/settings_widget.ui:1025
 msgid "Privacy"
@@ -842,7 +842,7 @@ msgstr "Send skrivingsstatus"
 
 #: src/ui/settings_widget.ui:1081
 msgid "<small>Show others when you are typing</small>"
-msgstr "<small>Medgi til andre at du skriver"
+msgstr "<small>Medgi til andre at du skriver</small>"
 
 #: src/ui/settings_widget.ui:1137
 msgid "Keep History"
@@ -850,7 +850,7 @@ msgstr "Behold historikk"
 
 #: src/ui/settings_widget.ui:1150
 msgid "<small>Store your sent and received messages</small>"
-msgstr "<small>Lagre dine sendte og mottatte meldinger"
+msgstr "<small>Lagre dine sendte og mottatte meldinger</small>"
 
 #: src/ui/settings_widget.ui:1281
 msgid "<b>Connection</b>"
@@ -862,7 +862,7 @@ msgstr "UDP"
 
 #: src/ui/settings_widget.ui:1336
 msgid "<small>Use UDP communication when available</small>"
-msgstr "<small>Bruk UDP-tilkobling når tilgjengelig"
+msgstr "<small>Bruk UDP-tilkobling når tilgjengelig</small>"
 
 #: src/ui/settings_widget.ui:1392
 msgid "IPv6"
@@ -878,7 +878,7 @@ msgstr "Lokal oppdaging"
 
 #: src/ui/settings_widget.ui:1474
 msgid "<small>Look for peers on the local network</small>"
-msgstr "<small>Se etter likemenn på lokalnettverket"
+msgstr "<small>Se etter likemenn på lokalnettverket</small>"
 
 #: src/ui/settings_widget.ui:1530
 #, fuzzy
@@ -944,7 +944,8 @@ msgstr "Tilbakestill kallenavn"
 
 #: src/ui/friend_info_widget.ui:254
 msgid "<small>Set a custom alias to quickly find your friends</small>"
-msgstr "<small>Sett ett egendefinert kallenavn for å finne vennene dine raskt"
+msgstr ""
+"<small>Sett ett egendefinert kallenavn for å finne vennene dine raskt</small>"
 
 #: src/ui/friend_info_widget.ui:364
 msgid "Auto accept conference invites"
@@ -965,7 +966,7 @@ msgstr "Offentlig nøkkel:"
 
 #: src/ui/error_widget.ui:104
 msgid "Oh no! Something broke!"
-msgstr "Oida. Noe gikk i stykker."
+msgstr "Oida. Noe gikk i stykker!"
 
 #: src/ui/error_widget.ui:119
 msgid "Please check your settings and retry"
