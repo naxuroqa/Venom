@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
-"PO-Revision-Date: 2018-12-04 13:53+0000\n"
+"PO-Revision-Date: 2018-12-05 21:09+0000\n"
 "Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/venom/"
 "translations/de/>\n"
@@ -31,7 +31,7 @@ msgstr "Neue Nachricht von %s"
 #: src/viewmodel/ContactListViewModel.vala:118 src/ui/conference_window.ui:137
 #: src/ui/conversation_window.ui:86
 msgid "Show details"
-msgstr "Zeige Details"
+msgstr "Details anzeigen"
 
 #: src/core/NotificationListener.vala:94
 msgid "Mute conversation"
@@ -121,7 +121,7 @@ msgstr "Verlasse Konferenz"
 
 #: src/viewmodel/ContactListViewModel.vala:121
 msgid "Remove friend"
-msgstr "Entferne Freund"
+msgstr "Freund entfernen"
 
 #: src/viewmodel/ContactListViewModel.vala:144
 #, c-format
@@ -139,11 +139,11 @@ msgstr[1] "%u neue Konferenzeinladungen"
 
 #: src/viewmodel/FriendInfoViewModel.vala:66
 msgid "Online right now"
-msgstr "Ist gerade online"
+msgstr "Jetzt online"
 
 #: src/viewmodel/FriendInfoViewModel.vala:68
 msgid "Never seen online"
-msgstr "War noch nie online"
+msgstr "Noch nie online gesehen"
 
 #: src/viewmodel/FriendInfoViewModel.vala:70
 #, c-format
@@ -236,11 +236,11 @@ msgstr "Einstellungen"
 
 #: src/view/ApplicationWindow.vala:204 src/ui/app_menu.ui:34
 msgid "About"
-msgstr "Info"
+msgstr "Über"
 
 #: src/view/ApplicationWindow.vala:208 src/ui/app_menu.ui:38
 msgid "Logout"
-msgstr "Ausloggen"
+msgstr "Abmelden"
 
 #: src/view/ApplicationWindow.vala:209
 msgid "Quit"
@@ -256,7 +256,7 @@ msgstr "Benutzername darf nicht leer sein"
 
 #: src/view/LoginWidget.vala:175
 msgid "Username is already taken"
-msgstr "Benutzername ist schon vergeben"
+msgstr "Dieser Benutzername ist bereits vergeben"
 
 #: src/view/LoginWidget.vala:189
 msgid "Password must be at least 6 characters long"
@@ -264,7 +264,7 @@ msgstr "Passwort muss mindestens 6 Zeichen lang sein"
 
 #: src/view/LoginWidget.vala:202
 msgid "Passwords must match"
-msgstr "Passwörter müssen übereinstimmen"
+msgstr "Die Passwörter stimmen nicht überein"
 
 #: src/view/LoginWidget.vala:226
 msgid "Creating profile failed: "
@@ -292,7 +292,7 @@ msgstr "Spixi <spxmar@gmail.com>, naxuroqa <naxuroqa@gmail.com>"
 
 #: src/view/WelcomeWidget.vala:129
 msgid "A new kind of instant messaging"
-msgstr "Eine neue Art des Instant Messagings"
+msgstr "Sichere Kommunikation für jedermann"
 
 #: src/view/WelcomeWidget.vala:137
 msgid "Chat with your friends and family without anyone else listening in."
@@ -342,24 +342,24 @@ msgstr "Dateiübertragungen"
 #: src/view/FriendRequestWidget.vala:44
 #, c-format
 msgid "“%s”"
-msgstr "\"%s\""
+msgstr "„%s“"
 
 #: src/view/ConversationWindow.vala:127
 #, c-format
 msgid "%s is typing…"
-msgstr "%s tippt gerade …"
+msgstr "%s tippt gerade…"
 
 #: src/view/ConversationWindow.vala:230
 msgid "Choose a file to send"
-msgstr "Wähle eine Datei zum Senden aus"
+msgstr "Datei zum Senden auswählen"
 
 #: src/view/ConversationWindow.vala:233
 msgid "_Open"
-msgstr "Öffnen"
+msgstr "_Öffnen"
 
 #: src/view/ConversationWindow.vala:234 src/view/FileTransferEntry.vala:86
 msgid "_Cancel"
-msgstr "Abbre_chen"
+msgstr "_Abbrechen"
 
 #: src/view/FileTransferEntry.vala:85
 msgid "_Save"
@@ -388,7 +388,7 @@ msgstr "Passwort"
 
 #: src/ui/login_widget.ui:169 src/ui/login_widget.ui:330
 msgid "Login"
-msgstr "Einloggen"
+msgstr "Anmelden"
 
 #: src/ui/login_widget.ui:205
 msgid "Other profiles"
@@ -396,7 +396,7 @@ msgstr "Andere Profile"
 
 #: src/ui/login_widget.ui:267
 msgid "Import profile…"
-msgstr "Importiere Profil…"
+msgstr "Profil importieren…"
 
 #: src/ui/login_widget.ui:395
 msgid "New profile"
@@ -408,7 +408,7 @@ msgstr "Benutzername"
 
 #: src/ui/login_widget.ui:526
 msgid "Confirm Password"
-msgstr "Bestätige Passwort"
+msgstr "Passwort bestätigen"
 
 #: src/ui/login_widget.ui:570 src/ui/create_groupchat_widget.ui:282
 msgid "Create"
@@ -416,15 +416,15 @@ msgstr "Erstellen"
 
 #: src/ui/login_widget.ui:620
 msgid "Create profile"
-msgstr "Erstelle Profil"
+msgstr "Profil erstellen"
 
 #: src/ui/file_transfer_entry.ui:56 src/ui/file_transfer_entry_inline.ui:62
 msgid "Remove transfer"
-msgstr "Lösche Dateiübertragung"
+msgstr "Dateiübertragung löschen"
 
 #: src/ui/file_transfer_entry.ui:124 src/ui/file_transfer_entry_inline.ui:130
 msgid "Open file"
-msgstr "Öffne Datei"
+msgstr "Datei öffnen"
 
 #: src/ui/file_transfer_entry.ui:148 src/ui/file_transfer_entry_inline.ui:154
 msgid "Start transfer"
@@ -440,7 +440,7 @@ msgstr "Übertragung stoppen"
 
 #: src/ui/create_groupchat_widget.ui:68 src/ui/contact_list_widget.ui:356
 msgid "Create a conference"
-msgstr "Erstelle eine Konferenz"
+msgstr "Konferenz erstellen"
 
 #: src/ui/create_groupchat_widget.ui:102
 msgid "_Title:"
@@ -452,11 +452,11 @@ msgstr "Konferenz"
 
 #: src/ui/create_groupchat_widget.ui:122 src/ui/add_contact_widget.ui:188
 msgid "paste from clipboard"
-msgstr "Zwischenablage einfügen"
+msgstr "Aus der Zwischenablage einfügen"
 
 #: src/ui/create_groupchat_widget.ui:156
 msgid "<small>Name the conference (optional)</small>"
-msgstr "<small>Gib der Konferenz einen Namen (optional)</small>"
+msgstr "<small>Benenne die Konferenz (optional)</small>"
 
 #: src/ui/create_groupchat_widget.ui:188
 msgid "T_ype:"
@@ -529,11 +529,11 @@ msgstr "_Beenden"
 
 #: src/ui/contact_list_widget.ui:56 src/ui/add_contact_widget.ui:350
 msgid "Add a friend"
-msgstr "Füge einen Freund hinzu"
+msgstr "Freund hinzufügen"
 
 #: src/ui/contact_list_widget.ui:217
 msgid "Filter contacts by status"
-msgstr "Zeige nur Kontakte mit Status"
+msgstr "Kontakte nach Status filtern"
 
 #: src/ui/contact_list_widget.ui:223
 msgid "All"
@@ -545,31 +545,31 @@ msgstr "Kontakt hinzufügen"
 
 #: src/ui/contact_list_widget.ui:381
 msgid "View file transfers"
-msgstr "Zeige Dateiübetragungen"
+msgstr "Dateiübertragungen anzeigen"
 
 #: src/ui/contact_list_widget.ui:406
 msgid "Open preferences"
-msgstr "Öffne Einstellungen"
+msgstr "Einstellungen öffnen"
 
 #: src/ui/contact_list_widget.ui:448
 msgid "Edit your profile"
-msgstr "Bearbeite dein Profil"
+msgstr "Profil bearbeiten"
 
 #: src/ui/contact_list_widget.ui:476
 msgid "Change your status"
-msgstr "Ändere deinen Status"
+msgstr "Status ändern"
 
 #: src/ui/conversation_window.ui:37
 msgid "Start a call"
-msgstr "Starte einen Anruf"
+msgstr "Anruf starten"
 
 #: src/ui/conversation_window.ui:62
 msgid "Start a video call"
-msgstr "Starte einen Videoanruf"
+msgstr "Videoanruf starten"
 
 #: src/ui/conversation_window.ui:155
 msgid "Attach screenshot…"
-msgstr "Screenshot anhängen…"
+msgstr "Bildschirmfoto anhängen…"
 
 #: src/ui/conversation_window.ui:180
 msgid "Attach file…"
@@ -577,11 +577,11 @@ msgstr "Datei anhängen…"
 
 #: src/ui/conversation_window.ui:317
 msgid "Insert attachment"
-msgstr "Füge einen Anhang hinzu"
+msgstr "Anhnang hinzufügen"
 
 #: src/ui/friend_request_widget.ui:66 src/ui/conference_invite_entry.ui:107
 msgid "Accept"
-msgstr "Annehmen"
+msgstr "Akzeptieren"
 
 #: src/ui/friend_request_widget.ui:83 src/ui/conference_invite_entry.ui:124
 msgid "Deny"
@@ -589,7 +589,7 @@ msgstr "Ablehnen"
 
 #: src/ui/conference_info_widget.ui:78
 msgid "Leave Conference"
-msgstr "Verlasse Konferenz"
+msgstr "Konferenz verlassen"
 
 #: src/ui/conference_info_widget.ui:127
 msgid "Title:"
@@ -615,7 +615,7 @@ msgstr "Mitglieder"
 
 #: src/ui/welcome_widget.ui:123
 msgid "Learn more"
-msgstr "Erfahre mehr"
+msgstr "Mehr erfahren"
 
 #: src/ui/welcome_widget.ui:169
 msgid "Get involved"
@@ -631,7 +631,7 @@ msgstr "Bitte lass mich dich meiner Kontaktliste hinzufügen. 😁"
 
 #: src/ui/add_contact_widget.ui:133
 msgid "Send a friend request"
-msgstr "Sende eine Freundschaftsanfrage"
+msgstr "Freundschaftsanfrage versenden"
 
 #: src/ui/add_contact_widget.ui:167
 msgid "_ID:"
@@ -662,7 +662,7 @@ msgstr ""
 
 #: src/ui/add_contact_widget.ui:333
 msgid "Send"
-msgstr "Abschicken"
+msgstr "Senden"
 
 #: src/ui/add_contact_widget.ui:363 src/ui/add_contact_widget.ui:397
 msgid "Friend requests"
@@ -674,15 +674,15 @@ msgstr "Zurücksetzen"
 
 #: src/ui/user_info_widget.ui:87
 msgid "Take a picture"
-msgstr "Nimm ein Bild auf"
+msgstr "ein Foto machen"
 
 #: src/ui/user_info_widget.ui:109
 msgid "Choose a file"
-msgstr "Wähle eine Datei"
+msgstr "Datei auswählen"
 
 #: src/ui/user_info_widget.ui:110
 msgid "Choose an avatar"
-msgstr "Wähle einen Avatar aus"
+msgstr "Kontaktbild auswählen"
 
 #: src/ui/user_info_widget.ui:210
 msgid "Username:"
@@ -698,7 +698,7 @@ msgstr "Tox"
 
 #: src/ui/user_info_widget.ui:349
 msgid "Copy to clipboard"
-msgstr "Kopiere in die Zwischenablage"
+msgstr "In Zwischenablage kopieren"
 
 #: src/ui/user_info_widget.ui:381
 msgid "ID:"
@@ -714,19 +714,19 @@ msgstr "Tox NoSpam"
 
 #: src/ui/user_info_widget.ui:532
 msgid "Generate new random nospam"
-msgstr "Erzeuge neues zufälliges NoSpam"
+msgstr "Zufälliges NoSpam erzeugen"
 
 #: src/ui/user_info_widget.ui:546
 msgid "Set this nospam"
-msgstr "Setze dieses NoSpam"
+msgstr "Dieses NoSpam setzen"
 
 #: src/ui/user_info_widget.ui:578
 msgid "Previous nospams"
-msgstr "Vorherige nospams"
+msgstr "Bisherige NoSpams"
 
 #: src/ui/settings_widget.ui:78
 msgid "General"
-msgstr "Generell"
+msgstr "Allgemein"
 
 #: src/ui/settings_widget.ui:158
 msgid "Bootstrap nodes"
@@ -774,7 +774,7 @@ msgstr "<small>Prüfe deine Rechtschreibung während du tippst</small>"
 
 #: src/ui/settings_widget.ui:699
 msgid "Sounds"
-msgstr "Töne"
+msgstr "Klänge"
 
 #: src/ui/settings_widget.ui:712
 msgid "<small>Play sounds on new notifications</small>"
@@ -795,7 +795,7 @@ msgstr "Taskleistensymbol"
 
 #: src/ui/settings_widget.ui:927
 msgid "Minimize"
-msgstr "Minimiere"
+msgstr "Minimieren"
 
 #: src/ui/settings_widget.ui:940
 msgid "<small>Minimize to tray instead of close</small>"
@@ -807,7 +807,7 @@ msgstr "Privatsphäre"
 
 #: src/ui/settings_widget.ui:1068
 msgid "Send typing status"
-msgstr "Sende Tippstatus"
+msgstr "Tippbenachrichtigungen senden"
 
 #: src/ui/settings_widget.ui:1081
 msgid "<small>Show others when you are typing</small>"
@@ -815,7 +815,7 @@ msgstr "<small>Zeige anderen wenn du tippst</small>"
 
 #: src/ui/settings_widget.ui:1137
 msgid "Keep History"
-msgstr "Behalte Verlauf"
+msgstr "Chatverlauf speichern"
 
 #: src/ui/settings_widget.ui:1150
 msgid "<small>Store your sent and received messages</small>"
@@ -863,7 +863,7 @@ msgstr ""
 
 #: src/ui/settings_widget.ui:1681
 msgid "Update bootstrap nodes"
-msgstr "Erneuere bootstrap Knoten"
+msgstr "Bootstrap-Knoten aktualisieren"
 
 #: src/ui/settings_widget.ui:1716
 msgid "<b>Bootstrap nodes</b>"
