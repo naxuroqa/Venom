@@ -1,14 +1,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
+"PO-Revision-Date: 2018-12-04 13:53+0000\n"
+"Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/venom/"
+"translations/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: POEditor.com\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: src/undo/TextBufferUndoBinding.vala:169
 msgid "_Redo"
@@ -382,7 +386,7 @@ msgstr "Immagine:"
 
 #: src/ui/file_transfer_widget.ui:140
 msgid "No file transfers yet …"
-msgstr "Nessun trasferimento di file ancora ..."
+msgstr "Nessun trasferimento di file ancora .…"
 
 #: src/ui/login_widget.ui:132
 msgid "Login automatically"
