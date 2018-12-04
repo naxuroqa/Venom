@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
-"PO-Revision-Date: 2018-12-03 11:23+0000\n"
+"PO-Revision-Date: 2018-12-04 13:53+0000\n"
 "Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "venom/translations/pt_BR/>\n"
@@ -345,7 +345,7 @@ msgstr ""
 #: src/view/ConversationWindow.vala:127
 #, c-format
 msgid "%s is typing…"
-msgstr "%s está digitando..."
+msgstr "%s está digitando…"
 
 #: src/view/ConversationWindow.vala:230
 msgid "Choose a file to send"
@@ -374,7 +374,7 @@ msgstr "Imagens"
 
 #: src/ui/file_transfer_widget.ui:140
 msgid "No file transfers yet …"
-msgstr "Nenhuma transferência de aquivos ainda ..."
+msgstr "Sem transferências de arquivos ainda …"
 
 #: src/ui/login_widget.ui:132
 msgid "Login automatically"
@@ -507,7 +507,7 @@ msgstr "Inserir Emoji"
 
 #: src/ui/conference_window.ui:179
 msgid "No one here..."
-msgstr "Ninguém está aqui"
+msgstr "Ninguém aqui..."
 
 #: src/ui/conference_window.ui:216 src/ui/conversation_window.ui:129
 msgid "No messages yet..."
