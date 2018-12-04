@@ -1,12 +1,17 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: Venom\n"
+"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
+"PO-Revision-Date: 2018-12-04 11:29+0000\n"
+"Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
+"Language-Team: Portuguese <https://hosted.weblate.org/projects/venom/"
+"translations/pt/>\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: POEditor.com\n"
-"Project-Id-Version: Venom\n"
-"Language: pt\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: src/core/Application.vala:36
 msgid "Set level of messages to log"
@@ -38,7 +43,7 @@ msgstr "Embaladores"
 
 #: src/view/AboutDialog.vala:58
 msgid "translator-credits"
-msgstr ""
+msgstr "Rodrigo Antonio Müller"
 
 #: src/ui/add_contact_widget.ui:65
 msgid "Please let me add you to my contact list. 😁"
@@ -257,26 +262,26 @@ msgstr ""
 
 #: src/viewmodel/ContactListEntryViewModel.vala:61
 msgid "New Message!"
-msgstr ""
+msgstr "Nova mensagem"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:67
 msgid "Offline"
-msgstr ""
+msgstr "Desconectados"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:75
 #: src/ui/user_status_menu.ui:34
 msgid "Away"
-msgstr ""
+msgstr "Indisponivel"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:77
 #: src/ui/user_status_menu.ui:40
 msgid "Busy"
-msgstr ""
+msgstr "Ocupado"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:79
 #: src/ui/user_status_menu.ui:28
 msgid "Online"
-msgstr ""
+msgstr "Conectado"
 
 #: src/core/TimeStamp.vala:40
 msgid "Today at %s"
@@ -300,11 +305,11 @@ msgstr ""
 
 #: src/view/ConversationWindow.vala:230
 msgid "_Open"
-msgstr ""
+msgstr "_Abrir"
 
 #: src/view/FileTransferEntry.vala:85
 msgid "_Save"
-msgstr ""
+msgstr "G_ravar"
 
 #: src/ui/file_transfer_widget.ui:140
 msgid "No file transfers yet …"
@@ -312,11 +317,11 @@ msgstr ""
 
 #: src/ui/file_transfer_entry.ui:56 src/ui/file_transfer_entry_inline.ui:62
 msgid "Remove transfer"
-msgstr ""
+msgstr "Continuar transferência"
 
 #: src/ui/file_transfer_entry.ui:124 src/ui/file_transfer_entry_inline.ui:130
 msgid "Open file"
-msgstr ""
+msgstr "Abrir o ficheiro"
 
 #: src/ui/file_transfer_entry.ui:148 src/ui/file_transfer_entry_inline.ui:154
 msgid "Start transfer"
@@ -324,7 +329,7 @@ msgstr ""
 
 #: src/ui/file_transfer_entry.ui:169 src/ui/file_transfer_entry_inline.ui:175
 msgid "Pause transfer"
-msgstr ""
+msgstr "Pausar transferência"
 
 #: src/ui/file_transfer_entry.ui:190 src/ui/file_transfer_entry_inline.ui:196
 msgid "Stop transfer"
@@ -332,11 +337,11 @@ msgstr ""
 
 #: src/ui/create_groupchat_widget.ui:212
 msgid "Text"
-msgstr ""
+msgstr "Texto"
 
 #: src/ui/create_groupchat_widget.ui:228
 msgid "Speech"
-msgstr ""
+msgstr "Speech"
 
 #: src/ui/peer_entry_compact.ui:78 src/ui/peer_entry.ui:89
 msgid "That's you"
@@ -344,11 +349,11 @@ msgstr ""
 
 #: src/ui/welcome_widget.ui:173
 msgid "Get involved"
-msgstr ""
+msgstr "Envolver-se"
 
 #: src/ui/settings_widget.ui:158
 msgid "Proxy"
-msgstr ""
+msgstr "Proxy"
 
 #: src/ui/settings_widget.ui:308
 msgid "<small>Use a dark variant of the theme</small>"
@@ -361,7 +366,7 @@ msgstr ""
 #: src/ui/conference_info_widget.ui:196 src/ui/settings_widget.ui:598
 #: src/ui/friend_info_widget.ui:291
 msgid "Notifications"
-msgstr ""
+msgstr "Notificações"
 
 #: src/ui/settings_widget.ui:1184
 msgid "Keep forever"
@@ -381,7 +386,7 @@ msgstr ""
 
 #: src/ui/settings_widget.ui:1497
 msgid "IPv6"
-msgstr ""
+msgstr "IPv6"
 
 #: src/ui/settings_widget.ui:1510
 msgid "<small>Allow both IPv4 and IPv6 communication</small>"
@@ -413,7 +418,7 @@ msgstr ""
 
 #: src/ui/settings_widget.ui:1945
 msgid "System settings"
-msgstr ""
+msgstr "Configurações do sistema"
 
 #: src/ui/settings_widget.ui:1958
 msgid "<small>Use your systems proxy settings</small>"
@@ -429,7 +434,7 @@ msgstr ""
 
 #: src/ui/settings_widget.ui:2066
 msgid "Host"
-msgstr ""
+msgstr "Host"
 
 #: src/ui/settings_widget.ui:2106
 msgid "<small>Set a SOCKS5 proxy to connect to</small>"
@@ -459,7 +464,7 @@ msgstr ""
 #: src/viewmodel/ContactListViewModel.vala:118 src/ui/conference_window.ui:137
 #: src/ui/conversation_window.ui:86
 msgid "Show details"
-msgstr ""
+msgstr "Mostrar detalhes"
 
 #: src/viewmodel/ContactListViewModel.vala:144
 msgid "%u new friend request"
@@ -475,7 +480,7 @@ msgstr[1] ""
 
 #: src/core/TimeStamp.vala:26
 msgid "Just now"
-msgstr ""
+msgstr "Agora"
 
 #: src/core/TimeStamp.vala:31
 msgid "%u minute ago"
@@ -515,7 +520,7 @@ msgstr ""
 
 #: src/ui/conversation_window.ui:62
 msgid "Start a video call"
-msgstr ""
+msgstr "Start a video call"
 
 #: src/ui/conference_info_widget.ui:78
 msgid "Leave Conference"
@@ -539,15 +544,15 @@ msgstr ""
 
 #: src/ui/contact_list_widget.ui:56 src/ui/add_contact_widget.ui:349
 msgid "Add a friend"
-msgstr ""
+msgstr "Adicionar um contato"
 
 #: src/ui/add_contact_widget.ui:362 src/ui/add_contact_widget.ui:396
 msgid "Friend requests"
-msgstr ""
+msgstr "Solicitações de amizade"
 
 #: src/ui/user_info_widget.ui:255
 msgid "Status message:"
-msgstr ""
+msgstr "status da mensagem"
 
 #: src/ui/settings_widget.ui:1441
 msgid "<small>Use UDP communication when available</small>"
@@ -559,7 +564,7 @@ msgstr ""
 
 #: src/core/Application.vala:70
 msgid "Settings"
-msgstr ""
+msgstr "Configurações"
 
 #: src/ui/conference_window.ui:216 src/ui/conversation_window.ui:129
 msgid "No messages yet..."
@@ -567,7 +572,7 @@ msgstr ""
 
 #: src/ui/contact_list_widget.ui:448
 msgid "Edit your profile"
-msgstr ""
+msgstr "Editar o seu perfil"
 
 #: src/ui/contact_list_widget.ui:476
 msgid "Change your status"
@@ -575,7 +580,7 @@ msgstr ""
 
 #: src/ui/friend_info_widget.ui:559
 msgid "Public key:"
-msgstr ""
+msgstr "Chave pública:"
 
 #: src/view/ConversationWindow.vala:227
 msgid "Choose a file to send"
@@ -583,11 +588,11 @@ msgstr ""
 
 #: src/view/UserInfoWidget.vala:56
 msgid "Images"
-msgstr ""
+msgstr "Imagens"
 
 #: src/ui/user_info_widget.ui:62
 msgid "Reset"
-msgstr ""
+msgstr "Reiniciar"
 
 #: src/ui/user_info_widget.ui:87
 msgid "Take a picture"
@@ -595,7 +600,7 @@ msgstr ""
 
 #: src/ui/user_info_widget.ui:109
 msgid "Choose a file"
-msgstr ""
+msgstr "Escolher um arquivo…"
 
 #: src/ui/conference_window.ui:179
 msgid "No one here..."
@@ -627,7 +632,7 @@ msgstr ""
 
 #: src/view/ConversationWindow.vala:124
 msgid "%s is typing…"
-msgstr ""
+msgstr "%1 está digitando"
 
 #: src/ui/conversation_window.ui:155
 msgid "Attach screenshot…"
@@ -667,7 +672,7 @@ msgstr ""
 
 #: src/core/NotificationListener.vala:116
 msgid "Friend request"
-msgstr ""
+msgstr "Solicitação de contato"
 
 #: src/core/NotificationListener.vala:164
 msgid "Conference invite"
@@ -679,7 +684,7 @@ msgstr ""
 
 #: src/core/Application.vala:77
 msgid "Log"
-msgstr ""
+msgstr "Registro"
 
 #: src/ui/settings_widget.ui:377
 msgid "<small>Turn on animated transitions</small>"
@@ -715,11 +720,11 @@ msgstr ""
 
 #: src/ui/settings_widget.ui:825
 msgid "Tray icon"
-msgstr ""
+msgstr "Ícone de bandeja"
 
 #: src/ui/settings_widget.ui:885
 msgid "Minimize"
-msgstr ""
+msgstr "Minimizar"
 
 #: src/ui/settings_widget.ui:898
 msgid "<small>Minimize to tray instead of close</small>"
@@ -743,11 +748,11 @@ msgstr ""
 
 #: src/ui/error_widget.ui:133
 msgid "Info"
-msgstr ""
+msgstr "Informação"
 
 #: src/ui/error_widget.ui:170
 msgid "Retry"
-msgstr ""
+msgstr "Repetir"
 
 #: src/core/NotificationListener.vala:94
 msgid "Mute conversation"
@@ -767,7 +772,7 @@ msgstr ""
 
 #: src/viewmodel/ContactListViewModel.vala:121
 msgid "Remove friend"
-msgstr ""
+msgstr "Remover contato"
 
 #: src/tox/ConferenceMessage.vala:67
 msgid "%s in %s"
@@ -803,7 +808,7 @@ msgstr ""
 
 #: src/view/SettingsWidget.vala:78 data/chat.tox.venom.desktop.in:17
 msgid "Preferences"
-msgstr ""
+msgstr "Preferências"
 
 #: src/ui/create_groupchat_widget.ui:375
 msgid "Accept all"
@@ -816,4 +821,3 @@ msgstr ""
 #: src/ui/contact_list_widget.ui:406
 msgid "Open preferences"
 msgstr ""
-
