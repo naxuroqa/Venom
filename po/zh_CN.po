@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
-"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
-"POT-Creation-Date: 2018-02-19 16:47+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-12-01 13:43+0100\n"
 "PO-Revision-Date: 2018-12-04 11:29+0000\n"
 "Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
@@ -19,379 +19,1040 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 3.4-dev\n"
 
-#: src/Main.vala:29
-msgid "Set level of messages to log"
+#: src/undo/TextBufferUndoBinding.vala:169
+msgid "_Redo"
 msgstr ""
 
-#: src/Main.vala:29
-msgid "<loglevel>"
+#: src/undo/TextBufferUndoBinding.vala:174
+msgid "_Undo"
 msgstr ""
 
-#: src/Main.vala:30
-msgid "Display version number"
-msgstr "显示版本号"
-
-#: src/Main.vala:65
-#, c-format
-msgid "error: %s\n"
-msgstr "错误：%s"
-
-#: src/Main.vala:66
-#, c-format
-msgid "Run '%s --help' to see a full list of available command line options.\n"
-msgstr "运行“%s --help”以查看可用命令行选项完整的列表。"
-
-#: src/core/NotificationListener.vala:51
+#: src/core/NotificationListener.vala:86
 #, c-format
 msgid "New message from %s"
+msgstr ""
+
+#: src/core/NotificationListener.vala:93
+#: src/viewmodel/ContactListViewModel.vala:118 src/ui/conference_window.ui:137
+#: src/ui/conversation_window.ui:86
+msgid "Show details"
+msgstr ""
+
+#: src/core/NotificationListener.vala:94
+msgid "Mute conversation"
+msgstr ""
+
+#: src/core/NotificationListener.vala:116
+#, fuzzy
+msgid "Friend request"
+msgstr "发送好友请求"
+
+#: src/core/NotificationListener.vala:139
+#, c-format
+msgid "New file from %s"
+msgstr ""
+
+#: src/core/NotificationListener.vala:164
+#, fuzzy
+msgid "Conference invite"
+msgstr "会议"
+
+#: src/core/NotificationListener.vala:165
+#, c-format
+msgid "%s invites you to a conference"
+msgstr ""
+
+#: src/core/TimeStamp.vala:26
+msgid "Just now"
+msgstr ""
+
+#: src/core/TimeStamp.vala:31
+#, c-format
+msgid "%u minute ago"
+msgid_plural "%u minutes ago"
+msgstr[0] ""
+
+#: src/core/TimeStamp.vala:36
+#, c-format
+msgid "%u hour ago"
+msgid_plural "%u hours ago"
+msgstr[0] ""
+
+#: src/core/TimeStamp.vala:40
+#, c-format
+msgid "Today at %s"
+msgstr ""
+
+#: src/core/TimeStamp.vala:44
+#, c-format
+msgid "Yesterday at %s"
 msgstr ""
 
 #: src/core/R.vala:70
 msgid "Tox User"
 msgstr "Tox 用户"
 
-#: src/tox/GroupchatContact.vala:45
+#: src/core/Application.vala:37
+msgid "Set level of messages to log"
+msgstr ""
+
+#: src/core/Application.vala:37
+msgid "<loglevel>"
+msgstr ""
+
+#: src/core/Application.vala:38
+msgid "Display version number"
+msgstr "显示版本号"
+
+#: src/core/Application.vala:39
+#, fuzzy
+msgid "Show preferences"
+msgstr "打开首选项"
+
+#: src/core/Application.vala:73
+msgid "Settings"
+msgstr "设置"
+
+#: src/viewmodel/ContactListViewModel.vala:102
+#, fuzzy
+msgid "New conference…"
+msgstr "会议"
+
+#: src/viewmodel/ContactListViewModel.vala:115
+msgid "Invite to conference…"
+msgstr ""
+
+#: src/viewmodel/ContactListViewModel.vala:121
+#, fuzzy
+msgid "Leave conference"
+msgstr "会议"
+
+#: src/viewmodel/ContactListViewModel.vala:121
+msgid "Remove friend"
+msgstr ""
+
+#: src/viewmodel/ContactListViewModel.vala:144
+#, fuzzy, c-format
+msgid "%u new friend request"
+msgid_plural "%u new friend requests"
+msgstr[0] "发送好友请求"
+
+#: src/viewmodel/ContactListViewModel.vala:152
+#, c-format
+msgid "%u new conference invite"
+msgid_plural "%u new conference invites"
+msgstr[0] ""
+
+#: src/viewmodel/FriendInfoViewModel.vala:66
+msgid "Online right now"
+msgstr ""
+
+#: src/viewmodel/FriendInfoViewModel.vala:68
+msgid "Never seen online"
+msgstr ""
+
+#: src/viewmodel/FriendInfoViewModel.vala:70
+#, c-format
+msgid "Last seen: %s"
+msgstr ""
+
+#: src/viewmodel/ContactListEntryViewModel.vala:61
+#, fuzzy
+msgid "New Message!"
+msgstr "状态消息:"
+
+#: src/viewmodel/ContactListEntryViewModel.vala:67
+msgid "Offline"
+msgstr "离线"
+
+#: src/viewmodel/ContactListEntryViewModel.vala:75
+#: src/view/ApplicationWindow.vala:198 src/ui/user_status_menu.ui:34
+msgid "Away"
+msgstr "离开"
+
+#: src/viewmodel/ContactListEntryViewModel.vala:77
+#: src/view/ApplicationWindow.vala:199 src/ui/user_status_menu.ui:40
+msgid "Busy"
+msgstr "忙"
+
+#: src/viewmodel/ContactListEntryViewModel.vala:79
+#: src/view/ApplicationWindow.vala:197 src/ui/user_status_menu.ui:28
+msgid "Online"
+msgstr "在线"
+
+#: src/viewmodel/MessageViewModel.vala:66
+msgid "Notice"
+msgstr ""
+
+#: src/viewmodel/MessageViewModel.vala:90
+msgid "Message sent ✓"
+msgstr "已发送。"
+
+#: src/viewmodel/MessageViewModel.vala:93
+msgid "Message received ✓"
+msgstr "收到的邮件"
+
+#: src/tox/ToxMessage.vala:53 src/tox/ConferenceMessage.vala:57
+msgid "me"
+msgstr ""
+
+#: src/tox/ToxAdapterFriendListener.vala:29
+#, c-format
+msgid "%s has been removed from your contact list."
+msgstr ""
+
+#: src/tox/ToxAdapterFriendListener.vala:30
+msgid "Undo"
+msgstr ""
+
+#: src/tox/Conference.vala:44
+#, c-format
+msgid "Unnamed conference %u"
+msgstr ""
+
+#: src/tox/Conference.vala:48
 #, c-format
 msgid "%u Peers online"
 msgstr ""
 
-#: src/ui/AboutDialog.vala:53
+#: src/tox/ToxSession.vala:646
+msgid "Address must consist of 76 hexadecimal characters"
+msgstr ""
+
+#: src/tox/ConferenceMessage.vala:64
+#, fuzzy, c-format
+msgid "%s in %s"
+msgstr "%s 现在 %s。\n"
+
+#: src/view/ApplicationWindow.vala:194
+msgid "Hide"
+msgstr ""
+
+#: src/view/ApplicationWindow.vala:194
+msgid "Show"
+msgstr ""
+
+#: src/view/ApplicationWindow.vala:200
+#, fuzzy
+msgid "Status"
+msgstr "状态消息:"
+
+#: src/view/ApplicationWindow.vala:203 src/view/SettingsWidget.vala:77
+#: data/com.github.naxuroqa.venom.desktop.in:17
+#, fuzzy
+msgid "Preferences"
+msgstr "首选项(_P)"
+
+#: src/view/ApplicationWindow.vala:204 src/ui/app_menu.ui:34
+msgid "About"
+msgstr "关于"
+
+#: src/view/ApplicationWindow.vala:208 src/ui/app_menu.ui:38
+msgid "Logout"
+msgstr ""
+
+#: src/view/ApplicationWindow.vala:209
+#, fuzzy
+msgid "Quit"
+msgstr "退出(_Q)"
+
+#: src/view/LoginWidget.vala:167
+msgid "Wrong password"
+msgstr ""
+
+#: src/view/LoginWidget.vala:173
+msgid "Username can not be empty"
+msgstr ""
+
+#: src/view/LoginWidget.vala:175
+msgid "Username is already taken"
+msgstr ""
+
+#: src/view/LoginWidget.vala:189
+msgid "Password must be at least 6 characters long"
+msgstr ""
+
+#: src/view/LoginWidget.vala:202
+msgid "Passwords must match"
+msgstr ""
+
+#: src/view/LoginWidget.vala:226
+#, fuzzy
+msgid "Creating profile failed: "
+msgstr "添加好友失败"
+
+#: src/view/LoginWidget.vala:249
+msgid "Profile is encrypted"
+msgstr ""
+
+#: src/view/AboutDialog.vala:50
 msgid "Packagers"
 msgstr ""
 
-#: src/ui/AboutDialog.vala:58
+#: src/view/AboutDialog.vala:51 data/com.github.naxuroqa.venom.desktop.in:4
+msgid "A modern Tox client for the Linux desktop"
+msgstr ""
+
+#: src/view/AboutDialog.vala:52
+msgid "Copyright © 2013-2018 Venom authors and contributors"
+msgstr ""
+
+#: src/view/AboutDialog.vala:56
 msgid "translator-credits"
 msgstr ""
 "Careone https://launchpad.net/~zzbusagain\n"
 "Wang Dianjin https://launchpad.net/~tuhaihe\n"
 "giwhub https://github.com/giwhub"
 
-#: src/ui/AboutDialog.vala:61
-msgid "Visit us on Github"
+#: src/view/WelcomeWidget.vala:129
+msgid "A new kind of instant messaging"
 msgstr ""
 
-#: src/ui/add_contact_widget.ui:6
-msgid "Please let me add you to my contact list. 😁"
+#: src/view/WelcomeWidget.vala:137
+msgid "Chat with your friends and family without anyone else listening in."
 msgstr ""
 
-#: src/ui/add_contact_widget.ui:38
-msgid "Send a friend request"
-msgstr "发送好友请求"
-
-#: src/ui/add_contact_widget.ui:72
-msgid "_ID:"
+#: src/view/WelcomeWidget.vala:138
+#, c-format
+msgid "Now with 50% less bugs."
 msgstr ""
 
-#: src/ui/add_contact_widget.ui:89
-msgid "Enter a Tox ID or URI here"
+#: src/view/WelcomeWidget.vala:139
+msgid "Generating witty dialog…"
 msgstr ""
 
-#: src/ui/add_contact_widget.ui:93 src/ui/create_groupchat_widget.ui:89
+#: src/view/WelcomeWidget.vala:140
+msgid "Thank you for using Venom."
+msgstr ""
+
+#: src/view/WelcomeWidget.vala:141
+msgid "Always think positive."
+msgstr ""
+
+#: src/view/WelcomeWidget.vala:142
+msgid "Have a good day and stay safe."
+msgstr ""
+
+#: src/view/WelcomeWidget.vala:143
+msgid "You can do it. ― Coffee"
+msgstr ""
+
+#: src/view/WelcomeWidget.vala:144
+msgid ""
+"Life moves pretty fast. If you don’t stop and look around once in a while, "
+"you could miss it. ― Ferris Bueller"
+msgstr ""
+
+#: src/view/WelcomeWidget.vala:189
+msgid "Drink your milk for extra strong bones."
+msgstr ""
+
+#: src/view/FileTransferWidget.vala:39 src/ui/file_transfer_widget.ui:57
+msgid "File transfers"
+msgstr "文件传输"
+
+#: src/view/FriendRequestWidget.vala:44
+#, c-format
+msgid "“%s”"
+msgstr ""
+
+#: src/view/ConversationWindow.vala:127
+#, fuzzy, c-format
+msgid "%s is typing…"
+msgstr "%s 正在输入......"
+
+#: src/view/ConversationWindow.vala:230
+msgid "Choose a file to send"
+msgstr ""
+
+#: src/view/ConversationWindow.vala:233
+msgid "_Open"
+msgstr ""
+
+#: src/view/ConversationWindow.vala:234 src/view/FileTransferEntry.vala:86
+#, fuzzy
+msgid "_Cancel"
+msgstr "取消"
+
+#: src/view/FileTransferEntry.vala:85
+msgid "_Save"
+msgstr ""
+
+#: src/view/ConferenceInviteEntry.vala:48
+#, c-format
+msgid "Invite from %s"
+msgstr ""
+
+#: src/view/UserInfoWidget.vala:82
+#, fuzzy
+msgid "Images"
+msgstr "Image:"
+
+#: src/ui/file_transfer_widget.ui:140
+#, fuzzy
+msgid "No file transfers yet …"
+msgstr "文件传输"
+
+#: src/ui/login_widget.ui:132
+msgid "Login automatically"
+msgstr ""
+
+#: src/ui/login_widget.ui:152 src/ui/login_widget.ui:471
+msgid "Password"
+msgstr ""
+
+#: src/ui/login_widget.ui:169 src/ui/login_widget.ui:330
+msgid "Login"
+msgstr ""
+
+#: src/ui/login_widget.ui:205
+#, fuzzy
+msgid "Other profiles"
+msgstr "用户资料"
+
+#: src/ui/login_widget.ui:267
+#, fuzzy
+msgid "Import profile…"
+msgstr "用户资料"
+
+#: src/ui/login_widget.ui:395
+#, fuzzy
+msgid "New profile"
+msgstr "用户资料"
+
+#: src/ui/login_widget.ui:417
+#, fuzzy
+msgid "Username"
+msgstr "用户名："
+
+#: src/ui/login_widget.ui:526
+msgid "Confirm Password"
+msgstr ""
+
+#: src/ui/login_widget.ui:570 src/ui/create_groupchat_widget.ui:282
+msgid "Create"
+msgstr "创建"
+
+#: src/ui/login_widget.ui:620
+#, fuzzy
+msgid "Create profile"
+msgstr "好友详细资料"
+
+#: src/ui/file_transfer_entry.ui:56 src/ui/file_transfer_entry_inline.ui:62
+#, fuzzy
+msgid "Remove transfer"
+msgstr "文件传输"
+
+#: src/ui/file_transfer_entry.ui:124 src/ui/file_transfer_entry_inline.ui:130
+#, fuzzy
+msgid "Open file"
+msgstr "好友详细资料"
+
+#: src/ui/file_transfer_entry.ui:148 src/ui/file_transfer_entry_inline.ui:154
+#, fuzzy
+msgid "Start transfer"
+msgstr "文件传输"
+
+#: src/ui/file_transfer_entry.ui:169 src/ui/file_transfer_entry_inline.ui:175
+#, fuzzy
+msgid "Pause transfer"
+msgstr "文件传输"
+
+#: src/ui/file_transfer_entry.ui:190 src/ui/file_transfer_entry_inline.ui:196
+#, fuzzy
+msgid "Stop transfer"
+msgstr "文件传输"
+
+#: src/ui/create_groupchat_widget.ui:68 src/ui/contact_list_widget.ui:356
+#, fuzzy
+msgid "Create a conference"
+msgstr "会议"
+
+#: src/ui/create_groupchat_widget.ui:102
+msgid "_Title:"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:121 src/ui/conference_info_widget.ui:61
+msgid "Conference"
+msgstr "会议"
+
+#: src/ui/create_groupchat_widget.ui:122 src/ui/add_contact_widget.ui:188
 #, fuzzy
 msgid "paste from clipboard"
 msgstr "复制ID到剪贴板(_C)"
 
-#: src/ui/add_contact_widget.ui:105
-msgid "<small>Enter your friends Tox ID</small>"
+#: src/ui/create_groupchat_widget.ui:156
+msgid "<small>Name the conference (optional)</small>"
 msgstr ""
 
-#: src/ui/add_contact_widget.ui:137
-#, fuzzy
-msgid "_Message:"
-msgstr "状态消息:"
-
-#: src/ui/add_contact_widget.ui:163
-msgid "Send a custom message to be displayed to the friend you are adding"
+#: src/ui/create_groupchat_widget.ui:188
+msgid "T_ype:"
 msgstr ""
 
-#: src/ui/add_contact_widget.ui:185
+#: src/ui/create_groupchat_widget.ui:212
+msgid "Text"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:228
+msgid "Speech"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:252
 #, fuzzy
-msgid "<small>Send your friend a short message</small>"
+msgid "<small>Select a conference type</small>"
 msgstr "当我正在输入时其他人可以看到这一状态"
 
-#: src/ui/add_contact_widget.ui:215
-msgid "Send"
-msgstr "发送"
-
-#: src/ui/app_menu.ui:7
-msgid "_Preferences"
-msgstr "首选项(_P)"
-
-#: src/ui/app_menu.ui:13
-msgid "About"
-msgstr "关于"
-
-#: src/ui/app_menu.ui:17
-msgid "_Quit"
-msgstr "退出(_Q)"
-
-#: src/ui/conference_info_widget.ui:39
-msgid "Conference"
+#: src/ui/create_groupchat_widget.ui:299
+#, fuzzy
+msgid "New conference"
 msgstr "会议"
 
-#: src/ui/conference_info_widget.ui:56
+#: src/ui/create_groupchat_widget.ui:312 src/ui/create_groupchat_widget.ui:451
 #, fuzzy
-msgid "Leave Groupchat"
-msgstr "创建群聊"
+msgid "Conference invites"
+msgstr "会议"
 
-#: src/ui/conference_info_widget.ui:105
-msgid "Title:"
-msgstr "名称："
-
-#: src/ui/conference_info_widget.ui:145 src/ui/friend_info_widget.ui:449
-#: src/ui/user_info_widget.ui:401
-msgid "Apply"
-msgstr "套用"
-
-#: src/ui/conference_info_widget.ui:163
-msgid "Peers"
+#: src/ui/create_groupchat_widget.ui:375
+msgid "Accept all"
 msgstr ""
 
-#: src/ui/conference_window.ui:206 src/ui/conversation_window.ui:262
-#: src/ui/user_info_widget.ui:139 src/ui/user_info_widget.ui:140
+#: src/ui/create_groupchat_widget.ui:421
+msgid "Reject all"
+msgstr ""
+
+#: src/ui/create_groupchat_widget.ui:513
+msgid "No new conference invites"
+msgstr ""
+
+#: src/ui/peer_entry_compact.ui:64 src/ui/peer_entry.ui:76
+msgid "This peer is also in your friends list"
+msgstr ""
+
+#: src/ui/peer_entry_compact.ui:78 src/ui/peer_entry.ui:89
+msgid "That's you"
+msgstr ""
+
+#: src/ui/conference_window.ui:103 src/ui/conversation_window.ui:292
+#: src/ui/user_info_widget.ui:274 src/ui/user_info_widget.ui:275
 #, fuzzy
 msgid "Insert Emoji"
 msgstr "插入表情符"
 
-#: src/ui/contact_list_widget.ui:136
+#: src/ui/conference_window.ui:179
+msgid "No one here..."
+msgstr ""
+
+#: src/ui/conference_window.ui:216 src/ui/conversation_window.ui:129
+msgid "No messages yet..."
+msgstr ""
+
+#: src/ui/conference_window.ui:280
+msgid "Show peers"
+msgstr ""
+
+#: src/ui/app_menu.ui:28
+msgid "_Preferences"
+msgstr "首选项(_P)"
+
+#: src/ui/app_menu.ui:42
+msgid "_Quit"
+msgstr "退出(_Q)"
+
+#: src/ui/contact_list_widget.ui:56 src/ui/add_contact_widget.ui:350
+#, fuzzy
+msgid "Add a friend"
+msgstr "添加新好友 #%i\n"
+
+#: src/ui/contact_list_widget.ui:217
 msgid "Filter contacts by status"
 msgstr ""
 
-#: src/ui/contact_list_widget.ui:142
+#: src/ui/contact_list_widget.ui:223
 msgid "All"
 msgstr "全部"
 
-#: src/ui/contact_list_widget.ui:249
+#: src/ui/contact_list_widget.ui:331
 msgid "Add a contact"
 msgstr "添加联系人"
 
-#: src/ui/contact_list_widget.ui:270 src/ui/create_groupchat_widget.ui:35
-#, fuzzy
-msgid "Create a groupchat"
-msgstr "创建群聊"
-
-#: src/ui/contact_list_widget.ui:291
+#: src/ui/contact_list_widget.ui:381
 msgid "View file transfers"
 msgstr ""
 
-#: src/ui/contact_list_widget.ui:312
+#: src/ui/contact_list_widget.ui:406
 msgid "Open preferences"
 msgstr "打开首选项"
 
-#: src/ui/conversation_window.ui:103
+#: src/ui/contact_list_widget.ui:448
+#, fuzzy
+msgid "Edit your profile"
+msgstr "用户资料"
+
+#: src/ui/contact_list_widget.ui:476
+#, fuzzy
+msgid "Change your status"
+msgstr "改变状态(_S)"
+
+#: src/ui/conversation_window.ui:37
 msgid "Start a call"
 msgstr ""
 
-#: src/ui/conversation_window.ui:128
-msgid "Start a videocall"
+#: src/ui/conversation_window.ui:62
+msgid "Start a video call"
 msgstr ""
 
-#: src/ui/conversation_window.ui:284
+#: src/ui/conversation_window.ui:155
+msgid "Attach screenshot…"
+msgstr ""
+
+#: src/ui/conversation_window.ui:180
+msgid "Attach file…"
+msgstr ""
+
+#: src/ui/conversation_window.ui:317
 #, fuzzy
 msgid "Insert attachment"
 msgstr "插入表情符"
 
-#: src/ui/create_groupchat_widget.ui:69
-msgid "_Title:"
+#: src/ui/friend_request_widget.ui:66 src/ui/conference_invite_entry.ui:107
+msgid "Accept"
 msgstr ""
 
-#: src/ui/create_groupchat_widget.ui:88
-msgid "Groupchat"
-msgstr "群聊"
-
-#: src/ui/create_groupchat_widget.ui:101
-msgid "<small>Name the groupchat (optional)</small>"
+#: src/ui/friend_request_widget.ui:83 src/ui/conference_invite_entry.ui:124
+msgid "Deny"
 msgstr ""
 
-#: src/ui/create_groupchat_widget.ui:133
-msgid "T_ype:"
+#: src/ui/conference_info_widget.ui:78
+#, fuzzy
+msgid "Leave Conference"
+msgstr "会议"
+
+#: src/ui/conference_info_widget.ui:127
+msgid "Title:"
+msgstr "名称："
+
+#: src/ui/conference_info_widget.ui:196 src/ui/settings_widget.ui:638
+#: src/ui/friend_info_widget.ui:291
+#, fuzzy
+msgid "Notifications"
+msgstr "发送键入通知"
+
+#: src/ui/conference_info_widget.ui:234 src/ui/friend_info_widget.ui:330
+msgid "<small>Notifications have been globally disabled</small>"
 msgstr ""
 
-#: src/ui/create_groupchat_widget.ui:153
-msgid "text"
-msgstr "文本"
+#: src/ui/conference_info_widget.ui:266 src/ui/user_info_widget.ui:624
+#: src/ui/friend_info_widget.ui:634
+msgid "Apply"
+msgstr "套用"
 
-#: src/ui/create_groupchat_widget.ui:168
-msgid "video"
-msgstr "视频"
-
-#: src/ui/create_groupchat_widget.ui:195
-msgid "<small>Select a groupchat type</small>"
+#: src/ui/conference_info_widget.ui:284
+msgid "Peers"
 msgstr ""
 
-#: src/ui/create_groupchat_widget.ui:224
-msgid "Create"
-msgstr "创建"
+#: src/ui/welcome_widget.ui:123
+msgid "Learn more"
+msgstr "了解更多"
 
-#: src/ui/downloads_widget.ui:35
-msgid "File transfers"
-msgstr "文件传输"
-
-#: src/ui/friend_info_widget.ui:45
-msgid "Friend profile"
-msgstr "好友详细资料"
-
-#: src/ui/friend_info_widget.ui:62
-msgid "Remove from your friends list"
+#: src/ui/welcome_widget.ui:169
+msgid "Get involved"
 msgstr ""
 
-#: src/ui/friend_info_widget.ui:111 src/ui/user_info_widget.ui:75
+#: src/ui/add_contact_widget.ui:52
+#, fuzzy
+msgid "No new friend requests"
+msgstr "发送好友请求"
+
+#: src/ui/add_contact_widget.ui:65
+msgid "Please let me add you to my contact list. 😁"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:133
+msgid "Send a friend request"
+msgstr "发送好友请求"
+
+#: src/ui/add_contact_widget.ui:167
+msgid "_ID:"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:184
+msgid "Enter a Tox ID or URI here"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:222
+msgid "<small>Enter your friends Tox ID</small>"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:254
+#, fuzzy
+msgid "_Message:"
+msgstr "状态消息:"
+
+#: src/ui/add_contact_widget.ui:280
+msgid "Send a custom message to be displayed to the friend you are adding"
+msgstr ""
+
+#: src/ui/add_contact_widget.ui:302
+#, fuzzy
+msgid "<small>Send your friend a short message</small>"
+msgstr "当我正在输入时其他人可以看到这一状态"
+
+#: src/ui/add_contact_widget.ui:333
+msgid "Send"
+msgstr "发送"
+
+#: src/ui/add_contact_widget.ui:363 src/ui/add_contact_widget.ui:397
+#, fuzzy
+msgid "Friend requests"
+msgstr "发送好友请求"
+
+#: src/ui/user_info_widget.ui:62
+msgid "Reset"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:87
+msgid "Take a picture"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:109
+msgid "Choose a file"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:110
+msgid "Choose an avatar"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:210
 msgid "Username:"
 msgstr "用户名："
 
-#: src/ui/friend_info_widget.ui:155 src/ui/user_info_widget.ui:120
+#: src/ui/user_info_widget.ui:255
 #, fuzzy
-msgid "Statusmessage:"
+msgid "Status message:"
 msgstr "状态消息:"
 
-#: src/ui/friend_info_widget.ui:200 src/ui/user_info_widget.ui:168
-msgid "Image:"
-msgstr "Image:"
-
-#: src/ui/friend_info_widget.ui:245
-msgid "Last seen:"
-msgstr ""
-
-#: src/ui/friend_info_widget.ui:290
-msgid "Alias:"
-msgstr "别名："
-
-#: src/ui/friend_info_widget.ui:318
-msgid "<small>Set a custom alias to quickly find your friends</small>"
-msgstr ""
-
-#: src/ui/friend_info_widget.ui:362 src/ui/user_info_widget.ui:251
+#: src/ui/user_info_widget.ui:316 src/ui/friend_info_widget.ui:520
 msgid "Tox"
 msgstr ""
 
-#: src/ui/friend_info_widget.ui:395 src/ui/user_info_widget.ui:290
-msgid "ID:"
-msgstr ""
-
-#: src/ui/message_widget.ui:88
-msgid "Message sent ✓"
-msgstr "已发送。"
-
-#: src/ui/message_widget.ui:104
-msgid "Message received ✓"
-msgstr "收到的邮件"
-
-#: src/ui/peer_entry.ui:55
-msgid "This peer is also in your friends list"
-msgstr ""
-
-#: src/ui/settings_widget.ui:41
-msgid "KiB/MiB"
-msgstr ""
-
-#: src/ui/settings_widget.ui:45
-msgid "KB/MB"
-msgstr ""
-
-#: src/ui/settings_widget.ui:95
-msgid "General"
-msgstr "一般"
-
-#: src/ui/settings_widget.ui:138
-msgid "Connection"
-msgstr "连接"
-
-#: src/ui/settings_widget.ui:225
-msgid "Appearance"
-msgstr "外观"
-
-#: src/ui/settings_widget.ui:270
-msgid "Dark Theme"
-msgstr "夜间模式"
-
-#: src/ui/settings_widget.ui:283
-msgid "<small>Whether Venom should use a dark theme</small>"
-msgstr ""
-
-#: src/ui/settings_widget.ui:340
-msgid "Show notifications"
-msgstr ""
-
-#: src/ui/settings_widget.ui:353
-msgid "<small>Show a notification for new messages</small>"
-msgstr ""
-
-#: src/ui/settings_widget.ui:410
-msgid "Minimize to tray"
-msgstr "最小化到状态栏"
-
-#: src/ui/settings_widget.ui:423
-msgid "<small>Minimize app to system tray</small>"
-msgstr ""
-
-#: src/ui/settings_widget.ui:506
-msgid "Privacy"
-msgstr "隐私"
-
-#: src/ui/settings_widget.ui:550
-msgid "Send typing notifications"
-msgstr "发送键入通知"
-
-#: src/ui/settings_widget.ui:563
-#, fuzzy
-msgid "<small>Show others when I am typing</small>"
-msgstr "当我正在输入时其他人可以看到这一状态"
-
-#: src/ui/settings_widget.ui:646
-msgid "History"
-msgstr "历史"
-
-#: src/ui/settings_widget.ui:694
-#, fuzzy
-msgid "Keep indefinitely"
-msgstr "无限制"
-
-#: src/ui/settings_widget.ui:714
-msgid "delete after"
-msgstr "删除早于"
-
-#: src/ui/settings_widget.ui:731
-msgid "days"
-msgstr "天记录"
-
-#: src/ui/settings_widget.ui:785
-msgid "Delete all previous conversations"
-msgstr ""
-
-#: src/ui/settings_widget.ui:844
-msgid "Update bootstrap nodes"
-msgstr ""
-
-#: src/ui/settings_widget.ui:880
-msgid "<b>Tox bootstrap nodes</b>"
-msgstr ""
-
-#: src/ui/user_info_widget.ui:41
-msgid "User profile"
-msgstr "用户资料"
-
-#: src/ui/user_info_widget.ui:332
+#: src/ui/user_info_widget.ui:349
 msgid "Copy to clipboard"
 msgstr "复制到剪贴板"
 
-#: src/ui/welcome_widget.ui:39
-msgid "<big>A new kind of instant messaging</big>"
+#: src/ui/user_info_widget.ui:381
+msgid "ID:"
 msgstr ""
 
-#: src/ui/welcome_widget.ui:52
-msgid "Chat with your friends and family without anyone else listening in."
+#: src/ui/user_info_widget.ui:462
+#, fuzzy
+msgid "Advanced"
+msgstr "取消"
+
+#: src/ui/user_info_widget.ui:510
+msgid "Tox nospam"
 msgstr ""
 
-#: src/ui/welcome_widget.ui:100
-msgid "Learn more"
-msgstr "了解更多"
+#: src/ui/user_info_widget.ui:532
+msgid "Generate new random nospam"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:546
+msgid "Set this nospam"
+msgstr ""
+
+#: src/ui/user_info_widget.ui:578
+msgid "Previous nospams"
+msgstr ""
+
+#: src/ui/settings_widget.ui:78
+msgid "General"
+msgstr "一般"
+
+#: src/ui/settings_widget.ui:158
+msgid "Bootstrap nodes"
+msgstr ""
+
+#: src/ui/settings_widget.ui:198
+msgid "Proxy"
+msgstr ""
+
+#: src/ui/settings_widget.ui:291
+msgid "Appearance"
+msgstr "外观"
+
+#: src/ui/settings_widget.ui:335
+msgid "Dark Theme"
+msgstr "夜间模式"
+
+#: src/ui/settings_widget.ui:348
+#, fuzzy
+msgid "<small>Use a dark variant of the theme</small>"
+msgstr "当我正在输入时其他人可以看到这一状态"
+
+#: src/ui/settings_widget.ui:404
+msgid "Animations"
+msgstr ""
+
+#: src/ui/settings_widget.ui:417
+#, fuzzy
+msgid "<small>Turn on animated transitions</small>"
+msgstr "当我正在输入时其他人可以看到这一状态"
+
+#: src/ui/settings_widget.ui:473
+#, fuzzy
+msgid "Small contacts"
+msgstr "呼叫联系人"
+
+#: src/ui/settings_widget.ui:486
+#, fuzzy
+msgid "<small>Show contacts in a compact format</small>"
+msgstr "当我正在输入时其他人可以看到这一状态"
+
+#: src/ui/settings_widget.ui:542
+msgid "Spellcheck"
+msgstr ""
+
+#: src/ui/settings_widget.ui:555
+#, fuzzy
+msgid "<small>Check your spelling while you type</small>"
+msgstr "当我正在输入时其他人可以看到这一状态"
+
+#: src/ui/settings_widget.ui:699
+msgid "Sounds"
+msgstr ""
+
+#: src/ui/settings_widget.ui:712
+msgid "<small>Play sounds on new notifications</small>"
+msgstr ""
+
+#: src/ui/settings_widget.ui:768
+msgid "While Busy"
+msgstr ""
+
+#: src/ui/settings_widget.ui:781
+msgid "<small>Receive notifications even while you are busy</small>"
+msgstr ""
+
+#: src/ui/settings_widget.ui:866
+msgid "Tray icon"
+msgstr ""
+
+#: src/ui/settings_widget.ui:927
+#, fuzzy
+msgid "Minimize"
+msgstr "最小化到状态栏"
+
+#: src/ui/settings_widget.ui:940
+msgid "<small>Minimize to tray instead of close</small>"
+msgstr ""
+
+#: src/ui/settings_widget.ui:1025
+msgid "Privacy"
+msgstr "隐私"
+
+#: src/ui/settings_widget.ui:1068
+#, fuzzy
+msgid "Send typing status"
+msgstr "发送键入通知"
+
+#: src/ui/settings_widget.ui:1081
+#, fuzzy
+msgid "<small>Show others when you are typing</small>"
+msgstr "当我正在输入时其他人可以看到这一状态"
+
+#: src/ui/settings_widget.ui:1137
+#, fuzzy
+msgid "Keep History"
+msgstr "历史"
+
+#: src/ui/settings_widget.ui:1150
+#, fuzzy
+msgid "<small>Store your sent and received messages</small>"
+msgstr "当我正在输入时其他人可以看到这一状态"
+
+#: src/ui/settings_widget.ui:1281
+#, fuzzy
+msgid "<b>Connection</b>"
+msgstr "连接"
+
+#: src/ui/settings_widget.ui:1323
+msgid "UDP"
+msgstr ""
+
+#: src/ui/settings_widget.ui:1336
+msgid "<small>Use UDP communication when available</small>"
+msgstr ""
+
+#: src/ui/settings_widget.ui:1392
+msgid "IPv6"
+msgstr ""
+
+#: src/ui/settings_widget.ui:1405
+#, fuzzy
+msgid "<small>Allow both IPv4 and IPv6 communication</small>"
+msgstr "当我正在输入时其他人可以看到这一状态"
+
+#: src/ui/settings_widget.ui:1461
+msgid "Local discovery"
+msgstr ""
+
+#: src/ui/settings_widget.ui:1474
+#, fuzzy
+msgid "<small>Look for peers on the local network</small>"
+msgstr "当我正在输入时其他人可以看到这一状态"
+
+#: src/ui/settings_widget.ui:1530
+msgid "Hole punching"
+msgstr ""
+
+#: src/ui/settings_widget.ui:1543
+msgid ""
+"<small>Enable UDP <a href=\"https://en.wikipedia.org/wiki/"
+"Hole_punching_(networking)\">hole punching</a></small>"
+msgstr ""
+
+#: src/ui/settings_widget.ui:1681
+msgid "Update bootstrap nodes"
+msgstr ""
+
+#: src/ui/settings_widget.ui:1716
+msgid "<b>Bootstrap nodes</b>"
+msgstr ""
+
+#: src/ui/settings_widget.ui:1852
+#, fuzzy
+msgid "<b>Proxy</b>"
+msgstr "<b>用户</b>"
+
+#: src/ui/settings_widget.ui:1920
+#, fuzzy
+msgid "System settings"
+msgstr "设置"
+
+#: src/ui/settings_widget.ui:1933
+#, fuzzy
+msgid "<small>Use your systems proxy settings</small>"
+msgstr "当我正在输入时其他人可以看到这一状态"
+
+#: src/ui/settings_widget.ui:1987
+#, fuzzy
+msgid "Manual settings"
+msgstr "设置"
+
+#: src/ui/settings_widget.ui:2000
+msgid "<small>Use custom proxy settings</small>"
+msgstr ""
+
+#: src/ui/settings_widget.ui:2041
+msgid "Host"
+msgstr ""
+
+#: src/ui/settings_widget.ui:2084
+msgid "<small>Set a SOCKS5 proxy to connect to</small>"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:171
+msgid "Remove from your friends list"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:222
+msgid "Alias:"
+msgstr "别名："
+
+#: src/ui/friend_info_widget.ui:242
+msgid "Reset alias"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:254
+msgid "<small>Set a custom alias to quickly find your friends</small>"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:364
+msgid "Auto accept conference invites"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:411
+#, fuzzy
+msgid "Auto accept file transfers"
+msgstr "文件传输"
+
+#: src/ui/friend_info_widget.ui:455
+msgid "Save files to"
+msgstr ""
+
+#: src/ui/friend_info_widget.ui:559
+msgid "Public key:"
+msgstr ""
+
+#: src/ui/error_widget.ui:104
+msgid "Oh no! Something broke!"
+msgstr ""
+
+#: src/ui/error_widget.ui:119
+msgid "Please check your settings and retry"
+msgstr ""
+
+#: src/ui/error_widget.ui:140
+msgid "Info"
+msgstr ""
+
+#: src/ui/error_widget.ui:164
+msgid "Log"
+msgstr ""
+
+#: src/ui/error_widget.ui:202
+msgid "Retry"
+msgstr ""
+
+#: data/com.github.naxuroqa.venom.desktop.in:3
+msgid "Venom"
+msgstr ""
+
+#: data/com.github.naxuroqa.venom.desktop.in:5
+msgid "tox;instant messaging;video chat;"
+msgstr ""
+
+#: data/com.github.naxuroqa.venom.desktop.in:7
+msgid "com.github.naxuroqa.venom-symbolic"
+msgstr ""
+
+#~ msgid "error: %s\n"
+#~ msgstr "错误：%s"
+
+#~ msgid ""
+#~ "Run '%s --help' to see a full list of available command line options.\n"
+#~ msgstr "运行“%s --help”以查看可用命令行选项完整的列表。"
+
+#, fuzzy
+#~ msgid "Leave Groupchat"
+#~ msgstr "创建群聊"
+
+#, fuzzy
+#~ msgid "Create a groupchat"
+#~ msgstr "创建群聊"
+
+#~ msgid "Groupchat"
+#~ msgstr "群聊"
+
+#~ msgid "text"
+#~ msgstr "文本"
+
+#~ msgid "video"
+#~ msgstr "视频"
+
+#, fuzzy
+#~ msgid "Keep indefinitely"
+#~ msgstr "无限制"
+
+#~ msgid "delete after"
+#~ msgstr "删除早于"
+
+#~ msgid "days"
+#~ msgstr "天记录"
 
 #, fuzzy
 #~ msgid "contact_name"
 #~ msgstr "添加联系人"
-
-#~ msgid "Online"
-#~ msgstr "在线"
 
 #~ msgid "Could not bind int to %s."
 #~ msgstr "无法绑定 int 到 %s 。"
@@ -413,15 +1074,6 @@ msgstr "了解更多"
 
 #~ msgid "%i person connected"
 #~ msgstr "%i 人在线"
-
-#~ msgid "Offline"
-#~ msgstr "离线"
-
-#~ msgid "Away"
-#~ msgstr "离开"
-
-#~ msgid "Busy"
-#~ msgstr "忙"
 
 #, fuzzy
 #~ msgid "_Invite to new groupchat"
@@ -446,9 +1098,6 @@ msgstr "了解更多"
 #~ msgid "Could not resolve ID from DNS record\n"
 #~ msgstr "无法从DNS记录中解析 ID\n"
 
-#~ msgid "Adding Friend failed"
-#~ msgstr "添加好友失败"
-
 #~ msgid "Could not add friend: Invalid ID\n"
 #~ msgstr "不能添加好友: 无效的ID\n"
 
@@ -458,23 +1107,8 @@ msgstr "了解更多"
 #~ msgid "Paused"
 #~ msgstr "暂停"
 
-#~ msgid "Canceled"
-#~ msgstr "取消"
-
-#~ msgid "%s is typing..."
-#~ msgstr "%s 正在输入......"
-
 #~ msgid "%s changed his status to %s\n"
 #~ msgstr "%s 切换他的状态到 %s\n"
-
-#~ msgid "%s is now %s.\n"
-#~ msgstr "%s 现在 %s。\n"
-
-#~ msgid "<b>User</b>"
-#~ msgstr "<b>用户</b>"
-
-#~ msgid "Added new friend #%i\n"
-#~ msgstr "添加新好友 #%i\n"
 
 #~ msgid "Background thread started.\n"
 #~ msgstr "后台线程启动。\n"
@@ -485,9 +1119,6 @@ msgstr "了解更多"
 #~ msgid "Bad checksum"
 #~ msgstr "校验和错误"
 
-#~ msgid "Call contact"
-#~ msgstr "呼叫联系人"
-
 #~ msgid "Call contact with video"
 #~ msgstr "呼叫一个视频通话"
 
@@ -496,9 +1127,6 @@ msgstr "了解更多"
 
 #~ msgid "Can't send to own key"
 #~ msgstr "不能发送自己的密匙"
-
-#~ msgid "Change _Status"
-#~ msgstr "改变状态(_S)"
 
 #~ msgid "Connecting to DHT Nodes:\n"
 #~ msgstr "连接到DHT节点:\n"
@@ -559,9 +1187,6 @@ msgstr "了解更多"
 
 #~ msgid "Send message"
 #~ msgstr "发送消息"
-
-#~ msgid "Settings"
-#~ msgstr "设置"
 
 #~ msgid "Show filesize in"
 #~ msgstr "显示文件尺寸用"

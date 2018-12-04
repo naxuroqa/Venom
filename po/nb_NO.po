@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: venom\n"
-"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
 "PO-Revision-Date: 2018-12-04 11:29+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
@@ -56,7 +56,7 @@ msgid "Conference invite"
 msgstr "Konferanseinvitasjon"
 
 #: src/core/NotificationListener.vala:165
-#, c-format, fuzzy
+#, fuzzy, c-format
 msgid "%s invites you to a conference"
 msgstr "%s inviterer deg til en konferanse"
 
@@ -206,12 +206,12 @@ msgid "Undo"
 msgstr "Angre"
 
 #: src/tox/Conference.vala:44
-#, c-format, fuzzy
+#, fuzzy, c-format
 msgid "Unnamed conference %u"
 msgstr "Konferanse uten navn %u"
 
 #: src/tox/Conference.vala:48
-#, c-format, fuzzy
+#, fuzzy, c-format
 msgid "%u Peers online"
 msgstr "%u likemenn pålogget"
 
@@ -380,7 +380,7 @@ msgid "_Save"
 msgstr "_Lagre"
 
 #: src/view/ConferenceInviteEntry.vala:48
-#, c-format, fuzzy
+#, fuzzy, c-format
 msgid "Invite from %s"
 msgstr "Invitasjon fra %s"
 
