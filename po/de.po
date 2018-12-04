@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
-"PO-Revision-Date: 2018-12-04 12:14+0000\n"
+"PO-Revision-Date: 2018-12-04 13:53+0000\n"
 "Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/venom/"
 "translations/de/>\n"
@@ -710,15 +710,15 @@ msgstr "Erweitert"
 
 #: src/ui/user_info_widget.ui:510
 msgid "Tox nospam"
-msgstr "Tox nospam"
+msgstr "Tox NoSpam"
 
 #: src/ui/user_info_widget.ui:532
 msgid "Generate new random nospam"
-msgstr "Erzeuge neues zufälliges nospam"
+msgstr "Erzeuge neues zufälliges NoSpam"
 
 #: src/ui/user_info_widget.ui:546
 msgid "Set this nospam"
-msgstr "Setze dieses nospam"
+msgstr "Setze dieses NoSpam"
 
 #: src/ui/user_info_widget.ui:578
 msgid "Previous nospams"
@@ -851,7 +851,7 @@ msgstr "<small>Suche nach Mitgliedern im lokalen Netzwerk</small>"
 
 #: src/ui/settings_widget.ui:1530
 msgid "Hole punching"
-msgstr "Hole punching"
+msgstr "Hole Punching"
 
 #: src/ui/settings_widget.ui:1543
 msgid ""
