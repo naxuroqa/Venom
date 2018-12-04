@@ -3,19 +3,21 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Venom \n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: Venom\n"
+"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-02-19 16:47+0100\n"
-"PO-Revision-Date: 2014-08-27 13:00+0800\n"
-"Last-Translator: kaiman <kaigfm@gmail.com>\n"
-"Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
+"PO-Revision-Date: 2018-12-04 11:29+0000\n"
+"Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
+"venom/translations/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: src/Main.vala:29
 msgid "Set level of messages to log"
@@ -27,17 +29,17 @@ msgstr ""
 
 #: src/Main.vala:30
 msgid "Display version number"
-msgstr ""
+msgstr "显示版本号"
 
 #: src/Main.vala:65
 #, c-format
 msgid "error: %s\n"
-msgstr ""
+msgstr "错误：%s"
 
 #: src/Main.vala:66
 #, c-format
 msgid "Run '%s --help' to see a full list of available command line options.\n"
-msgstr ""
+msgstr "运行“%s --help”以查看可用命令行选项完整的列表。"
 
 #: src/core/NotificationListener.vala:51
 #, c-format
@@ -46,7 +48,7 @@ msgstr ""
 
 #: src/core/R.vala:70
 msgid "Tox User"
-msgstr ""
+msgstr "Tox 用户"
 
 #: src/tox/GroupchatContact.vala:45
 #, c-format
@@ -60,6 +62,9 @@ msgstr ""
 #: src/ui/AboutDialog.vala:58
 msgid "translator-credits"
 msgstr ""
+"Careone https://launchpad.net/~zzbusagain\n"
+"Wang Dianjin https://launchpad.net/~tuhaihe\n"
+"giwhub https://github.com/giwhub"
 
 #: src/ui/AboutDialog.vala:61
 msgid "Visit us on Github"
@@ -71,7 +76,7 @@ msgstr ""
 
 #: src/ui/add_contact_widget.ui:38
 msgid "Send a friend request"
-msgstr ""
+msgstr "发送好友请求"
 
 #: src/ui/add_contact_widget.ui:72
 msgid "_ID:"
@@ -106,25 +111,23 @@ msgstr "当我正在输入时其他人可以看到这一状态"
 
 #: src/ui/add_contact_widget.ui:215
 msgid "Send"
-msgstr ""
+msgstr "发送"
 
 #: src/ui/app_menu.ui:7
-#, fuzzy
 msgid "_Preferences"
-msgstr "打开首选项"
+msgstr "首选项(_P)"
 
 #: src/ui/app_menu.ui:13
 msgid "About"
-msgstr ""
+msgstr "关于"
 
 #: src/ui/app_menu.ui:17
 msgid "_Quit"
-msgstr ""
+msgstr "退出(_Q)"
 
 #: src/ui/conference_info_widget.ui:39
-#, fuzzy
 msgid "Conference"
-msgstr "打开首选项"
+msgstr "会议"
 
 #: src/ui/conference_info_widget.ui:56
 #, fuzzy
@@ -133,12 +136,12 @@ msgstr "创建群聊"
 
 #: src/ui/conference_info_widget.ui:105
 msgid "Title:"
-msgstr ""
+msgstr "名称："
 
 #: src/ui/conference_info_widget.ui:145 src/ui/friend_info_widget.ui:449
 #: src/ui/user_info_widget.ui:401
 msgid "Apply"
-msgstr ""
+msgstr "套用"
 
 #: src/ui/conference_info_widget.ui:163
 msgid "Peers"
@@ -159,7 +162,6 @@ msgid "All"
 msgstr "全部"
 
 #: src/ui/contact_list_widget.ui:249
-#, fuzzy
 msgid "Add a contact"
 msgstr "添加联系人"
 
@@ -194,9 +196,8 @@ msgid "_Title:"
 msgstr ""
 
 #: src/ui/create_groupchat_widget.ui:88
-#, fuzzy
 msgid "Groupchat"
-msgstr "创建群聊"
+msgstr "群聊"
 
 #: src/ui/create_groupchat_widget.ui:101
 msgid "<small>Name the groupchat (optional)</small>"
@@ -208,11 +209,11 @@ msgstr ""
 
 #: src/ui/create_groupchat_widget.ui:153
 msgid "text"
-msgstr ""
+msgstr "文本"
 
 #: src/ui/create_groupchat_widget.ui:168
 msgid "video"
-msgstr ""
+msgstr "视频"
 
 #: src/ui/create_groupchat_widget.ui:195
 msgid "<small>Select a groupchat type</small>"
@@ -220,16 +221,15 @@ msgstr ""
 
 #: src/ui/create_groupchat_widget.ui:224
 msgid "Create"
-msgstr ""
+msgstr "创建"
 
 #: src/ui/downloads_widget.ui:35
 msgid "File transfers"
-msgstr ""
+msgstr "文件传输"
 
 #: src/ui/friend_info_widget.ui:45
-#, fuzzy
 msgid "Friend profile"
-msgstr "发送文件"
+msgstr "好友详细资料"
 
 #: src/ui/friend_info_widget.ui:62
 msgid "Remove from your friends list"
@@ -237,7 +237,7 @@ msgstr ""
 
 #: src/ui/friend_info_widget.ui:111 src/ui/user_info_widget.ui:75
 msgid "Username:"
-msgstr ""
+msgstr "用户名："
 
 #: src/ui/friend_info_widget.ui:155 src/ui/user_info_widget.ui:120
 #, fuzzy
@@ -246,7 +246,7 @@ msgstr "状态消息:"
 
 #: src/ui/friend_info_widget.ui:200 src/ui/user_info_widget.ui:168
 msgid "Image:"
-msgstr ""
+msgstr "Image:"
 
 #: src/ui/friend_info_widget.ui:245
 msgid "Last seen:"
@@ -254,7 +254,7 @@ msgstr ""
 
 #: src/ui/friend_info_widget.ui:290
 msgid "Alias:"
-msgstr ""
+msgstr "别名："
 
 #: src/ui/friend_info_widget.ui:318
 msgid "<small>Set a custom alias to quickly find your friends</small>"
@@ -270,11 +270,11 @@ msgstr ""
 
 #: src/ui/message_widget.ui:88
 msgid "Message sent ✓"
-msgstr ""
+msgstr "已发送。"
 
 #: src/ui/message_widget.ui:104
 msgid "Message received ✓"
-msgstr ""
+msgstr "收到的邮件"
 
 #: src/ui/peer_entry.ui:55
 msgid "This peer is also in your friends list"
@@ -290,20 +290,19 @@ msgstr ""
 
 #: src/ui/settings_widget.ui:95
 msgid "General"
-msgstr ""
+msgstr "一般"
 
 #: src/ui/settings_widget.ui:138
-#, fuzzy
 msgid "Connection"
-msgstr "连接中......"
+msgstr "连接"
 
 #: src/ui/settings_widget.ui:225
 msgid "Appearance"
-msgstr ""
+msgstr "外观"
 
 #: src/ui/settings_widget.ui:270
 msgid "Dark Theme"
-msgstr ""
+msgstr "夜间模式"
 
 #: src/ui/settings_widget.ui:283
 msgid "<small>Whether Venom should use a dark theme</small>"
@@ -319,7 +318,7 @@ msgstr ""
 
 #: src/ui/settings_widget.ui:410
 msgid "Minimize to tray"
-msgstr ""
+msgstr "最小化到状态栏"
 
 #: src/ui/settings_widget.ui:423
 msgid "<small>Minimize app to system tray</small>"
@@ -331,7 +330,7 @@ msgstr "隐私"
 
 #: src/ui/settings_widget.ui:550
 msgid "Send typing notifications"
-msgstr ""
+msgstr "发送键入通知"
 
 #: src/ui/settings_widget.ui:563
 #, fuzzy
@@ -339,9 +338,8 @@ msgid "<small>Show others when I am typing</small>"
 msgstr "当我正在输入时其他人可以看到这一状态"
 
 #: src/ui/settings_widget.ui:646
-#, fuzzy
 msgid "History"
-msgstr "保持历史"
+msgstr "历史"
 
 #: src/ui/settings_widget.ui:694
 #, fuzzy
@@ -370,12 +368,11 @@ msgstr ""
 
 #: src/ui/user_info_widget.ui:41
 msgid "User profile"
-msgstr ""
+msgstr "用户资料"
 
 #: src/ui/user_info_widget.ui:332
-#, fuzzy
 msgid "Copy to clipboard"
-msgstr "复制ID到剪贴板(_C)"
+msgstr "复制到剪贴板"
 
 #: src/ui/welcome_widget.ui:39
 msgid "<big>A new kind of instant messaging</big>"
@@ -387,7 +384,7 @@ msgstr ""
 
 #: src/ui/welcome_widget.ui:100
 msgid "Learn more"
-msgstr ""
+msgstr "了解更多"
 
 #, fuzzy
 #~ msgid "contact_name"
