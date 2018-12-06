@@ -30,7 +30,9 @@ namespace Venom {
       { "show-add-contact", on_show_add_contact, null, null, null },
       { "show-contact", on_show_contact, "s", null, null },
       { "show-contact-info", on_show_contact_info, "s", null, null },
-      { "mute-contact", on_mute_contact, "s", null, null }
+      { "mute-contact", on_mute_contact, "s", null, null },
+      { "accept-call", on_accept_call, "s", null, null },
+      { "reject-call", on_reject_call, "s", null, null }
     };
 
     private const OptionEntry[] option_entries = {
@@ -309,6 +311,24 @@ namespace Venom {
         return;
       }
       on_active_window((win) => win.on_show_contact_info(parameter.get_string()));
+    }
+
+    public void on_accept_call(GLib.SimpleAction action, GLib.Variant? parameter) {
+      logger.d("on_accept_call");
+      activate();
+      if (parameter == null || parameter.get_string() == "") {
+        return;
+      }
+      on_active_window((win) => win.on_accept_call(parameter.get_string()));
+    }
+
+    public void on_reject_call(GLib.SimpleAction action, GLib.Variant? parameter) {
+      logger.d("on_reject_call");
+      activate();
+      if (parameter == null || parameter.get_string() == "") {
+        return;
+      }
+      on_active_window((win) => win.on_reject_call(parameter.get_string()));
     }
 
     public void on_show_filetransfers() {

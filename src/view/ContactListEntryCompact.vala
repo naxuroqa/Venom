@@ -31,10 +31,10 @@ namespace Venom {
     private ContactListEntryViewModel view_model;
     private ContextStyleBinding attention_binding;
 
-    public ContactListEntryCompact(Logger logger, IContact contact) {
+    public ContactListEntryCompact(Logger logger, IContact contact, CallState call_state) {
       logger.d("ContactListEntryCompact created.");
       this.logger = logger;
-      this.view_model = new ContactListEntryViewModel(logger, contact, true);
+      this.view_model = new ContactListEntryViewModel(logger, contact, call_state, true);
       this.attention_binding = new ContextStyleBinding(status_image, "highlight");
 
       view_model.bind_property("contact-name", contact_name, "label", GLib.BindingFlags.SYNC_CREATE);

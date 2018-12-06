@@ -82,7 +82,7 @@ namespace Venom {
     }
 
     public string to_markup() {
-      switch(this) {
+      switch (this) {
         case DEBUG:
           return "DEBUG";
         case INFO:
@@ -172,7 +172,10 @@ namespace Venom {
     }
 
     public void log(LogLevel level, string message) {
-      log_builder.append("[%s] %s\n".printf(level.to_markup(), message));
+      var str_message = "[%s] %s\n".printf(level.to_markup(), message);
+      lock (log_builder) {
+        log_builder.append(str_message);
+      }
 
       if (level < displayed_level) {
         return;

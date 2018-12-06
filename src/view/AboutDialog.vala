@@ -140,7 +140,7 @@ namespace Venom {
       }
     }
 
-    private unowned Gtk.Widget? get_child_with_name(unowned Gtk.Widget parent, string name) {
+    private unowned Gtk.Widget? get_child_with_name(Gtk.Widget parent, string name) {
       var parent_container = parent as Gtk.Container;
       if (parent_container != null) {
         var children = parent_container.get_children();

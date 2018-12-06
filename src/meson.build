@@ -16,17 +16,15 @@ json_dep = dependency('json-glib-1.0')
 soup_dep = dependency('libsoup-2.4')
 tox_dep = dependency('toxcore')
 posix_dep = valac.find_library('posix', required : false)
+m_dep = cc.find_library('m', required: false)
 
-gst_dep = dependency('gstreamer-1.0', required : false)
-gst_video_dep = dependency('gstreamer-video-1.0', required : false)
-gst_audio_dep = dependency('gstreamer-audio-1.0', required : false)
-gst_app_dep = dependency('gstreamer-app-1.0', required : false)
+gst_dep = dependency('gstreamer-1.0')
+gst_video_dep = dependency('gstreamer-video-1.0')
+gst_audio_dep = dependency('gstreamer-audio-1.0')
+gst_app_dep = dependency('gstreamer-app-1.0')
 
 if (posix_dep.found())
 			add_project_arguments(['-D', 'ENABLE_POSIX'], language: 'vala')
-endif
-if (gst_dep.found())
-			add_project_arguments(['-D', 'ENABLE_GSTREAMER'], language: 'vala')
 endif
 
 config_vapi = valac.find_library('config', dirs: vapi_dir)
@@ -42,10 +40,16 @@ venom_icons_resources = gnome.compile_resources('venom_icons_resources', 'icons/
 			c_name : 'c_venom_icons_res')
 
 venom_source = files(
+			'av/AudioInPipeline.vala',
+			'av/AudioOutPipeline.vala',
 			'av/CropWidget.vala',
 			'av/Photobooth.vala',
 			'av/PhotoboothWindow.vala',
+			'av/Pipeline.vala',
+			'av/VideoInPipeline.vala',
+			'av/VideoOutPipeline.vala',
 			'core/Application.vala',
+			'core/CallState.vala',
 			'core/Contact.vala',
 			'core/FileIO.vala',
 			'core/FileTransfer.vala',
@@ -80,6 +84,8 @@ venom_source = files(
 			'tox/SqliteMessageRepository.vala',
 			'tox/SqliteNospamRepository.vala',
 			'tox/StaticDhtNodeUpdater.vala',
+			'tox/ToxAVThread.vala',
+			'tox/ToxCallAdapter.vala',
 			'tox/ToxConferenceAdapter.vala',
 			'tox/ToxFriendAdapter.vala',
 			'tox/ToxFiletransferAdapter.vala',
@@ -95,6 +101,7 @@ venom_source = files(
 			'view/AboutDialog.vala',
 			'view/AddContactWidget.vala',
 			'view/ApplicationWindow.vala',
+			'view/CallWidget.vala',
 			'view/ConferenceInfoWidget.vala',
 			'view/ConferenceInviteEntry.vala',
 			'view/ConferenceWindow.vala',
@@ -130,7 +137,7 @@ venom_source = files(
 			'viewmodel/UserInfoViewModel.vala'
 			)
 
-venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlcipher_dep, json_dep, tox_dep, config_dep, soup_dep, posix_dep, gspell_dep, canberra_dep, gst_dep]
+venom_deps = [gtk_dep, gio_dep, gmodule_dep, gee_dep, sqlcipher_dep, json_dep, tox_dep, config_dep, soup_dep, posix_dep, gspell_dep, canberra_dep, m_dep, gst_dep, gst_app_dep, gst_video_dep, gst_audio_dep]
 
 venom_lib = static_library('venom', [venom_source, venom_ui_resources, venom_icons_resources],
 			dependencies : venom_deps

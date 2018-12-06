@@ -23,9 +23,9 @@ using Venom;
 
 namespace Mock {
   public class MockToxSession : ToxSession, GLib.Object {
-    private GLib.HashTable<uint32, IContact> contacts;
+    private Gee.Map<uint32, IContact> contacts;
     public MockToxSession() {
-      contacts = new GLib.HashTable<uint32, IContact>(null, null);
+      contacts = new Gee.HashMap<uint32, IContact>();
     }
     public void set_session_listener(ToxSelfAdapter listener) {
       var args = Arguments.builder()
@@ -50,6 +50,12 @@ namespace Mock {
                      .object(listener)
                      .create();
       mock().actual_call(this, "set_conference_listener", args);
+    }
+    public void set_call_adapter(ToxCallAdapter adapter) {
+      var args = Arguments.builder()
+                     .object(adapter)
+                     .create();
+      mock().actual_call(this, "set_call_adapter", args);
     }
     public void self_set_user_name(string name) {
       var args = Arguments.builder()
@@ -224,7 +230,44 @@ namespace Mock {
     public void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError {
       mock().actual_call(this, "file_send_chunk").get_throws();
     }
-    public unowned GLib.HashTable<uint32, IContact> get_friends() {
+    public void call(uint32 friend_number, uint32 audio_bit_rate, uint32 video_bit_rate) throws ToxError {
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .uint(audio_bit_rate)
+                     .uint(video_bit_rate)
+                     .create();
+      mock().actual_call(this, "call", args).get_throws();
+    }
+    public void accept_call(uint32 friend_number, uint32 audio_bit_rate, uint32 video_bit_rate) throws ToxError {
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .uint(audio_bit_rate)
+                     .uint(video_bit_rate)
+                     .create();
+      mock().actual_call(this, "accept_call", args).get_throws();
+    }
+    public void call_control(uint32 friend_number, ToxAV.CallControl control) throws ToxError {
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .uint(control)
+                     .create();
+      mock().actual_call(this, "call_control", args).get_throws();
+    }
+    public void audio_send_sample(uint32 friend_number, Gst.Base.Adapter adapter, Gst.Caps caps) throws ToxError {
+      //FIXME?
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .create();
+      mock().actual_call(this, "audio_send_sample", args).get_throws();
+    }
+    public void video_send_sample(uint32 friend_number, Gst.Sample sample) throws ToxError {
+      //FIXME?
+      var args = Arguments.builder()
+                     .uint(friend_number)
+                     .create();
+      mock().actual_call(this, "video_send_sample", args).get_throws();
+    }
+    public unowned Gee.Map<uint32, IContact> get_friends() {
       mock().actual_call(this, "get_friends");
       return contacts;
     }

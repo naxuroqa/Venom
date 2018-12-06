@@ -1,3 +1,54 @@
+/*
+ * Copyright © 2016-2018 The TokTok team.
+ * Copyright © 2013-2016 Tox Developers.
+ *
+ * This file is part of Tox, the free peer to peer instant messenger.
+ *
+ * Tox is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Tox is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Tox.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * This module is organized into two parts.
+ *
+ *  1. A simple API operating on plain text/cipher text data and a password to encrypt or decrypt it.
+ *  1. A more advanced API that splits key derivation and encryption into two separate function calls.
+ *
+ * The first part is implemented in terms of the second part and simply calls
+ * the separate functions in sequence. Since key derivation is very expensive
+ * compared to the actual encryption, clients that do a lot of crypto should
+ * prefer the advanced API and reuse pass-key objects.
+ *
+ * To use the second part, first derive an encryption key from a password with
+ * tox_pass_key_derive, then use the derived key to encrypt the data.
+ *
+ * The encrypted data is prepended with a magic number, to aid validity
+ * checking (no guarantees are made of course). Any data to be decrypted must
+ * start with the magic number.
+ *
+ * Clients should consider alerting their users that, unlike plain data, if
+ * even one bit becomes corrupted, the data will be entirely unrecoverable.
+ * Ditto if they forget their password, there is no way to recover the data.
+ *
+ * === Part 1 ===
+ *
+ * The simple API is presented first. If your code spends too much time using
+ * these functions, consider using the advanced functions instead and caching
+ * the generated pass-key.
+ *
+ *  * {@link pass_encrypt}
+ *  * {@link pass_decrypt}
+ */
 [CCode(cheader_filename = "tox/toxencryptsave.h", cprefix = "Tox", lower_case_cprefix = "tox_")]
 namespace ToxEncryptSave {
   /**

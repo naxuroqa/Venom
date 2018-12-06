@@ -47,7 +47,7 @@ namespace Venom {
     private GLib.HashTable<uint32, Message> messages_waiting_for_rr;
     private QueuedMessageStorage queued_messages;
 
-    private unowned GLib.HashTable<uint32, IContact> friends;
+    private unowned Gee.Map<uint32, IContact> friends;
     private Gee.Map<string, FriendRequest> tox_friend_requests;
     private ObservableList friend_requests;
 
@@ -125,11 +125,10 @@ namespace Venom {
     }
 
     private void start_avatar_distribution() {
-      logger.i("start_avatar_distribution");
+      logger.d("start_avatar_distribution");
       uint8[] avatar_data;
       user_info.avatar.pixbuf.save_to_buffer(out avatar_data, "png");
-      var contacts = friends.get_values();
-      foreach (var contact in contacts) {
+      foreach (var contact in friends) {
         var c = contact as Contact;
         if (c.is_connected()) {
           session.file_send_avatar((c as Contact).tox_friend_number, avatar_data);

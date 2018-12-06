@@ -29,7 +29,7 @@ namespace Venom {
     private GLib.HashTable<IContact, ObservableList> conversations;
 
     private GLib.HashTable<uint32, IContact> conferences;
-    private unowned GLib.HashTable<uint32, IContact> friends;
+    private unowned Gee.Map<uint32, IContact> friends;
 
     public DefaultToxConferenceAdapter(Logger logger, ObservableList contacts, ObservableList conference_invites, GLib.HashTable<IContact, ObservableList> conversations, NotificationListener notification_listener) {
       logger.d("DefaultToxConferenceAdapter created.");

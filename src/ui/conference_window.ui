@@ -156,7 +156,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="tooltip_text" translatable="yes">Insert Emoji</property>
             <property name="valign">start</property>
             <property name="action_name">win.insert-smiley</property>
-            <property name="relief">none</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>

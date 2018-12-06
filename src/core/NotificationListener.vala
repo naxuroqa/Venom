@@ -26,6 +26,7 @@ namespace Venom {
     public abstract void on_friend_request(FriendRequest friend_request);
     public abstract void on_filetransfer(FileTransfer transfer, IContact sender);
     public abstract void on_conference_invite(ConferenceInvite invite);
+    public abstract void on_incoming_call(IContact sender, bool video);
     public abstract void clear_notifications();
   }
 
@@ -39,6 +40,7 @@ namespace Venom {
     private static string friend_request_id = "new-friend-request";
     private static string transfer_id = "new-transfer";
     private static string invite_id = "new-invite";
+    private static string call_id = "incoming-call";
 
     public NotificationListenerImpl(Logger logger) {
       this.logger = logger;
@@ -67,7 +69,7 @@ namespace Venom {
       return pixbuf.scale_simple(PIXBUF_SIZE, PIXBUF_SIZE, Gdk.InterpType.BILINEAR);
     }
 
-    public virtual void on_unread_message(FormattedMessage message, IContact sender) {
+    public void on_unread_message(FormattedMessage message, IContact sender) {
       logger.d("on_unread_message");
       if (!show_notifications || !sender.show_notifications()) {
         return;
@@ -97,7 +99,7 @@ namespace Venom {
       play_sound("message-new-instant");
     }
 
-    public virtual void on_friend_request(FriendRequest friend_request) {
+    public void on_friend_request(FriendRequest friend_request) {
       logger.d("on_friend_request");
       if (!show_notifications) {
         return;
@@ -122,7 +124,7 @@ namespace Venom {
       play_sound("message-new-instant-friend-request");
     }
 
-    public virtual void on_filetransfer(FileTransfer transfer, IContact sender) {
+    public void on_filetransfer(FileTransfer transfer, IContact sender) {
       logger.d("on_filetransfer");
       if (!show_notifications || !sender.show_notifications()) {
         return;
@@ -145,7 +147,7 @@ namespace Venom {
       play_sound("message-new-instant-filetransfer");
     }
 
-    public virtual void on_conference_invite(ConferenceInvite invite) {
+    public void on_conference_invite(ConferenceInvite invite) {
       logger.d("on_conference_invite");
       if (!show_notifications || !invite.sender.show_notifications()) {
         return;
@@ -168,6 +170,29 @@ namespace Venom {
       app.send_notification(message_id, notification);
 
       play_sound("message-new-instant-invite");
+    }
+
+    public void on_incoming_call(IContact contact, bool video) {
+      logger.d("on_incoming_call");
+      if (!show_notifications || !contact.show_notifications()) {
+        return;
+      }
+
+      var app = GLib.Application.get_default() as Gtk.Application;
+      if (app == null) {
+        return;
+      }
+
+      var contact_id = contact.get_id();
+      var header = video ? _("Incoming video call from %s") : _("Incoming call from %s");
+      var notification = new Notification(header.printf(contact.get_name_string()));
+      notification.set_icon(scale_icon(contact.get_image()));
+      notification.set_default_action_and_target_value("app.show-contact", contact_id);
+      notification.add_button_with_target_value(_("Answer call"), "app.accept-call", contact_id);
+      notification.add_button_with_target_value(_("Reject call"), "app.reject-call", contact_id);
+      app.send_notification(call_id + contact_id, notification);
+
+      play_sound("phone-incoming-call");
     }
 
     public void clear_notifications() {

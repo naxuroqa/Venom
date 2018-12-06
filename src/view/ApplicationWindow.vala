@@ -21,7 +21,7 @@
 
 namespace Venom {
   [GtkTemplate(ui = "/com/github/naxuroqa/venom/ui/application_window.ui")]
-  public class ApplicationWindow : Gtk.ApplicationWindow, ContactListWidgetCallback {
+  public class ApplicationWindow : Gtk.ApplicationWindow, ContactListWidgetCallback, CallAdapterListener {
 
     private const GLib.ActionEntry win_entries[] =
     {
@@ -70,6 +70,7 @@ namespace Venom {
     private DefaultToxConferenceAdapter conference_listener;
     private DefaultToxFiletransferAdapter filetransfer_listener;
     private DefaultToxSelfAdapter session_listener;
+    private DefaultToxCallAdapter call_adapter;
     private NotificationListener notification_listener;
     private WindowState window_state;
     private unowned ContactListViewModel contact_list_view_model;
@@ -128,6 +129,7 @@ namespace Venom {
         contact_repository, contacts, friend_requests, conversations, notification_listener, in_app_notification);
       conference_listener = new DefaultToxConferenceAdapter(logger, contacts, conference_invites, conversations, notification_listener);
       filetransfer_listener = new DefaultToxFiletransferAdapter(logger, transfers, conversations, notification_listener);
+      call_adapter = new DefaultToxCallAdapter(logger, notification_listener, this);
 
       settings_database.bind_property("enable-send-typing", friend_listener, "show-typing", BindingFlags.SYNC_CREATE);
       settings_database.bind_property("enable-logging", friend_listener, "enable-logging", BindingFlags.SYNC_CREATE);
@@ -149,6 +151,7 @@ namespace Venom {
       friend_listener.attach_to_session(session);
       conference_listener.attach_to_session(session);
       filetransfer_listener.attach_to_session(session);
+      call_adapter.attach_to_session(session);
 
       status_icon.activate.connect(on_status_icon_activate);
       status_icon.popup_menu.connect(on_status_icon_popup_menu);
@@ -297,7 +300,7 @@ namespace Venom {
         logger.f("Could not set icon from theme: " + e.message);
       }
 
-      var contact_list = new ContactListWidget(logger, this, contacts, friend_requests, conference_invites, this, user_info, settings_database);
+      var contact_list = new ContactListWidget(logger, this, contacts, friend_requests, conference_invites, this, user_info, settings_database, call_adapter);
       contact_list_box.pack_start(contact_list, true, true);
       contact_list_view_model = contact_list.get_model();
       content_paned.bind_property("position", user_info_box, "width-request", BindingFlags.SYNC_CREATE,
@@ -335,11 +338,22 @@ namespace Venom {
       logger.d("ApplicationWindow on_contact_selected");
       if (contact is Contact) {
         var conv = conversations.@get(contact);
-        switch_content_with(() => { return new ConversationWindow(this, logger, conv, contact, user_info, settings_database, friend_listener, filetransfer_listener, filetransfer_listener); });
+        switch_content_with(() => { return new ConversationWindow(this, logger, conv, contact, user_info, settings_database, friend_listener, call_adapter, filetransfer_listener, filetransfer_listener); });
       } else if (contact is Conference) {
         var conv = conversations.@get(contact);
         switch_content_with(() => { return new ConferenceWindow(this, logger, conv, contact, user_info, settings_database, conference_listener); });
       }
+    }
+
+    public void on_incoming_call(IContact contact) {
+      //FIXME
+    }
+    public void on_outgoing_call(IContact contact) {
+      //FIXME
+    }
+    public void on_call_accepted(IContact contact) {
+      var call_widget = new CallWidget(logger, contact, call_adapter);
+      call_widget.show_all();
     }
 
     private void init_callbacks() {
@@ -373,6 +387,7 @@ namespace Venom {
     public void on_show_conference(IContact contact) {
       switch_content_with(() => { return new ConferenceInfoWidget(logger, this, conference_listener, contact, settings_database); });
     }
+
     public void on_add_contact() {
       switch_content_with(() => { return new AddContactWidget(logger, this, friend_requests, friend_listener, friend_listener); });
     }
@@ -421,6 +436,50 @@ namespace Venom {
         on_show_friend(c);
       } else if (c is Conference) {
         on_show_conference(c);
+      }
+    }
+
+    public void on_reject_call(string contact_id) {
+      logger.d(@"on_reject_call($contact_id)");
+      var c = find_contact(contact_id);
+      if (c == null) {
+        logger.e(@"Friend with id $contact_id not found.");
+        return;
+      }
+      if (c is Contact) {
+        on_reject_call_with_contact((Contact) c);
+      }
+    }
+
+    public void on_reject_call_with_contact(Contact contact) {
+      var call_state = call_adapter.get_call_state(contact);
+      if (call_state.pending_in || call_state.in_call || call_state.pending_out) {
+        call_adapter.stop_call(contact);
+      } else {
+        logger.w("Friend is not in a call with you, ignoring reject call");
+      }
+    }
+
+    public void on_accept_call(string contact_id) {
+      logger.d(@"on_accept_call($contact_id)");
+      var c = find_contact(contact_id);
+      if (c == null) {
+        logger.e(@"Friend with id $contact_id not found.");
+        return;
+      }
+      if (c is Contact) {
+        on_accept_call_with_contact((Contact) c);
+      }
+    }
+
+    public void on_accept_call_with_contact(Contact contact) {
+      var call_state = call_adapter.get_call_state(contact);
+      if (call_state.pending_in) {
+        var call_widget = new CallWidget(logger, contact, call_adapter);
+        call_widget.show_all();
+        call_adapter.answer(contact);
+      } else {
+        logger.w("No incoming call to accept.");
       }
     }
 

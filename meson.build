@@ -6,6 +6,7 @@ project('venom', ['vala', 'c'],
 i18n = import('i18n')
 gnome = import('gnome')
 valac = meson.get_compiler('vala')
+cc = meson.get_compiler('c')
 
 localedir = join_paths(get_option('prefix'), get_option('localedir'))
 

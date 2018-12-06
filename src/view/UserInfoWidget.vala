@@ -89,11 +89,7 @@ namespace Venom {
       reset_avatar.clicked.connect(on_file_reset);
       apply.clicked.connect(view_model.on_apply_clicked);
 
-#if ENABLE_GSTREAMER
       take_picture.clicked.connect(start_photobooth);
-#else
-      take_picture.sensitive = false;
-#endif
     }
 
     ~UserInfoWidget() {

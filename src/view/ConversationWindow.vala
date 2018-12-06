@@ -31,25 +31,29 @@ namespace Venom {
     [GtkChild] private Gtk.Popover popover;
     [GtkChild] private Gtk.Box placeholder;
     [GtkChild] private Gtk.Widget header_start;
-    [GtkChild] private Gtk.Widget header_end;
+    [GtkChild] private Gtk.Stack header_end;
 
     private const GLib.ActionEntry win_entries[] =
     {
       { "contact-info",      on_contact_info,  null, null, null },
-      { "start-call",        on_start_call,    null, null, null },
-      { "start-video",       on_start_video,   null, null, null },
       { "insert-file",       on_insert_file,   null, null, null },
       { "insert-screenshot", on_insert_screenshot,   null, null, null },
-      { "insert-smiley",     on_insert_smiley, null, null, null }
+      { "insert-smiley",     on_insert_smiley, null, null, null },
+      { "contact-start-call",       on_start_call, null, null, null },
+      { "contact-start-video-call", on_start_video_call, null, null, null },
+      { "contact-accept-call", on_accept_call, null, null, null },
+      { "contact-reject-call", on_reject_call, null, null, null }
     };
 
     private unowned ApplicationWindow app_window;
     private Logger logger;
     private ObservableList conversation;
     private ConversationWidgetListener listener;
+    private CallWidgetListener call_listener;
     private ConversationWidgetFiletransferListener filetransfer_listener;
     private bool is_typing;
     private IContact contact;
+    private CallState call_state;
     private UserInfo user_info;
     private TextViewEventHandler text_view_event_handler;
     private AdjustmentAutoScroller auto_scroller;
@@ -63,14 +67,17 @@ namespace Venom {
                               UserInfo user_info,
                               ISettingsDatabase settings,
                               ConversationWidgetListener listener,
+                              CallWidgetListener call_listener,
                               ConversationWidgetFiletransferListener filetransfer_listener,
                               FileTransferEntryListener file_transfer_entry_listener) {
       this.app_window = app_window;
       this.logger = logger;
       this.conversation = conversation;
       this.contact = contact;
+      this.call_state = call_listener.get_call_state(contact);
       this.user_info = user_info;
       this.listener = listener;
+      this.call_listener = call_listener;
       this.filetransfer_listener = filetransfer_listener;
       this.cancellable = new Cancellable();
 
@@ -92,6 +99,7 @@ namespace Venom {
       app_window.header_end.pack_start(header_end);
 
       contact.changed.connect(update_widgets);
+      call_state.notify.connect(update_widgets);
       update_widgets();
 
       var model = new LazyObservableListModel(logger, conversation, cancellable);
@@ -133,6 +141,16 @@ namespace Venom {
       }
       typing_label.label = _("%s is typing…").printf(contact.get_name_string());
       typing_revealer.reveal_child = contact.is_typing();
+
+      if (call_state.pending_in) {
+        header_end.visible_child_name = "pending-in";
+      } else if (call_state.pending_out) {
+        header_end.visible_child_name = "pending-out";
+      } else if (call_state.in_call) {
+        header_end.visible_child_name = "in-call";
+      } else {
+        header_end.visible_child_name = "no-call";
+      }
     }
 
     private bool on_focus_in_event() {
@@ -189,10 +207,28 @@ namespace Venom {
 
     private void on_start_call() {
       logger.d("on_start_call");
+      var call_state = call_listener.get_call_state(contact);
+      if (!call_state.in_call) {
+        call_listener.call(contact, true, false);
+      }
     }
 
-    private void on_start_video() {
-      logger.d("on_start_video");
+    private void on_start_video_call() {
+      logger.d("on_start_video_call");
+      var call_state = call_listener.get_call_state(contact);
+      if (!call_state.in_call) {
+        call_listener.call(contact, true, true);
+      }
+    }
+
+    private void on_accept_call() {
+      logger.d("on_accept_call");
+      app_window.on_accept_call_with_contact((Contact) contact);
+    }
+
+    private void on_reject_call() {
+      logger.d("on_reject_call");
+      app_window.on_reject_call_with_contact((Contact) contact);
     }
 
     private async void insert_screenshot_async() {
@@ -257,6 +293,14 @@ namespace Venom {
     }
   }
 
+  public interface ConversationWidgetFiletransferListener : GLib.Object {
+    public abstract void on_start_filetransfer(IContact contact, File file) throws Error;
+  }
+  public interface ConversationWidgetListener : GLib.Object {
+    public abstract void on_send_message(IContact contact, string message) throws Error;
+    public abstract void on_set_typing(IContact contact, bool typing) throws Error;
+  }
+
   public class AdjustmentAutoScroller {
     public bool auto_scroll { get; set; default = true; }
     private bool scrolled_to_bottom = true;
@@ -283,17 +327,13 @@ namespace Venom {
     }
   }
 
-  public interface ConversationWidgetFiletransferListener : GLib.Object {
-    public abstract void on_start_filetransfer(IContact contact, File file) throws Error;
-  }
-
   public class TextViewEventHandler {
     Gtk.AccelKey key;
 
     public TextViewEventHandler() {
       var accel_path = "<Venom>/Message/Send";
       if (!Gtk.AccelMap.lookup_entry(accel_path, out key)) {
-        key.accel_mods = ~Gdk.ModifierType.MODIFIER_MASK;
+        key.accel_mods = 0;
         key.accel_key = Gdk.Key.Return;
         Gtk.AccelMap.add_entry(accel_path, key.accel_key, key.accel_mods);
       }
@@ -332,10 +372,5 @@ namespace Venom {
         assert_not_reached();
       }
     }
-  }
-
-  public interface ConversationWidgetListener : GLib.Object {
-    public abstract void on_send_message(IContact contact, string message) throws Error;
-    public abstract void on_set_typing(IContact contact, bool typing) throws Error;
   }
 }

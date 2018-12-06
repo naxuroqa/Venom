@@ -23,6 +23,7 @@ namespace Venom {
   public class ContactListViewModel : GLib.Object {
     private Logger logger;
     private ContactListWidgetCallback callback;
+    private CallWidgetListener call_widget_listener;
     private UserInfo user_info;
     private ObservableList contacts;
     private ObservableList friend_requests;
@@ -40,7 +41,7 @@ namespace Venom {
     public bool conference_invite_visible { get; set; }
     public string conference_invite_label { get; set; }
 
-    public ContactListViewModel(Logger logger, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info) {
+    public ContactListViewModel(Logger logger, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info, CallWidgetListener call_widget_listener) {
       logger.d("ContactListViewModel created.");
       this.logger = logger;
       this.contacts = contacts;
@@ -48,6 +49,7 @@ namespace Venom {
       this.conference_invites = conference_invites;
       this.callback = callback;
       this.user_info = user_info;
+      this.call_widget_listener = call_widget_listener;
 
       right_clicked_contact = WeakRef(null);
       selected_contact = WeakRef(null);
@@ -115,6 +117,19 @@ namespace Venom {
         menu.append_submenu(_("Invite to conference…"), conference_menu);
       }
 
+      var call_state = call_widget_listener.get_call_state(contact);
+      if (call_state != null) {
+        if (call_state.pending_in) {
+          var call_section = new GLib.Menu();
+          call_section.append(_("Accept call"), @"app.accept-call('$id')");
+          call_section.append(_("Reject call"), @"app.reject-call('$id')");
+          menu.append_section(null, call_section);
+        } else if (call_state.pending_out) {
+          var call_section = new GLib.Menu();
+          call_section.append(_("Cancel call"), @"app.reject-call('$id')");
+          menu.append_section(null, call_section);
+        }
+      }
       menu.append(_("Show details"), @"win.show-contact-details('$id')");
 
       var remove_section = new GLib.Menu();

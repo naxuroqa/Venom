@@ -37,7 +37,7 @@ namespace Venom {
 
     private Logger logger;
     private SqliteStatementFactory statement_factory;
-    private unowned GLib.HashTable<uint32, IContact> contacts;
+    private unowned Gee.Map<uint32, IContact> contacts;
 
     public SqliteMessageRepository(DatabaseStatementFactory statement_factory, Logger logger) throws DatabaseStatementError {
       this.statement_factory = (SqliteStatementFactory) statement_factory;
@@ -59,7 +59,7 @@ namespace Venom {
       }
       return -1;
     }
-    public void set_contacts(GLib.HashTable<uint32, IContact> contacts) {
+    public void set_contacts(Gee.Map<uint32, IContact> contacts) {
       this.contacts = contacts;
     }
     public void create(Message message) {

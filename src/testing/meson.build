@@ -7,7 +7,6 @@ if posix_dep.found()
 						)
 endif
 
-if gst_dep.found()
 executable('photobooth_test', 'PhotoboothTest.vala',
 			dependencies : [venom_dep]
 			)
@@ -26,7 +25,6 @@ executable('video_send_bot', 'VideoSendBot.vala',
 executable('audio_send_bot', 'AudioSendBot.vala',
 			dependencies : [gtk_dep, gst_dep, gst_audio_dep, gst_app_dep, tox_dep]
 			)
-endif
 
 mox_lib = library('mox',
 			[
@@ -38,6 +36,14 @@ mox_lib = library('mox',
 			)
 mox_dep = declare_dependency(link_with : mox_lib)
 
+executable('settings_test', ['SettingsTest.vala',
+			'mocks/MockLogger.vala',
+			'mocks/MockDhtNodeRepository.vala',
+			'mocks/MockSettingsDatabase.vala',
+			venom_ui_resources
+			],
+			dependencies : [venom_dep, mox_dep]
+			)
 
 test_glib_testing = executable('test_glib_testing', ['TestGlibTesting.vala'],
 			dependencies : [gio_dep]

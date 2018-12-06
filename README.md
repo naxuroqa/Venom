@@ -31,6 +31,7 @@ Features
 * Spell checking
 * Sound notifications
 * [Faux offline messaging](https://wiki.tox.chat/users/offline_messaging)
+* Voice and video chat
 
 Roadmap
 -------
@@ -42,6 +43,20 @@ Translations
 
 Translations are done via the [venom project on weblate](https://hosted.weblate.org/projects/venom/translations/).
 Don't create pull requests for translations here. Updated translations from weblate will be merged in this repository on every release.
+
+FAQ
+---
+
+* Save file location
+
+  Tox profiles and history files are saved in `$XDG_DATA_HOME/tox/`.
+   * For the flatpak bundle `$XDG_DATA_HOME/tox/` is at `~/.var/app/com.github.naxuroqa.venom/tox/`
+   * Otherwise `$XDG_DATA_HOME/tox/` is at `~/.local/share/tox/`
+
+* Data file interoperability
+
+  Tox data files from qTox and toxic can be reused, both encrypted and unencrypted.
+  This only includes the `*.tox` files, all other files (history, etc.) are not supported.
 
 Dependencies
 ------------
