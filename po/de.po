@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
-"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
 "PO-Revision-Date: 2018-12-05 21:09+0000\n"
 "Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
