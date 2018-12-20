@@ -55,6 +55,14 @@ namespace Mock {
       mock().actual_call(this, "on_conference_invite", args);
     }
 
+    public void on_incoming_call(IContact contact, bool video) {
+      var args = Arguments.builder()
+                     .object(contact)
+                     .bool(video)
+                     .create();
+      mock().actual_call(this, "on_incoming_call", args);
+    }
+
     public void clear_notifications() {
       mock().actual_call(this, "clear_notifications");
     }

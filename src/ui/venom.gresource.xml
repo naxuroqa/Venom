@@ -21,6 +21,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
   <gresource prefix="/com/github/naxuroqa/venom/ui">
     <file compressed="true" preprocess="xml-stripblanks">add_contact_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">application_window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">call_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">conference_info_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">conference_invite_entry.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">conference_window.ui</file>

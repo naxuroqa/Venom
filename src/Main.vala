@@ -1,7 +1,7 @@
 /*
  *    Main.vala
  *
- *    Copyright (C) 2013-2018  Venom authors and contributors
+ *    Copyright (C) 2013-2018 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -25,9 +25,21 @@ namespace Venom {
     GLib.Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "utf-8");
     GLib.Intl.textdomain(Config.GETTEXT_PACKAGE);
 
-#if ENABLE_GSTREAMER
     Gst.init(ref args);
-#endif
+
+    // So for some reason pipewire thinks it's hot shit, setting itself to
+    // Gst.Rank.PRIMARY + 1 while at the same time crashing 60% of the time,
+    // every time.
+    {
+      var provider_factory = Gst.DeviceProviderFactory.find("pipewiredeviceprovider");
+      if (provider_factory != null) {
+        provider_factory.set_rank(Gst.Rank.NONE);
+      }
+      var element_factory = Gst.ElementFactory.find("pipewiresrc");
+      if (element_factory != null) {
+        element_factory.set_rank(Gst.Rank.NONE);
+      }
+    }
 
     return new Application().run(args);
   }

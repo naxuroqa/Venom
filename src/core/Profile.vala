@@ -46,18 +46,10 @@ namespace Venom {
       is_encrypted = false;
     }
 
-    public uint8[] ? load_sessiondata() throws Error {
-      if (!FileUtils.test(toxfile, FileTest.EXISTS)) {
-        return null;
-      }
-
-      uint8[] data;
+    public uint8[] load_sessiondata() throws Error {
+      uint8[] data = {};
       FileUtils.get_data(toxfile, out data);
-
-      if (pass_key != null) {
-        return decrypt(data);
-      }
-      return data;
+      return pass_key != null ? decrypt(data) : data;
     }
 
     public string get_db_key() {

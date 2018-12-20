@@ -37,8 +37,8 @@ public class VideoSendBot : Gtk.Window {
     set_default_size(800, 600);
     destroy.connect(kill);
     try {
-      var src = "v4l2src";
-      // var src = "videotestsrc";
+      // var src = "v4l2src";
+      var src = "videotestsrc";
       // var src = "filesrc location=\"$filename\" ! decodebin";
       pipeline = (Gst.Pipeline) Gst.parse_launch(@"$src ! videoconvert ! coloreffects preset=heat ! tee name=t ! queue ! videoconvert ! appsink name=sink emit-signals=true caps=video/x-raw,format=I420,framerate=30/1"
                                                 + " t. ! queue ! videoconvert ! gtksink name=gtksink"

@@ -27,7 +27,7 @@ namespace Venom {
     private Logger logger;
     private NotificationListener notification_listener;
 
-    private unowned GLib.HashTable<uint32, IContact> friends;
+    private unowned Gee.Map<uint32, IContact> friends;
     private Gee.Map<uint32, Gee.Map<uint32, FileTransfer> > file_transfers;
     private unowned GLib.HashTable<IContact, ObservableList> conversations;
 

@@ -24,40 +24,179 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
   <!-- interface-license-type gplv3 -->
   <!-- interface-name Venom -->
   <!-- interface-copyright 2013-2018 Venom authors and contributors -->
-  <object class="GtkBox" id="header_end">
+  <object class="GtkStack" id="header_end">
+    <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="no_show_all">True</property>
-    <property name="spacing">6</property>
+    <property name="hhomogeneous">False</property>
+    <property name="transition_type">crossfade</property>
     <child>
-      <object class="GtkButton">
-        <property name="label" translatable="yes">Call</property>
+      <object class="GtkBox">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="no_show_all">True</property>
-        <property name="tooltip_text" translatable="yes">Start a call</property>
-        <property name="action_name">win.start-call</property>
+        <property name="can_focus">False</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Call friend</property>
+            <property name="action_name">win.contact-start-call</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">call-start-symbolic</property>
+              </object>
+            </child>
+            <style>
+              <class name="image-button"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Videocall friend</property>
+            <property name="action_name">win.contact-start-video-call</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">camera-web-symbolic</property>
+              </object>
+            </child>
+            <style>
+              <class name="image-button"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
+        <property name="name">no-call</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Accept call</property>
+            <property name="action_name">win.contact-accept-call</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">call-start-symbolic</property>
+                <style>
+                  <class name="highlight"/>
+                </style>
+              </object>
+            </child>
+            <style>
+              <class name="image-button"/>
+              <class name="suggested-action"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Reject call</property>
+            <property name="action_name">win.contact-reject-call</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">call-stop-symbolic</property>
+              </object>
+            </child>
+            <style>
+              <class name="image-button"/>
+              <class name="destructive-action"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="name">pending-in</property>
+        <property name="position">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkButton">
-        <property name="label" translatable="yes">Video call</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
-        <property name="no_show_all">True</property>
-        <property name="tooltip_text" translatable="yes">Start a video call</property>
-        <property name="action_name">win.start-video</property>
+        <property name="tooltip_text" translatable="yes">Stop calling</property>
+        <property name="action_name">win.contact-reject-call</property>
+        <child>
+          <object class="GtkImage">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">call-stop-symbolic</property>
+          </object>
+        </child>
+        <style>
+          <class name="image-button"/>
+          <class name="destructive-action"/>
+        </style>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">1</property>
+        <property name="name">pending-out</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="tooltip_text" translatable="yes">Stop call</property>
+        <property name="action_name">win.contact-reject-call</property>
+        <child>
+          <object class="GtkImage">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">call-stop-symbolic</property>
+          </object>
+        </child>
+        <style>
+          <class name="image-button"/>
+          <class name="destructive-action"/>
+        </style>
+      </object>
+      <packing>
+        <property name="name">in-call</property>
+        <property name="position">3</property>
       </packing>
     </child>
   </object>
@@ -331,7 +470,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="valign">start</property>
             <child>
               <object class="GtkButton">
                 <property name="visible">True</property>
@@ -340,7 +478,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Insert Emoji</property>
                 <property name="action_name">win.insert-smiley</property>
-                <property name="relief">none</property>
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>
@@ -364,7 +501,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Insert attachment</property>
-                <property name="relief">none</property>
                 <property name="popover">popover</property>
                 <child>
                   <object class="GtkImage">
@@ -383,10 +519,14 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="position">1</property>
               </packing>
             </child>
+            <style>
+              <class name="linked"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="pack_type">end</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -394,6 +534,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
+        <property name="pack_type">end</property>
         <property name="position">4</property>
       </packing>
     </child>

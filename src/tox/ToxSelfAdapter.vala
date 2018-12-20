@@ -122,6 +122,7 @@ namespace Venom {
     }
 
     public void on_self_connection_status_changed(bool is_connected) {
+      logger.i("Connection " + (is_connected ? "established" : "lost"));
       user_info.is_connected = is_connected;
       user_info.info_changed();
     }

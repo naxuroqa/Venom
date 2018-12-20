@@ -269,25 +269,27 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                                 <property name="height_request">100</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="shadow_type">in</property>
                                 <child>
                                   <object class="GtkViewport">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="shadow_type">none</property>
                                     <child>
                                       <object class="GtkTextView" id="contact_message">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="tooltip_text" translatable="yes">Send a custom message to be displayed to the friend you are adding</property>
-                                        <property name="border_width">6</property>
                                         <property name="wrap_mode">word</property>
+                                        <property name="left_margin">3</property>
+                                        <property name="right_margin">3</property>
+                                        <property name="top_margin">3</property>
+                                        <property name="bottom_margin">3</property>
                                         <property name="buffer">textbuffer1</property>
                                       </object>
                                     </child>
                                   </object>
                                 </child>
-                                <style>
-                                  <class name="frame"/>
-                                </style>
                               </object>
                               <packing>
                                 <property name="expand">False</property>

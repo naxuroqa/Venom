@@ -41,10 +41,10 @@ namespace Venom {
     private unowned Gtk.ListBoxRow ? selected_row;
     private ListModel contact_list_model;
 
-    public ContactListWidget(Logger logger, ApplicationWindow app_window, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info, ISettingsDatabase settings_database) {
+    public ContactListWidget(Logger logger, ApplicationWindow app_window, ObservableList contacts, ObservableList friend_requests, ObservableList conference_invites, ContactListWidgetCallback callback, UserInfo user_info, ISettingsDatabase settings_database, CallWidgetListener call_widget_listener) {
       logger.d("ContactListWidget created.");
       this.logger = logger;
-      this.view_model = new ContactListViewModel(logger, contacts, friend_requests, conference_invites, callback, user_info);
+      this.view_model = new ContactListViewModel(logger, contacts, friend_requests, conference_invites, callback, user_info, call_widget_listener);
 
       app_window.user_info_box.pack_start(top_bar_box, true, true);
 
@@ -70,7 +70,7 @@ namespace Venom {
 
       settings_database.notify["enable-compact-contacts"].connect(refresh_contacts);
 
-      var creator = new ContactListEntryCreator(logger, settings_database);
+      var creator = new ContactListEntryCreator(logger, settings_database, call_widget_listener);
       contact_list_model = view_model.get_list_model();
       contact_list.bind_model(contact_list_model, creator.create_entry);
     }
@@ -128,16 +128,20 @@ namespace Venom {
     private class ContactListEntryCreator {
       private unowned Logger logger;
       private ISettingsDatabase settings_database;
-      public ContactListEntryCreator(Logger logger, ISettingsDatabase settings_database) {
+      private CallWidgetListener call_widget_listener;
+      public ContactListEntryCreator(Logger logger, ISettingsDatabase settings_database, CallWidgetListener call_widget_listener) {
         this.logger = logger;
         this.settings_database = settings_database;
+        this.call_widget_listener = call_widget_listener;
       }
 
       public Gtk.Widget create_entry(GLib.Object object) {
+        var contact = object as IContact;
+        var call_state = call_widget_listener.get_call_state(contact);
         if (settings_database.enable_compact_contacts) {
-          return new ContactListEntryCompact(logger, object as IContact);
+          return new ContactListEntryCompact(logger, contact, call_state);
         } else {
-          return new ContactListEntry(logger, object as IContact);
+          return new ContactListEntry(logger, contact, call_state);
         }
       }
     }

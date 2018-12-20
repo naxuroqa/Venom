@@ -53,6 +53,7 @@ namespace Venom {
     public abstract void set_filetransfer_listener(ToxFiletransferAdapter listener);
     public abstract void set_friend_listener(ToxFriendAdapter listener);
     public abstract void set_conference_listener(ToxConferenceAdapter listener);
+    public abstract void set_call_adapter(ToxCallAdapter listener);
 
     public abstract void self_set_user_name(string name);
     public abstract void self_set_status_message(string status);
@@ -95,7 +96,13 @@ namespace Venom {
     public abstract void file_send_avatar(uint32 friend_number, uint8[] avatar_data) throws ToxError;
     public abstract void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError;
 
-    public abstract unowned GLib.HashTable<uint32, IContact> get_friends();
+    public abstract void call(uint32 friend_number, uint32 audio_bit_rate, uint32 video_bit_rate) throws ToxError;
+    public abstract void accept_call(uint32 friend_number, uint32 audio_bit_rate, uint32 video_bit_rate) throws ToxError;
+    public abstract void call_control(uint32 friend_number, ToxAV.CallControl control) throws ToxError;
+    public abstract void audio_send_sample(uint32 friend_number, Gst.Base.Adapter adapter, Gst.Caps caps) throws ToxError;
+    public abstract void video_send_sample(uint32 friend_number, Gst.Sample sample) throws ToxError;
+
+    public abstract unowned Gee.Map<uint32, IContact> get_friends();
   }
 
   public interface ToxSelfAdapter : GLib.Object {
@@ -143,8 +150,22 @@ namespace Venom {
     public abstract void on_file_send_avatar_received(uint32 friend_number, uint32 file_number, uint8[] avatar_data);
   }
 
+  public interface ToxCallAdapter : GLib.Object {
+    public abstract void on_audio_bit_rate_cb(uint32 friend_number, uint32 audio_bit_rate);
+    public abstract void on_audio_receive_sample_cb(uint32 friend_number, Gst.Sample sample);
+
+    public abstract void on_call_cb(uint32 friend_number, bool audio_enabled, bool video_enabled);
+    public abstract void on_call_state_cb(uint32 friend_number, ToxAV.FriendCallState state);
+
+    public abstract void on_video_bit_rate_cb(uint32 friend_number, uint32 video_bit_rate);
+    public abstract void on_video_receive_sample_cb(uint32 friend_number, Gst.Sample sample);
+
+    public abstract void on_av_conference_audio_sample_cb(uint32 group_number, uint32 peer_number, Gst.Sample sample);
+  }
+
   public class ToxSessionImpl : GLib.Object, ToxSession {
     public Tox handle;
+    private ToxAV.ToxAV av_handle;
     private Mutex mutex;
 
     private DhtNodeRepository dht_node_repository;
@@ -152,14 +173,16 @@ namespace Venom {
 
     private Gee.Iterable<DhtNode> dht_nodes = Gee.Collection.empty<DhtNode>();
     private Logger logger;
-    private ToxSessionThread sessionThread;
+    private ToxThread session_thread;
+    private ToxThread av_thread;
 
     private ToxSelfAdapter self_listener;
     private ToxFriendAdapter friend_listener;
     private ToxConferenceAdapter conference_listener;
     private ToxFiletransferAdapter filetransfer_listener;
+    private ToxCallAdapter call_adapter;
     private Profile profile;
-    private GLib.HashTable<uint32, IContact> friends;
+    private Gee.HashMap<uint32, IContact> friends;
 
     public ToxSessionImpl(Profile profile, DhtNodeRepository node_database, ISettingsDatabase settings_database, Logger logger) throws Error {
       this.dht_node_repository = node_database;
@@ -172,7 +195,7 @@ namespace Venom {
       var options = new ToxCore.Options(out options_error);
 
       options.log_callback = on_tox_message;
-      friends = new GLib.HashTable<uint32, IContact>(null, null);
+      friends = new Gee.HashMap<uint32, IContact>();
 
       var savedata = profile.load_sessiondata();
       if (savedata != null) {
@@ -204,6 +227,14 @@ namespace Venom {
         throw new ToxError.GENERIC(message);
       }
 
+      var av_error = ToxAV.ErrNew.OK;
+      av_handle = new ToxAV.ToxAV(handle, out av_error);
+      if (av_error != ToxAV.ErrNew.OK) {
+        var message = "Could not create tox av instance: " + av_error.to_string();
+        logger.e(message);
+        throw new ToxError.GENERIC(message);
+      }
+
       handle.callback_self_connection_status(on_self_connection_status_cb);
       handle.callback_friend_connection_status(on_friend_connection_status_cb);
       handle.callback_friend_message(on_friend_message_cb);
@@ -225,20 +256,35 @@ namespace Venom {
       handle.callback_file_recv_control(on_file_recv_control_cb);
       handle.callback_file_chunk_request(on_file_chunk_request_cb);
 
+      av_handle.callback_audio_bit_rate(on_audio_bit_rate_cb);
+      av_handle.callback_audio_receive_frame(on_audio_receive_frame_cb);
+      av_handle.callback_call(on_call_cb);
+      av_handle.callback_call_state(on_call_state_cb);
+      av_handle.callback_video_bit_rate(on_video_bit_rate_cb);
+      av_handle.callback_video_receive_frame(on_video_receive_frame_cb);
+
       init_dht_nodes();
-      sessionThread = new ToxSessionThreadImpl(this, logger, dht_nodes);
-      sessionThread.start();
+      session_thread = new ToxSessionThreadImpl(this, logger, dht_nodes);
+      session_thread.start();
+
+      av_thread = new DefaultToxAVThread(logger, av_handle);
+      av_thread.start();
       logger.d("ToxSession created.");
     }
 
     ~ToxSessionImpl() {
-      if (sessionThread != null) {
+      if (av_thread != null) {
+        logger.i("ToxSession stopping av background thread.");
+        av_thread.stop();
+      }
+      if (session_thread != null) {
         logger.i("ToxSession stopping background thread.");
-        sessionThread.stop();
+        session_thread.stop();
       }
       if (handle != null) {
         logger.i("ToxSession saving session data.");
         profile.save_sessiondata(handle.get_savedata());
+        av_handle = null;
         handle = null;
       }
       logger.d("ToxSession destroyed.");
@@ -292,7 +338,7 @@ namespace Venom {
       dht_nodes = dht_node_repository.query_all();
     }
 
-    public virtual unowned GLib.HashTable<uint32, IContact> get_friends() {
+    public virtual unowned Gee.Map<uint32, IContact> get_friends() {
       return friends;
     }
 
@@ -316,20 +362,24 @@ namespace Venom {
       }
     }
 
-    public virtual void set_session_listener(ToxSelfAdapter listener) {
+    public void set_session_listener(ToxSelfAdapter listener) {
       this.self_listener = listener;
     }
 
-    public virtual void set_filetransfer_listener(ToxFiletransferAdapter listener) {
+    public void set_filetransfer_listener(ToxFiletransferAdapter listener) {
       this.filetransfer_listener = listener;
     }
 
-    public virtual void set_friend_listener(ToxFriendAdapter listener) {
+    public void set_friend_listener(ToxFriendAdapter listener) {
       this.friend_listener = listener;
     }
 
-    public virtual void set_conference_listener(ToxConferenceAdapter listener) {
+    public void set_conference_listener(ToxConferenceAdapter listener) {
       this.conference_listener = listener;
+    }
+
+    public void set_call_adapter(ToxCallAdapter adapter) {
+      this.call_adapter = adapter;
     }
 
     private static string copy_data_string(uint8[] data) {
@@ -423,8 +473,122 @@ namespace Venom {
       Idle.add(() => { session.conference_listener.on_conference_invite_received(friend_number, gc_type, cookie_copy); return false; });
     }
 
-    private void on_av_conference_audio_frame() {
+    private void on_audio_bit_rate_cb(ToxAV.ToxAV av, uint32 friend_number, uint32 audio_bit_rate) {
+      logger.d(@"on_audio_bit_rate_cb friend_number:$friend_number");
 
+      Idle.add(() => { call_adapter.on_audio_bit_rate_cb(friend_number, audio_bit_rate); return false; });
+    }
+    private Gst.Sample create_sample_from_pcm(int16[] pcm, size_t sample_count, uint8 channels, uint32 sampling_rate) {
+      Gst.Audio.ChannelPosition[] positions = {Gst.Audio.ChannelPosition.NONE, Gst.Audio.ChannelPosition.NONE};
+      var info = new Gst.Audio.Info();
+      info.set_format(Gst.Audio.Format.S16, (int) sampling_rate, channels, positions);
+      var buffer = new Gst.Buffer.allocate(null, sample_count * channels * sizeof(uint16), null);
+      Gst.MapInfo map_info;
+      buffer.map(out map_info, Gst.MapFlags.WRITE);
+      GLib.Memory.copy(map_info.data, pcm, map_info.size);
+      buffer.unmap(map_info);
+      return new Gst.Sample(buffer, info.to_caps(), null, null);
+    }
+    private void on_audio_receive_frame_cb(ToxAV.ToxAV av, uint32 friend_number, int16[] pcm, size_t sample_count, uint8 channels, uint32 sampling_rate) {
+      // logger.d(@"on_audio_receive_frame_cb friend_number:$friend_number");
+
+      //FIXME push directly to pipeline
+      var sample = create_sample_from_pcm(pcm, sample_count, channels, sampling_rate);
+
+      Idle.add(() => { call_adapter.on_audio_receive_sample_cb(friend_number, sample); return false; });
+    }
+    private void on_call_cb(ToxAV.ToxAV av, uint32 friend_number, bool audio_enabled, bool video_enabled) {
+      logger.d(@"on_call_cb friend_number:$friend_number");
+
+      Idle.add(() => { call_adapter.on_call_cb(friend_number, audio_enabled, video_enabled); return false; });
+    }
+    private void on_call_state_cb(ToxAV.ToxAV av, uint32 friend_number, ToxAV.FriendCallState state) {
+      logger.d(@"on_call_state_cb friend_number:$friend_number");
+
+      Idle.add(() => { call_adapter.on_call_state_cb(friend_number, state); return false; });
+    }
+    private void on_video_bit_rate_cb(ToxAV.ToxAV av, uint32 friend_number, uint32 video_bit_rate) {
+      logger.d(@"on_video_bit_rate_cb friend_number:$friend_number");
+
+      Idle.add(() => { call_adapter.on_video_bit_rate_cb(friend_number, video_bit_rate); return false; });
+    }
+    private void on_video_receive_frame_cb(ToxAV.ToxAV av, uint32 friend_number, uint16 width, uint16 height, uint8[] y, uint8[] u, uint8[] v, int32 ystride, int32 ustride, int32 vstride) {
+      // logger.d(@"on_video_receive_frame_cb friend_number:$friend_number");
+
+      //FIXME push directly to pipeline
+      var info = new Gst.Video.Info();
+      info.set_format(Gst.Video.Format.I420, width, height);
+      var data = new uint8[info.size];
+
+      uint8*[] planes = {y, u, v};
+      int32[] strides = {ystride, ustride, vstride};
+      uint16[] heights = {height, height / 2, height / 2};
+
+      for (var i = 0; i < planes.length; i++) {
+        var stride = int.min(strides[i], info.stride[i]);
+        for (var j = 0; j < heights[i]; j++) {
+          uint8* src = (uint8*) planes[i] + strides[i] * j;
+          uint8* dest = (uint8*) data + info.stride[i] * j + info.offset[i];
+          GLib.Memory.copy(dest, src, stride);
+        }
+      }
+
+      var buffer = new Gst.Buffer.wrapped(data);
+      var sample = new Gst.Sample(buffer, info.to_caps(), null, null);
+
+      Idle.add(() => { call_adapter.on_video_receive_sample_cb(friend_number, sample); return false; });
+    }
+
+    private void on_av_conference_audio_frame(ToxCore.Tox self, uint32 group_number, uint32 peer_number, int16[] pcm, uint sample_count, uint8 channels, uint32 sampling_rate) {
+      // logger.d(@"on_av_conference_audio_frame: group_number:$group_number, peer_number:$peer_number");
+
+      //FIXME push directly to pipeline
+      var sample = create_sample_from_pcm(pcm, sample_count, channels, sampling_rate);
+      Idle.add(() => { call_adapter.on_av_conference_audio_sample_cb(group_number, peer_number, sample); return false; });
+    }
+
+    public void audio_send_sample(uint32 friend_number, Gst.Base.Adapter adapter, Gst.Caps caps) throws ToxError {
+      var info = new Gst.Audio.Info();
+      info.from_caps(caps);
+      var frame_size = 960 * sizeof(uint16) * info.channels; // 48000 / 1000 * 20ms
+      var e = ToxAV.ErrSendFrame.OK;
+      while (adapter.available() >= frame_size) {
+        var buf = adapter.take(frame_size);
+        av_handle.audio_send_frame(friend_number, (int16[]) buf, frame_size / sizeof(uint16), (uint8) info.channels, info.rate, out e);
+        if (e != ToxAV.ErrSendFrame.OK) {
+          logger.d("Sending audio frame failed: " + e.to_string());
+          throw new ToxError.GENERIC("Sending audio frame failed: " + e.to_string());
+        }
+      }
+    }
+
+    public void video_send_sample(uint32 friend_number, Gst.Sample sample) throws ToxError {
+      var buffer = sample.get_buffer();
+      var caps = sample.get_caps();
+      var info = new Gst.Video.Info();
+      info.from_caps(caps);
+      Gst.MapInfo map_info;
+      buffer.map(out map_info, Gst.MapFlags.READ);
+
+      int[] strides = {info.width, info.width / 2, info.width / 2};
+      int[] heights = {info.height, info.height / 2, info.height / 2};
+      int[] sizes = {strides[0]*heights[0], strides[1]*heights[1], strides[2]*heights[2]};
+      var y = new uint8[sizes[0]];
+      var u = new uint8[sizes[1]];
+      var v = new uint8[sizes[2]];
+      uint8*[] planes = {y, u, v};
+      for (var i = 0; i < planes.length; i++) {
+        for (var j = 0; j < heights[i]; j++) {
+          GLib.Memory.copy(planes[i] + j * strides[i], (uint8*) map_info.data + j * info.stride[i] + info.offset[i], strides[i]);
+        }
+      }
+      buffer.unmap(map_info);
+      var e = ToxAV.ErrSendFrame.OK;
+      av_handle.video_send_frame(friend_number, (uint16) info.width, (uint16) info.height, y, u, v, out e);
+      if (e != ToxAV.ErrSendFrame.OK) {
+        logger.d("Sending video frame failed: " + e.to_string());
+        throw new ToxError.GENERIC("Sending video frame failed: " + e.to_string());
+      }
     }
 
     private static void on_conference_message_cb(Tox self, uint32 conference_number, uint32 peer_number, MessageType type, uint8[] message, void *user_data) {
@@ -846,6 +1010,33 @@ namespace Venom {
         list.add(c);
       }
       return list;
+    }
+
+    public void call(uint32 friend_number, uint32 audio_bit_rate, uint32 video_bit_rate) throws ToxError {
+      var e = ToxAV.ErrCall.OK;
+      av_handle.call(friend_number, audio_bit_rate, video_bit_rate, out e);
+      if (e != ToxAV.ErrCall.OK) {
+        logger.e("starting call failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
+    }
+
+    public void accept_call(uint32 friend_number, uint32 audio_bit_rate, uint32 video_bit_rate) throws ToxError {
+      var e = ToxAV.ErrAnswer.OK;
+      av_handle.answer(friend_number, audio_bit_rate, video_bit_rate, out e);
+      if (e != ToxAV.ErrAnswer.OK) {
+        logger.e("accepting call failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
+    }
+
+    public void call_control(uint32 friend_number, ToxAV.CallControl control) throws ToxError {
+      var e = ToxAV.ErrCallControl.OK;
+      av_handle.call_control(friend_number, control, out e);
+      if (e != ToxAV.ErrCallControl.OK) {
+        logger.e("call control failed: " + e.to_string());
+        throw new ToxError.GENERIC(e.to_string());
+      }
     }
 
     public void @lock() {

@@ -23,7 +23,6 @@ namespace Venom {
     public int timeout { get; set; default = 3; }
     public signal void new_photo(Gdk.Pixbuf pixbuf);
 
-#if ENABLE_GSTREAMER
     private Gst.Pipeline pipeline;
     private Gtk.Widget video_area;
     private Gtk.Label counter;
@@ -94,14 +93,14 @@ namespace Venom {
     private void setup_gst_pipeline () {
       pipeline = new Gst.Pipeline(null);
 
-      var src = Gst.ElementFactory.make("v4l2src", null);
+      var src = Gst.ElementFactory.make("autovideosrc", null);
+      var capsfilter = Gst.ElementFactory.make("capsfilter", null);
       var cvt = Gst.ElementFactory.make("videoconvert", null);
       sink = Gst.ElementFactory.make("gtksink", null);
+      capsfilter.@set("caps", Gst.Caps.from_string("video/x-raw,framerate=30/1"));
 
-      pipeline.add_many(src, cvt, sink);
-
-      src.link(cvt);
-      cvt.link(sink);
+      pipeline.add_many(src, capsfilter, cvt, sink);
+      src.link_many(capsfilter, cvt, sink);
 
       sink.@get("widget", out video_area);
     }
@@ -152,9 +151,5 @@ namespace Venom {
         timeout_id = GLib.Timeout.add(1000, timeout_function);
       }
     }
-#else
-    public void start() {}
-    public void stop() {}
-#endif
   }
 }

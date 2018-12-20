@@ -23,6 +23,7 @@ namespace Venom {
   public class ContactListEntryViewModel : GLib.Object {
     private Logger logger;
     private IContact contact;
+    private CallState call_state;
     private bool compact;
 
     public string contact_name { get; set; }
@@ -32,12 +33,16 @@ namespace Venom {
     public string contact_status_tooltip { get; set; }
     public bool contact_requires_attention { get; set; }
 
-    public ContactListEntryViewModel(Logger logger, IContact contact, bool compact) {
+    public ContactListEntryViewModel(Logger logger, IContact contact, CallState call_state, bool compact) {
       logger.d("ContactListEntryViewModel created.");
       this.logger = logger;
       this.contact = contact;
+      this.call_state = call_state;
       this.compact = compact;
 
+      if (call_state != null) {
+        call_state.notify.connect(update_contact);
+      }
       contact.changed.connect(update_contact);
       update_contact();
     }
@@ -49,15 +54,20 @@ namespace Venom {
     private void update_contact() {
       contact_name = contact.get_name_string();
       contact_status = contact.get_status_string();
-      contact_requires_attention = contact.get_requires_attention();
+      contact_requires_attention = contact.get_requires_attention() || call_state != null && (call_state.pending_in || call_state.pending_out);
 
       var pixbuf = contact.get_image();
       if (pixbuf != null) {
         var size = compact ? 20 : 40;
         contact_image = round_corners(pixbuf.scale_simple(size, size, Gdk.InterpType.BILINEAR));
       }
-
-      if (contact_requires_attention) {
+      if (call_state != null && call_state.pending_out) {
+        contact_status_tooltip = _("Calling friend…");
+        contact_status_image = "call-start-symbolic";
+      } else if (call_state != null && call_state.pending_in) {
+        contact_status_tooltip = _("Incoming call!");
+        contact_status_image = "call-start-symbolic";
+      } else if (contact_requires_attention) {
         contact_status_tooltip = _("New Message!");
         contact_status_image = "mail-unread-symbolic";
       } else if (contact.is_connected()) {

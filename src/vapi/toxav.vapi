@@ -1,6 +1,43 @@
+
+/**
+ * == Public audio/video API for Tox clients. ==
+ *
+ * This API can handle multiple calls. Each call has its state, in very rare
+ * occasions the library can change the state of the call without apps knowledge.
+ *
+ *
+ * === Events and callbacks ===
+ *
+ * As in Core API, events are handled by callbacks. One callback can be
+ * registered per event. All events have a callback function type named
+ * `toxav_{event}_cb` and a function to register it named `toxav_callback_{event}`.
+ * Passing a NULL callback will result in no callback being registered for that
+ * event. Only one callback per event can be registered, so if a client needs
+ * multiple event listeners, it needs to implement the dispatch functionality
+ * itself. Unlike Core API, lack of some event handlers will cause the the
+ * library to drop calls before they are started. Hanging up call from a
+ * callback causes undefined behaviour.
+ *
+ * === Threading implications ===
+ *
+ * Unlike the Core API, this API is fully thread-safe. The library will ensure
+ * the proper synchronization of parallel calls.
+ *
+ * A common way to run ToxAV (multiple or single instance) is to have a thread,
+ * separate from tox instance thread, running a simple toxav_iterate loop,
+ * sleeping for toxav_iteration_interval * milliseconds on each iteration.
+ *
+ * An important thing to note is that events are triggered from both tox and
+ * toxav thread (see above). Audio and video receive frame events are triggered
+ * from toxav thread while all the other events are triggered from tox thread.
+ *
+ * Tox thread has priority with mutex mechanisms. Any api function can
+ * fail if mutexes are held by tox thread in which case they will set SYNC
+ * error code.
+ */
 [CCode(cheader_filename = "tox/toxav.h", cprefix = "")]
 namespace ToxAV {
-  [CCode(cname = "TOXAV_ERR_NEW", cprefix = "TOXAV_ERR_NEW_", has_type_id = false)]
+  [CCode(cname = "Toxav_Err_New", cprefix = "TOXAV_ERR_NEW_", has_type_id = false)]
   public enum ErrNew {
     /**
      * The function returned successfully.
@@ -21,7 +58,7 @@ namespace ToxAV {
     MULTIPLE
   }
 
-  [CCode(cname = "TOXAV_ERR_CALL", cprefix = "TOXAV_ERR_CALL_", has_type_id = false)]
+  [CCode(cname = "Toxav_Err_Call", cprefix = "TOXAV_ERR_CALL_", has_type_id = false)]
   public enum ErrCall {
     /**
      * The function returned successfully.
@@ -55,7 +92,7 @@ namespace ToxAV {
     INVALID_BIT_RATE
   }
 
-  [CCode(cname = "TOXAV_ERR_ANSWER", cprefix = "TOXAV_ERR_ANSWER_", has_type_id = false)]
+  [CCode(cname = "Toxav_Err_Answer", cprefix = "TOXAV_ERR_ANSWER_", has_type_id = false)]
   public enum ErrAnswer {
     /**
      * The function returned successfully.
@@ -124,7 +161,7 @@ namespace ToxAV {
     ACCEPTING_V
   }
 
-  [CCode(cname = "TOXAV_CALL_CONTROL", cprefix = "TOXAV_CALL_CONTROL_", has_type_id = false)]
+  [CCode(cname = "Toxav_Call_Control", cprefix = "TOXAV_CALL_CONTROL_", has_type_id = false)]
   public enum CallControl {
     /**
      * Resume a previously paused call. Only valid if the pause was caused by this
@@ -162,7 +199,7 @@ namespace ToxAV {
     SHOW_VIDEO
   }
 
-  [CCode(cname = "TOXAV_ERR_CALL_CONTROL", cprefix = "TOXAV_ERR_CALL_CONTROL_", has_type_id = false)]
+  [CCode(cname = "Toxav_Err_Call_Control", cprefix = "TOXAV_ERR_CALL_CONTROL_", has_type_id = false)]
   public enum ErrCallControl {
     /**
      * The function returned successfully.
@@ -188,7 +225,7 @@ namespace ToxAV {
     INVALID_TRANSITION
   }
 
-  [CCode(cname = "TOXAV_ERR_BIT_RATE_SET", cprefix = "TOXAV_ERR_BIT_RATE_SET_", has_type_id = false)]
+  [CCode(cname = "Toxav_Err_Bit_Rate_Set", cprefix = "TOXAV_ERR_BIT_RATE_SET_", has_type_id = false)]
   public enum ErrBitRateSet {
     /**
      * The function returned successfully.
@@ -212,7 +249,7 @@ namespace ToxAV {
     FRIEND_NOT_IN_CALL
   }
 
-  [CCode(cname = "TOXAV_ERR_SEND_FRAME", cprefix = "TOXAV_ERR_SEND_FRAME_", has_type_id = false)]
+  [CCode(cname = "Toxav_Err_Send_Frame", cprefix = "TOXAV_ERR_SEND_FRAME_", has_type_id = false)]
   public enum ErrSendFrame {
     /**
      * The function returned successfully.
