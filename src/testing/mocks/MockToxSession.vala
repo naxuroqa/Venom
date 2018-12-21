@@ -221,7 +221,7 @@ namespace Mock {
                      .create();
       mock().actual_call(this, "file_send_data", args).get_throws();
     }
-    public void file_send_avatar(uint32 friend_number, uint8[] avatar_data) throws ToxError {
+    public void file_send_avatar(uint32 friend_number, uint8[] avatar_data, uint8[] avatar_hash) throws ToxError {
       var args = Arguments.builder()
                      .uint(friend_number)
                      .create();

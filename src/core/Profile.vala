@@ -145,7 +145,7 @@ namespace Venom {
           && !exists(baseprof + ".json") && !exists(baseprof + ".accels"));
     }
 
-    private static bool exists(string path) {
+    public static bool exists(string path) {
       return GLib.FileUtils.test(path, GLib.FileTest.EXISTS);
     }
 
