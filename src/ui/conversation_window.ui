@@ -27,8 +27,20 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
   <object class="GtkStack" id="header_end">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="hhomogeneous">False</property>
     <property name="transition_type">crossfade</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+      <packing>
+        <property name="name">offline</property>
+      </packing>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -84,7 +96,8 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
         </child>
       </object>
       <packing>
-        <property name="name">no-call</property>
+        <property name="name">online</property>
+        <property name="position">1</property>
       </packing>
     </child>
     <child>
@@ -148,7 +161,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
       </object>
       <packing>
         <property name="name">pending-in</property>
-        <property name="position">1</property>
+        <property name="position">2</property>
       </packing>
     </child>
     <child>
@@ -157,6 +170,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Stop calling</property>
+        <property name="halign">end</property>
         <property name="action_name">win.contact-reject-call</property>
         <child>
           <object class="GtkImage">
@@ -172,7 +186,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
       </object>
       <packing>
         <property name="name">pending-out</property>
-        <property name="position">2</property>
+        <property name="position">3</property>
       </packing>
     </child>
     <child>
@@ -181,6 +195,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Stop call</property>
+        <property name="halign">end</property>
         <property name="action_name">win.contact-reject-call</property>
         <child>
           <object class="GtkImage">
@@ -196,7 +211,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
       </object>
       <packing>
         <property name="name">in-call</property>
-        <property name="position">3</property>
+        <property name="position">4</property>
       </packing>
     </child>
   </object>
@@ -213,9 +228,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
         <property name="pixel_size">22</property>
         <property name="icon_name">friend-symbolic</property>
         <property name="icon_size">0</property>
-        <style>
-          <class name="avatar"/>
-        </style>
       </object>
     </child>
     <style>
@@ -311,7 +323,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
       <object class="GtkStack">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="transition_duration">250</property>
         <property name="transition_type">crossfade</property>
         <child>
           <object class="GtkBox">
