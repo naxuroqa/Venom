@@ -93,7 +93,7 @@ namespace Venom {
 
     public abstract void file_control(uint32 friend_number, uint32 file_number, FileControl control) throws ToxError;
     public abstract void file_send_data(uint32 friend_number, GLib.File file) throws ToxError;
-    public abstract void file_send_avatar(uint32 friend_number, uint8[] avatar_data) throws ToxError;
+    public abstract void file_send_avatar(uint32 friend_number, uint8[] avatar_data, uint8[] avatar_hash) throws ToxError;
     public abstract void file_send_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data) throws ToxError;
 
     public abstract void call(uint32 friend_number, uint32 audio_bit_rate, uint32 video_bit_rate) throws ToxError;
@@ -197,10 +197,13 @@ namespace Venom {
       options.log_callback = on_tox_message;
       friends = new Gee.HashMap<uint32, IContact>();
 
-      var savedata = profile.load_sessiondata();
-      if (savedata != null) {
+      uint8[] savedata;
+      if (Profile.exists(profile.toxfile)) {
+        savedata = profile.load_sessiondata();
         options.savedata_type = SaveDataType.TOX_SAVE;
         options.set_savedata_data(savedata);
+      } else {
+        logger.i("No tox data file found, creating new one.");
       }
 
       if (settings_database.enable_proxy) {
@@ -875,9 +878,9 @@ namespace Venom {
       }
     }
 
-    public virtual void file_send_avatar(uint32 friend_number, uint8[] avatar_data) throws ToxError {
+    public virtual void file_send_avatar(uint32 friend_number, uint8[] avatar_data, uint8[] avatar_hash) throws ToxError {
       var e = ErrFileSend.OK;
-      var ret = handle.file_send(friend_number, FileKind.AVATAR, avatar_data.length, null, "", out e);
+      var ret = handle.file_send(friend_number, FileKind.AVATAR, avatar_data.length, avatar_hash, "", out e);
       if (e != ErrFileSend.OK) {
         logger.e("file send avatar request failed: " + e.to_string());
         throw new ToxError.GENERIC(e.to_string());

@@ -128,10 +128,11 @@ namespace Venom {
       logger.d("start_avatar_distribution");
       uint8[] avatar_data;
       user_info.avatar.pixbuf.save_to_buffer(out avatar_data, "png");
+      var hash = ToxCore.Tox.hash(avatar_data);
       foreach (var contact in friends) {
         var c = contact as Contact;
         if (c.is_connected()) {
-          session.file_send_avatar((c as Contact).tox_friend_number, avatar_data);
+          session.file_send_avatar((c as Contact).tox_friend_number, avatar_data, hash);
         }
       }
     }
@@ -283,7 +284,8 @@ namespace Venom {
       if (is_connected) {
         uint8[] avatar_data;
         user_info.avatar.pixbuf.save_to_buffer(out avatar_data, "png");
-        session.file_send_avatar(friend_number, avatar_data);
+        var hash = ToxCore.Tox.hash(avatar_data);
+        session.file_send_avatar(friend_number, avatar_data, hash);
 
         try {
           Message ? message = queued_messages.peek(friend_number);
