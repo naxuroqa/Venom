@@ -142,14 +142,16 @@ namespace Venom {
       typing_label.label = _("%s is typing…").printf(contact.get_name_string());
       typing_revealer.reveal_child = contact.is_typing();
 
-      if (call_state.pending_in) {
+      if (!contact.is_connected()) {
+        header_end.visible_child_name = "offline";
+      } else if (call_state.pending_in) {
         header_end.visible_child_name = "pending-in";
       } else if (call_state.pending_out) {
         header_end.visible_child_name = "pending-out";
       } else if (call_state.in_call) {
         header_end.visible_child_name = "in-call";
       } else {
-        header_end.visible_child_name = "no-call";
+        header_end.visible_child_name = "online";
       }
     }
 

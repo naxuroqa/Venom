@@ -154,7 +154,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Insert Emoji</property>
-            <property name="valign">start</property>
             <property name="action_name">win.insert-smiley</property>
             <child>
               <object class="GtkImage">
@@ -163,9 +162,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="icon_name">face-smile-symbolic</property>
               </object>
             </child>
-            <style>
-              <class name="image-button"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -194,9 +190,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
         <property name="can_focus">False</property>
         <property name="pixel_size">22</property>
         <property name="icon_name">conference-symbolic</property>
-        <style>
-          <class name="avatar"/>
-        </style>
       </object>
     </child>
     <style>
@@ -338,5 +331,8 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
         <property name="icon_name">view-more-symbolic</property>
       </object>
     </child>
+    <style>
+      <class name="image-button"/>
+    </style>
   </object>
 </interface>

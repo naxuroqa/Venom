@@ -40,9 +40,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
             <property name="pixel_size">20</property>
             <property name="icon_name">user-info-symbolic</property>
             <property name="icon_size">6</property>
-            <style>
-              <class name="avatar"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
