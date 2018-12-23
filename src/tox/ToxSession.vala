@@ -140,7 +140,7 @@ namespace Venom {
 
   public interface ToxFiletransferAdapter : GLib.Object {
     public abstract void on_file_recv_data(uint32 friend_number, uint32 file_number, uint64 file_size, string filename);
-    public abstract void on_file_recv_avatar(uint32 friend_number, uint32 file_number, uint64 file_size);
+    public abstract void on_file_recv_avatar(uint32 friend_number, uint32 file_number, uint64 file_size, uint8[] hash);
 
     public abstract void on_file_recv_chunk(uint32 friend_number, uint32 file_number, uint64 position, uint8[] data);
     public abstract void on_file_recv_control(uint32 friend_number, uint32 file_number, FileControl control);
@@ -666,7 +666,9 @@ namespace Venom {
           Idle.add(() => { session.filetransfer_listener.on_file_recv_data(friend_number, file_number, file_size, filename_str); return false; });
           break;
         case FileKind.AVATAR:
-          Idle.add(() => { session.filetransfer_listener.on_file_recv_avatar(friend_number, file_number, file_size); return false; });
+          var e = ToxCore.ErrFileGet.OK;
+          var hash = self.file_get_file_id(friend_number, file_number, out e);
+          Idle.add(() => { session.filetransfer_listener.on_file_recv_avatar(friend_number, file_number, file_size, hash); return false; });
           break;
       }
     }

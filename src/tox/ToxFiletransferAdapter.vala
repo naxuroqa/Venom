@@ -224,15 +224,27 @@ namespace Venom {
       }
     }
 
-    public virtual void on_file_recv_avatar(uint32 friend_number, uint32 file_number, uint64 file_size) {
+    private void try_drop_file_transfer(uint32 friend_number, uint32 file_number) {
+      try {
+        session.file_control(friend_number, file_number, ToxCore.FileControl.CANCEL);
+      } catch (Error e) {
+        logger.e("dropping transfer request failed: " + e.message);
+      }
+    }
+
+    public virtual void on_file_recv_avatar(uint32 friend_number, uint32 file_number, uint64 file_size, uint8[] hash) {
       logger.d(@"on_file_recv_avatar $friend_number:$file_number");
       if (file_size > MAX_AVATAR_SIZE) {
         logger.i("avatar > MAX_AVATAR_SIZE, dropping transfer request");
-        try {
-          session.file_control(friend_number, file_number, ToxCore.FileControl.CANCEL);
-        } catch (Error e) {
-          logger.e("dropping transfer request failed: " + e.message);
-        }
+        try_drop_file_transfer(friend_number, file_number);
+        return;
+      }
+      var contact = friends.@get(friend_number) as Contact;
+      if (contact != null || hash != null && contact.tox_image_hash != null
+          && hash.length == contact.tox_image_hash.length
+          && GLib.Memory.cmp(hash, contact.tox_image_hash, hash.length) != 0) {
+        logger.d("Avatar of hash already used for contact, dropping transfer.");
+        try_drop_file_transfer(friend_number, file_number);
         return;
       }
       try {
@@ -328,12 +340,14 @@ namespace Venom {
             }
             var pub_key = Tools.hexstring_to_bin(contact.tox_id);
             contact.tox_image = Identicon.generate_pixbuf(pub_key);
+            contact.tox_image_hash = null;
           } else {
             file.replace_contents(buf, null, false, FileCreateFlags.NONE, null);
             var pixbuf_loader = new Gdk.PixbufLoader();
             pixbuf_loader.write(buf);
             pixbuf_loader.close();
             contact.tox_image = pixbuf_loader.get_pixbuf();
+            contact.tox_image_hash = ToxCore.Tox.hash(buf);
           }
           contact.changed();
         } catch (Error e) {

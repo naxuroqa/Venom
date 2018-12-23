@@ -38,7 +38,8 @@ namespace Venom {
     public string      auto_location   { get; set; default = ""; }
     // Not saved
     public bool        connected       { get; set; default = false; }
-    public Gdk.Pixbuf ? tox_image      { get; set; default = null; }
+    public Gdk.Pixbuf? tox_image       { get; set; default = null; }
+    public uint8[]?    tox_image_hash  { get; set; default = null; }
     public int         unread_messages { get; set; default = 0; }
     public bool        _is_typing      { get; set; default = false; }
     public bool        _show_notifications { get; set; default = true; }

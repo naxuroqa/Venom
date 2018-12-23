@@ -354,6 +354,7 @@ namespace Venom {
       var file = File.new_for_path(filepath);
       if (!file.query_exists()) {
         contact.tox_image = Identicon.generate_pixbuf(public_key);
+        contact.tox_image_hash = null;
       } else {
         uint8[] buf;
         try {
@@ -362,6 +363,7 @@ namespace Venom {
           pixbuf_loader.write(buf);
           pixbuf_loader.close();
           contact.tox_image = pixbuf_loader.get_pixbuf();
+          contact.tox_image_hash = ToxCore.Tox.hash(buf);
         } catch (Error e) {
           logger.i("could not read avatar data: " + e.message);
         }
