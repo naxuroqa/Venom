@@ -80,12 +80,19 @@ namespace Venom {
       video_toggle.toggled.connect(toggle_video);
       audio_toggle.toggled.connect(toggle_audio);
 
+      update_contact_details();
+      contact.changed.connect(update_contact_details);
+
       destroy.connect(() => {
         if (timer_source != 0) {
           GLib.Source.remove(timer_source);
           timer_source = 0;
         }
       });
+    }
+
+    private void update_contact_details() {
+      title = _("In call with %s").printf(contact.get_name_string());
     }
 
     private void toggle_video() {

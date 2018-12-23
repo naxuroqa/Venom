@@ -12,6 +12,7 @@ src/core/Logger.vala
 src/core/Message.vala
 src/core/GlobalSettings.vala
 src/core/Contact.vala
+src/core/CallState.vala
 src/core/FileIO.vala
 src/core/WidgetFactory.vala
 src/core/Tools.vala
@@ -35,6 +36,7 @@ src/tox/SqliteNospamRepository.vala
 src/tox/Conference.vala
 src/tox/FriendRequest.vala
 src/tox/ToxSessionThread.vala
+src/tox/ToxAVThread.vala
 src/tox/ToxConferenceAdapter.vala
 src/tox/SqliteDhtNodeRepository.vala
 src/tox/SqliteFriendRequestRepository.vala
@@ -42,14 +44,21 @@ src/tox/ToxContact.vala
 src/tox/ToxFriendAdapter.vala
 src/tox/ToxFiletransferAdapter.vala
 src/tox/ToxSelfAdapter.vala
+src/tox/ToxCallAdapter.vala
 src/tox/ToxSession.vala
 src/tox/DhtNode.vala
 src/tox/SqliteContactRepository.vala
 src/tox/SqliteMessageRepository.vala
 src/tox/ConferenceMessage.vala
 src/tox/StaticDhtNodeUpdater.vala
-src/av/AVManager.vala
+src/av/CropWidget.vala
+src/av/VideoOutPipeline.vala
+src/av/AudioOutPipeline.vala
+src/av/AudioInPipeline.vala
+src/av/VideoInPipeline.vala
+src/av/Pipeline.vala
 src/av/Photobooth.vala
+src/av/PhotoboothWindow.vala
 src/plugin/Plugin.vala
 src/plugin/Pluginregistrar.vala
 src/view/MessageWidget.vala
@@ -57,6 +66,7 @@ src/view/ConferenceInfoWidget.vala
 src/view/ApplicationWindow.vala
 src/view/LoginWidget.vala
 src/view/InAppNotification.vala
+src/view/CallWidget.vala
 src/view/ConferenceWindow.vala
 src/view/NodeWidget.vala
 src/view/AboutDialog.vala
@@ -91,6 +101,7 @@ src/ui/contact_list_widget.ui
 src/ui/conversation_window.ui
 src/ui/friend_request_widget.ui
 src/ui/conference_info_widget.ui
+src/ui/call_widget.ui
 src/ui/peer_entry.ui
 src/ui/welcome_widget.ui
 src/ui/conference_invite_entry.ui
