@@ -31,15 +31,76 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_left">12</property>
+        <property name="margin_right">12</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
-          <object class="GtkImage" id="sender_image">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="valign">start</property>
-            <property name="pixel_size">20</property>
-            <property name="icon_name">user-info-symbolic</property>
-            <property name="icon_size">6</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkImage" id="sender_image">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="valign">start</property>
+                <property name="pixel_size">20</property>
+                <property name="icon_name">user-info-symbolic</property>
+                <property name="icon_size">6</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="sender">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label">sender</property>
+                <property name="use_markup">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="timestamp">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label">timestamp</property>
+                <property name="ellipsize">start</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="pack_type">end</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="sent">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="no_show_all">True</property>
+                <property name="icon_name">emblem-ok-symbolic</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="pack_type">end</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -51,76 +112,18 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="spacing">6</property>
-                <child>
-                  <object class="GtkLabel" id="sender">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label">sender</property>
-                    <property name="use_markup">True</property>
-                    <property name="ellipsize">end</property>
-                    <property name="xalign">0</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="timestamp">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label">timestamp</property>
-                    <property name="ellipsize">start</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="pack_type">end</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkImage" id="sent">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="no_show_all">True</property>
-                    <property name="icon_name">emblem-ok-symbolic</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="pack_type">end</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
-              <object class="GtkLabel" id="message">
+              <object class="GtkBox" id="arrow_incoming">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="label">message</property>
-                <property name="use_markup">True</property>
-                <property name="wrap">True</property>
-                <property name="wrap_mode">word-char</property>
-                <property name="selectable">True</property>
-                <property name="xalign">0</property>
+                <property name="valign">start</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <placeholder/>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -128,9 +131,45 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="position">1</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkLabel" id="message">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label">message</property>
+                <property name="use_markup">True</property>
+                <property name="wrap">True</property>
+                <property name="wrap_mode">word-char</property>
+                <property name="selectable">True</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="message"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox" id="arrow_outgoing">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="valign">start</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>

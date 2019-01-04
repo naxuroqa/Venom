@@ -1,7 +1,7 @@
 /*
  *    MessageWidget.vala
  *
- *    Copyright (C) 2013-2018 Venom authors and contributors
+ *    Copyright (C) 2013-2019 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -27,6 +27,8 @@ namespace Venom {
     [GtkChild] private Gtk.Label timestamp;
     [GtkChild] private Gtk.Label message;
     [GtkChild] private Gtk.Image sent;
+    [GtkChild] private Gtk.Box arrow_incoming;
+    [GtkChild] private Gtk.Box arrow_outgoing;
 
     private Logger logger;
     private MessageViewModel view_model;
@@ -53,6 +55,15 @@ namespace Venom {
       view_model.bind_property("sent-tooltip", sent, "tooltip-text", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("sent-dim", dim_binding, "enable", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("sent-visible", sent, "visible", GLib.BindingFlags.SYNC_CREATE);
+
+      if (view_model.sender_sensitive) {
+        arrow_incoming.get_style_context().add_class("message-arrow");
+        arrow_outgoing.margin_start = 32;
+      } else {
+        arrow_outgoing.get_style_context().add_class("message-arrow-outgoing");
+        arrow_incoming.margin_start = 32;
+      }
+
 
       logger.d("MessageWidget created.");
     }

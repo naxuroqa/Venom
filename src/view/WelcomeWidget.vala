@@ -25,8 +25,6 @@ namespace Venom {
     private Logger logger;
     private GLib.Rand rand = new GLib.Rand();
 
-    [GtkChild] private Gtk.Button link_learn_more;
-    [GtkChild] private Gtk.Button link_get_involved;
     [GtkChild] private Gtk.Image image;
     [GtkChild] private Gtk.Label title;
     [GtkChild] private Gtk.Label content;
@@ -51,12 +49,6 @@ namespace Venom {
       content.set_markup(pango_small(contents.@get(rand.int_range(0, contents.size))));
       image.icon_name = images.@get(rand.int_range(0, images.size));
       image.get_style_context().add_class(style_classes.@get(rand.int_range(0, style_classes.size)));
-
-      link_learn_more.tooltip_text = R.constants.tox_about();
-      link_get_involved.tooltip_text = R.constants.tox_get_involved();
-
-      link_learn_more.clicked.connect(on_learn_more_clicked);
-      link_get_involved.clicked.connect(on_get_involved_clicked);
     }
 
     private void try_show_uri(string uri) {
@@ -67,20 +59,12 @@ namespace Venom {
       }
     }
 
-    private void on_learn_more_clicked() {
-      try_show_uri(R.constants.tox_about());
-    }
-
-    private void on_get_involved_clicked() {
-      try_show_uri(R.constants.tox_get_involved());
-    }
-
     private string pango_big(string text) {
-      return @"<big>$text</big>";
+      return @"<span size='xx-large'>$text</span>";
     }
 
     private string pango_small(string text) {
-      return @"<small>$text</small>";
+      return @"<span size='large'>$text</span>";
     }
 
     ~WelcomeWidget() {

@@ -149,6 +149,21 @@ namespace Venom {
       init_av_combo_with_devices(audio_out_combo, audio_out_devices);
       init_av_combo_with_devices(video_in_combo, video_in_devices);
 
+      if (audio_in_devices.is_empty) {
+        audio_in_switch.active = false;
+        audio_in_switch.sensitive = false;
+      }
+
+      if (audio_out_devices.is_empty) {
+        audio_out_switch.active = false;
+        audio_out_switch.sensitive = false;
+      }
+
+      if (video_in_devices.is_empty) {
+        video_in_switch.active = false;
+        video_in_switch.sensitive = false;
+      }
+
       update_nodes.clicked.connect(update_nodes_from_web);
 
       dht_nodes = new ObservableList();
@@ -225,7 +240,7 @@ namespace Venom {
                                                           + " t. ! queue ! audioconvert ! monoscope ! videoconvert ! gtksink name=sink");
       {
         var audioconvert = pipeline.get_by_name("ac");
-        var sink_device = audio_out_devices.@get(int.max(0, audio_out_combo.get_active() - 1));
+        var sink_device = audio_out_devices.@get(int.max(0, audio_out_combo.active - 1));
         var sink = sink_device.create_element(null);
         pipeline.add(sink);
         audioconvert.link(sink);
@@ -240,7 +255,6 @@ namespace Venom {
     }
 
     private void start_video_in_test() {
-      var source_device = video_in_devices.@get(int.max(0, video_in_combo.get_active() - 1));
       if (video_in_pipeline == null) {
         video_in_pipeline = new VideoInPipeline();
 
