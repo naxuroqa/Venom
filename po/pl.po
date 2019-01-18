@@ -6,10 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
-"PO-Revision-Date: 2018-12-10 17:09+0000\n"
-"Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
+"PO-Revision-Date: 2019-01-19 12:21+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/venom/"
 "translations/pl/>\n"
 "Language: pl\n"
@@ -506,7 +506,7 @@ msgstr "Mowa"
 
 #: src/ui/create_groupchat_widget.ui:252
 msgid "<small>Select a conference type</small>"
-msgstr "<małe>Wybierz typ konferencji</niewielkie>."
+msgstr "<small>Wybierz typ konferencji</small>."
 
 #: src/ui/create_groupchat_widget.ui:299
 #, fuzzy
@@ -689,8 +689,9 @@ msgid "Enter a Tox ID or URI here"
 msgstr "Wpisz tu Tox ID lub Tox URI"
 
 #: src/ui/add_contact_widget.ui:222
+#, fuzzy
 msgid "<small>Enter your friends Tox ID</small>"
-msgstr "<małe>Enter your friends Tox ID</small>."
+msgstr "<small>Enter your friends Tox ID</small>"
 
 #: src/ui/add_contact_widget.ui:254
 #, fuzzy
@@ -705,7 +706,7 @@ msgstr ""
 
 #: src/ui/add_contact_widget.ui:302
 msgid "<small>Send your friend a short message</small>"
-msgstr "<mały>Wyślij swojemu przyjacielowi krótką wiadomość</niewielki>."
+msgstr "<small>Wyślij swojemu przyjacielowi krótką wiadomość</small>."
 
 #: src/ui/add_contact_widget.ui:333
 #, fuzzy
@@ -799,7 +800,7 @@ msgstr "Ciemny motyw"
 
 #: src/ui/settings_widget.ui:348
 msgid "<small>Use a dark variant of the theme</small>"
-msgstr "<mały>Użyj ciemnego wariantu tematu</niewielki>."
+msgstr "<small>Użyj ciemnego wariantu tematu</small>."
 
 #: src/ui/settings_widget.ui:404
 msgid "Animations"
@@ -807,7 +808,7 @@ msgstr "Animacje"
 
 #: src/ui/settings_widget.ui:417
 msgid "<small>Turn on animated transitions</small>"
-msgstr "<mały>Powrót na animowanych przejściach</niewielki>"
+msgstr "<small>Powrót na animowanych przejściach</small>."
 
 #: src/ui/settings_widget.ui:473
 #, fuzzy
@@ -816,7 +817,7 @@ msgstr "Zadzwoń do kontaktu"
 
 #: src/ui/settings_widget.ui:486
 msgid "<small>Show contacts in a compact format</small>"
-msgstr "<małe>Pokaż kontakty w kompaktowym formacie</niewielkie>"
+msgstr "<small>Pokaż kontakty w kompaktowym formacie</small>."
 
 #: src/ui/settings_widget.ui:542
 msgid "Spellcheck"
@@ -832,7 +833,7 @@ msgstr "Dźwięki"
 
 #: src/ui/settings_widget.ui:712
 msgid "<small>Play sounds on new notifications</small>"
-msgstr "<małe>Odtwarzaj dźwięki na nowych powiadomieniach</niewielkie>"
+msgstr "<small>Odtwarzaj dźwięki na nowych powiadomieniach</small>."
 
 #: src/ui/settings_widget.ui:768
 msgid "While Busy"
@@ -840,7 +841,7 @@ msgstr "Podczas gdy zajęty"
 
 #: src/ui/settings_widget.ui:781
 msgid "<small>Receive notifications even while you are busy</small>"
-msgstr "<małe>Odbieraj powiadomienia nawet wtedy, gdy jesteś zajęty</niemałe>."
+msgstr "<small>Odbieraj powiadomienia nawet wtedy, gdy jesteś zajęty</small>."
 
 #: src/ui/settings_widget.ui:866
 msgid "Tray icon"
@@ -852,7 +853,7 @@ msgstr "Minimalizuj"
 
 #: src/ui/settings_widget.ui:940
 msgid "<small>Minimize to tray instead of close</small>"
-msgstr "<małe>Minimalizuj do tacy zamiast zamykać</niewielkie>"
+msgstr "<small>Minimalizuj do tacy zamiast zamykać</small>."
 
 #: src/ui/settings_widget.ui:1025
 msgid "Privacy"
@@ -874,7 +875,7 @@ msgstr "Trzymaj historię przez"
 
 #: src/ui/settings_widget.ui:1150
 msgid "<small>Store your sent and received messages</small>"
-msgstr "<małe>Sklep swoje wysłane i otrzymane wiadomości</niewielkie>."
+msgstr "<small>Sklep swoje wysłane i otrzymane wiadomości</small>."
 
 #: src/ui/settings_widget.ui:1281
 msgid "<b>Connection</b>"
@@ -909,12 +910,13 @@ msgid "Hole punching"
 msgstr "Wykrawanie otworów"
 
 #: src/ui/settings_widget.ui:1543
+#, fuzzy
 msgid ""
 "<small>Enable UDP <a href=\"https://en.wikipedia.org/wiki/"
 "Hole_punching_(networking)\">hole punching</a></small>"
 msgstr ""
-"<małe>Enable UDP <a href=\"https://en.wikipedia.org/wiki/"
-"Hole_punching_(networking)\">hole punching</a></a></small>>."
+"<small>Enable UDP <a href=\"https://en.wikipedia.org/wiki/"
+"Hole_punching_(networking)\">hole punching</a></small>"
 
 #: src/ui/settings_widget.ui:1681
 msgid "Update bootstrap nodes"
@@ -945,7 +947,7 @@ msgstr "Ustawienia"
 
 #: src/ui/settings_widget.ui:2000
 msgid "<small>Use custom proxy settings</small>"
-msgstr "<małe>Używaj niestandardowych ustawień proxy</niewielkie>>."
+msgstr "<small>Używaj niestandardowych ustawień proxy</small>."
 
 #: src/ui/settings_widget.ui:2041
 msgid "Host"
@@ -953,7 +955,7 @@ msgstr "Host"
 
 #: src/ui/settings_widget.ui:2084
 msgid "<small>Set a SOCKS5 proxy to connect to</small>"
-msgstr "<mały>Ustawiamy proxy SOCKS5 do łączenia się z</niemały>"
+msgstr "<small>Ustawiamy proxy SOCKS5 do łączenia się z</small>."
 
 #: src/ui/friend_info_widget.ui:171
 msgid "Remove from your friends list"
