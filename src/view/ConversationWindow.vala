@@ -286,7 +286,7 @@ namespace Venom {
     public TextViewEventHandler() {
       var accel_path = "<Venom>/Message/Send";
       if (!Gtk.AccelMap.lookup_entry(accel_path, out key)) {
-        key.accel_mods = ~Gdk.ModifierType.MODIFIER_MASK;
+        key.accel_mods = 0;
         key.accel_key = Gdk.Key.Return;
         Gtk.AccelMap.add_entry(accel_path, key.accel_key, key.accel_mods);
       }
