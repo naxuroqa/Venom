@@ -23,7 +23,7 @@ namespace Venom {
 
   public class SqliteWrapperFactory : DatabaseFactory, Object {
     public Database create_database(string path, string key) throws DatabaseError {
-      var update = new SqliteDatabaseV1(null);
+      var update = new SqliteDatabaseUpdate();
       return new SqliteDatabaseWrapper(path, key, update);
     }
     public DatabaseStatementFactory create_statement_factory(Database database) {
@@ -188,27 +188,17 @@ namespace Venom {
     public abstract string create_statement(SqliteStatementFactory statement_factory);
   }
 
-  public interface SqliteDatabaseUpdate : GLib.Object {
-    public abstract void update_database(SqliteDatabaseWrapper database) throws DatabaseError;
-  }
-
-  public class SqliteDatabaseV1 : SqliteDatabaseUpdate, GLib.Object {
-    private SqliteDatabaseUpdate? next_update;
-    public SqliteDatabaseV1(SqliteDatabaseUpdate? next_update) {
-      this.next_update = next_update;
-    }
-    public void update_database(SqliteDatabaseWrapper database) throws DatabaseError {
-      if (database.version == 0) {
-        database.query(
+  public class SqliteDatabaseUpdate : DatabaseUpdate, GLib.Object {
+    public void update_database(Database database) throws DatabaseError {
+      var sqliteDatabase = database as SqliteDatabaseWrapper;
+      if (sqliteDatabase.version == 0) {
+        sqliteDatabase.query(
           """
           DROP TABLE IF EXISTS Contacts;
           DROP TABLE IF EXISTS Nodes;
           PRAGMA user_version=1;
           """
         );
-      }
-      if (next_update != null) {
-        next_update.update_database(database);
       }
     }
   }
@@ -265,13 +255,18 @@ namespace Venom {
     }
   }
 
-  public class SqliteDatabaseWrapper : Database, Object {
+  public class SqliteDatabaseWrapper : Database, GLib.Object {
     private Sqlite.Database database;
     private int _version = 0;
+    private bool _compatibility = false;
     private string key = "";
 
     public Sqlite.Database handle {
       get { return database; }
+    }
+
+    public bool compatibility {
+      get { return _compatibility; }
     }
 
     public int version {
@@ -286,25 +281,40 @@ namespace Venom {
       return database.last_insert_rowid();
     }
 
-    public SqliteDatabaseWrapper(string path, string key, SqliteDatabaseUpdate updater) throws DatabaseError {
+    private static Sqlite.Database open_database(string path) throws DatabaseError {
+      Sqlite.Database database;
       var result = Sqlite.Database.open_v2(path, out database);
       if (result != Sqlite.OK) {
         throw new DatabaseError.OPEN("Cannot open sqlite database: " + database.errmsg());
       }
+      return database;
+    }
+
+    public SqliteDatabaseWrapper(string path, string key, DatabaseUpdate update) throws DatabaseError {
+      database = open_database(path);
 
       if (key.length > 0) {
-        query(@"PRAGMA key = \"x'$key'\";");
-        query(@"SELECT count(*) FROM sqlite_master;");
+        var key_pragma = @"PRAGMA key = \"x'$key'\";";
+        query(key_pragma);
+        try {
+          query("SELECT count(*) FROM sqlite_master;");
+        } catch (DatabaseError e) {
+          _compatibility = true;
+          database = null;
+          database = open_database(path);
+          query(key_pragma);
+          query("PRAGMA cipher_compatibility = 3;");
+          query("SELECT count(*) FROM sqlite_master;");
+        }
       }
 
       try {
         var version = query("PRAGMA user_version;");
         _version = int.parse(version.rows[0].values[0]);
       } catch (DatabaseError e) {
-        stdout.printf("");
       }
 
-      updater.update_database(this);
+      update.update_database(this);
     }
   }
 }
