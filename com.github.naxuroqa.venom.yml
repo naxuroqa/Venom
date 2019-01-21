@@ -33,8 +33,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/sqlcipher/sqlcipher
-        tag: v3.4.2
-        commit: c6f709fca81c910ba133aaf6330c28e01ccfe5f8
+        tag: v4.0.1
+        commit: 27d58453c6e56c3dd85e02bca379161bc69c746a
         disable-fsckobjects: true
       - type: script
         dest-filename: autogen.sh
@@ -44,8 +44,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/jedisct1/libsodium
-        tag: 1.0.16
-        commit: 675149b9b8b66ff44152553fb3ebf9858128363d
+        tag: 1.0.17
+        commit: b732443c442239c2e0184820e9b23cca0de0828c
   - name: toxcore
     buildsystem: cmake
     config-opts:
@@ -54,8 +54,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/toktok/c-toxcore
-        tag: v0.2.8
-        commit: 3f35a84968f100e1e6d3c9df467fd3c82a9ebb13
+        tag: v0.2.9
+        commit: 98b754e1f22220f10196760389371dba6d139c6f
   - name: libgee
     build-options:
       env:
@@ -69,8 +69,8 @@ modules:
   - name: enchant
     sources:
       - type: archive
-        url: https://github.com/AbiWord/enchant/releases/download/v2.1.3/enchant-2.1.3.tar.gz
-        sha256: 086f37cdecd42eacd0e1dc291f5410d9ca2c5ed2cd9cd9367729e3d2d18a8550
+        url: https://github.com/AbiWord/enchant/releases/download/v2.2.3/enchant-2.2.3.tar.gz
+        sha256: abd8e915675cff54c0d4da5029d95c528362266557c61c7149d53fa069b8076d
   - name: gspell
     sources:
       - type: git
