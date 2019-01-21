@@ -112,6 +112,10 @@ namespace Venom {
   public interface Database : GLib.Object {
   }
 
+  public interface DatabaseUpdate : GLib.Object {
+    public abstract void update_database(Database database) throws DatabaseError;
+  }
+
   public interface DatabaseStatement : GLib.Object {
     public abstract DatabaseResult step() throws DatabaseStatementError;
     public abstract void bind_text(string key, string val) throws DatabaseStatementError;
