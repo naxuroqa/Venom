@@ -2,6 +2,7 @@
 =====
 
 [![Build Status](https://travis-ci.org/naxuroqa/Venom.png?branch=develop)](https://travis-ci.org/naxuroqa/Venom)
+[![CircleCI](https://circleci.com/gh/naxuroqa/Venom.svg?style=shield)](https://circleci.com/gh/naxuroqa/Venom)
 ![GitHub](https://img.shields.io/github/license/naxuroqa/venom.svg)
 ![GitHub release](https://img.shields.io/github/release/naxuroqa/venom.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/naxuroqa/venom.svg)
