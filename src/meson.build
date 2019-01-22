@@ -48,6 +48,7 @@ venom_source = files(
 			'av/Pipeline.vala',
 			'av/VideoInPipeline.vala',
 			'av/VideoOutPipeline.vala',
+			'compat/Traversable.vala',
 			'core/Application.vala',
 			'core/CallState.vala',
 			'core/Contact.vala',

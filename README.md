@@ -66,7 +66,7 @@ Dependencies
 * `glib-2.0 >= 2.56`
 * `json-glib-1.0`
 * `libcanberra >= 0.30`
-* `libgee >= 0.20`
+* `libgee >= 0.18`
 * `libsoup-2.4`
 * `gspell >= 1.8`
 * `sqlcipher`

@@ -122,8 +122,8 @@ namespace Venom {
     }
 
     private void reset_nospam_model() {
-      var nospam_traversable = nospam_repository.query_all()
-        .order_by((a, b) => {
+      var nospam_traversable = Compat.order_by<Nospam>(nospam_repository.query_all(), 
+        (a, b) => {
           return ((Nospam)b).timestamp.compare(((Nospam)a).timestamp);
         });
       nospams.set_collection(nospam_traversable);
