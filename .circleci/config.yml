@@ -1,17 +1,8 @@
 ---
-version: 2
-jobs:
-  build:
-    docker:
-      - image: ubuntu:18.04
+version: 2.1
+commands:
+  debian-install-deps:
     steps:
-      - checkout
-      - run:
-          name: Add vala-team/ppa
-          command: |
-            apt update
-            apt install -y software-properties-common gnupg
-            add-apt-repository ppa:vala-team/ppa -y
       - run:
           name: Install dependencies
           command: apt update
@@ -39,6 +30,37 @@ jobs:
       - run:
           name: Install meson
           command: pip3 install meson ninja
+  fedora-install-deps:
+    steps:
+      - run:
+          name: Install dependencies
+          command: dnf install -y
+              clang
+              make
+              cmake
+              libconfig-devel
+              gtest-devel
+              opus-devel
+              libsodium-devel
+              libvpx-devel
+              pkgconfig
+              libgee-devel
+              gspell-devel
+              gtk3-devel
+              json-glib-devel
+              libsoup-devel
+              sqlcipher-devel
+              libcanberra-devel
+              gstreamer1-devel
+              gstreamer1-plugins-base-devel
+              vala
+              python3-pip
+              wget
+      - run:
+          name: Install meson
+          command: pip3 install meson ninja
+  install-toxcore:
+    steps:
       - run:
           name: Build and install toxcore
           command: |
@@ -49,6 +71,8 @@ jobs:
             make
             make install
             cd ..
+  install-venom:
+    steps:
       - run:
           name: Configure
           command: meson build
@@ -58,8 +82,65 @@ jobs:
       - run:
           name: Test
           command: ninja -C build test
+      - run:
+          name: Install
+          command: ninja -C build install
+jobs:
+  "Ubuntu 18-04":
+    docker:
+      - image: ubuntu:18.04
+    steps:
+      - checkout
+      - debian-install-deps
+      - install-toxcore
+      - install-venom
+  "Ubuntu 18-10":
+    docker:
+      - image: ubuntu:18.10
+    steps:
+      - checkout
+      - debian-install-deps
+      - install-toxcore
+      - install-venom
+  "Debian 9":
+    docker:
+      - image: debian:stretch
+    steps:
+      - checkout
+      - debian-install-deps
+      - install-toxcore
+      - install-venom
+  "Debian 10":
+    docker:
+      - image: debian:buster
+    steps:
+      - checkout
+      - debian-install-deps
+      - install-toxcore
+      - install-venom
+  "Fedora 28":
+    docker:
+      - image: fedora:28
+    steps:
+      - checkout
+      - fedora-install-deps
+      - install-toxcore
+      - install-venom
+  "Fedora 29":
+    docker:
+      - image: fedora:29
+    steps:
+      - checkout
+      - fedora-install-deps
+      - install-toxcore
+      - install-venom
 workflows:
   version: 2
   build:
     jobs:
-      - build
+      - "Ubuntu 18-04"
+      - "Ubuntu 18-10"
+      # - "Debian 9" // FIXME requires a vala update
+      - "Debian 10"
+      - "Fedora 28"
+      - "Fedora 29"
