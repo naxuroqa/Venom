@@ -272,7 +272,7 @@ namespace Venom {
     }
 
     private void reset_node_list() {
-      dht_nodes.set_collection(node_repository.query_all().order_by((a, b) => {
+      dht_nodes.set_collection(Compat.order_by<DhtNode>(node_repository.query_all(), (a, b) => {
         return strcmp(a.location, b.location);
       }));
       list_model = new ObservableListModel(dht_nodes);
