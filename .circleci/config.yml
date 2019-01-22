@@ -5,8 +5,8 @@ commands:
     steps:
       - run:
           name: Install dependencies
-          command: apt update
-            && apt install -y
+          command: apt-get -qq update
+            && apt-get -qq install -y
               clang
               cmake
               libconfig-dev
@@ -64,8 +64,8 @@ commands:
       - run:
           name: Bootstrap vala
           command: |
-            apt remove -y valac
-            apt install -y flex bison
+            apt-get -qq remove -y valac
+            apt-get -qq install -y flex bison
             wget https://download.gnome.org/sources/vala/0.43/vala-0.43.6.tar.xz
             tar -xJf vala-0.43.6.tar.xz
             cd vala-0.43.6
