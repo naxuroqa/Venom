@@ -155,28 +155,14 @@ jobs:
       - checkout
       - run:
           name: Start docker
-          command: docker run --privileged=true --name image -it -d --volume "$(pwd)":/opt/venom --workdir /opt/venom ubuntu:18.04
-      - run:
-          name: Install dependencies
-          command: |
-            docker exec image apt-get -qq update
-            docker exec image apt-get -qq install software-properties-common > /dev/null
-            docker exec image add-apt-repository ppa:alexlarsson/flatpak
-            docker exec image apt-get -qq update
-            docker exec image apt-get -qq install -y flatpak-builder > /dev/null
-      - run:
-          name: Install flatpak dependencies
-          command: |
-            docker exec image flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-            docker exec image flatpak install -y flathub org.gnome.Sdk//3.28
-            docker exec image flatpak install -y flathub org.gnome.Platform//3.28
+          command: docker run --privileged=true --name image -it -d --volume "$(pwd)":/opt/venom --workdir /opt/venom flatpak/flatpak-builder:gnome-3-28
       - restore_cache:
           key: builder-cache
           paths:
           - .flatpak-builder
       - run:
           name: Build flatpak manifest dependencies
-          command: docker exec image flatpak-builder --stop-at=venom --repo=repo app com.github.naxuroqa.venom.yml
+          command: docker exec image flatpak-builder --stop-at=venom --repo=repo app com.github.naxuroqa.venom.json
       - save_cache:
           key: builder-cache
           paths:
@@ -186,7 +172,7 @@ jobs:
           command: |
             docker exec image flatpak build app meson --prefix=/app _build
             docker exec image flatpak build app ninja -C _build install
-            docker exec image flatpak-builder --finish-only --repo=repo app com.github.naxuroqa.venom.yml
+            docker exec image flatpak-builder --finish-only --repo=repo app com.github.naxuroqa.venom.json
             docker exec image flatpak build-bundle repo "com.github.naxuroqa.venom-debug-build-${CIRCLE_BUILD_NUM}.x86_64.flatpak" --runtime-repo=https://dl.flathub.org/repo/flathub.flatpakrepo com.github.naxuroqa.venom
       - run:
           name: Prepare artifacts
