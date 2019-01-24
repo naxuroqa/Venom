@@ -4,26 +4,30 @@ sudo: false
 
 matrix:
   include:
-  - name: "Ubuntu 18.04"
-    env: DOCKER_IMAGE=ubuntu:18.04
-  - name: "Ubuntu 18.10"
-    env: DOCKER_IMAGE=ubuntu:18.10
-  - name: "Debian 10"
-    env: DOCKER_IMAGE=debian:buster
-  - name: "Flatpak"
-    env: DOCKER_IMAGE=flatpak/flatpak-builder:gnome-3-28
-    cache:
-      directories:
-      - .flatpak-builder
-    install:
-      - docker run --privileged=true --name image -it -d --volume "$(pwd)":/opt/venom --workdir /opt/venom $DOCKER_IMAGE
-    script:
-      - docker exec image flatpak-builder --stop-at=venom --repo=repo app com.github.naxuroqa.venom.json
-      - docker exec image flatpak build app meson --prefix=/app _build
-      - docker exec image flatpak build app ninja -C _build install
-      - docker exec image flatpak-builder --finish-only --repo=repo app com.github.naxuroqa.venom.json
-      - docker exec image flatpak build-bundle repo com.github.naxuroqa.venom.x86_64.flatpak --runtime-repo=https://dl.flathub.org/repo/flathub.flatpakrepo com.github.naxuroqa.venom
-
+    - name: "Ubuntu 18.04"
+      env: DOCKER_IMAGE=ubuntu:18.04
+    - name: "Ubuntu 18.10"
+      env: DOCKER_IMAGE=ubuntu:18.10
+    - name: "Debian 10"
+      env: DOCKER_IMAGE=debian:buster
+    - name: "Flatpak"
+      env: DOCKER_IMAGE=flatpak/flatpak-builder:gnome-3-28
+      cache:
+        directories:
+        - .flatpak-builder
+      install:
+        - docker run --privileged=true --name image -it -d --volume "$(pwd)":/opt/venom --workdir /opt/venom $DOCKER_IMAGE
+      script:
+        - docker exec image flatpak-builder --stop-at=venom --repo=repo app com.github.naxuroqa.venom.json
+        - docker exec image flatpak build app meson --prefix=/app _build
+        - docker exec image flatpak build app ninja -C _build install
+        - docker exec image flatpak-builder --finish-only --repo=repo app com.github.naxuroqa.venom.json
+        - docker exec image flatpak build-bundle repo com.github.naxuroqa.venom.x86_64.flatpak --runtime-repo=https://dl.flathub.org/repo/flathub.flatpakrepo com.github.naxuroqa.venom
+      - stage: codecov
+        - name: "Ubuntu 18.04"
+          env: DOCKER_IMAGE=ubuntu:18.04
+          after_success:
+            - bash <(curl -s https://codecov.io/bash)
 cache:
   - ccache
 
@@ -65,6 +69,3 @@ script:
   - docker exec image ninja -C build
   - docker exec image ninja -C build test
   - docker exec image ninja -C build install
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
