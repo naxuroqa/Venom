@@ -1,5 +1,6 @@
 language: c
 services: [docker]
+sudo: false
 
 matrix:
   include:
