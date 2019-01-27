@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: venom\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
-"PO-Revision-Date: 2019-01-13 16:07+0000\n"
+"PO-Revision-Date: 2019-01-28 15:06+0000\n"
 "Last-Translator: Louies <louies0623@gmail.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "venom/translations/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.5-dev\n"
 
 #: src/undo/TextBufferUndoBinding.vala:169
 msgid "_Redo"
@@ -952,4 +952,4 @@ msgstr ""
 
 #: data/com.github.naxuroqa.venom.desktop.in:7
 msgid "com.github.naxuroqa.venom-symbolic"
-msgstr ""
+msgstr "com.github.naxuroqa.venom-symbolic"
