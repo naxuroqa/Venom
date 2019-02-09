@@ -453,8 +453,11 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
     </child>
     <child>
       <object class="GtkBox">
+        <property name="height_request">50</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="border_width">6</property>
+        <property name="spacing">6</property>
         <child>
           <object class="GtkScrolledWindow">
             <property name="visible">True</property>
@@ -470,6 +473,9 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="bottom_margin">6</property>
               </object>
             </child>
+            <style>
+              <class name="frame"/>
+            </style>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -481,6 +487,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="spacing">6</property>
             <child>
               <object class="GtkButton">
                 <property name="visible">True</property>
@@ -530,9 +537,6 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="position">1</property>
               </packing>
             </child>
-            <style>
-              <class name="linked"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
