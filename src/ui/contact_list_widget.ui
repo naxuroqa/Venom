@@ -233,39 +233,9 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
   <object class="GtkBox" id="placeholder">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="valign">end</property>
-    <property name="margin_left">12</property>
-    <property name="border_width">6</property>
-    <property name="spacing">6</property>
     <child>
-      <object class="GtkImage">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="icon_name">pan-down-symbolic</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
+      <placeholder/>
     </child>
-    <child>
-      <object class="GtkLabel">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Add a friend</property>
-        <property name="ellipsize">end</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-    <style>
-      <class name="dim-label"/>
-      <class name="highlight"/>
-    </style>
   </object>
   <object class="GtkPopover" id="popover1">
     <property name="can_focus">False</property>
