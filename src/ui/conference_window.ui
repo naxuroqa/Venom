@@ -123,7 +123,7 @@ along with Venom.  If not, see <http://www.gnu.org/licenses/>.
     </child>
     <child>
       <object class="GtkBox">
-        <property name="height_request">50</property>
+        <property name="height_request">46</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="border_width">6</property>

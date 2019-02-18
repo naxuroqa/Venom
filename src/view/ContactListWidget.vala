@@ -1,7 +1,7 @@
 /*
  *    ContactListWidget.vala
  *
- *    Copyright (C) 2017-2018 Venom authors and contributors
+ *    Copyright (C) 2017-2019 Venom authors and contributors
  *
  *    This file is part of Venom.
  *
@@ -29,6 +29,9 @@ namespace Venom {
     [GtkChild] private Gtk.Label username;
     [GtkChild] private Gtk.Label statusmessage;
     [GtkChild] private Gtk.Image userimage;
+    [GtkChild] private Gtk.Label menu_username;
+    [GtkChild] private Gtk.Label menu_statusmessage;
+    [GtkChild] private Gtk.Image menu_userimage;
     [GtkChild] private Gtk.ListBox contact_list;
     [GtkChild] private Gtk.Image image_status;
     [GtkChild] private Gtk.MenuButton user_status_menu;
@@ -36,7 +39,6 @@ namespace Venom {
     [GtkChild] private Gtk.Label friend_request_label;
     [GtkChild] private Gtk.Revealer conference_invite_revealer;
     [GtkChild] private Gtk.Label conference_invite_label;
-    [GtkChild] private Gtk.Box placeholder;
 
     private unowned Gtk.ListBoxRow ? selected_row;
     private ListModel contact_list_model;
@@ -52,11 +54,12 @@ namespace Venom {
       var menu_model = builder.get_object("menu") as GLib.MenuModel;
       user_status_menu.set_menu_model(menu_model);
 
-      user_status_menu.set_image(image_status);
-
       view_model.bind_property("username", username, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("statusmessage", statusmessage, "label", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("userimage", userimage, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("username", menu_username, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("statusmessage", menu_statusmessage, "label", GLib.BindingFlags.SYNC_CREATE);
+      view_model.bind_property("userimage", menu_userimage, "pixbuf", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("image-status", image_status, "icon-name", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("friend-request-visible", friend_request_revealer, "reveal-child", GLib.BindingFlags.SYNC_CREATE);
       view_model.bind_property("friend-request-label", friend_request_label, "label", GLib.BindingFlags.SYNC_CREATE);
@@ -66,7 +69,6 @@ namespace Venom {
       contact_list.button_press_event.connect(on_button_pressed);
       contact_list.popup_menu.connect(on_popup_menu);
       contact_list.row_activated.connect(on_row_activated);
-      contact_list.set_placeholder(placeholder);
 
       settings_database.notify["enable-compact-contacts"].connect(refresh_contacts);
 

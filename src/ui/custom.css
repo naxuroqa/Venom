@@ -108,24 +108,12 @@
   border-right: 6px solid @theme_bg_color;
 }
 
-.message-arrow {
-  margin-top: 6px;
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-right: 6px solid @theme_bg_color;
-}
-
 .message-arrow-outgoing {
   margin-top: 6px;
   border-top: 6px solid transparent;
   border-bottom: 6px solid transparent;
   border-left: 6px solid @theme_bg_color;
 }
-
-/* .conversation row {
-  box-shadow: 0px 1px 2px 1px alpha(black, 0.2);
-  margin: 1px 6px 3px 6px;
-} */
 
 .separated row {
   border-bottom: 1px solid @theme_bg_color;
