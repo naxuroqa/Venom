@@ -6,10 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
-"PO-Revision-Date: 2018-12-04 11:29+0000\n"
-"Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
+"PO-Revision-Date: 2019-07-16 19:06+0000\n"
+"Last-Translator: Elizabeth Sherrock <lizzyd710@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "venom/translations/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.8-dev\n"
 
 #: src/undo/TextBufferUndoBinding.vala:169
 msgid "_Redo"
@@ -64,7 +64,7 @@ msgstr ""
 
 #: src/core/TimeStamp.vala:26
 msgid "Just now"
-msgstr ""
+msgstr "刚才"
 
 #: src/core/TimeStamp.vala:31
 #, c-format
@@ -114,18 +114,16 @@ msgid "Settings"
 msgstr "设置"
 
 #: src/viewmodel/ContactListViewModel.vala:102
-#, fuzzy
 msgid "New conference…"
-msgstr "会议"
+msgstr "新会议……"
 
 #: src/viewmodel/ContactListViewModel.vala:115
 msgid "Invite to conference…"
 msgstr ""
 
 #: src/viewmodel/ContactListViewModel.vala:121
-#, fuzzy
 msgid "Leave conference"
-msgstr "会议"
+msgstr "离开会议"
 
 #: src/viewmodel/ContactListViewModel.vala:121
 msgid "Remove friend"
@@ -186,7 +184,7 @@ msgstr ""
 
 #: src/viewmodel/MessageViewModel.vala:90
 msgid "Message sent ✓"
-msgstr "已发送。"
+msgstr "已发送✓"
 
 #: src/viewmodel/MessageViewModel.vala:93
 msgid "Message received ✓"
@@ -194,7 +192,7 @@ msgstr "收到的邮件"
 
 #: src/tox/ToxMessage.vala:53 src/tox/ConferenceMessage.vala:57
 msgid "me"
-msgstr ""
+msgstr "我"
 
 #: src/tox/ToxAdapterFriendListener.vala:29
 #, c-format
@@ -222,7 +220,7 @@ msgstr ""
 #: src/tox/ConferenceMessage.vala:64
 #, fuzzy, c-format
 msgid "%s in %s"
-msgstr "%s 现在 %s。\n"
+msgstr "%s 在 %s。"
 
 #: src/view/ApplicationWindow.vala:194
 msgid "Hide"
@@ -249,7 +247,7 @@ msgstr "关于"
 
 #: src/view/ApplicationWindow.vala:208 src/ui/app_menu.ui:38
 msgid "Logout"
-msgstr ""
+msgstr "登出"
 
 #: src/view/ApplicationWindow.vala:209
 #, fuzzy
@@ -354,12 +352,12 @@ msgstr "文件传输"
 #: src/view/FriendRequestWidget.vala:44
 #, c-format
 msgid "“%s”"
-msgstr ""
+msgstr "“%s”"
 
 #: src/view/ConversationWindow.vala:127
 #, fuzzy, c-format
 msgid "%s is typing…"
-msgstr "%s 正在输入......"
+msgstr "%s正在输入...…"
 
 #: src/view/ConversationWindow.vala:230
 msgid "Choose a file to send"
@@ -384,9 +382,8 @@ msgid "Invite from %s"
 msgstr ""
 
 #: src/view/UserInfoWidget.vala:82
-#, fuzzy
 msgid "Images"
-msgstr "Image:"
+msgstr "图片"
 
 #: src/ui/file_transfer_widget.ui:140
 #, fuzzy
@@ -399,11 +396,11 @@ msgstr ""
 
 #: src/ui/login_widget.ui:152 src/ui/login_widget.ui:471
 msgid "Password"
-msgstr ""
+msgstr "密码"
 
 #: src/ui/login_widget.ui:169 src/ui/login_widget.ui:330
 msgid "Login"
-msgstr ""
+msgstr "登录"
 
 #: src/ui/login_widget.ui:205
 #, fuzzy
@@ -498,14 +495,12 @@ msgid "Speech"
 msgstr ""
 
 #: src/ui/create_groupchat_widget.ui:252
-#, fuzzy
 msgid "<small>Select a conference type</small>"
-msgstr "当我正在输入时其他人可以看到这一状态"
+msgstr ""
 
 #: src/ui/create_groupchat_widget.ui:299
-#, fuzzy
 msgid "New conference"
-msgstr "会议"
+msgstr "新会议"
 
 #: src/ui/create_groupchat_widget.ui:312 src/ui/create_groupchat_widget.ui:451
 #, fuzzy
@@ -561,7 +556,7 @@ msgstr "退出(_Q)"
 #: src/ui/contact_list_widget.ui:56 src/ui/add_contact_widget.ui:350
 #, fuzzy
 msgid "Add a friend"
-msgstr "添加新好友 #%i\n"
+msgstr "添加新好友"
 
 #: src/ui/contact_list_widget.ui:217
 msgid "Filter contacts by status"
@@ -623,9 +618,8 @@ msgid "Deny"
 msgstr ""
 
 #: src/ui/conference_info_widget.ui:78
-#, fuzzy
 msgid "Leave Conference"
-msgstr "会议"
+msgstr "离开会议"
 
 #: src/ui/conference_info_widget.ui:127
 msgid "Title:"
@@ -733,7 +727,7 @@ msgstr "状态消息:"
 
 #: src/ui/user_info_widget.ui:316 src/ui/friend_info_widget.ui:520
 msgid "Tox"
-msgstr ""
+msgstr "Tox"
 
 #: src/ui/user_info_widget.ui:349
 msgid "Copy to clipboard"
@@ -744,9 +738,8 @@ msgid "ID:"
 msgstr ""
 
 #: src/ui/user_info_widget.ui:462
-#, fuzzy
 msgid "Advanced"
-msgstr "取消"
+msgstr ""
 
 #: src/ui/user_info_widget.ui:510
 msgid "Tox nospam"
@@ -785,18 +778,16 @@ msgid "Dark Theme"
 msgstr "夜间模式"
 
 #: src/ui/settings_widget.ui:348
-#, fuzzy
 msgid "<small>Use a dark variant of the theme</small>"
-msgstr "当我正在输入时其他人可以看到这一状态"
+msgstr ""
 
 #: src/ui/settings_widget.ui:404
 msgid "Animations"
 msgstr ""
 
 #: src/ui/settings_widget.ui:417
-#, fuzzy
 msgid "<small>Turn on animated transitions</small>"
-msgstr "当我正在输入时其他人可以看到这一状态"
+msgstr ""
 
 #: src/ui/settings_widget.ui:473
 #, fuzzy
@@ -804,18 +795,16 @@ msgid "Small contacts"
 msgstr "呼叫联系人"
 
 #: src/ui/settings_widget.ui:486
-#, fuzzy
 msgid "<small>Show contacts in a compact format</small>"
-msgstr "当我正在输入时其他人可以看到这一状态"
+msgstr ""
 
 #: src/ui/settings_widget.ui:542
 msgid "Spellcheck"
 msgstr ""
 
 #: src/ui/settings_widget.ui:555
-#, fuzzy
 msgid "<small>Check your spelling while you type</small>"
-msgstr "当我正在输入时其他人可以看到这一状态"
+msgstr ""
 
 #: src/ui/settings_widget.ui:699
 msgid "Sounds"
@@ -877,7 +866,7 @@ msgstr "连接"
 
 #: src/ui/settings_widget.ui:1323
 msgid "UDP"
-msgstr ""
+msgstr "UDP"
 
 #: src/ui/settings_widget.ui:1336
 msgid "<small>Use UDP communication when available</small>"
@@ -885,21 +874,19 @@ msgstr ""
 
 #: src/ui/settings_widget.ui:1392
 msgid "IPv6"
-msgstr ""
+msgstr "IPv6"
 
 #: src/ui/settings_widget.ui:1405
-#, fuzzy
 msgid "<small>Allow both IPv4 and IPv6 communication</small>"
-msgstr "当我正在输入时其他人可以看到这一状态"
+msgstr ""
 
 #: src/ui/settings_widget.ui:1461
 msgid "Local discovery"
 msgstr ""
 
 #: src/ui/settings_widget.ui:1474
-#, fuzzy
 msgid "<small>Look for peers on the local network</small>"
-msgstr "当我正在输入时其他人可以看到这一状态"
+msgstr ""
 
 #: src/ui/settings_widget.ui:1530
 msgid "Hole punching"
@@ -920,9 +907,8 @@ msgid "<b>Bootstrap nodes</b>"
 msgstr ""
 
 #: src/ui/settings_widget.ui:1852
-#, fuzzy
 msgid "<b>Proxy</b>"
-msgstr "<b>用户</b>"
+msgstr ""
 
 #: src/ui/settings_widget.ui:1920
 #, fuzzy
@@ -930,9 +916,8 @@ msgid "System settings"
 msgstr "设置"
 
 #: src/ui/settings_widget.ui:1933
-#, fuzzy
 msgid "<small>Use your systems proxy settings</small>"
-msgstr "当我正在输入时其他人可以看到这一状态"
+msgstr ""
 
 #: src/ui/settings_widget.ui:1987
 #, fuzzy
@@ -1014,7 +999,7 @@ msgstr ""
 
 #: data/com.github.naxuroqa.venom.desktop.in:7
 msgid "com.github.naxuroqa.venom-symbolic"
-msgstr ""
+msgstr "com.github.naxuroqa.venom-symbolic"
 
 #~ msgid "error: %s\n"
 #~ msgstr "错误：%s"
