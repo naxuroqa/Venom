@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
-"PO-Revision-Date: 2018-12-05 21:09+0000\n"
-"Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
+"PO-Revision-Date: 2019-08-28 05:24+0000\n"
+"Last-Translator: Swann Martinet <swann.ranskassa@laposte.net>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/venom/"
 "translations/de/>\n"
 "Language: de\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.9-dev\n"
 
 #: src/undo/TextBufferUndoBinding.vala:169
 msgid "_Redo"
@@ -85,11 +85,11 @@ msgstr "Gestern um %s"
 
 #: src/core/R.vala:70
 msgid "Tox User"
-msgstr "Tox Nutzer"
+msgstr "Tox-Nutzer"
 
 #: src/core/Application.vala:37
 msgid "Set level of messages to log"
-msgstr "Setze das Niveau für Protokollmeldungen"
+msgstr "Das Niveau für Protokollmeldungen setzen"
 
 #: src/core/Application.vala:37
 msgid "<loglevel>"
@@ -101,7 +101,7 @@ msgstr "Zeige Versionsnummer"
 
 #: src/core/Application.vala:39
 msgid "Show preferences"
-msgstr "Öffne Einstellungen"
+msgstr "Einstellungen öffnen"
 
 #: src/core/Application.vala:73
 msgid "Settings"
@@ -109,15 +109,15 @@ msgstr "Einstellungen"
 
 #: src/viewmodel/ContactListViewModel.vala:102
 msgid "New conference…"
-msgstr "Neue Konferenz…"
+msgstr "Neue Konferenz …"
 
 #: src/viewmodel/ContactListViewModel.vala:115
 msgid "Invite to conference…"
-msgstr "Lade zu Konferenz ein…"
+msgstr "Zuu Konferenz einladen …"
 
 #: src/viewmodel/ContactListViewModel.vala:121
 msgid "Leave conference"
-msgstr "Verlasse Konferenz"
+msgstr "Konferenz verlassen"
 
 #: src/viewmodel/ContactListViewModel.vala:121
 msgid "Remove friend"
@@ -187,7 +187,7 @@ msgstr "Nachricht empfangen ✓"
 
 #: src/tox/ToxMessage.vala:53 src/tox/ConferenceMessage.vala:57
 msgid "me"
-msgstr "Ich"
+msgstr "ich"
 
 #: src/tox/ToxAdapterFriendListener.vala:29
 #, c-format
@@ -280,11 +280,11 @@ msgstr "Verpacker"
 
 #: src/view/AboutDialog.vala:51 data/com.github.naxuroqa.venom.desktop.in:4
 msgid "A modern Tox client for the Linux desktop"
-msgstr "Ein moderner Tox Client für den Linux Desktop"
+msgstr "Ein moderner Tox-Client für den Linux-Desktop"
 
 #: src/view/AboutDialog.vala:52
 msgid "Copyright © 2013-2018 Venom authors and contributors"
-msgstr "Copyright © 2013-2018 Venom Authoren und Mitwirkende"
+msgstr "Copyright © 2013-2018 Authoren und Mitwirkende von Venom"
 
 #: src/view/AboutDialog.vala:56
 msgid "translator-credits"
@@ -292,7 +292,7 @@ msgstr "Spixi <spxmar@gmail.com>, naxuroqa <naxuroqa@gmail.com>"
 
 #: src/view/WelcomeWidget.vala:129
 msgid "A new kind of instant messaging"
-msgstr "Sichere Kommunikation für jedermann"
+msgstr "Eine neue Art von Nachrichtensofortversand"
 
 #: src/view/WelcomeWidget.vala:137
 msgid "Chat with your friends and family without anyone else listening in."
@@ -301,11 +301,11 @@ msgstr "Plaudere mit deinen Freunden und Familie ohne dass jemand mithört."
 #: src/view/WelcomeWidget.vala:138
 #, c-format
 msgid "Now with 50% less bugs."
-msgstr "Jetzt mit 50% weniger bugs."
+msgstr "Jetzt mit 50 % weniger Bugs."
 
 #: src/view/WelcomeWidget.vala:139
 msgid "Generating witty dialog…"
-msgstr "Generiere lustige Nachrichten…"
+msgstr "Witzige Dialoge werden generiert …"
 
 #: src/view/WelcomeWidget.vala:140
 msgid "Thank you for using Venom."
