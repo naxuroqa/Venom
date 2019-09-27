@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Venom\n"
 "Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
-"PO-Revision-Date: 2019-03-26 21:39+0000\n"
-"Last-Translator: Rui Mendes <xz9@protonmail.com>\n"
+"PO-Revision-Date: 2019-09-28 00:54+0000\n"
+"Last-Translator: Manuela Silva <mmsrs@sky.com>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/venom/"
 "translations/pt/>\n"
 "Language: pt\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.6-dev\n"
+"X-Generator: Weblate 3.9-dev\n"
 
 #: src/undo/TextBufferUndoBinding.vala:169
 msgid "_Redo"
@@ -20,7 +20,7 @@ msgstr "_Refazer"
 
 #: src/undo/TextBufferUndoBinding.vala:174
 msgid "_Undo"
-msgstr "_Desfazer"
+msgstr "_Anular"
 
 #: src/core/NotificationListener.vala:86
 #, c-format
@@ -35,7 +35,7 @@ msgstr "Mostrar detalhes"
 
 #: src/core/NotificationListener.vala:94
 msgid "Mute conversation"
-msgstr "Tirar som da conversa"
+msgstr "Silenciar conversação"
 
 #: src/core/NotificationListener.vala:116
 msgid "Friend request"
@@ -53,7 +53,7 @@ msgstr "Convite para conferência"
 #: src/core/NotificationListener.vala:165
 #, c-format
 msgid "%s invites you to a conference"
-msgstr "%s está a convidar para uma conferência"
+msgstr "%s está a convidá-lo para uma conferência"
 
 #: src/core/TimeStamp.vala:26
 msgid "Just now"
@@ -101,7 +101,7 @@ msgstr "Mostrar o número da versão"
 
 #: src/core/Application.vala:39
 msgid "Show preferences"
-msgstr "Ver preferências"
+msgstr "Mostrar preferências"
 
 #: src/core/Application.vala:73
 msgid "Settings"
@@ -121,7 +121,7 @@ msgstr "Sair da conferência"
 
 #: src/viewmodel/ContactListViewModel.vala:121
 msgid "Remove friend"
-msgstr "Remover contacto"
+msgstr "Remover amigo"
 
 #: src/viewmodel/ContactListViewModel.vala:144
 #, c-format
@@ -139,11 +139,11 @@ msgstr[1] "%u novos convites de conferência"
 
 #: src/viewmodel/FriendInfoViewModel.vala:66
 msgid "Online right now"
-msgstr "Conectado agora mesmo"
+msgstr "On-line agora mesmo"
 
 #: src/viewmodel/FriendInfoViewModel.vala:68
 msgid "Never seen online"
-msgstr "Nunca visto conectado"
+msgstr "Nunca visto on-line"
 
 #: src/viewmodel/FriendInfoViewModel.vala:70
 #, c-format
@@ -156,7 +156,7 @@ msgstr "Nova mensagem!"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:67
 msgid "Offline"
-msgstr "Desconectado"
+msgstr "Off-line"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:75
 #: src/view/ApplicationWindow.vala:198 src/ui/user_status_menu.ui:34
@@ -171,7 +171,7 @@ msgstr "Ocupado"
 #: src/viewmodel/ContactListEntryViewModel.vala:79
 #: src/view/ApplicationWindow.vala:197 src/ui/user_status_menu.ui:28
 msgid "Online"
-msgstr "Conectado"
+msgstr "On-line"
 
 #: src/viewmodel/MessageViewModel.vala:66
 msgid "Notice"
@@ -196,7 +196,7 @@ msgstr "%s foi removido da sua lista de contactos."
 
 #: src/tox/ToxAdapterFriendListener.vala:30
 msgid "Undo"
-msgstr "Desfazer"
+msgstr "Anular"
 
 #: src/tox/Conference.vala:44
 #, c-format
@@ -206,11 +206,11 @@ msgstr "Conferência sem nome %u"
 #: src/tox/Conference.vala:48
 #, c-format
 msgid "%u Peers online"
-msgstr "%u pares conectados"
+msgstr "%u pares on-line"
 
 #: src/tox/ToxSession.vala:646
 msgid "Address must consist of 76 hexadecimal characters"
-msgstr "O endereço deve consistir em 76 caracteres hexadecimais"
+msgstr "O endereço deve consistir em 76 carateres hexadecimais"
 
 #: src/tox/ConferenceMessage.vala:64
 #, c-format
@@ -260,7 +260,7 @@ msgstr "O nome de utilizador já está registado"
 
 #: src/view/LoginWidget.vala:189
 msgid "Password must be at least 6 characters long"
-msgstr "A palavra-passe tem de ter pelo menos 6 caracteres"
+msgstr "A palavra-passe tem de ter pelo menos 6 carateres"
 
 #: src/view/LoginWidget.vala:202
 msgid "Passwords must match"
@@ -284,11 +284,11 @@ msgstr "Um cliente Tox moderno para o ambiente Linux"
 
 #: src/view/AboutDialog.vala:52
 msgid "Copyright © 2013-2018 Venom authors and contributors"
-msgstr "Direitos de autor © 2013-2018 autores e colaboradores do Venom"
+msgstr "Direitos de Autor © 2013-2018 Autores e Colaboradores do Venom"
 
 #: src/view/AboutDialog.vala:56
 msgid "translator-credits"
-msgstr "Rodrigo Antonio Müller, Rui Mendes"
+msgstr "Rodrigo Antonio Müller, Rui Mendes, Manuela Silva"
 
 #: src/view/WelcomeWidget.vala:129
 msgid "A new kind of instant messaging"
@@ -351,7 +351,7 @@ msgstr "%s está a escrever…"
 
 #: src/view/ConversationWindow.vala:230
 msgid "Choose a file to send"
-msgstr "Escolha um ficheiro a enviar"
+msgstr "Escolha um ficheiro para enviar"
 
 #: src/view/ConversationWindow.vala:233
 msgid "_Open"
@@ -380,7 +380,7 @@ msgstr "Ainda sem transferências de ficheiros…"
 
 #: src/ui/login_widget.ui:132
 msgid "Login automatically"
-msgstr "Entrar na conta automaticamente"
+msgstr "Iniciar sessão automaticamente"
 
 #: src/ui/login_widget.ui:152 src/ui/login_widget.ui:471
 msgid "Password"
@@ -388,7 +388,7 @@ msgstr "Palavra-passe"
 
 #: src/ui/login_widget.ui:169 src/ui/login_widget.ui:330
 msgid "Login"
-msgstr "Entrar"
+msgstr "Iniciar sessão"
 
 #: src/ui/login_widget.ui:205
 msgid "Other profiles"
@@ -452,7 +452,7 @@ msgstr "Conferência"
 
 #: src/ui/create_groupchat_widget.ui:122 src/ui/add_contact_widget.ui:188
 msgid "paste from clipboard"
-msgstr "colar"
+msgstr "colar da área de transferência"
 
 #: src/ui/create_groupchat_widget.ui:156
 msgid "<small>Name the conference (optional)</small>"
@@ -496,7 +496,7 @@ msgstr "Sem novos convites para conferências"
 
 #: src/ui/peer_entry_compact.ui:64 src/ui/peer_entry.ui:76
 msgid "This peer is also in your friends list"
-msgstr "Este par também está na lista de amigos"
+msgstr "Este par também está na sua lista de amigos"
 
 #: src/ui/peer_entry_compact.ui:78 src/ui/peer_entry.ui:89
 msgid "That's you"
@@ -529,7 +529,7 @@ msgstr "_Sair"
 
 #: src/ui/contact_list_widget.ui:56 src/ui/add_contact_widget.ui:350
 msgid "Add a friend"
-msgstr "Adicionar um contacto"
+msgstr "Adicionar um amigo"
 
 #: src/ui/contact_list_widget.ui:217
 msgid "Filter contacts by status"
@@ -635,7 +635,7 @@ msgstr "Enviar um pedido de amizade"
 
 #: src/ui/add_contact_widget.ui:167
 msgid "_ID:"
-msgstr "_ID:"
+msgstr "_Id.:"
 
 #: src/ui/add_contact_widget.ui:184
 msgid "Enter a Tox ID or URI here"
@@ -652,12 +652,12 @@ msgstr "_Mensagem:"
 #: src/ui/add_contact_widget.ui:280
 msgid "Send a custom message to be displayed to the friend you are adding"
 msgstr ""
-"Envie uma mensagem personalizada que vai ser mostrada ao contacto que está a "
+"Envie uma mensagem personalizada para ser exibida no amigo que está a "
 "adicionar"
 
 #: src/ui/add_contact_widget.ui:302
 msgid "<small>Send your friend a short message</small>"
-msgstr "<small>Enviar ao seu contacto uma mensagem curta</small>"
+msgstr "<small>Envie ao seu amigo uma mensagem curta</small>"
 
 #: src/ui/add_contact_widget.ui:333
 msgid "Send"
@@ -669,7 +669,7 @@ msgstr "Pedidos de amizade"
 
 #: src/ui/user_info_widget.ui:62
 msgid "Reset"
-msgstr "Repor"
+msgstr "Redefinir"
 
 #: src/ui/user_info_widget.ui:87
 msgid "Take a picture"
@@ -701,7 +701,7 @@ msgstr "Copiar"
 
 #: src/ui/user_info_widget.ui:381
 msgid "ID:"
-msgstr "ID:"
+msgstr "Id.:"
 
 #: src/ui/user_info_widget.ui:462
 msgid "Advanced"
@@ -741,11 +741,11 @@ msgstr "Aparência"
 
 #: src/ui/settings_widget.ui:335
 msgid "Dark Theme"
-msgstr "Tema escuro"
+msgstr "Tema Escuro"
 
 #: src/ui/settings_widget.ui:348
 msgid "<small>Use a dark variant of the theme</small>"
-msgstr "<small>Usar uma variante escura do tema</small>"
+msgstr "<small>Use uma variante escura do tema</small>"
 
 #: src/ui/settings_widget.ui:404
 msgid "Animations"
