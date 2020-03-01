@@ -38,7 +38,7 @@ namespace Venom {
     protected GLib.MainContext worker_context;
     protected GLib.MainLoop worker_loop;
 
-    public ToxBaseThread(string name, Logger logger) {
+    protected ToxBaseThread(string name, Logger logger) {
       this.name = name;
       this.logger = logger;
     }
