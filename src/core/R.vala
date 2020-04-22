@@ -20,7 +20,7 @@
  */
 
 namespace Venom {
-  public sealed class R {
+  public class R {
     private R() {}
 
     private static IconResource _icons;
@@ -54,7 +54,7 @@ namespace Venom {
       }
     }
 
-    public sealed class IconResource {
+    public class IconResource {
       public string app { get { return "venom-symbolic"; } }
 
       public string idle { get { return "idle-symbolic"; } }
@@ -66,12 +66,12 @@ namespace Venom {
       public string default_groupchat { get { return "conference-symbolic"; } }
     }
 
-    public sealed class StringResource {
+    public class StringResource {
       public string default_username() { return _("Tox User"); }
       public string default_statusmessage() { return ""; }
     }
 
-    public sealed class ConstantsResource {
+    public class ConstantsResource {
       public string downloads_dir { get; set; default = GLib.Environment.get_user_special_dir(GLib.UserDirectory.DOWNLOAD); }
       public string default_profile_dir() { return GLib.Path.build_filename(GLib.Environment.get_user_data_dir(), "tox"); }
       public string default_global_dir() { return GLib.Path.build_filename(GLib.Environment.get_user_config_dir(), "tox"); }
