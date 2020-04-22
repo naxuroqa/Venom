@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Venom\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
-"PO-Revision-Date: 2018-12-04 13:53+0000\n"
-"Last-Translator: naxuroqa <naxuroqa@gmail.com>\n"
+"PO-Revision-Date: 2020-04-21 20:11+0000\n"
+"Last-Translator: Lucas Araujo <lucassants2808@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "venom/translations/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -12,15 +12,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 4.0.2-dev\n"
 
 #: src/undo/TextBufferUndoBinding.vala:169
 msgid "_Redo"
-msgstr ""
+msgstr "_Refazer"
 
 #: src/undo/TextBufferUndoBinding.vala:174
 msgid "_Undo"
-msgstr ""
+msgstr "_Desfazer"
 
 #: src/core/NotificationListener.vala:86
 #, c-format
@@ -35,7 +35,7 @@ msgstr "Mostrar detalhes"
 
 #: src/core/NotificationListener.vala:94
 msgid "Mute conversation"
-msgstr ""
+msgstr "Silenciar conversa"
 
 #: src/core/NotificationListener.vala:116
 msgid "Friend request"
@@ -89,11 +89,11 @@ msgstr "Usuário Tox"
 
 #: src/core/Application.vala:37
 msgid "Set level of messages to log"
-msgstr ""
+msgstr "Defina nível de mensagens a registrar"
 
 #: src/core/Application.vala:37
 msgid "<loglevel>"
-msgstr ""
+msgstr "<nível de mensagens>"
 
 #: src/core/Application.vala:38
 msgid "Display version number"
@@ -101,7 +101,7 @@ msgstr "Mostrar número da versão"
 
 #: src/core/Application.vala:39
 msgid "Show preferences"
-msgstr ""
+msgstr "Exibir preferências"
 
 #: src/core/Application.vala:73
 msgid "Settings"
@@ -109,19 +109,19 @@ msgstr "Configurações"
 
 #: src/viewmodel/ContactListViewModel.vala:102
 msgid "New conference…"
-msgstr "Nova conferência..."
+msgstr "Nova conferência…"
 
 #: src/viewmodel/ContactListViewModel.vala:115
 msgid "Invite to conference…"
-msgstr ""
+msgstr "Convidar para conferência…"
 
 #: src/viewmodel/ContactListViewModel.vala:121
 msgid "Leave conference"
-msgstr ""
+msgstr "Sair da conferência"
 
 #: src/viewmodel/ContactListViewModel.vala:121
 msgid "Remove friend"
-msgstr ""
+msgstr "Remover amigo"
 
 #: src/viewmodel/ContactListViewModel.vala:144
 #, c-format
@@ -139,7 +139,7 @@ msgstr[1] "%u novos convites de conferência"
 
 #: src/viewmodel/FriendInfoViewModel.vala:66
 msgid "Online right now"
-msgstr "Online agora"
+msgstr "Online agora mesmo"
 
 #: src/viewmodel/FriendInfoViewModel.vala:68
 msgid "Never seen online"
@@ -148,11 +148,11 @@ msgstr "Nunca visto online"
 #: src/viewmodel/FriendInfoViewModel.vala:70
 #, c-format
 msgid "Last seen: %s"
-msgstr "Visto por último: %s"
+msgstr "Última vez visto: %s"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:61
 msgid "New Message!"
-msgstr "Nova Mensagem!"
+msgstr "Nova mensagem!"
 
 #: src/viewmodel/ContactListEntryViewModel.vala:67
 msgid "Offline"
@@ -175,7 +175,7 @@ msgstr "Online"
 
 #: src/viewmodel/MessageViewModel.vala:66
 msgid "Notice"
-msgstr ""
+msgstr "Notificação"
 
 #: src/viewmodel/MessageViewModel.vala:90
 msgid "Message sent ✓"
@@ -192,11 +192,11 @@ msgstr "eu"
 #: src/tox/ToxAdapterFriendListener.vala:29
 #, c-format
 msgid "%s has been removed from your contact list."
-msgstr ""
+msgstr "%s foi removido de sua lista de contatos."
 
 #: src/tox/ToxAdapterFriendListener.vala:30
 msgid "Undo"
-msgstr ""
+msgstr "Desfazer"
 
 #: src/tox/Conference.vala:44
 #, c-format
@@ -206,7 +206,7 @@ msgstr "Conferência sem nome %u"
 #: src/tox/Conference.vala:48
 #, c-format
 msgid "%u Peers online"
-msgstr "%u Pares online"
+msgstr "%u pares online"
 
 #: src/tox/ToxSession.vala:646
 msgid "Address must consist of 76 hexadecimal characters"
@@ -215,24 +215,24 @@ msgstr "Endereço deve consistir de 76 caracteres hexadecimais"
 #: src/tox/ConferenceMessage.vala:64
 #, c-format
 msgid "%s in %s"
-msgstr ""
+msgstr "%s em %s"
 
 #: src/view/ApplicationWindow.vala:194
 msgid "Hide"
-msgstr ""
+msgstr "Ocultar"
 
 #: src/view/ApplicationWindow.vala:194
 msgid "Show"
-msgstr ""
+msgstr "Exibir"
 
 #: src/view/ApplicationWindow.vala:200
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: src/view/ApplicationWindow.vala:203 src/view/SettingsWidget.vala:77
 #: data/com.github.naxuroqa.venom.desktop.in:17
 msgid "Preferences"
-msgstr ""
+msgstr "Preferências"
 
 #: src/view/ApplicationWindow.vala:204 src/ui/app_menu.ui:34
 msgid "About"
@@ -240,43 +240,43 @@ msgstr "Sobre"
 
 #: src/view/ApplicationWindow.vala:208 src/ui/app_menu.ui:38
 msgid "Logout"
-msgstr ""
+msgstr "Sair da conta"
 
 #: src/view/ApplicationWindow.vala:209
 msgid "Quit"
-msgstr ""
+msgstr "Sair"
 
 #: src/view/LoginWidget.vala:167
 msgid "Wrong password"
-msgstr ""
+msgstr "Senha errada"
 
 #: src/view/LoginWidget.vala:173
 msgid "Username can not be empty"
-msgstr ""
+msgstr "O nome de usuário não deve estar vazio"
 
 #: src/view/LoginWidget.vala:175
 msgid "Username is already taken"
-msgstr ""
+msgstr "Esse nome de usuário já está tomado"
 
 #: src/view/LoginWidget.vala:189
 msgid "Password must be at least 6 characters long"
-msgstr ""
+msgstr "Senha deve ter pelo menos 6 caracteres"
 
 #: src/view/LoginWidget.vala:202
 msgid "Passwords must match"
-msgstr ""
+msgstr "Senhas devem coincidir"
 
 #: src/view/LoginWidget.vala:226
 msgid "Creating profile failed: "
-msgstr ""
+msgstr "Falha criando o perfil: "
 
 #: src/view/LoginWidget.vala:249
 msgid "Profile is encrypted"
-msgstr ""
+msgstr "Perfil está encriptado"
 
 #: src/view/AboutDialog.vala:50
 msgid "Packagers"
-msgstr ""
+msgstr "Embaladores"
 
 #: src/view/AboutDialog.vala:51 data/com.github.naxuroqa.venom.desktop.in:4
 msgid "A modern Tox client for the Linux desktop"
@@ -284,11 +284,11 @@ msgstr "Um cliente Tox moderno para o desktop Linux"
 
 #: src/view/AboutDialog.vala:52
 msgid "Copyright © 2013-2018 Venom authors and contributors"
-msgstr ""
+msgstr "Direitos autorais © 2013-2018 autores e colaboradores do Venom"
 
 #: src/view/AboutDialog.vala:56
 msgid "translator-credits"
-msgstr ""
+msgstr "Rui Mendes"
 
 #: src/view/WelcomeWidget.vala:129
 msgid "A new kind of instant messaging"
@@ -301,37 +301,39 @@ msgstr "Converse com seus amigos e familiares sem mais ninguém escutando."
 #: src/view/WelcomeWidget.vala:138
 #, c-format
 msgid "Now with 50% less bugs."
-msgstr ""
+msgstr "Agora com menos 50% de bugs."
 
 #: src/view/WelcomeWidget.vala:139
 msgid "Generating witty dialog…"
-msgstr ""
+msgstr "Gerando diálogo inteligente…"
 
 #: src/view/WelcomeWidget.vala:140
 msgid "Thank you for using Venom."
-msgstr ""
+msgstr "Obrigado por usar Venom."
 
 #: src/view/WelcomeWidget.vala:141
 msgid "Always think positive."
-msgstr ""
+msgstr "Pense sempre positivo."
 
 #: src/view/WelcomeWidget.vala:142
 msgid "Have a good day and stay safe."
-msgstr ""
+msgstr "Tenha um bom dia e fique seguro/a."
 
 #: src/view/WelcomeWidget.vala:143
 msgid "You can do it. ― Coffee"
-msgstr ""
+msgstr "Você pode fazê-lo. ― Café"
 
 #: src/view/WelcomeWidget.vala:144
 msgid ""
 "Life moves pretty fast. If you don’t stop and look around once in a while, "
 "you could miss it. ― Ferris Bueller"
 msgstr ""
+"Vida se move muito rápida. Se você não para e olhar ao redor as vezes, você "
+"pode sentir falta disso. - Ferris Bueller"
 
 #: src/view/WelcomeWidget.vala:189
 msgid "Drink your milk for extra strong bones."
-msgstr ""
+msgstr "Beba seu leite para ossos extra fortes."
 
 #: src/view/FileTransferWidget.vala:39 src/ui/file_transfer_widget.ui:57
 msgid "File transfers"
@@ -340,7 +342,7 @@ msgstr "Transferência de arquivos"
 #: src/view/FriendRequestWidget.vala:44
 #, c-format
 msgid "“%s”"
-msgstr ""
+msgstr "“%s”"
 
 #: src/view/ConversationWindow.vala:127
 #, c-format
@@ -374,39 +376,39 @@ msgstr "Imagens"
 
 #: src/ui/file_transfer_widget.ui:140
 msgid "No file transfers yet …"
-msgstr "Sem transferências de arquivos ainda …"
+msgstr "Sem transferências de arquivos ainda…"
 
 #: src/ui/login_widget.ui:132
 msgid "Login automatically"
-msgstr ""
+msgstr "Entrar na conta automaticamente"
 
 #: src/ui/login_widget.ui:152 src/ui/login_widget.ui:471
 msgid "Password"
-msgstr ""
+msgstr "Senha"
 
 #: src/ui/login_widget.ui:169 src/ui/login_widget.ui:330
 msgid "Login"
-msgstr ""
+msgstr "Entrar"
 
 #: src/ui/login_widget.ui:205
 msgid "Other profiles"
-msgstr ""
+msgstr "Outros perfis"
 
 #: src/ui/login_widget.ui:267
 msgid "Import profile…"
-msgstr ""
+msgstr "Importar perfil…"
 
 #: src/ui/login_widget.ui:395
 msgid "New profile"
-msgstr ""
+msgstr "Novo perfil"
 
 #: src/ui/login_widget.ui:417
 msgid "Username"
-msgstr ""
+msgstr "Nome de usuário"
 
 #: src/ui/login_widget.ui:526
 msgid "Confirm Password"
-msgstr ""
+msgstr "Senha de confirmação"
 
 #: src/ui/login_widget.ui:570 src/ui/create_groupchat_widget.ui:282
 msgid "Create"
@@ -414,7 +416,7 @@ msgstr "Criar"
 
 #: src/ui/login_widget.ui:620
 msgid "Create profile"
-msgstr ""
+msgstr "Criar perfil"
 
 #: src/ui/file_transfer_entry.ui:56 src/ui/file_transfer_entry_inline.ui:62
 msgid "Remove transfer"
@@ -458,7 +460,7 @@ msgstr "<small>Nomeie a conferência (opcional)</small>"
 
 #: src/ui/create_groupchat_widget.ui:188
 msgid "T_ype:"
-msgstr ""
+msgstr "T_ipo:"
 
 #: src/ui/create_groupchat_widget.ui:212
 msgid "Text"
@@ -466,7 +468,7 @@ msgstr "Texto"
 
 #: src/ui/create_groupchat_widget.ui:228
 msgid "Speech"
-msgstr "Fala"
+msgstr "Voz"
 
 #: src/ui/create_groupchat_widget.ui:252
 msgid "<small>Select a conference type</small>"
@@ -482,11 +484,11 @@ msgstr "Convites de conferência"
 
 #: src/ui/create_groupchat_widget.ui:375
 msgid "Accept all"
-msgstr ""
+msgstr "Aceitar todas"
 
 #: src/ui/create_groupchat_widget.ui:421
 msgid "Reject all"
-msgstr ""
+msgstr "Rejeitar todas"
 
 #: src/ui/create_groupchat_widget.ui:513
 msgid "No new conference invites"
@@ -503,7 +505,7 @@ msgstr "Esse é você"
 #: src/ui/conference_window.ui:103 src/ui/conversation_window.ui:292
 #: src/ui/user_info_widget.ui:274 src/ui/user_info_widget.ui:275
 msgid "Insert Emoji"
-msgstr "Inserir Emoji"
+msgstr "Inserir emoji"
 
 #: src/ui/conference_window.ui:179
 msgid "No one here..."
@@ -515,7 +517,7 @@ msgstr "Nenhuma mensagem ainda..."
 
 #: src/ui/conference_window.ui:280
 msgid "Show peers"
-msgstr "Mostrar pares"
+msgstr "Exibir pares"
 
 #: src/ui/app_menu.ui:28
 msgid "_Preferences"
@@ -547,7 +549,7 @@ msgstr "Ver transferência de arquivos"
 
 #: src/ui/contact_list_widget.ui:406
 msgid "Open preferences"
-msgstr ""
+msgstr "Abrir preferências"
 
 #: src/ui/contact_list_widget.ui:448
 msgid "Edit your profile"
@@ -555,7 +557,7 @@ msgstr "Edite seu perfil"
 
 #: src/ui/contact_list_widget.ui:476
 msgid "Change your status"
-msgstr "Mude seu status:"
+msgstr "Mude seu status"
 
 #: src/ui/conversation_window.ui:37
 msgid "Start a call"
@@ -567,11 +569,11 @@ msgstr "Iniciar chamada de vídeo"
 
 #: src/ui/conversation_window.ui:155
 msgid "Attach screenshot…"
-msgstr "Anexar captura de tela..."
+msgstr "Anexar captura de tela…"
 
 #: src/ui/conversation_window.ui:180
 msgid "Attach file…"
-msgstr "Anexar arquivo..."
+msgstr "Anexar arquivo…"
 
 #: src/ui/conversation_window.ui:317
 msgid "Insert attachment"
@@ -579,11 +581,11 @@ msgstr "Inserir anexo"
 
 #: src/ui/friend_request_widget.ui:66 src/ui/conference_invite_entry.ui:107
 msgid "Accept"
-msgstr ""
+msgstr "Aceitar"
 
 #: src/ui/friend_request_widget.ui:83 src/ui/conference_invite_entry.ui:124
 msgid "Deny"
-msgstr ""
+msgstr "Recusar"
 
 #: src/ui/conference_info_widget.ui:78
 msgid "Leave Conference"
@@ -600,7 +602,7 @@ msgstr "Notificações"
 
 #: src/ui/conference_info_widget.ui:234 src/ui/friend_info_widget.ui:330
 msgid "<small>Notifications have been globally disabled</small>"
-msgstr "<small>Notificações foram desativadas globalmente</small>"
+msgstr "<small>Notificações foram desabilitadas globalmente</small>"
 
 #: src/ui/conference_info_widget.ui:266 src/ui/user_info_widget.ui:624
 #: src/ui/friend_info_widget.ui:634
@@ -613,11 +615,11 @@ msgstr "Pares"
 
 #: src/ui/welcome_widget.ui:123
 msgid "Learn more"
-msgstr "Aprenda mais"
+msgstr "Saber mais"
 
 #: src/ui/welcome_widget.ui:169
 msgid "Get involved"
-msgstr "Se involva"
+msgstr "Se envolva"
 
 #: src/ui/add_contact_widget.ui:52
 msgid "No new friend requests"
@@ -703,23 +705,23 @@ msgstr "ID:"
 
 #: src/ui/user_info_widget.ui:462
 msgid "Advanced"
-msgstr ""
+msgstr "Avançado"
 
 #: src/ui/user_info_widget.ui:510
 msgid "Tox nospam"
-msgstr ""
+msgstr "Tox nospam"
 
 #: src/ui/user_info_widget.ui:532
 msgid "Generate new random nospam"
-msgstr ""
+msgstr "Gerar novo nospam aleatório"
 
 #: src/ui/user_info_widget.ui:546
 msgid "Set this nospam"
-msgstr ""
+msgstr "Usar este nospam"
 
 #: src/ui/user_info_widget.ui:578
 msgid "Previous nospams"
-msgstr ""
+msgstr "Nospams anteriores"
 
 #: src/ui/settings_widget.ui:78
 msgid "General"
@@ -727,7 +729,7 @@ msgstr "Geral"
 
 #: src/ui/settings_widget.ui:158
 msgid "Bootstrap nodes"
-msgstr ""
+msgstr "Nós de arranque"
 
 #: src/ui/settings_widget.ui:198
 msgid "Proxy"
@@ -751,7 +753,7 @@ msgstr "Animações"
 
 #: src/ui/settings_widget.ui:417
 msgid "<small>Turn on animated transitions</small>"
-msgstr "<small>Ativar transições animadas</small>"
+msgstr "<small>Habilitar transições animadas</small>"
 
 #: src/ui/settings_widget.ui:473
 msgid "Small contacts"
@@ -779,7 +781,7 @@ msgstr "<small>Tocar sons em novas notificações</small>"
 
 #: src/ui/settings_widget.ui:768
 msgid "While Busy"
-msgstr "Enquanto Ocupado"
+msgstr "Enquanto ocupado"
 
 #: src/ui/settings_widget.ui:781
 msgid "<small>Receive notifications even while you are busy</small>"
@@ -795,7 +797,7 @@ msgstr "Minimizar"
 
 #: src/ui/settings_widget.ui:940
 msgid "<small>Minimize to tray instead of close</small>"
-msgstr "<small>Minimizar para bandeja ao fechar</small>"
+msgstr "<small>Minimizar para bandeja ao invés de fechar</small>"
 
 #: src/ui/settings_widget.ui:1025
 msgid "Privacy"
@@ -811,11 +813,11 @@ msgstr "<small>Mostrar aos outros quando você está digitando</small>"
 
 #: src/ui/settings_widget.ui:1137
 msgid "Keep History"
-msgstr ""
+msgstr "Manter histórico"
 
 #: src/ui/settings_widget.ui:1150
 msgid "<small>Store your sent and received messages</small>"
-msgstr ""
+msgstr "<small>Armazenar suas mensagens enviadas e recebidas</small>"
 
 #: src/ui/settings_widget.ui:1281
 msgid "<b>Connection</b>"
@@ -854,16 +856,16 @@ msgid ""
 "<small>Enable UDP <a href=\"https://en.wikipedia.org/wiki/"
 "Hole_punching_(networking)\">hole punching</a></small>"
 msgstr ""
-"<small>Habilitar UDP <a href=\"https://en.wikipedia.org/wiki/"
-"Hole_punching_(networking)\">hole punching</a></small>"
+"<small>Habilitar <a href=\"https://en.wikipedia.org/wiki/"
+"Hole_punching_(networking)\">hole punching</a> UDP</small>"
 
 #: src/ui/settings_widget.ui:1681
 msgid "Update bootstrap nodes"
-msgstr "Atualizar bootstrap nodes"
+msgstr "Atualizar nós de arranque"
 
 #: src/ui/settings_widget.ui:1716
 msgid "<b>Bootstrap nodes</b>"
-msgstr "<b>Bootstrap nodes</b>"
+msgstr "<b>Nós de arranque</b>"
 
 #: src/ui/settings_widget.ui:1852
 msgid "<b>Proxy</b>"
@@ -937,15 +939,15 @@ msgstr "Por favor verifique suas configurações e tente novamente"
 
 #: src/ui/error_widget.ui:140
 msgid "Info"
-msgstr ""
+msgstr "Informação"
 
 #: src/ui/error_widget.ui:164
 msgid "Log"
-msgstr "Log"
+msgstr "Registro"
 
 #: src/ui/error_widget.ui:202
 msgid "Retry"
-msgstr ""
+msgstr "Tentar novamente"
 
 #: data/com.github.naxuroqa.venom.desktop.in:3
 msgid "Venom"
@@ -953,7 +955,7 @@ msgstr "Venom"
 
 #: data/com.github.naxuroqa.venom.desktop.in:5
 msgid "tox;instant messaging;video chat;"
-msgstr ""
+msgstr "tox;mensageiro instantâneo;video chat;"
 
 #: data/com.github.naxuroqa.venom.desktop.in:7
 msgid "com.github.naxuroqa.venom-symbolic"

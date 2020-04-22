@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: venom\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: naxuroqa@gmail.com\n"
 "POT-Creation-Date: 2018-12-01 13:43+0100\n"
-"PO-Revision-Date: 2018-12-04 11:29+0000\n"
+"PO-Revision-Date: 2019-05-11 14:49+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/venom/"
 "translations/nb_NO/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.7-dev\n"
 
 #: src/undo/TextBufferUndoBinding.vala:169
 msgid "_Redo"
@@ -93,7 +93,6 @@ msgid "Tox User"
 msgstr "Tox-bruker"
 
 #: src/core/Application.vala:37
-#, fuzzy
 msgid "Set level of messages to log"
 msgstr "Sett loggingsnivå"
 
@@ -754,7 +753,6 @@ msgid "Set this nospam"
 msgstr "Bruk denne NoSpam-en"
 
 #: src/ui/user_info_widget.ui:578
-#, fuzzy
 msgid "Previous nospams"
 msgstr "Tildigere NoSpam-er"
 
