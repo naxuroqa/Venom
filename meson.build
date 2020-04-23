@@ -1,6 +1,6 @@
 project('venom', ['vala', 'c'],
 			license: 'GPL3+',
-			version: '0.5.4'
+			version: '0.5.5'
 )
 
 i18n = import('i18n')
