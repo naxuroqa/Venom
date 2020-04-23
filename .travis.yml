@@ -5,7 +5,7 @@ matrix:
   include:
   - name: "Ubuntu 18.04"
     env: DOCKER_IMAGE=ubuntu:18.04
-  - name: "Ubuntu 18.10"
+  - name: "Ubuntu 19.10"
     env: DOCKER_IMAGE=ubuntu:18.10
   - name: "Debian 10"
     env: DOCKER_IMAGE=debian:buster
@@ -52,9 +52,9 @@ install:
       wget
       > /dev/null
   - docker exec image pip3 install meson ninja
-  - docker exec image bash -c "wget 'https://github.com/TokTok/c-toxcore/archive/v0.2.9.tar.gz'
-      && tar -xzf v0.2.9.tar.gz
-      && cd c-toxcore-0.2.9
+  - docker exec image bash -c "wget 'https://github.com/TokTok/c-toxcore/archive/v0.2.11.tar.gz'
+      && tar -xzf v0.2.11.tar.gz
+      && cd c-toxcore-0.2.11
       && cmake -DCMAKE_INSTALL_PREFIX=/usr
       && make
       && make install"

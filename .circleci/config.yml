@@ -78,9 +78,9 @@ commands:
       - run:
           name: Build and install toxcore
           command: |
-            wget "https://github.com/TokTok/c-toxcore/archive/v0.2.9.tar.gz"
-            tar -xzf v0.2.9.tar.gz
-            cd c-toxcore-0.2.9
+            wget "https://github.com/TokTok/c-toxcore/archive/v0.2.11.tar.gz"
+            tar -xzf v0.2.11.tar.gz
+            cd c-toxcore-0.2.11
             cmake -DCMAKE_INSTALL_PREFIX=/usr
             make
             make install
@@ -108,9 +108,9 @@ jobs:
       - debian-install-deps
       - install-toxcore
       - install-venom
-  "Ubuntu 18-10":
+  "Ubuntu 19-10":
     docker:
-      - image: ubuntu:18.10
+      - image: ubuntu:19.10
     steps:
       - checkout
       - debian-install-deps
@@ -133,17 +133,17 @@ jobs:
       - debian-install-deps
       - install-toxcore
       - install-venom
-  "Fedora 28":
+  "Fedora 30":
     docker:
-      - image: fedora:28
+      - image: fedora:30
     steps:
       - checkout
       - fedora-install-deps
       - install-toxcore
       - install-venom
-  "Fedora 29":
+  "Fedora 31":
     docker:
-      - image: fedora:29
+      - image: fedora:31
     steps:
       - checkout
       - fedora-install-deps
@@ -187,9 +187,9 @@ workflows:
   build:
     jobs:
       - "Ubuntu 18-04"
-      - "Ubuntu 18-10"
+      - "Ubuntu 19-10"
       - "Debian 9"
       - "Debian 10"
-      - "Fedora 28"
-      - "Fedora 29"
+      - "Fedora 30"
+      - "Fedora 31"
       - "Flatpak"

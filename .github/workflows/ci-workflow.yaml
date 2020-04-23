@@ -1,0 +1,54 @@
+name: VALA/C CI
+on: pull_request
+  push:
+    branches:
+      - develop
+      - master
+      - 'release-*'
+jobs:
+  native:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v1
+    - name: Install meson
+      run: |
+        sudo python3 -m pip install --upgrade pip
+        sudo pip3 install meson ninja
+    - name: Install dependencies
+      run: >
+        sudo apt-get -qq install -y
+        clang
+        cmake
+        libconfig-dev
+        libgtest-dev
+        libopus-dev
+        libsodium-dev
+        libvpx-dev
+        pkg-config
+        libgee-0.8-dev
+        libgspell-1-dev
+        libgtk-3-dev
+        libjson-glib-dev
+        libsoup2.4-dev
+        libsqlcipher-dev
+        libcanberra-dev
+        libgstreamer1.0-dev
+        libgstreamer-plugins-base1.0-dev
+        valac
+        wget
+    - name: Build and install ToxCore
+      run: |
+        wget "https://github.com/TokTok/c-toxcore/archive/v0.2.11.tar.gz"
+        tar -xzf v0.2.11.tar.gz
+        cd c-toxcore-0.2.11
+        cmake -DCMAKE_INSTALL_PREFIX=/usr
+        make
+        sudo make install
+        cd ..
+    - name: Build
+      run: meson build && ninja -C build
+    - name: Test
+      run: ninja -C build test
+    - name: Install
+      run: sudo ninja -C build install
